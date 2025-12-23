@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+<html lang="fa" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <title>English with Fred</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3892/3892251.png">
+
+    <style>
+
+        :root { --ios-blue: #007AFF; --ios-indigo: #5856D6; --ios-green: #34C759; --ios-red: #FF3B30; --ios-bg: #F2F2F7; }
+
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--ios-bg); margin: 0; height: 100vh; overflow: hidden; position: fixed; width: 100%; padding-top: env(safe-area-inset-top); }
+
+        .screen { height: 100%; display: flex; flex-direction: column; padding: 20px; align-items: center; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+        
+
+        /* لوگو با قابلیت کلیک مخفی */
+
+        .header-title { margin: 10px 0 5px 0; color: #000; font-size: 26px; font-weight: 800; cursor: pointer; user-select: none; }
+
+        
+
+        .daily-goal-box { background: #fff; width: 100%; border-radius: 20px; padding: 15px; margin-bottom: 15px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        .goal-stars { font-size: 24px; margin: 5px 0; letter-spacing: 5px; }
+
+        .goal-text { font-size: 13px; color: #666; font-weight: 600; }
+
+
+        .record-badge { background: #fff; padding: 5px 15px; border-radius: 20px; font-size: 13px; color: var(--ios-indigo); font-weight: bold; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        
+
+        /* پنل مدیریتی مخفی */
+
+        #adminPanel { display: none; width: 100%; background: #eee; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+
+        textarea { width: 100%; min-height: 120px; border-radius: 12px; border: 1px solid #ccc; padding: 10px; font-size: 12px; direction: ltr; outline: none; margin-bottom: 10px; }
+
+
+        .mode-selector { width: 100%; display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 20px; }
+
+        .btn-mode { background: #fff; border: 1px solid #d1d1d6; padding: 14px; border-radius: 16px; text-align: right; font-weight: 600; font-size: 15px; }
+
+        .btn-mode.active { border: 2.5px solid var(--ios-blue); color: var(--ios-blue); }
+
+        .btn-main { border: none; color: white; font-weight: 700; width: 100%; padding: 18px; border-radius: 20px; margin-bottom: 12px; font-size: 17px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer; }
+
+        .btn-send-report { background: #FF9500; color: white; border: none; padding: 15px; border-radius: 20px; width: 100%; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; }
+
+        
+
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; margin-top: 15px; }
+
+        .btn-opt { padding: 18px; border-radius: 18px; border: 1px solid #d1d1d6; background: #fff; font-size: 16px; font-weight: 600; direction: ltr; text-align: left; unicode-bidi: plaintext; }
+
+        
+
+        .correct { background: var(--ios-green) !important; color: white !important; border: none !important; }
+
+        .wrong { background: var(--ios-red) !important; color: white !important; border: none !important; }
+
+        
+
+        /* اصلاح نمایش متن سوال و نقطه */
+
+        .q-text { font-size: 1.6rem; font-weight: 800; margin-top: 40px; text-align: center; padding: 0 10px; line-height: 1.4; unicode-bidi: plaintext; }
+
+        
+
+        .exit-btn { position: fixed; top: 50px; left: 20px; background: rgba(0,0,0,0.1); border: none; width: 36px; height: 36px; border-radius: 50%; font-weight: bold; z-index: 100; }
+
+        #reportCard { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85%; background: rgba(255,255,255,0.98); border-radius: 30px; padding: 25px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.2); z-index: 2000; backdrop-filter: blur(10px); }
+
+    </style>
+
+</head>
+
+<body>
+
+
+    <div id="setup" class="screen">
+
+        <h1 class="header-title" onclick="adminClick()">English with Fred</h1>
+
+        
+
+        <div class="daily-goal-box">
+
+            <div id="goalStars" class="goal-stars">☆☆☆</div>
+
+            <div id="goalMsg" class="goal-text">Daily Goal: 0/3 Quizzes</div>
+
+        </div>
+
+
+        <div id="bestRecord" class="record-badge">Best Record: 0%</div>
+
+
+        <div id="adminPanel">
+
+            <p style="font-size:11px; margin:0 0 5px 0;">Manager Mode:</p>
+
+            <textarea id="bulkInput" oninput="saveRawData()"></textarea>
+
+            <button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%; padding:5px; border-radius:8px; border:none; background:#ccc;">بستن پنل</button>
+
+        </div>
+
+
+        <div class="mode-selector">
+
+            <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
+
+            <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
+
+            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف (A1)</div>
+
+            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت (A1)</div>
+
+        </div>
+
+        <button class="btn-main" style="background:var(--ios-blue)" onclick="startQuiz(false)">🚀 شروع کوییز</button>
+
+        <button class="btn-main" style="background:var(--ios-indigo); width:70%; padding:10px; font-size:14px;" onclick="openMistakePage()">🎯 لغات دشوار شما</button>
+
+    </div>
+
+
+    <div id="quiz" class="screen" style="display: none; background: #fff;">
+
+        <button class="exit-btn" onclick="location.reload()">✕</button>
+
+        <div id="qDisplay" class="q-text"></div>
+
+        <div id="audioBtn" style="font-size: 4rem; margin: 15px 0; cursor: pointer;" onclick="say()">🔊</div>
+
+        <div class="options-grid" id="opts"></div>
+
+    </div>
+
+
+    <div id="mistakePage" class="screen" style="display:none;">
+
+        <button class="exit-btn" onclick="location.reload()">✕</button>
+
+        <h2 style="margin-top: 50px;">لغات دشوار</h2>
+
+        <button class="btn-main" style="background:var(--ios-green); margin-bottom: 20px;" onclick="startQuiz(true)">🔥 شروع کوییز از اشتباهات</button>
+
+        <div id="mList" style="width: 100%; padding-bottom: 40px;"></div>
+
+    </div>
+
+
+    <div id="reportCard">
+
+        <div id="repStats"></div>
+
+        <button class="btn-send-report" onclick="sendToProfessor()">📤 ارسال گزارش برای استاد</button>
+
+        <button class="btn-main" style="background:var(--ios-blue); margin-top: 10px;" onclick="location.reload()">بستن و بازگشت</button>
+
+    </div>
+
+
+    <script>
+
+        const phone = "989017708544";
+
+        // لغات پیش‌فرض شما (همان ۲۰۰ لغت قبلی)
+
+        const defaultWords = `be — بودن — To live or to stay.
+
+am — هستم — I ___ (Used with I).
+
+is — هست — He/She/It ___ (Used with one).
+
+are — هستید / هستند — You/We/They ___ (Used with many).
+
+have — داشتن — I own this; it is mine.
+
+has — دارد — He owns this; it is his.
+
+do — انجام دادن — To work or to make an action.
+
+does — انجام می‌دهد — He or she works or acts.
+
+work — کار کردن — To do a job for money.
+
+go — رفتن — To move away to a new place.
+
+come — آمدن — To move to this place.
+
+get — گرفتن / شدن — To take or receive something.
+
+make — ساختن — To build or create something.
+
+use — استفاده کردن — To work with a tool or thing.
+
+need — نیاز داشتن — I must have this.
+
+want — خواستن — I would like to have this.
+
+like — دوست داشتن — This is good; I enjoy it.
+
+love — دوست داشتن — I like this very, very much.
+
+help — کمک کردن — To do something good for a person.
+
+try — تلاش کردن — To work hard to do something.
+
+start — شروع کردن — To begin the first part.
+
+stop — متوقف کردن — To not move or not work.
+
+say — گفتن — To speak with your mouth.
+
+tell — گفتن (به کسی) — To give words to a person.
+
+ask — پرسیدن — To say: "Who? What? Where?".
+
+answer — جواب دادن — To say something back.
+
+talk — صحبت کردن — To speak with a friend.
+
+speak — صحبت کردن — To use words and voice.
+
+see — دیدن — To use your eyes to look.
+
+look — نگاه کردن — To turn your eyes to see.
+
+hear — شنیدن — To use your ears for sound.
+
+listen — گوش دادن — To hear and think about sound.
+
+feel — احساس داشتن — To be happy, sad, or hot.
+
+think — فکر کردن — To use your head for ideas.
+
+know — دانستن — To have it in your head.
+
+live — زندگی کردن — To have your home in a place.
+
+stay — ماندن — To be in a place and not leave.
+
+leave — ترک کردن — To go away from a place.
+
+move — حرکت کردن — To go from here to there.
+
+happen — اتفاق افتادن — To take place.
+
+people — مردم — Many men, women, and children.
+
+person — شخص — One man or one woman.
+
+man — مرد — A boy who is now old.
+
+woman — زن — A girl who is now old.
+
+friend — دوست — A person you like and know.
+
+family — خانواده — Father, mother, and children.
+
+job — شغل — The work you do for money.
+
+work (noun) — کار — Using your body or head to do things.
+
+money — پول — You use this to buy food.
+
+time — زمان — Day, hour, and minute.
+
+day — روز — When the sun is in the sky.
+
+week — هفته — Seven days (Saturday to Friday).
+
+year — سال — Twelve months.
+
+today — امروز — This day.
+
+tomorrow — فردا — The day after this day.
+
+yesterday — دیروز — The day before this day.
+
+now — الان — At this time.
+
+later — بعداً — Not now; after some time.
+
+early — زود — Before the time.
+
+late — دیر — After the time.
+
+here — اینجا — In this place.
+
+there — آنجا — In that place.
+
+home — خانه — The place where you sleep.
+
+place — مکان — A room, a city, or a house.
+
+city — شهر — A place with many big houses.
+
+country — کشور — A land with a name (like Iran).
+
+school — مدرسه — Where children go to learn.
+
+office — اداره — A room where people do jobs.
+
+shop — مغازه — A place where you buy things.
+
+street — خیابان — A road with houses near it.
+
+good — خوب — Nice or very well.
+
+bad — بد — Not good; not nice.
+
+easy — آسان — Not hard; I can do it.
+
+hard — سخت — Very difficult to do.
+
+big — بزرگ — Not small; like an elephant.
+
+small — کوچک — Not big; like an ant.
+
+new — جدید — Not old; I just got it.
+
+old — قدیمی — Not new; from a long time ago.
+
+same — یکسان — Like this one; not different.
+
+different — متفاوت — Not the same.
+
+busy — مشغول — Having many things to do.
+
+free — آزاد — Not busy; having no work.
+
+tired — خسته — I want to rest or sleep.
+
+happy — خوشحال — Feeling very good; smiling.
+
+sad — ناراحت — Not happy; feeling bad.
+
+right — درست — Correct; yes.
+
+wrong — غلط — Not right; no.
+
+important — مهم — You must think about this.
+
+possible — ممکن — It can happen.
+
+ready — آماده — I can start now.
+
+and — و — Also; this with that.
+
+but — اما — No; this is different.
+
+because — چون — To say why.
+
+so — پس — This happened, and then that.
+
+if — اگر — Maybe this, then that.
+
+when — وقتی که — At what time.
+
+before — قبل از — First this, then that.
+
+after — بعد از — Later than this.
+
+about — درباره — More or less; or on this thing.
+
+with — با — Near or using something.
+
+without — بدون — Not having; no.
+
+for — برای — To give to someone.
+
+from — از — Starting at this place.
+
+to — به — Moving to a place.
+
+in — در — Inside a box or room.
+
+on — روی — Over or touching the top.
+
+at — در — In a small place or time.
+
+of — ِ — For this thing.
+
+this — این — This thing here.
+
+that — آن — That thing there.
+
+these — این‌ها — These things here.
+
+those — آن‌ها — Those things there.
+
+something — چیزی — A thing; I don't know the name.
+
+someone — کسی — A person; I don't know the name.
+
+nothing — هیچ‌چیز — Not one thing.
+
+everything — همه‌چیز — All things.
+
+one — یک — Number 1.
+
+two — دو — Number 2.
+
+many — زیاد — A lot; not a few.
+
+few — کم — Not many; a small number.
+
+a lot — خیلی — A big number of things.
+
+more — بیشتر — Also this; a bigger number.
+
+less — کمتر — A smaller number.
+
+all — همه — Every one; 100%.
+
+some — بعضی — Not all; a few.
+
+any — هیچ / هر — One thing (it doesn't matter which).
+
+other — دیگر — Not this one; the second one.
+
+another — یکی دیگر — One more thing like this.
+
+kind — نوع — A group of things like this.
+
+morning — صبح — The start of the day.
+
+afternoon — بعدازظهر — After 12:00.
+
+evening — عصر — Before the night.
+
+night — شب — When you sleep and it is dark.
+
+again — دوباره — One more time.
+
+always — همیشه — Every time; all times.
+
+usually — معمولاً — Many times; often.
+
+sometimes — گاهی — At some times.
+
+often — اغلب — Many times.
+
+never — هرگز — No times; 0%.
+
+fast — سریع — Moving very quickly.
+
+slow — آهسته — Not fast; like a snail.
+
+very — خیلی — More; "very good" is better than good.
+
+really — واقعاً — Truly; yes.
+
+just — فقط — Only this.
+
+also — همچنین — And; too.
+
+maybe — شاید — I don't know; possibly.
+
+sure — مطمئن — I know 100%.
+
+yes — بله — It is true; I agree.
+
+no — نه — It is not true.
+
+okay — باشه — All right; good.
+
+please — لطفاً — A nice word to ask for a thing.
+
+thanks — ممنون — What you say for a gift.
+
+sorry — ببخشید — I did a bad thing; I feel bad.
+
+hello — سلام — What you say when you see someone.
+
+hi — سلام — Like hello.
+
+bye — خداحافظ — What you say when you leave.
+
+welcome — خوش آمدید — Hello to a new person.
+
+question — سؤال — You ask this.
+
+answer — جواب — You say this to a question.
+
+problem — مشکل — A thing that is not easy.
+
+reason — دلیل — Why something happens.
+
+idea — ایده — A new thought in your head.
+
+thing — چیز — It is not a person.
+
+way — راه — A road; or how you do it.
+
+part — بخش — A small piece of a big thing.
+
+life — زندگی — To be alive; not dead.
+
+world — دنیا — The Earth and all places.
+
+workday — روز کاری — A day to go to your job.
+
+weekend — آخر هفته — Saturday and Sunday.
+
+break — استراحت — A short time to stop working.
+
+rest — استراحت — To relax and get energy back.
+
+plan — برنامه — What you want to do later.
+
+change — تغییر — To make it different.
+
+result — نتیجه — What happens at the end.
+
+example — مثال — One thing that shows a rule.
+
+point — نکته — An important idea or fact.
+
+level — سطح — A position on a scale (like A1).
+
+begin — شروع کردن — To start.
+
+finish — تمام کردن — To end or complete.
+
+wait — صبر کردن — To stay until something happens.
+
+meet — ملاقات کردن — To see and talk to someone for the first time.
+
+call — تماس گرفتن — To use a phone or shout.
+
+open — باز کردن — Not closed.
+
+close — بستن — To move a door or cover to shut.
+
+buy — خریدن — To get something using money.
+
+pay — پرداخت کردن — To give money for something.
+
+bring — آوردن — To take something to a place.
+
+take — برداشتن — To get something and move it.
+
+find — پیدا کردن — To see something you were looking for.
+
+keep — نگه داشتن — To continue to have something.
+
+give — دادن — To let someone have something.
+
+receive — دریافت کردن — To get something from someone.
+
+learn — یاد گرفتن — To get new knowledge.
+
+teach — درس دادن — To help someone learn.
+
+practice — تمرین کردن — To do something many times to get better.
+
+understand — فهمیدن — To know the meaning of something.
+
+remember — به خاطر سپردن — To keep a thought in your mind.`;
+
+
+        let db = [], session = [], idx = 0, busy = false, currentMode = 1;
+
+        let score = { correct: 0, wrong: 0 };
+
+        let mistakeBank = JSON.parse(localStorage.getItem('fred_final_mistakes')) || [];
+
+        let clickCount = 0;
+
+
+        window.onload = () => {
+
+            document.getElementById('bulkInput').value = localStorage.getItem('fred_final_data') || defaultWords;
+
+            updateRecordDisplay();
+
+            updateGoalDisplay();
+
+        };
+
+
+        // باز کردن پنل مدیریت با ۳ بار کلیک روی عنوان
+
+        function adminClick() {
+
+            clickCount++;
+
+            if (clickCount >= 3) {
+
+                let p = prompt("Password:");
+
+                if (p === "۱۳۴۲۱۲" || p === "134212") {
+
+                    document.getElementById('adminPanel').style.display = 'block';
+
+                }
+
+                clickCount = 0;
+
+            }
+
+        }
+
+
+        function updateGoalDisplay() {
+
+            const today = new Date().toLocaleDateString('fa-IR');
+
+            let goalData = JSON.parse(localStorage.getItem('fred_daily_goal')) || { date: today, count: 0 };
+
+            if (goalData.date !== today) { goalData = { date: today, count: 0 }; }
+
+            let stars = "";
+
+            for(let i=1; i<=3; i++) { stars += (i <= goalData.count) ? "★" : "☆"; }
+
+            document.getElementById('goalStars').innerHTML = stars;
+
+            document.getElementById('goalStars').style.color = goalData.count >= 3 ? "#FFD700" : "#ccc";
+
+            let msg = `Daily Goal: ${goalData.count}/3 Quizzes`;
+
+            if(goalData.count >= 3) msg = "🏅 Daily Goal Achieved!";
+
+            document.getElementById('goalMsg').textContent = msg;
+
+            localStorage.setItem('fred_daily_goal', JSON.stringify(goalData));
+
+        }
+
+
+        function updateRecordDisplay() {
+
+            const best = localStorage.getItem('fred_best_score') || 0;
+
+            document.getElementById('bestRecord').textContent = `Best Record: ${best}%`;
+
+        }
+
+
+        function setMode(m, el) {
+
+            currentMode = m;
+
+            document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
+
+            el.classList.add('active');
+
+        }
+
+
+        function saveRawData() { localStorage.setItem('fred_final_data', document.getElementById('bulkInput').value); }
+
+
+        function startQuiz(fromMistakes) {
+
+            let raw = fromMistakes ? mistakeBank : document.getElementById('bulkInput').value.trim().split('\n');
+
+            db = (fromMistakes ? mistakeBank : raw.map(l => {
+
+                let p = l.split(/[—\-:]+/);
+
+                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Basic" } : null;
+
+            })).filter(x => x);
+
+
+            if(db.length < 2) return alert("لغات کافی نیست!");
+
+            session = [...db].sort(() => 0.5 - Math.random());
+
+            score = { correct: 0, wrong: 0 }; idx = 0;
+
+            document.getElementById('setup').style.display = 'none';
+
+            document.getElementById('mistakePage').style.display = 'none';
+
+            document.getElementById('quiz').style.display = 'flex';
+
+            render();
+
+        }
+
+
+        function render() {
+
+            busy = false;
+
+            const q = session[idx];
+
+            let qText = "", ans = "";
+
+            
+
+            if(currentMode === 1) { qText = q.en; ans = q.fa; }
+
+            else if(currentMode === 2) { qText = q.fa; ans = q.en; }
+
+            else if(currentMode === 3) { qText = q.en; ans = q.def; }
+
+            else { qText = q.def; ans = q.en; }
+
+
+            const qDiv = document.getElementById('qDisplay');
+
+            qDiv.textContent = qText;
+
+            
+
+            // تنظیم جهت متن سوال برای نمایش صحیح نقطه
+
+            qDiv.style.direction = (currentMode === 2) ? 'rtl' : 'ltr';
+
+
+            document.getElementById('audioBtn').style.display = (currentMode === 1 || currentMode === 3) ? 'block' : 'none';
+
+
+            let opts = [ans], pool = db.filter(v => v.en !== q.en).map(v => {
+
+                if(currentMode === 1) return v.fa;
+
+                if(currentMode === 2) return v.en;
+
+                if(currentMode === 3) return v.def;
+
+                return v.en;
+
+            });
+
+            while(opts.length < 4 && pool.length > 0) {
+
+                let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0];
+
+                if(!opts.includes(r)) opts.push(r);
+
+            }
+
+            opts.sort(() => 0.5 - Math.random());
+
+
+            const div = document.getElementById('opts');
+
+            div.innerHTML = '';
+
+            opts.forEach(o => {
+
+                const b = document.createElement('button');
+
+                b.className = 'btn-opt'; b.textContent = o;
+
+                // تنظیم جهت متن گزینه‌ها
+
+                b.style.direction = (currentMode === 1 || currentMode === 3) ? 'rtl' : 'ltr';
+
+                
+
+                b.onclick = () => {
+
+                    if(busy) return; busy = true;
+
+                    if(o === ans) { b.classList.add('correct'); score.correct++; }
+
+                    else {
+
+                        b.classList.add('wrong'); score.wrong++;
+
+                        if(!mistakeBank.some(m => m.en === q.en)) {
+
+                            mistakeBank.push(q);
+
+                            localStorage.setItem('fred_final_mistakes', JSON.stringify(mistakeBank));
+
+                        }
+
+                        div.querySelectorAll('button').forEach(btn => { if(btn.textContent === ans) btn.classList.add('correct'); });
+
+                    }
+
+                    setTimeout(() => { idx++; if(idx < session.length) render(); else showReport(); }, 1400);
+
+                };
+
+                div.appendChild(b);
+
+            });
+
+            if(currentMode === 1 || currentMode === 3) say();
+
+        }
+
+
+        function getDateTime() {
+
+            const now = new Date();
+
+            return now.toLocaleDateString('fa-IR') + " - " + now.toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'});
+
+        }
+
+
+        function showReport() {
+
+            const pct = Math.round((score.correct / session.length) * 100);
+
+            const currentTime = getDateTime();
+
+            const oldBest = parseInt(localStorage.getItem('fred_best_score') || 0);
+
+            
+
+            let goalData = JSON.parse(localStorage.getItem('fred_daily_goal'));
+
+            goalData.count++;
+
+            localStorage.setItem('fred_daily_goal', JSON.stringify(goalData));
+
+
+            let icon = "🎯", msg = "Try Again!", stars = "☁️";
+
+            if (pct === 100) { icon = "🏆"; msg = "ROCKSTAR!"; stars = "⭐⭐⭐"; }
+
+            else if (pct >= 80) { icon = "🌟"; msg = "GREAT JOB!"; stars = "⭐⭐"; }
+
+            else if (pct >= 50) { icon = "👍"; msg = "GOOD EFFORT!"; stars = "⭐"; }
+
+
+            if (pct > oldBest) { localStorage.setItem('fred_best_score', pct); msg = "🔥 NEW RECORD! 🔥"; }
+
+
+            localStorage.setItem('last_result', JSON.stringify({pct, correct: score.correct, wrong: score.wrong, time: currentTime}));
+
+
+            document.getElementById('repStats').innerHTML = `
+
+                <div style="font-size: 50px;">${icon}</div>
+
+                <div style="font-size: 24px; color: var(--ios-blue); margin: 5px 0;">${stars}</div>
+
+                <h2 style="margin: 0;">${pct}%</h2>
+
+                <p style="font-weight: bold; color: #555; margin-top:5px;">${msg}</p>
+
+                <p style="font-size: 11px; color: #888;">${currentTime}</p>
+
+                ${goalData.count >= 3 ? '<div style="background:#FFF9C4; padding:10px; border-radius:10px; margin-top:10px; font-size:12px; font-weight:bold;">🏅 مدال طلای امروز را گرفتی!</div>' : ''}
+
+            `;
+
+            document.getElementById('reportCard').style.display = 'block';
+
+        }
+
+
+        function sendToProfessor() {
+
+            const res = JSON.parse(localStorage.getItem('last_result'));
+
+            const name = prompt("Enter your name:") || "Student";
+
+            const text = `📊 *Fred English Report*\n👤 Name: ${name}\n🗓 Date: ${res.time}\n✅ Score: ${res.pct}%\n✔️ Correct: ${res.correct}\n❌ Wrong: ${res.wrong}\n----------------\nTeacher Fred`;
+
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
+
+        }
+
+
+        function openMistakePage() {
+
+            document.getElementById('setup').style.display = 'none';
+
+            document.getElementById('mistakePage').style.display = 'flex';
+
+            const list = document.getElementById('mList');
+
+            list.innerHTML = mistakeBank.length ? '' : '<p>No mistakes!</p>';
+
+            mistakeBank.forEach((m, i) => {
+
+                const d = document.createElement('div');
+
+                d.style = "background:#fff; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; width:100%;";
+
+                d.innerHTML = `<span style="direction:ltr; font-weight:600;">${m.en}</span><span onclick="removeM(${i})" style="color:var(--ios-red); cursor:pointer; font-weight:bold; padding:5px 10px;">✕</span>`;
+
+                list.appendChild(d);
+
+            });
+
+        }
+
+        function removeM(i) { mistakeBank.splice(i, 1); localStorage.setItem('fred_final_mistakes', JSON.stringify(mistakeBank)); openMistakePage(); }
+
+        function say() { const u = new SpeechSynthesisUtterance(session[idx].en); u.lang = 'en-US'; window.speechSynthesis.speak(u); }
+
+    </script>
+
+</body>
+
+</html>
+
