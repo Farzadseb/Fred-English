@@ -3,73 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English with Fred</title>
+    <title>English with Fred Elite</title>
     <style>
-        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; }
-        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); margin: 0; padding: 20px; text-align: center; }
-        .screen { display: flex; flex-direction: column; align-items: center; background: #fff; border-radius: 30px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; }
-        .header-title { font-size: 24px; font-weight: 800; margin-bottom: 10px; cursor: pointer; }
-        .btn-main { background: var(--ios-blue); color: white; border: none; padding: 15px; border-radius: 15px; width: 100%; font-size: 17px; font-weight: bold; margin-top: 10px; cursor: pointer; }
-        .mode-selector { width: 100%; margin: 20px 0; }
-        .btn-mode { background: #f9f9f9; border: 1px solid #ddd; padding: 12px; border-radius: 12px; margin-bottom: 8px; width: 100%; text-align: right; font-weight: 600; cursor: pointer; }
-        .active { border: 2px solid var(--ios-blue); color: var(--ios-blue); }
-        #adminPanel { display: none; width: 100%; }
-        textarea { width: 100%; height: 100px; border-radius: 10px; padding: 10px; margin-bottom: 10px; direction: ltr; }
-        .q-text { font-size: 2rem; font-weight: 800; margin: 40px 0; direction: ltr; unicode-bidi: plaintext; }
+        :root { --ios-blue: #007AFF; --ios-indigo: #5856D6; --ios-green: #34C759; --ios-red: #FF3B30; --ios-bg: #F2F2F7; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .screen { background: #fff; width: 100%; max-width: 450px; border-radius: 30px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 10px; text-align: center; }
+        .header-title { font-size: 26px; font-weight: 800; margin: 10px 0; cursor: pointer; }
+        .daily-goal { background: #fff; padding: 15px; border-radius: 20px; margin-bottom: 15px; width: 100%; max-width: 450px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .btn-main { background: var(--ios-blue); color: white; border: none; padding: 18px; border-radius: 20px; width: 100%; font-size: 17px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .btn-mode { background: #fff; border: 1px solid #d1d1d6; padding: 15px; border-radius: 16px; width: 100%; text-align: right; font-weight: 600; margin-bottom: 8px; cursor: pointer; }
+        .active { border: 2.5px solid var(--ios-blue); color: var(--ios-blue); }
+        .q-text { font-size: 1.8rem; font-weight: 800; margin: 30px 0; direction: ltr; unicode-bidi: plaintext; }
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
-        .btn-opt { padding: 15px; border-radius: 15px; border: 1px solid #ddd; background: #fff; font-size: 16px; font-weight: 600; }
-        .correct { background: #34C759 !important; color: white; }
-        .wrong { background: #FF3B30 !important; color: white; }
+        .btn-opt { padding: 18px; border-radius: 18px; border: 1px solid #d1d1d6; background: #fff; font-size: 16px; font-weight: 600; text-align: left; direction: ltr; }
+        .correct { background: var(--ios-green) !important; color: white; border: none; }
+        .wrong { background: var(--ios-red) !important; color: white; border: none; }
+        #adminPanel { display: none; width: 100%; margin-bottom: 15px; }
+        textarea { width: 100%; height: 150px; border-radius: 12px; padding: 10px; direction: ltr; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div id="setup" class="screen">
+    <div id="setup" style="width:100%; max-width:450px;">
         <h1 class="header-title" onclick="adminClick()">English with Fred</h1>
-        <div id="bestRecord" style="font-size: 13px; color: #666; margin-bottom: 10px;">Best: 0%</div>
+        <div class="daily-goal">
+            <div id="goalStars" style="font-size:24px; color:#ccc;">☆☆☆</div>
+            <div id="goalMsg" style="font-size:13px; color:#666;">Daily Goal: 0/3 Quizzes</div>
+        </div>
         <div id="adminPanel">
             <textarea id="bulkInput" oninput="saveRawData()"></textarea>
-            <button onclick="document.getElementById('adminPanel').style.display='none'" class="btn-main" style="background:#ccc;">بستن</button>
+            <button onclick="document.getElementById('adminPanel').style.display='none'" class="btn-main" style="background:#8e8e93; font-size:14px;">بستن پنل</button>
         </div>
-        <div class="mode-selector">
+        <div class="screen">
+            <div id="bestRecord" style="font-weight:bold; color:var(--ios-indigo); margin-bottom:15px;">Best: 0%</div>
             <button class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</button>
             <button class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</button>
+            <button class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف (A1)</button>
+            <button class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت (A1)</button>
+            <button class="btn-main" onclick="startQuiz()">🚀 شروع کوییز کامل</button>
         </div>
-        <button class="btn-main" onclick="startQuiz()">🚀 شروع کوییز</button>
     </div>
     <div id="quiz" class="screen" style="display: none;">
         <div id="qDisplay" class="q-text"></div>
+        <div id="audioBtn" style="font-size: 3rem; margin-bottom: 20px; cursor: pointer;" onclick="say()">🔊</div>
         <div class="options-grid" id="opts"></div>
     </div>
     <script>
         const phone = "989017708544";
-        const defaultWords = `be — بودن — To live or to stay.\nam — هستم — I ___ (Used with I).\nis — هست — He/She/It ___ (Used with one).\nare — هستید — You/We/They ___ (Used with many).`;
+        const defaultWords = `be — بودن — To live or to stay.
+am — هستم — I ___ (Used with I).
+is — هست — He/She/It ___ (Used with one).
+are — هستید — You/We/They ___ (Used with many).
+have — داشتن — I own this; it is mine.
+has — دارد — He owns this; it is his.
+do — انجام دادن — To work or to make an action.
+does — انجام می‌دهد — He or she works or acts.
+work — کار کردن — To do a job for money.
+go — رفتن — To move away to a new place.
+come — آمدن — To move to this place.
+get — گرفتن — To take or receive something.
+make — ساختن — To build or create something.
+use — استفاده کردن — To work with a tool or thing.
+need — نیاز داشتن — I must have this.
+want — خواستن — I would like to have this.
+like — دوست داشتن — This is good; I enjoy it.
+love — دوست داشتن — I like this very, very much.
+help — کمک کردن — To do something good for a person.
+try — تلاش کردن — To work hard to do something.
+start — شروع کردن — To begin the first part.
+stop — متوقف کردن — To not move or not work.
+say — گفتن — To speak with your mouth.
+tell — گفتن — To give words to a person.
+ask — پرسیدن — To say: "Who? What? Where?".
+answer — جواب دادن — To say something back.
+talk — صحبت کردن — To speak with a friend.
+speak — صحبت کردن — To use words and voice.
+see — دیدن — To use your eyes to look.
+look — نگاه کردن — To turn your eyes to see.
+hear — شنیدن — To use your ears for sound.
+listen — گوش دادن — To hear and think about sound.
+feel — احساس داشتن — To be happy, sad, or hot.
+think — فکر کردن — To use your head for ideas.
+know — دانستن — To have it in your head.
+live — زندگی کردن — To have your home in a place.
+stay — ماندن — To be in a place and not leave.
+leave — ترک کردن — To go away from a place.
+move — حرکت کردن — To go from here to there.
+happen — اتفاق افتادن — To take place.
+people — مردم — Many men, women, and children.
+person — شخص — One man or one woman.
+man — مرد — A boy who is now old.
+woman — زن — A girl who is now old.
+friend — دوست — A person you like and know.
+family — خانواده — Father, mother, and children.
+job — شغل — The work you do for money.
+money — پول — You use this to buy food.
+time — زمان — Day, hour, and minute.
+day — روز — When the sun is in the sky.
+week — هفته — Seven days.
+year — سال — Twelve months.
+today — امروز — This day.
+tomorrow — فردا — The day after this day.
+yesterday — دیروز — The day before this day.
+now — الان — At this time.
+later — بعداً — Not now; after some time.
+early — زود — Before the time.
+late — دیر — After the time.
+here — اینجا — In this place.
+there — آنجا — In that place.
+home — خانه — The place where you sleep.
+place — مکان — A room, a city, or a house.
+city — شهر — A place with many big houses.
+country — کشور — A land with a name.
+school — مدرسه — Where children go to learn.
+office — اداره — A room where people do jobs.
+shop — مغازه — A place where you buy things.
+street — خیابان — A road with houses near it.
+good — خوب — Nice or very well.
+bad — بد — Not good; not nice.
+easy — آسان — Not hard; I can do it.
+hard — سخت — Very difficult to do.
+big — بزرگ — Not small; like an elephant.
+small — کوچک — Not big; like an ant.
+new — جدید — Not old; I just got it.
+old — قدیمی — Not new; from a long time ago.
+same — یکسان — Like this one; not different.
+different — متفاوت — Not the same.
+busy — مشغول — Having many things to do.
+free — آزاد — Not busy; having no work.
+tired — خسته — I want to rest or sleep.
+happy — خوشحال — Feeling very good; smiling.
+sad — ناراحت — Not happy; feeling bad.
+right — درست — Correct; yes.
+wrong — غلط — Not right; no.
+important — مهم — You must think about this.
+possible — ممکن — It can happen.
+ready — آماده — I can start now.
+and — و — Also; this with that.
+but — اما — No; this is different.
+because — چون — To say why.
+so — پس — This happened, and then that.
+if — اگر — Maybe this, then that.
+when — وقتی که — At what time.
+before — قبل از — First this, then that.
+after — بعد از — Later than this.
+about — درباره — More or less.
+with — با — Near or using something.
+without — بدون — Not having; no.
+for — برای — To give to someone.
+from — از — Starting at this place.
+to — به — Moving to a place.
+in — در — Inside a box or room.
+on — روی — Over or touching the top.
+at — در — In a small place or time.
+of — ِ — For this thing.
+this — این — This thing here.
+that — آن — That thing there.
+these — این‌ها — These things here.
+those — آن‌ها — Those things there.
+something — چیزی — A thing.
+someone — کسی — A person.
+nothing — هیچ‌چیز — Not one thing.
+everything — همه‌چیز — All things.
+one — یک — Number 1.
+two — دو — Number 2.
+many — زیاد — A lot; not a few.
+few — کم — Not many; a small number.
+a lot — خیلی — A big number of things.
+more — بیشتر — Also this; a bigger number.
+less — کمتر — A smaller number.
+all — همه — Every one; 100%.
+some — بعضی — Not all; a few.
+any — هیچ / هر — One thing.
+other — دیگر — Not this one; the second one.
+another — یکی دیگر — One more thing like this.
+kind — نوع — A group of things like this.
+morning — صبح — The start of the day.
+afternoon — بعدازظهر — After 12:00.
+evening — عصر — Before the night.
+night — شب — When you sleep and it is dark.
+again — دوباره — One more time.
+always — همیشه — Every time; all times.
+usually — معمولاً — Many times; often.
+sometimes — گاهی — At some times.
+often — اغلب — Many times.
+never — هرگز — No times; 0%.
+fast — سریع — Moving very quickly.
+slow — آهسته — Not fast; like a snail.
+very — خیلی — More; "very good" is better than good.
+really — واقعاً — Truly; yes.
+just — فقط — Only this.
+also — همچنین — And; too.
+maybe — شاید — I don't know; possibly.
+sure — مطمئن — I know 100%.
+yes — بله — It is true; I agree.
+no — نه — It is not true.
+okay — باشه — All right; good.
+please — لطفاً — A nice word to ask.
+thanks — ممنون — What you say for a gift.
+sorry — ببخشید — I did a bad thing.
+hello — سلام — What you say when you see someone.
+hi — سلام — Like hello.
+bye — خداحافظ — What you say when you leave.
+welcome — خوش آمدید — Hello to a new person.
+question — سؤال — You ask this.
+answer — جواب — You say this to a question.
+problem — مشکل — A thing that is not easy.
+reason — دلیل — Why something happens.
+idea — ایده — A new thought in your head.
+thing — چیز — It is not a person.
+way — راه — A road; or how you do it.
+part — بخش — A small piece of a big thing.
+life — زندگی — To be alive; not dead.
+world — دنیا — The Earth and all places.
+workday — روز کاری — A day to go to your job.
+weekend — آخر هفته — Saturday and Sunday.
+break — استراحت — A short time to stop.
+rest — استراحت — To relax.
+plan — برنامه — What you want to do later.
+change — تغییر — To make it different.
+result — نتیجه — What happens at the end.
+example — مثال — One thing that shows a rule.
+point — نکته — An important idea or fact.
+level — سطح — A position on a scale.
+begin — شروع کردن — To start.
+finish — تمام کردن — To end or complete.
+wait — صبر کردن — To stay until something happens.
+meet — ملاقات کردن — To see and talk.
+call — تماس گرفتن — To use a phone.
+open — باز کردن — Not closed.
+close — بستن — To shut.
+buy — خریدن — To get using money.
+pay — پرداخت کردن — To give money.
+bring — آوردن — To take something to a place.
+take — برداشتن — To get and move.
+find — پیدا کردن — To see something you looked for.
+keep — نگه داشتن — To continue to have.
+give — دادن — To let someone have.
+receive — دریافت کردن — To get from someone.
+learn — یاد گرفتن — To get new knowledge.
+teach — درس دادن — To help someone learn.
+practice — تمرین کردن — To do many times.
+understand — فهمیدن — To know the meaning.
+remember — به خاطر سپردن — To keep a thought in your mind.`;
         let db = [], session = [], idx = 0, currentMode = 1;
-        window.onload = () => { document.getElementById('bulkInput').value = localStorage.getItem('fred_final_data') || defaultWords; };
+        window.onload = () => {
+            document.getElementById('bulkInput').value = localStorage.getItem('fred_final_data') || defaultWords;
+            const best = localStorage.getItem('fred_best_score') || 0;
+            document.getElementById('bestRecord').textContent = `Best: ${best}%`;
+        };
         function adminClick() { let p = prompt("Password:"); if (p === "134212") document.getElementById('adminPanel').style.display = 'block'; }
         function setMode(m, el) { currentMode = m; document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
         function saveRawData() { localStorage.setItem('fred_final_data', document.getElementById('bulkInput').value); }
         function startQuiz() {
             let raw = document.getElementById('bulkInput').value.trim().split('\n');
-            db = raw.map(l => { let p = l.split(' — '); return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] || "Basic" } : null; }).filter(x => x);
+            db = raw.map(l => { let p = l.split(' — '); return p.length >= 3 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2].trim() } : null; }).filter(x => x);
             session = [...db].sort(() => 0.5 - Math.random());
             idx = 0; document.getElementById('setup').style.display = 'none'; document.getElementById('quiz').style.display = 'flex'; render();
         }
         function render() {
-            const q = session[idx]; let ans = currentMode === 1 ? q.fa : q.en;
-            document.getElementById('qDisplay').textContent = currentMode === 1 ? q.en : q.fa;
-            let opts = [ans]; let pool = db.map(v => currentMode === 1 ? v.fa : v.en).filter(v => v !== ans);
+            const q = session[idx]; let qText = "", ans = "";
+            if(currentMode === 1) { qText = q.en; ans = q.fa; }
+            else if(currentMode === 2) { qText = q.fa; ans = q.en; }
+            else if(currentMode === 3) { qText = q.en; ans = q.def; }
+            else { qText = q.def; ans = q.en; }
+            document.getElementById('qDisplay').textContent = qText;
+            document.getElementById('audioBtn').style.display = (currentMode === 1 || currentMode === 3) ? 'block' : 'none';
+            let opts = [ans]; let pool = db.map(v => { if(currentMode === 1) return v.fa; if(currentMode === 2) return v.en; if(currentMode === 3) return v.def; return v.en; }).filter(v => v !== ans);
             while(opts.length < 4 && pool.length) { let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0]; if(!opts.includes(r)) opts.push(r); }
             opts.sort(() => 0.5 - Math.random());
             const div = document.getElementById('opts'); div.innerHTML = '';
             opts.forEach(o => {
                 const b = document.createElement('button'); b.className = 'btn-opt'; b.textContent = o;
                 b.onclick = () => {
-                    if(o === ans) { b.classList.add('correct'); setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1000); }
+                    if(o === ans) { b.classList.add('correct'); setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1200); }
                     else { b.classList.add('wrong'); }
                 };
                 div.appendChild(b);
             });
+            if(currentMode === 1 || currentMode === 3) say();
         }
+        function say() { const u = new SpeechSynthesisUtterance(session[idx].en); u.lang = 'en-US'; window.speechSynthesis.speak(u); }
     </script>
 </body>
 </html>
