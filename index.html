@@ -2,97 +2,69 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English with Fred Elite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English with Fred</title>
     <style>
-        :root { --ios-blue: #007AFF; --ios-indigo: #5856D6; --ios-green: #34C759; --ios-red: #FF3B30; --ios-bg: #F2F2F7; }
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding-top: 20px; }
-        .screen { background: #fff; width: 92%; max-width: 450px; border-radius: 30px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .header-title { font-size: 26px; font-weight: 800; margin: 10px 0; cursor: pointer; color: #000; text-align: center; width: 100%; }
-        .record-badge { background: #fff; padding: 6px 15px; border-radius: 20px; font-size: 13px; color: var(--ios-indigo); font-weight: bold; margin-bottom: 15px; border: 1px solid #eee; }
-        .btn-main { border: none; color: white; font-weight: 700; width: 100%; padding: 18px; border-radius: 20px; margin-bottom: 12px; font-size: 17px; cursor: pointer; }
-        .btn-mode { background: #fff; border: 1px solid #d1d1d6; padding: 15px; border-radius: 16px; width: 100%; text-align: center; font-weight: 600; margin-bottom: 8px; cursor: pointer; }
-        .btn-mode.active { border: 2.5px solid var(--ios-blue); color: var(--ios-blue); }
-        .q-text { font-size: 2.2rem; font-weight: 800; margin: 30px 0; width: 100%; text-align: center; direction: ltr; unicode-bidi: plaintext; color: #000; }
+        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; }
+        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); margin: 0; display: flex; justify-content: center; padding-top: 20px; }
+        .screen { background: #fff; width: 92%; max-width: 420px; border-radius: 30px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+        .header-title { font-size: 26px; font-weight: 800; margin-bottom: 20px; color: #000; }
+        .btn-main { border: none; color: white; font-weight: 700; width: 100%; padding: 18px; border-radius: 20px; margin-bottom: 12px; font-size: 17px; cursor: pointer; background: var(--ios-blue); }
+        .btn-mode { background: #fff; border: 1px solid #d1d1d6; padding: 15px; border-radius: 16px; width: 100%; margin-bottom: 8px; font-weight: 600; cursor: pointer; }
+        .btn-mode.active { border: 2.5px solid var(--ios-blue); color: var(--ios-blue); background: #f0f7ff; }
+        .q-text { font-size: 2.2rem; font-weight: 800; margin: 35px 0; width: 100%; text-align: center; direction: ltr; }
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
-        .btn-opt { padding: 18px; border-radius: 18px; border: 1px solid #d1d1d6; background: #fff; font-size: 16px; font-weight: 600; text-align: center; width: 100%; }
-        .correct { background: var(--ios-green) !important; color: white !important; border: none; }
-        .wrong { background: var(--ios-red) !important; color: white !important; border: none; }
-        #adminPanel { display: none; width: 100%; margin-bottom: 15px; background: #eee; padding: 15px; border-radius: 20px; }
-        textarea { width: 100%; height: 250px; border-radius: 12px; padding: 10px; direction: ltr; font-size: 13px; border: 1px solid #ccc; }
-        .exit-btn { background: #eee; border: none; width: 40px; height: 40px; border-radius: 50%; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .btn-opt { padding: 18px; border-radius: 18px; border: 1px solid #d1d1d6; background: #fff; font-size: 16px; font-weight: 600; }
+        .correct { background: #34C759 !important; color: white !important; border: none; }
+        .wrong { background: #FF3B30 !important; color: white !important; border: none; }
+        .exit-btn { position: absolute; top: 15px; left: 15px; background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div id="setup" class="screen">
-        <h1 class="header-title" onclick="adminClick()">English with Fred</h1>
-        <div id="bestRecord" class="record-badge">Best: 0%</div>
-        
-        <div id="adminPanel">
-            <p style="font-size:12px; font-weight:bold; color:red;">لیست لغات را اینجا Paste کنید:</p>
-            <textarea id="bulkInput" placeholder="word — meaning — definition"></textarea>
-            <button class="btn-main" style="background:var(--ios-green); margin-top:10px;" onclick="saveWords()">✅ ذخیره و اعمال لغات</button>
-        </div>
 
+    <div id="setup" class="screen">
+        <h1 class="header-title">English with Fred</h1>
         <div style="width: 100%; margin-bottom: 15px;">
             <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
             <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
-            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف (A1)</div>
-            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت (A1)</div>
+            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف</div>
+            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت</div>
         </div>
-        <button class="btn-main" style="background:var(--ios-blue)" onclick="startQuiz(false)">🚀 شروع کوییز کامل</button>
-        <button class="btn-main" style="background:var(--ios-indigo); font-size:14px; padding:12px;" onclick="openMistakePage()">🎯 لغات دشوار شما</button>
+        <button class="btn-main" onclick="startQuiz(false)">🚀 شروع تمرین</button>
+        <button class="btn-main" style="background:#5856D6;" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
     </div>
 
     <div id="quiz" class="screen" style="display: none;">
         <button class="exit-btn" onclick="location.reload()">✕</button>
         <div id="qDisplay" class="q-text"></div>
-        <div id="audioBtn" style="font-size: 3.5rem; margin-bottom: 20px; cursor: pointer;" onclick="say()">🔊</div>
+        <div id="audioBtn" style="font-size: 3rem; margin-bottom: 20px; cursor: pointer;" onclick="say()">🔊</div>
         <div class="options-grid" id="opts"></div>
     </div>
 
-    <div id="mistakePage" class="screen" style="display:none;">
-        <button class="exit-btn" onclick="location.reload()">✕</button>
-        <h2 style="margin: 10px 0;">لغات دشوار</h2>
-        <button class="btn-main" style="background:var(--ios-green)" onclick="startQuiz(true)">🔥 مرور اشتباهات</button>
-        <div id="mList" style="width: 100%; max-height: 300px; overflow-y: auto;"></div>
-    </div>
+    <script src="dic.js"></script>
 
     <script>
-        const phone = "989017708544";
         let db = [], session = [], idx = 0, currentMode = 1, busy = false;
-        let mistakeBank = JSON.parse(localStorage.getItem('fred_final_mistakes')) || [];
-        let clickCount = 0;
+        let mistakeBank = JSON.parse(localStorage.getItem('fred_mistakes_v3')) || [];
 
-        window.onload = () => {
-            document.getElementById('bulkInput').value = localStorage.getItem('fred_user_words') || "";
-            document.getElementById('bestRecord').textContent = `Best: ${localStorage.getItem('fred_best_score') || 0}%`;
-        };
-
-        function adminClick() { clickCount++; if (clickCount >= 3) { let p = prompt("Password:"); if (p === "134212") document.getElementById('adminPanel').style.display = 'block'; clickCount = 0; } }
-        
-        function saveWords() {
-            localStorage.setItem('fred_user_words', document.getElementById('bulkInput').value);
-            alert("لغات با موفقیت در حافظه مرورگر ذخیره شد!");
-            document.getElementById('adminPanel').style.display = 'none';
+        function setMode(m, el) { 
+            currentMode = m; 
+            document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active')); 
+            el.classList.add('active'); 
         }
 
-        function setMode(m, el) { currentMode = m; document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
-
         function startQuiz(fromMistakes) {
-            let data = fromMistakes ? mistakeBank : document.getElementById('bulkInput').value.trim().split('\n');
-            if (!fromMistakes && (!data || data[0] === "")) return alert("ابتدا لغات را وارد کنید (۳ بار روی عنوان کلیک کنید)");
-            
-            db = (fromMistakes ? mistakeBank : data.map(l => {
-                let p = l.split(' — ');
-                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Definition" } : null;
-            })).filter(x => x);
+            let data = fromMistakes ? mistakeBank : permanentWords.trim().split('\n');
+            if(fromMistakes && mistakeBank.length === 0) return alert("هنوز اشتباهی ثبت نشده است!");
 
-            session = [...db].sort(() => 0.5 - Math.random());
+            db = data.map(l => {
+                let p = l.split(' — ');
+                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Basic" } : null;
+            }).filter(x => x);
+
+            session = [...db].sort(() => 0.5 - Math.random()).slice(0, 20); // هر بار ۲۰ سوال تصادفی
             idx = 0;
             document.getElementById('setup').style.display = 'none';
-            document.getElementById('mistakePage').style.display = 'none';
             document.getElementById('quiz').style.display = 'flex';
             render();
         }
@@ -103,42 +75,39 @@
             else if(currentMode === 2) { qText = q.fa; ans = q.en; }
             else if(currentMode === 3) { qText = q.en; ans = q.def; }
             else { qText = q.def; ans = q.en; }
+
             document.getElementById('qDisplay').textContent = qText;
             document.getElementById('audioBtn').style.display = (currentMode === 1 || currentMode === 3) ? 'block' : 'none';
+            
             let opts = [ans], pool = db.filter(v => v.en !== q.en).map(v => {
                 if(currentMode === 1) return v.fa; if(currentMode === 2) return v.en; if(currentMode === 3) return v.def; return v.en;
             });
-            while(opts.length < 4 && pool.length) { let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0]; if(!opts.includes(r)) opts.push(r); }
+            while(opts.length < 4 && pool.length) { 
+                let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0]; 
+                if(!opts.includes(r)) opts.push(r); 
+            }
             opts.sort(() => 0.5 - Math.random());
+
             const div = document.getElementById('opts'); div.innerHTML = '';
             opts.forEach(o => {
                 const b = document.createElement('button'); b.className = 'btn-opt'; b.textContent = o;
                 b.onclick = () => {
                     if(busy) return; busy = true;
-                    if(o === ans) { b.classList.add('correct'); setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1200); }
+                    if(o === ans) { b.classList.add('correct'); } 
                     else {
                         b.classList.add('wrong');
-                        if(!mistakeBank.some(m => m.en === q.en)) { mistakeBank.push(q); localStorage.setItem('fred_final_mistakes', JSON.stringify(mistakeBank)); }
+                        if(!mistakeBank.some(m => m.en === q.en)) {
+                            mistakeBank.push(q);
+                            localStorage.setItem('fred_mistakes_v3', JSON.stringify(mistakeBank));
+                        }
                         div.querySelectorAll('button').forEach(btn => { if(btn.textContent === ans) btn.classList.add('correct'); });
-                        setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1500);
                     }
+                    setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1200);
                 };
                 div.appendChild(b);
             });
             if(currentMode === 1 || currentMode === 3) say();
         }
-        function openMistakePage() {
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('mistakePage').style.display = 'flex';
-            const list = document.getElementById('mList'); list.innerHTML = mistakeBank.length ? '' : '<p>لیست خالی است</p>';
-            mistakeBank.forEach((m, i) => {
-                const d = document.createElement('div');
-                d.style = "background:#f9f9f9; padding:12px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; width:100%;";
-                d.innerHTML = `<span style="direction:ltr; font-weight:bold;">${m.en}</span><span onclick="removeM(${i})" style="color:red; cursor:pointer; font-weight:bold; padding:0 10px;">✕</span>`;
-                list.appendChild(d);
-            });
-        }
-        function removeM(i) { mistakeBank.splice(i, 1); localStorage.setItem('fred_final_mistakes', JSON.stringify(mistakeBank)); openMistakePage(); }
         function say() { const u = new SpeechSynthesisUtterance(session[idx].en); u.lang = 'en-US'; window.speechSynthesis.speak(u); }
     </script>
 </body>
