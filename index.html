@@ -6,18 +6,27 @@
     <title>English with Fred Elite</title>
     <style>
         :root {
+            --bg-grad: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%);
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.4);
-            --ios-blue: #007AFF;
-            --ios-indigo: #5856D6;
-            --text-main: #1d1d1f;
+            --text-main: #2d3436;
+            --primary-blue: #5da2d5; 
+            --soft-indigo: #7085b8;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        [data-theme="dark"] {
+            --bg-grad: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+            --glass-bg: rgba(45, 52, 54, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f1f2f6;
+            --primary-blue: #4a90e2;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: all 0.3s ease; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-grad);
             margin: 0;
             display: flex;
             justify-content: center;
@@ -33,7 +42,7 @@
             width: 100%;
             max-width: 420px;
             border-radius: 35px;
-            padding: 30px;
+            padding: 25px;
             border: 1px solid var(--glass-border);
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             display: flex;
@@ -50,166 +59,125 @@
             margin-bottom: 20px;
         }
 
-        .exit-btn {
-            background: rgba(0,0,0,0.06);
+        .nav-controls { display: flex; gap: 12px; }
+
+        .nav-btn {
+            background: rgba(0,0,0,0.05);
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .audio-btn-top {
-            background: rgba(0, 122, 255, 0.1);
-            color: var(--ios-blue);
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-size: 22px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-
-        .audio-btn-top:active { transform: scale(0.9); background: rgba(0, 122, 255, 0.2); }
-
-        .header-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin: 0;
-            background: linear-gradient(to bottom, #333, #000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .best-score {
-            font-size: 13px;
-            color: var(--ios-indigo);
-            font-weight: 700;
-            background: rgba(88, 86, 214, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-        }
-
-        .btn-mode {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid var(--glass-border);
-            padding: 16px;
-            border-radius: 18px;
-            width: 100%;
-            margin-bottom: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-
-        .btn-mode.active {
-            background: white;
-            border-color: var(--ios-blue);
-            color: var(--ios-blue);
-            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.15);
-        }
-
-        .q-container {
-            width: 100%;
-            min-height: 110px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .q-text {
-            font-size: 1.6rem;
-            font-weight: 700;
-            text-align: center;
-            direction: ltr;
-            line-height: 1.4;
+            font-size: 20px;
             color: var(--text-main);
         }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            width: 100%;
+        .icon-btn {
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
         }
 
-        .btn-opt {
-            padding: 18px;
-            border-radius: 20px;
+        .header-title { font-size: 22px; font-weight: 800; color: var(--text-main); margin: 0; }
+
+        .btn-mode {
+            background: rgba(255, 255, 255, 0.4);
             border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.8);
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
+            padding: 15px; border-radius: 18px; width: 100%; margin-bottom: 10px;
+            font-weight: 600; cursor: pointer; color: var(--text-main); font-size: 15px;
         }
 
-        .correct { background: #34C759 !important; color: white !important; border: none; }
-        .wrong { background: #FF3B30 !important; color: white !important; border: none; }
-
-        .btn-action {
-            border: none;
-            color: white;
-            font-weight: 700;
-            width: 100%;
-            padding: 20px;
-            border-radius: 22px;
-            margin-top: 15px;
-            font-size: 18px;
-            cursor: pointer;
+        .btn-mode.active { 
+            background: var(--primary-blue); 
+            color: white; 
+            border: none; 
+            box-shadow: 0 5px 15px rgba(93,162,213,0.3); 
         }
+
+        .q-container { width: 100%; min-height: 100px; display: flex; justify-content: center; align-items: center; margin: 15px 0; }
+        .q-text { font-size: 1.5rem; font-weight: 700; text-align: center; direction: ltr; color: var(--text-main); }
+
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
+        .btn-opt { 
+            padding: 16px; border-radius: 20px; border: 1px solid var(--glass-border); 
+            background: rgba(255, 255, 255, 0.5); font-size: 16px; font-weight: 600; 
+            cursor: pointer; color: var(--text-main); 
+        }
+
+        .btn-action { 
+            border: none; color: white; font-weight: 700; width: 100%; padding: 18px; 
+            border-radius: 22px; margin-top: 10px; font-size: 17px; cursor: pointer; 
+            background: var(--primary-blue); 
+        }
+
+        .correct { background: #55efc4 !important; color: #00b894 !important; border: none; }
+        .wrong { background: #ff7675 !important; color: white !important; border: none; }
     </style>
 </head>
 <body>
 
     <div id="setup" class="screen">
-        <h1 class="header-title">English with Fred</h1>
-        <div id="bestDisplay" class="best-score">Best Record: 0%</div>
+        <div class="header-nav">
+            <div class="nav-controls">
+                <div class="icon-btn" onclick="toggleTheme()" title="تغییر تم">🌓</div>
+                <div id="mainMuteBtn" class="icon-btn" onclick="toggleMute()" title="قطع/وصل صدا">🔊</div>
+            </div>
+            <h1 class="header-title">Fred English</h1>
+            <div style="width:40px"></div>
+        </div>
         
         <div style="width: 100%; margin-bottom: 20px;">
             <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
             <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
-            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف (A1)</div>
-            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت (A1)</div>
+            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف</div>
+            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت</div>
         </div>
         
-        <button class="btn-action" style="background: var(--ios-blue);" onclick="startQuiz(false)">🚀 شروع تمرین جدید</button>
-        <button class="btn-action" style="background: var(--ios-indigo);" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
+        <button class="btn-action" onclick="startQuiz(false)">🚀 شروع تمرین جدید</button>
+        <button class="btn-action" style="background: var(--soft-indigo); opacity: 0.9;" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
     </div>
 
     <div id="quiz" class="screen" style="display: none;">
         <div class="header-nav">
-            <button class="exit-btn" onclick="location.reload()">✕</button>
-            <div style="font-weight: bold; color: #888; font-size: 14px;" id="progressText">1/20</div>
-            <button class="audio-btn-top" onclick="say()">🔊</button>
+            <button class="nav-btn" onclick="say()" title="تکرار تلفظ">🔊</button>
+            <div style="font-weight: bold; color: var(--text-main); font-size: 13px; opacity: 0.6;" id="progressText">1 / 20</div>
+            <button class="nav-btn" onclick="location.reload()" title="خروج">✕</button>
         </div>
 
         <div class="q-container">
             <div id="qDisplay" class="q-text"></div>
         </div>
 
-        <div class="options-grid" id="opts"></div>
+        <div id="opts" class="options-grid"></div>
     </div>
 
     <script src="dic.js"></script>
 
     <script>
         let db = [], session = [], idx = 0, currentMode = 1, busy = false;
+        let isMuted = false;
         let mistakeBank = JSON.parse(localStorage.getItem('fred_mistakes_v4')) || [];
-        
-        document.getElementById('bestDisplay').textContent = `Best Record: ${localStorage.getItem('fred_best_v4') || 0}%`;
+
+        function toggleTheme() {
+            const body = document.body;
+            body.getAttribute('data-theme') === 'dark' ? body.removeAttribute('data-theme') : body.setAttribute('data-theme', 'dark');
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('mainMuteBtn').textContent = isMuted ? "🔇" : "🔊";
+            if(isMuted) window.speechSynthesis.cancel();
+        }
 
         function setMode(m, el) { 
             currentMode = m; 
@@ -219,28 +187,24 @@
 
         function startQuiz(fromMistakes) {
             let source = fromMistakes ? mistakeBank : (typeof permanentWords !== 'undefined' ? permanentWords.trim().split('\n') : []);
-            if(fromMistakes && mistakeBank.length === 0) return alert("لیست اشتباهات شما خالی است!");
+            if(fromMistakes && mistakeBank.length === 0) return alert("لیست اشتباهات خالی است!");
 
             db = source.map(l => {
                 let p = l.split(' — ');
-                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Definition" } : null;
+                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Def" } : null;
             }).filter(x => x);
 
             session = [...db].sort(() => 0.5 - Math.random());
             if(!fromMistakes) session = session.slice(0, 20); 
             
-            idx = 0;
             document.getElementById('setup').style.display = 'none';
             document.getElementById('quiz').style.display = 'flex';
-            render();
+            idx = 0; render();
         }
 
         function render() {
-            busy = false; 
-            const q = session[idx]; 
-            let qText = "", ans = "";
-            
-            document.getElementById('progressText').textContent = `سوال ${idx + 1} از ${session.length}`;
+            busy = false; const q = session[idx]; let qText = "", ans = "";
+            document.getElementById('progressText').textContent = `${idx + 1} / ${session.length}`;
 
             if(currentMode === 1) { qText = q.en; ans = q.fa; }
             else if(currentMode === 2) { qText = q.fa; ans = q.en; }
@@ -251,12 +215,9 @@
             
             let opts = [ans];
             let pool = db.filter(v => v.en !== q.en).map(v => {
-                if(currentMode === 1) return v.fa;
-                if(currentMode === 2) return v.en;
-                if(currentMode === 3) return v.def;
-                return v.en;
+                if(currentMode === 1) return v.fa; if(currentMode === 2) return v.en;
+                if(currentMode === 3) return v.def; return v.en;
             });
-            
             while(opts.length < 4 && pool.length) {
                 let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0];
                 if(!opts.includes(r)) opts.push(r);
@@ -267,13 +228,11 @@
             div.innerHTML = '';
             opts.forEach(o => {
                 const b = document.createElement('button');
-                b.className = 'btn-opt';
-                b.textContent = o;
+                b.className = 'btn-opt'; b.textContent = o;
                 b.onclick = () => {
                     if(busy) return; busy = true;
-                    if(o === ans) {
-                        b.classList.add('correct');
-                    } else {
+                    if(o === ans) b.classList.add('correct');
+                    else {
                         b.classList.add('wrong');
                         if(!mistakeBank.some(m => m.en === q.en)) {
                             mistakeBank.push(q);
@@ -281,11 +240,7 @@
                         }
                         div.querySelectorAll('button').forEach(btn => { if(btn.textContent === ans) btn.classList.add('correct'); });
                     }
-                    setTimeout(() => { 
-                        idx++; 
-                        if(idx < session.length) render(); 
-                        else { alert("تمرین تمام شد! آفرین."); location.reload(); }
-                    }, 1500);
+                    setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1500);
                 };
                 div.appendChild(b);
             });
@@ -293,15 +248,11 @@
         }
 
         function say() {
-            if (!session[idx]) return;
-            // در تمام حالت‌ها، هدف شنیدن تلفظ انگلیسی لغت است. 
-            // اگر در حالت "تعریف به لغت" (۴) باشد، متن تعریف را می‌خواند، در غیر این صورت لغت را.
+            if (!session[idx] || isMuted) return;
             let textToSay = (currentMode === 4) ? session[idx].def : session[idx].en;
-            
             window.speechSynthesis.cancel(); 
             const u = new SpeechSynthesisUtterance(textToSay);
-            u.lang = 'en-US';
-            u.rate = 0.6; 
+            u.lang = 'en-US'; u.rate = 0.6;
             window.speechSynthesis.speak(u);
         }
     </script>
