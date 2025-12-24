@@ -2,25 +2,174 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English with Fred</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>English with Fred Elite</title>
     <style>
-        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; --ios-indigo: #5856D6; }
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --ios-blue: #007AFF;
+            --ios-indigo: #5856D6;
+            --text-main: #1d1d1f;
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); margin: 0; display: flex; justify-content: center; padding-top: 20px; min-height: 100vh; }
-        .screen { background: #fff; width: 92%; max-width: 400px; border-radius: 30px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; align-items: center; position: relative; height: fit-content; }
-        .header-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; color: #000; }
-        .best-score { font-size: 14px; color: var(--ios-indigo); margin-bottom: 20px; font-weight: 600; }
-        .btn-main { border: none; color: white; font-weight: 700; width: 100%; padding: 18px; border-radius: 20px; margin-bottom: 12px; font-size: 17px; cursor: pointer; background: var(--ios-blue); transition: 0.2s; }
-        .btn-mode { background: #fff; border: 1px solid #d1d1d6; padding: 14px; border-radius: 16px; width: 100%; margin-bottom: 8px; font-weight: 600; cursor: pointer; text-align: center; font-size: 15px; }
-        .btn-mode.active { border: 2.5px solid var(--ios-blue); color: var(--ios-blue); background: #f0f7ff; }
-        .q-text { font-size: 1.8rem; font-weight: 800; margin: 25px 0; width: 100%; text-align: center; direction: ltr; line-height: 1.4; color: #000; }
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
-        .btn-opt { padding: 16px; border-radius: 18px; border: 1px solid #d1d1d6; background: #fff; font-size: 16px; font-weight: 600; width: 100%; transition: 0.2s; color: #000; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .screen {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 35px;
+            padding: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .header-nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .exit-btn {
+            background: rgba(0,0,0,0.06);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .audio-btn-top {
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--ios-blue);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .audio-btn-top:active { transform: scale(0.9); background: rgba(0, 122, 255, 0.2); }
+
+        .header-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to bottom, #333, #000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .best-score {
+            font-size: 13px;
+            color: var(--ios-indigo);
+            font-weight: 700;
+            background: rgba(88, 86, 214, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+        }
+
+        .btn-mode {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--glass-border);
+            padding: 16px;
+            border-radius: 18px;
+            width: 100%;
+            margin-bottom: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .btn-mode.active {
+            background: white;
+            border-color: var(--ios-blue);
+            color: var(--ios-blue);
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.15);
+        }
+
+        .q-container {
+            width: 100%;
+            min-height: 110px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .q-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-align: center;
+            direction: ltr;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .btn-opt {
+            padding: 18px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
         .correct { background: #34C759 !important; color: white !important; border: none; }
         .wrong { background: #FF3B30 !important; color: white !important; border: none; }
-        .exit-btn { position: absolute; top: 15px; left: 15px; background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; z-index: 10; }
-        #audioBtn { font-size: 3rem; margin-bottom: 15px; cursor: pointer; user-select: none; }
+
+        .btn-action {
+            border: none;
+            color: white;
+            font-weight: 700;
+            width: 100%;
+            padding: 20px;
+            border-radius: 22px;
+            margin-top: 15px;
+            font-size: 18px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -29,21 +178,28 @@
         <h1 class="header-title">English with Fred</h1>
         <div id="bestDisplay" class="best-score">Best Record: 0%</div>
         
-        <div style="width: 100%; margin-bottom: 15px;">
+        <div style="width: 100%; margin-bottom: 20px;">
             <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
             <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
             <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف (A1)</div>
             <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت (A1)</div>
         </div>
         
-        <button class="btn-main" onclick="startQuiz(false)">🚀 شروع تمرین جدید</button>
-        <button class="btn-main" style="background:var(--ios-indigo);" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
+        <button class="btn-action" style="background: var(--ios-blue);" onclick="startQuiz(false)">🚀 شروع تمرین جدید</button>
+        <button class="btn-action" style="background: var(--ios-indigo);" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
     </div>
 
     <div id="quiz" class="screen" style="display: none;">
-        <button class="exit-btn" onclick="location.reload()">✕</button>
-        <div id="qDisplay" class="q-text"></div>
-        <div id="audioBtn" onclick="say()">🔊</div>
+        <div class="header-nav">
+            <button class="exit-btn" onclick="location.reload()">✕</button>
+            <div style="font-weight: bold; color: #888; font-size: 14px;" id="progressText">1/20</div>
+            <button class="audio-btn-top" onclick="say()">🔊</button>
+        </div>
+
+        <div class="q-container">
+            <div id="qDisplay" class="q-text"></div>
+        </div>
+
         <div class="options-grid" id="opts"></div>
     </div>
 
@@ -51,7 +207,6 @@
 
     <script>
         let db = [], session = [], idx = 0, currentMode = 1, busy = false;
-        // بانک اشتباهات نسخه ۴ برای جداسازی از تست‌های قبلی
         let mistakeBank = JSON.parse(localStorage.getItem('fred_mistakes_v4')) || [];
         
         document.getElementById('bestDisplay').textContent = `Best Record: ${localStorage.getItem('fred_best_v4') || 0}%`;
@@ -64,19 +219,11 @@
 
         function startQuiz(fromMistakes) {
             let source = fromMistakes ? mistakeBank : (typeof permanentWords !== 'undefined' ? permanentWords.trim().split('\n') : []);
-            
-            if(fromMistakes && mistakeBank.length === 0) {
-                alert("لیست اشتباهات شما خالی است!");
-                return;
-            }
-            if(!fromMistakes && source.length === 0) {
-                alert("خطا: فایل لغات (dic.js) پیدا نشد یا خالی است.");
-                return;
-            }
+            if(fromMistakes && mistakeBank.length === 0) return alert("لیست اشتباهات شما خالی است!");
 
             db = source.map(l => {
                 let p = l.split(' — ');
-                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Basic Definition" } : null;
+                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Definition" } : null;
             }).filter(x => x);
 
             session = [...db].sort(() => 0.5 - Math.random());
@@ -93,6 +240,8 @@
             const q = session[idx]; 
             let qText = "", ans = "";
             
+            document.getElementById('progressText').textContent = `سوال ${idx + 1} از ${session.length}`;
+
             if(currentMode === 1) { qText = q.en; ans = q.fa; }
             else if(currentMode === 2) { qText = q.fa; ans = q.en; }
             else if(currentMode === 3) { qText = q.en; ans = q.def; }
@@ -135,10 +284,7 @@
                     setTimeout(() => { 
                         idx++; 
                         if(idx < session.length) render(); 
-                        else {
-                            alert("تمرین به پایان رسید!");
-                            location.reload();
-                        }
+                        else { alert("تمرین تمام شد! آفرین."); location.reload(); }
                     }, 1500);
                 };
                 div.appendChild(b);
@@ -148,14 +294,14 @@
 
         function say() {
             if (!session[idx]) return;
-            const q = session[idx];
-            // در حالت "تعریف به لغت" متن تعریف را بخواند، در بقیه حالات لغت انگلیسی را
-            let textToSay = (currentMode === 4) ? q.def : q.en;
+            // در تمام حالت‌ها، هدف شنیدن تلفظ انگلیسی لغت است. 
+            // اگر در حالت "تعریف به لغت" (۴) باشد، متن تعریف را می‌خواند، در غیر این صورت لغت را.
+            let textToSay = (currentMode === 4) ? session[idx].def : session[idx].en;
             
             window.speechSynthesis.cancel(); 
             const u = new SpeechSynthesisUtterance(textToSay);
             u.lang = 'en-US';
-            u.rate = 0.6; // سرعت بسیار شمرده (درخواست استاد)
+            u.rate = 0.6; 
             window.speechSynthesis.speak(u);
         }
     </script>
