@@ -5,6 +5,7 @@
     --success: #25D366;
     --danger: #ff6b6b;
     --warning: #f39c12;
+    --yellow: #FFB347;  /* 🟡 رنگ زرد جدید */
     
     --bg-light: #f5f7fa;
     --card-light: #ffffff;
@@ -19,91 +20,7 @@
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== Reset ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: system-ui, -apple-system, 'Segoe UI', Tahoma, sans-serif;
-    background: var(--bg-light);
-    color: var(--text-light);
-    direction: rtl;
-    text-align: right;
-    line-height: 1.6;
-    height: 100vh;
-    overflow: hidden;
-}
-
-body.dark-mode {
-    background: var(--bg-dark);
-    color: var(--text-dark);
-}
-
-/* ===== Screens ===== */
-.screen {
-    height: 100vh;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-#quiz-screen {
-    display: none;
-}
-
-/* ===== Header ===== */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.dark-mode .header {
-    border-bottom-color: var(--border-dark);
-}
-
-.app-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: var(--primary);
-    flex-grow: 1;
-    text-align: center;
-}
-
-.icon-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    transition: background 0.2s;
-}
-
-.icon-btn:hover {
-    background: rgba(0,0,0,0.05);
-}
-
-/* ===== Content ===== */
-.content {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 20px;
-}
-
-/* ===== Score Card ===== */
+/* ===== Score Display ===== */
 .score-display {
     background: var(--card-light);
     border-radius: 16px;
@@ -112,141 +29,35 @@ body.dark-mode {
     text-align: center;
     border: 1px solid var(--border-light);
     box-shadow: var(--shadow);
+    width: 65%;  /* 📏 عرض کم شده */
+    max-width: 280px;  /* 📏 حداکثر عرض */
+    margin-left: auto;  /* 🔧 وسط‌چین */
+    margin-right: auto;  /* 🔧 وسط‌چین */
 }
 
 .dark-mode .score-display {
     background: var(--card-dark);
     border-color: var(--border-dark);
-}
-
-.stars {
-    font-size: 32px;
-    letter-spacing: 10px;
-    margin-bottom: 15px;
-    color: #FFD700;
-}
-
-.star-zero {
-    color: #cbd5e0 !important;
-    opacity: 0.4 !important;
-}
-
-.dark-mode .star-zero {
-    color: #4a5568 !important;
-}
-
-.best-score {
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.best-score-value {
-    color: var(--primary);
-    font-size: 28px;
-    font-weight: bold;
+    width: 65%;  /* در حالت تاریک هم */
+    max-width: 280px;
 }
 
 /* ===== Buttons ===== */
-.btn {
-    width: 100%;
-    padding: 18px;
-    margin: 12px 0;
-    border: none;
-    border-radius: 14px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    text-decoration: none;
-}
-
-.btn:active {
-    transform: scale(0.98);
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-}
-
-.btn-secondary {
-    background: var(--secondary);
-    color: white;
-}
-
 .btn-success {
     background: var(--success);
     color: white;
 }
 
-.btn-danger {
-    background: var(--danger);
-    color: white;
+/* 🟡 دکمه نصب - زرد */
+#install-btn {
+    background: var(--yellow) !important;  /* رنگ زرد */
+    color: #222 !important;  /* متن تیره */
+    border: none !important;
 }
 
-/* ===== Quiz Screen ===== */
-.question-box {
-    background: var(--card-light);
-    border: 2px solid var(--border-light);
-    border-radius: 16px;
-    padding: 30px;
-    font-size: 28px;
-    font-weight: bold;
-    text-align: center;
-    margin: 30px 0;
-    min-height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dark-mode .question-box {
-    background: var(--card-dark);
-    border-color: var(--border-dark);
-}
-
-.option {
-    background: var(--card-light);
-    border: 2px solid var(--border-light);
-    border-radius: 14px;
-    padding: 20px;
-    margin: 10px 0;
-    font-size: 18px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s;
-}
-
-.dark-mode .option {
-    background: var(--card-dark);
-    border-color: var(--border-dark);
-}
-
-.option:hover {
-    border-color: var(--primary);
-}
-
-.option.correct {
-    background: #38a169;
-    color: white;
-    border-color: #38a169;
-}
-
-.option.incorrect {
-    background: var(--danger);
-    color: white;
-    border-color: var(--danger);
-}
-
-.progress-bar {
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    padding: 10px;
+#install-btn:active {
+    background: #FFA033 !important;  /* تیره‌تر هنگام لمس */
+    transform: scale(0.98);
 }
 
 /* ===== Exit Button ===== */
@@ -254,6 +65,8 @@ body.dark-mode {
     padding: 20px 0;
     border-top: 1px solid var(--border-light);
     margin-top: auto;
+    display: flex;  /* ✅ نمایش داده شود */
+    justify-content: center;  /* ✅ وسط‌چین */
 }
 
 .dark-mode .exit-container {
@@ -261,7 +74,8 @@ body.dark-mode {
 }
 
 .exit-btn {
-    width: 100%;
+    width: 90%;  /* کمی کوچکتر از عرض کامل */
+    max-width: 300px;  /* حداکثر عرض */
     padding: 18px;
     background: var(--danger);
     color: white;
@@ -276,65 +90,13 @@ body.dark-mode {
     gap: 10px;
 }
 
-/* ===== Install Prompt ===== */
-.install-prompt {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    background: var(--card-light);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    z-index: 1000;
-    display: none;
-    border: 1px solid var(--border-light);
+/* ===== ستاره‌های صفر ===== */
+.star-zero {
+    color: var(--border-light) !important;
+    opacity: 0.3 !important;
+    text-shadow: none !important;
 }
 
-.dark-mode .install-prompt {
-    background: var(--card-dark);
-    border-color: var(--border-dark);
-}
-
-.install-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.install-btn {
-    flex: 1;
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.install-btn-primary {
-    background: var(--primary);
-    color: white;
-}
-
-.install-btn-secondary {
-    background: transparent;
-    color: var(--text-light);
-    border: 2px solid var(--border-light);
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 480px) {
-    .screen {
-        padding: 15px;
-    }
-    
-    .question-box {
-        font-size: 24px;
-        padding: 20px;
-    }
-    
-    .btn {
-        padding: 16px;
-        font-size: 16px;
-    }
+.dark-mode .star-zero {
+    color: var(--border-dark) !important;
 }
