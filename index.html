@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>English with Fred – A1</title>
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a90e2">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,18 +13,21 @@
 <style>
 :root{
   --blue:#4a90e2;
-  --green:#2ecc71;
   --purple:#6c5ce7;
+  --green:#2ecc71;
   --bg:#f4f7fb;
-  --card:#ffffff;
+  --card:rgba(255,255,255,.85);
   --text:#2d3436;
+  --blur:blur(14px);
 }
 [data-theme="dark"]{
-  --bg:#0f1115;
-  --card:#1c1f26;
+  --bg:#0e1015;
+  --card:rgba(28,31,38,.92);
   --text:#f1f2f6;
 }
+
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
 body{
   margin:0;
   font-family:-apple-system,system-ui,sans-serif;
@@ -34,116 +36,121 @@ body{
   height:100vh;
   overflow:hidden;
 }
+
 .screen{
-  height:100%;
+  min-height:100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
   padding:16px;
+  padding-bottom:calc(32px + env(safe-area-inset-bottom));
   overflow-y:auto;
 }
+
 .header{
   width:100%;
   display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin-bottom:14px;
-}
-.header-top{
-  display:flex;
   justify-content:space-between;
   align-items:center;
+  margin-bottom:18px;
 }
-.badge{
-  background:var(--green);
-  color:#fff;
-  padding:6px 12px;
-  border-radius:999px;
-  font-size:13px;
-  font-weight:700;
-}
-.icon-btn{
-  background:var(--card);
-  padding:8px 10px;
-  border-radius:12px;
-  font-size:18px;
-}
+
 h1{
   margin:0;
   font-size:clamp(18px,5vw,22px);
   font-weight:900;
-  text-align:center;
+}
+
+.icon-btn{
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  padding:10px 12px;
+  border-radius:14px;
+  font-size:18px;
 }
 
 .card{
   background:var(--card);
+  backdrop-filter:var(--blur);
   width:100%;
   max-width:340px;
-  padding:16px;
-  border-radius:18px;
+  padding:18px;
+  border-radius:24px;
   text-align:center;
-  margin-bottom:12px;
+  margin-bottom:14px;
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.08),
+    inset 0 1px 0 rgba(255,255,255,.4);
 }
-.stars{font-size:22px}
 
-.mode{
-  width:100%;
-  max-width:340px;
-  padding:14px;
-  margin:6px 0;
-  border-radius:16px;
-  background:var(--card);
-  border:2px solid transparent;
-  font-size:15px;
-  font-weight:700;
-}
-.mode.active{
-  border-color:var(--blue);
-  color:var(--blue);
+.stars{
+  font-size:22px;
+  letter-spacing:6px;
+  margin-bottom:6px;
 }
 
 .btn{
   width:100%;
   max-width:340px;
   padding:16px;
-  margin:8px 0;
-  border:none;
   border-radius:18px;
+  border:none;
   font-size:16px;
   font-weight:800;
+  margin:8px 0;
+  cursor:pointer;
 }
+
 .primary{background:var(--blue);color:#fff}
-.secondary{background:var(--purple);color:#fff}
-.whatsapp{background:#25D366;color:#fff}
+.purple{background:var(--purple);color:#fff}
+.green{background:var(--green);color:#fff}
+
+.mode{
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  color:var(--text);
+  border:2px solid transparent;
+}
+
+.mode.active{
+  border-color:var(--blue);
+  color:var(--blue);
+}
 
 #quiz{display:none}
+
 .qtext{
-  font-size:clamp(22px,6vw,30px);
+  font-size:clamp(22px,7vw,30px);
   font-weight:900;
   text-align:center;
-  margin:30px 0;
+  margin:40px 0 24px;
 }
+
 .opt{
   background:var(--card);
+  backdrop-filter:var(--blur);
   padding:16px;
-  margin:8px 0;
-  border-radius:14px;
-  text-align:center;
+  border-radius:16px;
+  margin:10px 0;
   font-weight:700;
+  text-align:center;
 }
 
 .modal{
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.6);
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
   display:none;
   align-items:center;
   justify-content:center;
+  z-index:99;
 }
 .modal.show{display:flex}
-.modalBox{
+.modal-box{
   background:var(--card);
+  backdrop-filter:var(--blur);
   padding:22px;
-  border-radius:20px;
+  border-radius:24px;
   width:90%;
   max-width:360px;
   text-align:center;
@@ -155,132 +162,60 @@ h1{
 
 <script src="words.js"></script>
 
+<!-- MODAL -->
 <div id="modal" class="modal">
-  <div class="modalBox">
+  <div class="modal-box">
     <h3 id="mTitle"></h3>
     <p id="mBody"></p>
-    <button class="btn primary" onclick="hideModal()">باشه</button>
+    <button class="btn primary" onclick="closeModal()">باشه</button>
   </div>
 </div>
 
+<!-- HOME -->
 <div id="home" class="screen">
   <div class="header">
-    <div class="header-top">
-      <div class="badge">👨‍🎓 کاربر فعال</div>
-      <div class="icon-btn" id="muteBtn" onclick="toggleMute()">🔊</div>
-    </div>
+    <div class="icon-btn" onclick="toggleMute()" id="mute">🔊</div>
     <h1>English with Fred</h1>
+    <div class="icon-btn" onclick="toggleTheme()">🌓</div>
   </div>
 
   <div class="card">
-    <div class="stars">⭐⭐⭐⭐</div>
+    <div id="stars" class="stars">☆☆☆☆</div>
     بهترین امتیاز: <span id="best">0</span>%
   </div>
 
-  <button class="mode active" onclick="setMode(1,this)">۱. انگلیسی → فارسی</button>
-  <button class="mode" onclick="setMode(2,this)">۲. فارسی → انگلیسی</button>
-  <button class="mode" onclick="setMode(3,this)">۳. لغت → تعریف</button>
-  <button class="mode" onclick="setMode(4,this)">۴. تعریف → لغت</button>
+  <button class="btn mode active">۱. انگلیسی → فارسی</button>
+  <button class="btn mode">۲. فارسی → انگلیسی</button>
+  <button class="btn mode">۳. لغت → تعریف</button>
+  <button class="btn mode">۴. تعریف → لغت</button>
 
-  <button class="btn primary" onclick="start()">🚀 شروع تمرین</button>
-  <button class="btn secondary" onclick="startMistakes()">🎯 مرور اشتباهات</button>
-  <button class="btn whatsapp" onclick="openWhatsApp()">💬 ثبت‌نام در واتساپ</button>
-</div>
-
-<div id="quiz" class="screen">
-  <div class="header-top" style="width:100%">
-    <div onclick="location.reload()">✕</div>
-    <div id="prog">1/5</div>
-    <div onclick="speak()">🔊</div>
-  </div>
-  <div id="q" class="qtext"></div>
-  <div id="opts"></div>
+  <button class="btn primary">🚀 شروع تمرین</button>
+  <button class="btn purple">🎯 مرور اشتباهات</button>
+  <button class="btn green"
+    onclick="location.href='https://wa.me/989017708544?text=سلام،%20برای%20ثبت%20نام%20English%20with%20Fred%20پیام%20دادم'">
+    💬 ثبت‌نام در واتساپ
+  </button>
 </div>
 
 <script>
-let db=[],session=[],idx=0,correct=0;
-let mode=1,muted=false;
-let mistakes=JSON.parse(localStorage.getItem("fred_mistakes")||"[]");
+let muted=false;
 
-window.onload=()=>{
-  if(!window.wordsData){showModal("خطا","words.js لود نشد");return;}
-  db=wordsData.trim().split("\n").map(l=>{
-    const p=l.split(" — ");
-    return {en:p[0],fa:p[1],def:p[2]||""};
-  });
-  best.textContent=localStorage.getItem("fred_best")||0;
-};
-
-function start(src=db){
-  session=[...src].sort(()=>.5-Math.random()).slice(0,5);
-  idx=0;correct=0;
-  home.style.display="none";
-  quiz.style.display="flex";
-  render();
-}
-function startMistakes(){
-  if(!mistakes.length){showModal("پیام","اشتباهی ثبت نشده");return;}
-  start(mistakes);
-}
-function render(){
-  const q=session[idx];
-  prog.textContent=`${idx+1}/${session.length}`;
-  let question,answer;
-  if(mode===1){question=q.en;answer=q.fa}
-  if(mode===2){question=q.fa;answer=q.en}
-  if(mode===3){question=q.en;answer=q.def}
-  if(mode===4){question=q.def;answer=q.en}
-  qEl=q;
-  qBox=q;
-  document.getElementById("q").textContent=question;
-  const pool=db.map(w=>mode<=2?(mode===1?w.fa:w.en):(mode===3?w.def:w.en))
-               .filter(x=>x&&x!==answer)
-               .sort(()=>.5-Math.random()).slice(0,3);
-  const opts=[answer,...pool].sort(()=>.5-Math.random());
-  const box=document.getElementById("opts");
-  box.innerHTML="";
-  opts.forEach(o=>{
-    const d=document.createElement("div");
-    d.className="opt";
-    d.textContent=o;
-    d.onclick=()=>check(o,answer,q);
-    box.appendChild(d);
-  });
-  speak();
-}
-function check(sel,ans,q){
-  if(sel===ans){correct++;mistakes=mistakes.filter(m=>m.en!==q.en)}
-  else if(!mistakes.find(m=>m.en===q.en))mistakes.push(q);
-  localStorage.setItem("fred_mistakes",JSON.stringify(mistakes));
-  setTimeout(()=>{idx++;idx<session.length?render():finish()},400);
-}
-function finish(){
-  const pct=Math.round(correct/session.length*100);
-  const best=localStorage.getItem("fred_best")||0;
-  if(pct>best)localStorage.setItem("fred_best",pct);
-  showModal("پایان",`امتیاز شما: ${pct}%`);
-}
-function setMode(m,el){
-  mode=m;
-  document.querySelectorAll(".mode").forEach(b=>b.classList.remove("active"));
-  el.classList.add("active");
+function toggleTheme(){
+  app.dataset.theme = app.dataset.theme ? "" : "dark";
 }
 function toggleMute(){
   muted=!muted;
-  muteBtn.textContent=muted?"🔇":"🔊";
+  mute.textContent = muted ? "🔇" : "🔊";
 }
-function speak(){
-  if(muted)return;
-  const u=new SpeechSynthesisUtterance(document.getElementById("q").textContent);
-  u.rate=0.5;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(u);
+function showModal(t,b){
+  mTitle.textContent=t;
+  mBody.textContent=b;
+  modal.classList.add("show");
 }
-function showModal(t,b){mTitle.textContent=t;mBody.textContent=b;modal.classList.add("show")}
-function hideModal(){modal.classList.remove("show")}
-function openWhatsApp(){
-  location.href="https://wa.me/989017708544?text=سلام، برای ثبت‌نام English with Fred پیام می‌دهم";
+function closeModal(){
+  modal.classList.remove("show");
 }
 </script>
+
 </body>
 </html>
