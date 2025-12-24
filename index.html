@@ -6,229 +6,218 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
+        :root { 
+            --ios-blue: #4a90e2; 
+            --ios-indigo: #6c5ce7; 
+            --ios-green: #25D366; 
+            --ios-red: #FF3B30; 
             --bg-page: #f0f7ff; /* آبی بسیار ملایم و لطیف */
-            --glass-bg: rgba(255, 255, 255, 0.95);
-            --text-main: #2d3436;
-            --primary-blue: #4a90e2;
-            --soft-indigo: #6c5ce7;
-            --whatsapp-green: #25D366;
         }
-
-        [data-theme="dark"] {
-            --bg-page: #101418;
-            --glass-bg: rgba(30, 39, 46, 0.98);
-            --text-main: #f1f2f6;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: background 0.3s; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-page);
-            margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px;
-        }
-
-        .screen {
-            background: var(--glass-bg);
-            width: 100%; max-width: 400px; min-height: 630px; border-radius: 45px; padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; position: relative;
-        }
-
-        .header-nav { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .header-center { text-align: center; flex-grow: 1; }
-        .header-title { font-size: 24px; font-weight: 850; color: var(--text-main); margin: 0; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-page); margin: 0; height: 100vh; overflow: hidden; position: fixed; width: 100%; padding-top: env(safe-area-inset-top); }
         
-        /* بخش ستاره‌ها و امتیاز */
-        .stars-container { color: #dfe6e9; font-size: 18px; margin-top: 5px; }
-        .stars-container .active { color: #f1c40f; }
-        .best-score { font-size: 12px; color: var(--text-main); opacity: 0.7; margin-top: 3px; font-weight: bold; }
+        .screen { height: 100%; display: flex; flex-direction: column; padding: 25px; align-items: center; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        
+        .header-nav { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .header-title { color: #2d3436; font-size: 24px; font-weight: 850; cursor: pointer; user-select: none; margin: 0; }
+        .top-icon { font-size: 22px; cursor: pointer; color: #2d3436; width: 40px; text-align: center; }
 
-        .top-icon { font-size: 22px; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
+        .daily-goal-box { background: #fff; width: 100%; border-radius: 25px; padding: 15px; margin-bottom: 10px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .goal-stars { font-size: 24px; margin: 5px 0; color: #dfe6e9; letter-spacing: 3px; }
+        .goal-stars .active { color: #f1c40f; }
+        .goal-text { font-size: 13px; color: #2d3436; font-weight: 800; margin-top: 5px; }
 
-        .btn-mode {
-            background: #fff; border: 1.5px solid #eee; padding: 18px; border-radius: 20px;
-            width: 100%; margin-bottom: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); text-align: center; font-size: 16px;
-        }
-        .btn-mode.active { border-color: var(--primary-blue); color: var(--primary-blue); }
+        .record-badge { background: rgba(108, 92, 231, 0.1); padding: 8px 18px; border-radius: 20px; font-size: 13px; color: var(--ios-indigo); font-weight: 900; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        
+        .mode-selector { width: 100%; display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+        .btn-mode { background: #fff; border: 1.5px solid #eee; padding: 16px; border-radius: 18px; text-align: center; font-weight: 600; font-size: 15px; color: #2d3436; }
+        .btn-mode.active { border: 2px solid var(--ios-blue); color: var(--ios-blue); background: rgba(74, 144, 226, 0.05); }
 
-        .btn-action {
-            border: none; color: white; font-weight: 700; width: 100%; padding: 18px;
-            border-radius: 22px; font-size: 17px; cursor: pointer; background: var(--primary-blue); margin-top: 10px;
-        }
+        .btn-main { border: none; color: white; font-weight: 700; width: 100%; padding: 18px; border-radius: 22px; margin-bottom: 12px; font-size: 17px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); cursor: pointer; }
+        
+        .footer-contact { margin-top: auto; padding-bottom: 40px; width: 100%; }
+        .whatsapp-btn { background: var(--ios-green); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px; border-radius: 50px; font-weight: bold; font-size: 15px; }
 
-        .footer-contact {
-            margin-top: auto; padding-top: 15px; display: flex; flex-direction: column; align-items: center;
-        }
-        .whatsapp-link {
-            text-decoration: none; color: white; font-weight: bold; display: flex; align-items: center; gap: 8px;
-            font-size: 15px; background: var(--whatsapp-green); padding: 12px 25px; border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
-        }
-
-        .q-text { font-size: 1.8rem; font-weight: 800; color: var(--text-main); direction: ltr; text-align: center; margin: 40px 0; }
-        .en-text { direction: ltr !important; text-align: left !important; padding-left: 20px; }
-        .correct { border-color: #00b894 !important; color: #00b894 !important; background: #e6fffb !important; }
-        .wrong { border-color: #d63031 !important; color: #d63031 !important; background: #fff5f5 !important; }
+        .q-text { font-size: 2rem; font-weight: 800; margin: 40px 0; text-align: center; color: #2d3436; }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
+        .btn-opt { padding: 18px; border-radius: 18px; border: 1.5px solid #eee; background: #fff; font-size: 16px; font-weight: 600; text-align: center; }
+        .correct { background: var(--ios-green) !important; color: white !important; }
+        .wrong { background: var(--ios-red) !important; color: white !important; }
+        .exit-btn { position: absolute; top: 20px; left: 20px; background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; }
+        
+        #adminPanel { display: none; width: 100%; background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #ddd; }
+        textarea { width: 100%; min-height: 100px; border-radius: 10px; border: 1px solid #ccc; padding: 10px; font-size: 12px; direction: ltr; margin-bottom: 10px; }
     </style>
 </head>
-<body id="mainBody">
+<body>
 
     <div id="setup" class="screen">
         <div class="header-nav">
-            <div class="top-icon" onclick="toggleTheme()">🌓</div>
-            <div class="header-center">
-                <h1 class="header-title" onclick="masterTrigger()">English with Fred</h1>
-                <div class="stars-container" id="starBox">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                </div>
-                <div class="best-score">Best Score: <span id="highScore">0</span></div>
-            </div>
-            <div id="mainMuteBtn" class="top-icon" onclick="toggleMute()">🔊</div>
+            <div class="top-icon">🌓</div>
+            <h1 class="header-title" onclick="adminClick()">English with Fred</h1>
+            <div id="muteBtn" class="top-icon" onclick="toggleMute()">🔊</div>
         </div>
         
-        <div id="modeList" style="margin-top: 20px;">
-            <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
-            <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
-            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف</div>
-            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت</div>
+        <div class="daily-goal-box">
+            <div id="goalStars" class="goal-stars">☆☆☆☆</div>
+            <div id="goalMsg" class="goal-text">Best Score: <span id="highScoreDisp">0</span>%</div>
         </div>
 
-        <button id="startBtn" class="btn-action" onclick="startQuiz(false)" style="margin-top: 15px;">🚀 شروع تمرین جدید</button>
-        <button class="btn-action" style="background: var(--soft-indigo);" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
+        <div id="bestRecord" class="record-badge">Best Record: 0%</div>
+
+        <div id="adminPanel">
+            <textarea id="bulkInput" oninput="saveRawData()"></textarea>
+            <button onclick="document.getElementById('adminPanel').style.display='none'" style="width:100%; padding:8px; border:none; background:#eee; border-radius:8px;">Save</button>
+        </div>
+
+        <div class="mode-selector">
+            <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
+            <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
+            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف (A1)</div>
+            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت (A1)</div>
+        </div>
+
+        <button class="btn-main" style="background:var(--ios-blue)" onclick="startQuiz(false)">🚀 شروع تمرین جدید</button>
+        <button class="btn-main" style="background:var(--ios-indigo)" onclick="openMistakePage()">🎯 مرور اشتباهات</button>
 
         <div class="footer-contact">
-            <a id="waLink" href="#" target="_blank" class="whatsapp-link">
+            <a href="https://wa.me/989017708544" class="whatsapp-btn">
                 <i class="fab fa-whatsapp" style="font-size: 20px;"></i>
-                <span>ارتباط با Fred: 09121234567</span>
+                <span>ارتباط با Fred: 09017708544</span>
             </a>
         </div>
     </div>
 
-    <div id="quiz" class="screen" style="display: none;">
-        <div class="header-nav">
-            <div class="top-icon" onclick="say()">🔊</div>
-            <div style="font-weight: 800; color: var(--text-main);" id="progressText">1 / 20</div>
-            <div class="top-icon" onclick="location.reload()">✕</div>
-        </div>
+    <div id="quiz" class="screen" style="display: none; background: #fff;">
+        <button class="exit-btn" onclick="location.reload()">✕</button>
         <div id="qDisplay" class="q-text"></div>
-        <div id="opts"></div>
+        <div id="audioBtn" style="font-size: 3rem; margin-bottom: 20px; cursor: pointer;" onclick="say()">🔊</div>
+        <div class="options-grid" id="opts"></div>
     </div>
 
-    <script src="dic.js"></script>
+    <div id="mistakePage" class="screen" style="display:none;">
+        <button class="exit-btn" onclick="location.reload()">✕</button>
+        <h2 style="margin-top: 50px;">لغات دشوار</h2>
+        <div id="mList" style="width: 100%;"></div>
+    </div>
+
     <script>
-        const myPhone = "989121234567"; // شماره واقعی Fred
-        const masterPass = "Fred77";
+        // دیتای پیش‌فرض شما (خلاصه شده برای فضا - شما می‌توانید لیست کامل را در پنل ادمین بریزید)
+        const defaultWords = `be — بودن — To live or to stay.\nhave — داشتن — To own this.\ndo — انجام دادن — To work.`;
 
-        document.getElementById('waLink').href = `https://wa.me/${myPhone}?text=${encodeURIComponent("سلام استاد Fred عزیز، من می‌خواستم در کلاس‌های شما شرکت کنم.")}`;
-
-        let score = parseInt(localStorage.getItem('fred_high_score')) || 0;
-        document.getElementById('highScore').textContent = score;
-        updateStars(score);
-
-        function updateStars(s) {
-            const stars = document.getElementById('starBox').children;
-            for(let i=0; i<4; i++) {
-                stars[i].className = i < Math.floor(s/5) ? "fas fa-star active" : "fas fa-star";
-            }
-        }
-
-        function toggleTheme() {
-            const b = document.getElementById('mainBody');
-            b.hasAttribute('data-theme') ? b.removeAttribute('data-theme') : b.setAttribute('data-theme', 'dark');
-        }
-
-        let isMaster = localStorage.getItem('device_token_status') === 'premium_active';
+        let db = [], session = [], idx = 0, busy = false, currentMode = 1, isMuted = false;
+        let score = { correct: 0 };
+        let mistakeBank = JSON.parse(localStorage.getItem('fred_final_mistakes')) || [];
         let clickCount = 0;
 
-        function masterTrigger() {
+        window.onload = () => {
+            document.getElementById('bulkInput').value = localStorage.getItem('fred_final_data') || defaultWords;
+            updateDisplay();
+        };
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').textContent = isMuted ? "🔇" : "🔊";
+        }
+
+        function adminClick() {
             clickCount++;
             if (clickCount >= 3) {
-                if (prompt("کد استاد:") === masterPass) {
-                    localStorage.setItem('device_token_status', 'premium_active');
-                    alert("نسخه طلایی فعال شد."); location.reload();
-                }
+                if (prompt("Pass:") === "134212") document.getElementById('adminPanel').style.display = 'block';
                 clickCount = 0;
             }
         }
 
-        // --- منطق کوییز ---
-        let db = [], session = [], idx = 0, currentMode = 1, busy = false, isMuted = false;
-        let correctAnswers = 0;
-
-        function setMode(m, el) { 
-            currentMode = m; 
-            document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active')); 
-            el.classList.add('active'); 
+        function updateDisplay() {
+            const best = localStorage.getItem('fred_best_score') || 0;
+            document.getElementById('bestRecord').textContent = `Best Record: ${best}%`;
+            document.getElementById('highScoreDisp').textContent = best;
+            
+            // نمایش ۴ ستاره بر اساس امتیاز (هر ۲۵ درصد یک ستاره)
+            let stars = "";
+            let starCount = Math.floor(best / 25);
+            for(let i=1; i<=4; i++) {
+                stars += `<span class="${i <= starCount ? 'active' : ''}">★</span>`;
+            }
+            document.getElementById('goalStars').innerHTML = stars;
         }
 
+        function setMode(m, el) {
+            currentMode = m;
+            document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function saveRawData() { localStorage.setItem('fred_final_data', document.getElementById('bulkInput').value); }
+
         function startQuiz(fromMistakes) {
-            let source = (typeof permanentWords !== 'undefined' ? permanentWords.trim().split('\n') : []);
-            db = source.map(l => {
-                let p = l.split(' — ');
-                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Def" } : null;
+            let raw = fromMistakes ? mistakeBank : document.getElementById('bulkInput').value.trim().split('\n');
+            db = raw.map(l => {
+                let p = l.split(/[—\-:]+/);
+                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Basic" } : null;
             }).filter(x => x);
 
             session = [...db].sort(() => 0.5 - Math.random()).slice(0, 20);
+            score.correct = 0; idx = 0;
             document.getElementById('setup').style.display = 'none';
             document.getElementById('quiz').style.display = 'flex';
-            idx = 0; correctAnswers = 0; render();
+            render();
         }
 
         function render() {
             busy = false; const q = session[idx]; let qText = "", ans = "";
-            document.getElementById('progressText').textContent = `${idx + 1} / ${session.length}`;
-            
             if(currentMode === 1) { qText = q.en; ans = q.fa; }
             else if(currentMode === 2) { qText = q.fa; ans = q.en; }
             else if(currentMode === 3) { qText = q.en; ans = q.def; }
             else { qText = q.def; ans = q.en; }
-
             document.getElementById('qDisplay').textContent = qText;
-            const div = document.getElementById('opts'); div.innerHTML = '';
-
-            let opts = [ans];
-            let pool = db.filter(v => v.en !== q.en).map(v => (currentMode==1?v.fa:(currentMode==3?v.def:v.en)));
+            document.getElementById('audioBtn').style.display = (currentMode === 1 || currentMode === 3) ? 'block' : 'none';
+            let opts = [ans], pool = db.filter(v => v.en !== q.en).map(v => (currentMode==1?v.fa:(currentMode==3?v.def:v.en)));
             while(opts.length < 4) opts.push(pool.splice(Math.floor(Math.random()*pool.length), 1)[0]);
             opts.sort(() => 0.5 - Math.random());
-
+            const div = document.getElementById('opts'); div.innerHTML = '';
             opts.forEach(o => {
                 const b = document.createElement('button');
-                b.className = 'btn-mode';
-                if(currentMode !== 1) b.classList.add('en-text');
-                b.textContent = o;
+                b.className = 'btn-opt'; b.textContent = o;
                 b.onclick = () => {
                     if(busy) return; busy = true;
-                    if(o === ans) { b.classList.add('correct'); correctAnswers++; }
-                    else { b.classList.add('wrong'); }
-                    
+                    if(o === ans) { b.classList.add('correct'); score.correct++; }
+                    else {
+                        b.classList.add('wrong');
+                        if(!mistakeBank.some(m => m.en === q.en)) {
+                            mistakeBank.push(q);
+                            localStorage.setItem('fred_final_mistakes', JSON.stringify(mistakeBank));
+                        }
+                    }
                     setTimeout(() => { 
                         idx++; 
                         if(idx < session.length) render(); 
-                        else finish();
+                        else {
+                            let finalPct = Math.round((score.correct / session.length) * 100);
+                            if(finalPct > (localStorage.getItem('fred_best_score') || 0)) localStorage.setItem('fred_best_score', finalPct);
+                            location.reload();
+                        }
                     }, 1000);
                 };
                 div.appendChild(b);
             });
-            say();
+            if(!isMuted && (currentMode === 1 || currentMode === 3)) say();
         }
 
-        function finish() {
-            if(correctAnswers > score) {
-                localStorage.setItem('fred_high_score', correctAnswers);
-            }
-            alert(`تمرین تمام شد! امتیاز شما: ${correctAnswers}`);
-            location.reload();
+        function openMistakePage() {
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('mistakePage').style.display = 'flex';
+            const list = document.getElementById('mList');
+            list.innerHTML = mistakeBank.length ? '' : '<p>No mistakes!</p>';
+            mistakeBank.forEach((m, i) => {
+                const d = document.createElement('div');
+                d.style = "background:#fff; padding:15px; border-radius:15px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border:1px solid #ddd; width:100%;";
+                d.innerHTML = `<span style="direction:ltr;">${m.en}</span><span onclick="removeM(${i})" style="color:var(--ios-red); cursor:pointer;">✕</span>`;
+                list.appendChild(d);
+            });
         }
-
-        function say() {
-            if (!session[idx] || isMuted || currentMode === 2) return;
-            window.speechSynthesis.cancel(); 
-            const u = new SpeechSynthesisUtterance(currentMode === 4 ? session[idx].def : session[idx].en);
-            u.lang = 'en-US'; u.rate = 0.8;
-            window.speechSynthesis.speak(u);
-        }
+        function removeM(i) { mistakeBank.splice(i, 1); localStorage.setItem('fred_final_mistakes', JSON.stringify(mistakeBank)); openMistakePage(); }
+        function say() { if(isMuted) return; const u = new SpeechSynthesisUtterance(session[idx].en); u.lang = 'en-US'; window.speechSynthesis.speak(u); }
     </script>
 </body>
 </html>
