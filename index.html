@@ -2,338 +2,31 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>English with Fred - A1</title>
     
-    <!-- PWA Configuration -->
+    <!-- تنظیمات PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4a90e2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="English Fred">
     
+    <!-- فایل CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- جلوگیری از اسکرول در iOS -->
     <style>
-        /* ===== Variables ===== */
-        :root {
-            --primary: #4a90e2;
-            --secondary: #6c5ce7;
-            --success: #25D366;
-            --danger: #ff4757;
-            --warning: #f39c12;
-            
-            --bg-light: #f8f9fa;
-            --card-light: #ffffff;
-            --text-light: #2c3e50;
-            --border-light: #e0e0e0;
-            
-            --bg-dark: #1a1d28;
-            --card-dark: #2d3343;
-            --text-dark: #e4e6eb;
-            --border-dark: #3d4455;
-            
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            --shadow-dark: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* ===== Base Styles ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-light);
-            min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        body.dark-mode {
-            background-color: var(--bg-dark);
-            color: var(--text-dark);
-        }
-        
-        /* ===== Screen Containers ===== */
-        .screen {
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        #quiz-screen {
-            display: none;
-        }
-        
-        /* ===== Header ===== */
-        .header {
+        html, body {
+            overflow: hidden;
+            position: fixed;
             width: 100%;
-            max-width: 500px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-        
-        .app-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary);
-            text-align: center;
-            flex-grow: 1;
-        }
-        
-        .icon-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            transition: all 0.2s;
-        }
-        
-        .icon-btn:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-        
-        .dark-mode .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        /* ===== Cards ===== */
-        .card {
-            width: 100%;
-            max-width: 500px;
-            background: var(--card-light);
-            border-radius: 20px;
-            padding: 24px;
-            margin: 15px 0;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-light);
-            transition: all 0.3s;
-        }
-        
-        .dark-mode .card {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
-            box-shadow: var(--shadow-dark);
-        }
-        
-        /* ===== Buttons ===== */
-        .btn {
-            width: 100%;
-            max-width: 500px;
-            padding: 18px 24px;
-            border-radius: 16px;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin: 8px 0;
-            text-decoration: none;
-        }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-        }
-        
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-        
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-        
-        .btn-outline {
-            background: transparent;
-            color: var(--text-light);
-            border: 2px solid var(--border-light);
-        }
-        
-        .dark-mode .btn-outline {
-            color: var(--text-dark);
-            border-color: var(--border-dark);
-        }
-        
-        /* ===== Score Display ===== */
-        .score-display {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .stars {
-            font-size: 32px;
-            letter-spacing: 8px;
-            margin-bottom: 15px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .star {
-            color: #FFD700;
-        }
-        
-        .star.empty {
-            color: #ddd;
-            opacity: 0.5;
-        }
-        
-        .dark-mode .star.empty {
-            color: #666;
-        }
-        
-        .best-score {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        
-        .best-score-value {
-            color: var(--primary);
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        /* ===== Quiz Screen ===== */
-        .question-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 30px 0;
-        }
-        
-        .question-box {
-            background: var(--card-light);
-            border: 2px solid var(--border-light);
-            border-radius: 18px;
-            padding: 30px;
-            font-size: 28px;
-            font-weight: 700;
-            text-align: center;
-            min-height: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-            word-break: break-word;
-            line-height: 1.4;
-        }
-        
-        .dark-mode .question-box {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
-        }
-        
-        .options-container {
-            width: 100%;
-        }
-        
-        .option {
-            background: var(--card-light);
-            border: 2px solid var(--border-light);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 12px 0;
-            font-size: 18px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-        }
-        
-        .dark-mode .option {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
-        }
-        
-        .option:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-            border-color: var(--primary);
-        }
-        
-        .option.correct {
-            background: #27ae60;
-            color: white;
-            border-color: #27ae60;
-        }
-        
-        .option.incorrect {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
-            opacity: 0.8;
-        }
-        
-        .progress-bar {
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: 600;
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        
-        /* ===== Install Button ===== */
-        #install-btn {
-            display: none;
-        }
-        
-        /* ===== Responsive ===== */
-        @media (max-width: 480px) {
-            .screen {
-                padding: 15px;
-            }
-            
-            .question-box {
-                font-size: 24px;
-                padding: 20px;
-                min-height: 120px;
-            }
-            
-            .option {
-                padding: 18px;
-                font-size: 16px;
-            }
-            
-            .btn {
-                padding: 16px 20px;
-                font-size: 15px;
-            }
+            height: 100%;
         }
     </style>
 </head>
 <body>
-    <!-- Home Screen -->
+    <!-- صفحه اصلی -->
     <div id="home-screen" class="screen">
         <div class="header">
             <button class="icon-btn" onclick="toggleTheme()" title="تغییر تم">
@@ -345,46 +38,52 @@
             </button>
         </div>
         
-        <div class="card score-display">
-            <div class="stars" id="stars-container">
-                <!-- Stars will be generated by JavaScript -->
+        <div class="content">
+            <div class="card score-display">
+                <div class="stars" id="stars-container"></div>
+                <div class="best-score">
+                    بهترین امتیاز: <span id="best-score" class="best-score-value">0</span>%
+                </div>
             </div>
-            <div class="best-score">
-                بهترین امتیاز: <span id="best-score" class="best-score-value">0</span>%
-            </div>
+            
+            <button class="btn btn-primary" onclick="startQuiz('en-fa')">
+                <span>📖</span> English → Persian
+            </button>
+            
+            <button class="btn btn-primary" onclick="startQuiz('fa-en')">
+                <span>📝</span> Persian → English
+            </button>
+            
+            <button class="btn btn-primary" onclick="startQuiz('word-def')">
+                <span>🔤</span> Word → Definition
+            </button>
+            
+            <button class="btn btn-primary" onclick="startQuiz('def-word')">
+                <span>📚</span> Definition → Word
+            </button>
+            
+            <button class="btn btn-secondary" onclick="reviewMistakes()">
+                <span>🎯</span> مرور اشتباهات
+            </button>
+            
+            <button id="install-btn" class="btn btn-success" onclick="showInstallPrompt()">
+                <span>📱</span> نصب برنامه
+            </button>
+            
+            <a href="https://wa.me/989017708544?text=سلام%20آقای%20فرد،%20برای%20ثبت‌نام%20در%20دوره%20انگلیسی%20پیام%20می‌دهم" 
+               class="btn btn-success" target="_blank">
+                <span>💬</span> ثبت‌نام در واتساپ
+            </a>
         </div>
         
-        <button class="btn btn-primary" onclick="startQuiz('en-fa')">
-            <span>📖</span> English → Persian
-        </button>
-        
-        <button class="btn btn-primary" onclick="startQuiz('fa-en')">
-            <span>📝</span> Persian → English
-        </button>
-        
-        <button class="btn btn-primary" onclick="startQuiz('word-def')">
-            <span>🔤</span> Word → Definition
-        </button>
-        
-        <button class="btn btn-primary" onclick="startQuiz('def-word')">
-            <span>📚</span> Definition → Word
-        </button>
-        
-        <button class="btn btn-secondary" onclick="reviewMistakes()">
-            <span>🎯</span> مرور اشتباهات
-        </button>
-        
-        <button id="install-btn" class="btn btn-outline" onclick="installApp()">
-            <span>📱</span> نصب برنامه
-        </button>
-        
-        <a href="https://wa.me/989017708544?text=سلام%20آقای%20فرد،%20برای%20ثبت‌نام%20در%20دوره%20انگلیسی%20پیام%20می‌دهم" 
-           class="btn btn-success" target="_blank">
-            <span>💬</span> ثبت‌نام در واتساپ
-        </a>
+        <div class="exit-container">
+            <button class="exit-btn" onclick="exitApp()">
+                <span>🚪</span> خروج از برنامه
+            </button>
+        </div>
     </div>
     
-    <!-- Quiz Screen -->
+    <!-- صفحه آزمون -->
     <div id="quiz-screen" class="screen">
         <div class="header">
             <button class="icon-btn" onclick="exitQuiz()" title="خروج">
@@ -396,467 +95,39 @@
             </button>
         </div>
         
-        <div class="question-container">
-            <div id="question" class="question-box">
-                <!-- Question will be loaded here -->
-            </div>
-            
-            <div id="options" class="options-container">
-                <!-- Options will be loaded here -->
+        <div class="content">
+            <div class="question-container">
+                <div id="question" class="question-box"></div>
+                <div id="options" class="options-container"></div>
             </div>
         </div>
         
-        <button class="btn btn-danger" onclick="exitQuiz()">
-            <span>🚪</span> خروج از آزمون
-        </button>
+        <div class="exit-container">
+            <button class="exit-btn" onclick="exitQuiz()">
+                <span>🚪</span> خروج از آزمون
+            </button>
+        </div>
+    </div>
+    
+    <!-- پاپ‌آپ نصب PWA -->
+    <div id="install-prompt" class="install-prompt">
+        <div class="install-prompt-content">
+            <div class="install-icon">📱</div>
+            <div class="install-text">
+                نصب برنامه English with Fred برای تجربه بهتر و دسترسی آسان‌تر
+            </div>
+        </div>
+        <div class="install-buttons">
+            <button class="install-btn install-btn-primary" onclick="installApp()">نصب</button>
+            <button class="install-btn install-btn-secondary" onclick="hideInstallPrompt()">بعداً</button>
+        </div>
     </div>
 
-    <!-- Include external files -->
+    <!-- بارگذاری فایل‌های JavaScript -->
     <script src="words.js"></script>
-    <script>
-        // ===== Global Variables =====
-        let words = [];
-        let currentMode = '';
-        let currentSession = [];
-        let currentQuestionIndex = 0;
-        let correctAnswers = 0;
-        let isMuted = false;
-        let mistakes = [];
-        let deferredPrompt = null;
-        
-        // ===== Initialize App =====
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Application initialized');
-            
-            // Load words from words.js
-            if (typeof wordsData !== 'undefined') {
-                processWordsData(wordsData);
-            } else {
-                console.error('wordsData is not defined! Check words.js');
-                alert('خطا در بارگذاری لغات. لطفا صفحه را رفرش کنید.');
-            }
-            
-            // Load saved data
-            loadSavedData();
-            
-            // Update UI
-            updateStars();
-            updateMuteIcon();
-            
-            // Initialize service worker for PWA
-            initServiceWorker();
-            
-            // Listen for PWA install prompt
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                document.getElementById('install-btn').style.display = 'flex';
-                console.log('PWA install prompt available');
-            });
-            
-            // Check if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                console.log('App is installed as PWA');
-                document.getElementById('install-btn').style.display = 'none';
-            }
-        });
-        
-        // ===== Data Processing =====
-        function processWordsData(data) {
-            try {
-                words = data.trim().split('\n').map(line => {
-                    const parts = line.split(' — ');
-                    if (parts.length >= 3) {
-                        return {
-                            english: parts[0].trim(),
-                            persian: parts[1].trim(),
-                            definition: parts[2].trim()
-                        };
-                    }
-                    return null;
-                }).filter(word => word !== null);
-                
-                console.log(`Loaded ${words.length} words`);
-            } catch (error) {
-                console.error('Error processing words data:', error);
-                words = [];
-            }
-        }
-        
-        function loadSavedData() {
-            // Load theme
-            const savedTheme = localStorage.getItem('fred_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                document.getElementById('theme-icon').textContent = '☀️';
-            }
-            
-            // Load mute state
-            isMuted = localStorage.getItem('fred_muted') === 'true';
-            
-            // Load mistakes
-            try {
-                const savedMistakes = localStorage.getItem('fred_mistakes');
-                mistakes = savedMistakes ? JSON.parse(savedMistakes) : [];
-            } catch (e) {
-                mistakes = [];
-                console.error('Error loading mistakes:', e);
-            }
-        }
-        
-        // ===== UI Functions =====
-        function toggleTheme() {
-            const body = document.body;
-            const themeIcon = document.getElementById('theme-icon');
-            
-            if (body.classList.contains('dark-mode')) {
-                body.classList.remove('dark-mode');
-                themeIcon.textContent = '🌙';
-                localStorage.setItem('fred_theme', 'light');
-            } else {
-                body.classList.add('dark-mode');
-                themeIcon.textContent = '☀️';
-                localStorage.setItem('fred_theme', 'dark');
-            }
-        }
-        
-        function toggleMute() {
-            isMuted = !isMuted;
-            localStorage.setItem('fred_muted', isMuted);
-            updateMuteIcon();
-        }
-        
-        function updateMuteIcon() {
-            const muteIcon = document.getElementById('mute-icon');
-            const speakIcon = document.getElementById('speak-icon');
-            const icon = isMuted ? '🔇' : '🔊';
-            
-            muteIcon.textContent = icon;
-            speakIcon.textContent = icon;
-        }
-        
-        function updateStars() {
-            const bestScore = parseInt(localStorage.getItem('fred_best_score') || '0');
-            const starsContainer = document.getElementById('stars-container');
-            const bestScoreElement = document.getElementById('best-score');
-            
-            bestScoreElement.textContent = bestScore;
-            
-            // Calculate how many stars to show (0-4)
-            const starCount = Math.floor(bestScore / 25);
-            
-            // Clear container
-            starsContainer.innerHTML = '';
-            
-            // Add stars
-            for (let i = 0; i < 4; i++) {
-                const star = document.createElement('span');
-                if (i < starCount) {
-                    star.className = 'star';
-                    star.textContent = '★';
-                } else {
-                    star.className = 'star empty';
-                    star.textContent = '☆';
-                }
-                starsContainer.appendChild(star);
-            }
-        }
-        
-        // ===== Quiz Functions =====
-        function startQuiz(mode) {
-            if (words.length === 0) {
-                alert('لغات بارگذاری نشده‌اند!');
-                return;
-            }
-            
-            currentMode = mode;
-            currentQuestionIndex = 0;
-            correctAnswers = 0;
-            
-            // Create quiz session
-            const shuffledWords = [...words].sort(() => Math.random() - 0.5);
-            currentSession = shuffledWords.slice(0, Math.min(10, shuffledWords.length));
-            
-            if (currentSession.length === 0) {
-                alert('هیچ لغتی برای آزمون وجود ندارد!');
-                return;
-            }
-            
-            // Switch to quiz screen
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('quiz-screen').style.display = 'flex';
-            
-            // Load first question
-            loadQuestion();
-        }
-        
-        function reviewMistakes() {
-            if (mistakes.length === 0) {
-                alert('🎉 هنوز اشتباهی نداشته‌اید!');
-                return;
-            }
-            
-            currentMode = 'review';
-            currentQuestionIndex = 0;
-            correctAnswers = 0;
-            
-            // Use mistakes as session
-            const shuffledMistakes = [...mistakes].sort(() => Math.random() - 0.5);
-            currentSession = shuffledMistakes.slice(0, Math.min(10, shuffledMistakes.length));
-            
-            // Switch to quiz screen
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('quiz-screen').style.display = 'flex';
-            
-            // Load first question
-            loadQuestion();
-        }
-        
-        function loadQuestion() {
-            if (currentQuestionIndex >= currentSession.length) {
-                finishQuiz();
-                return;
-            }
-            
-            const questionData = currentSession[currentQuestionIndex];
-            const progressElement = document.getElementById('progress');
-            const questionElement = document.getElementById('question');
-            const optionsElement = document.getElementById('options');
-            
-            // Update progress
-            progressElement.textContent = `${currentQuestionIndex + 1}/${currentSession.length}`;
-            
-            // Set question based on mode
-            let question = '';
-            let correctAnswer = '';
-            let allAnswers = [];
-            
-            if (currentMode === 'en-fa') {
-                question = questionData.english;
-                correctAnswer = questionData.persian;
-                allAnswers = words.map(w => w.persian);
-            } else if (currentMode === 'fa-en') {
-                question = questionData.persian;
-                correctAnswer = questionData.english;
-                allAnswers = words.map(w => w.english);
-            } else if (currentMode === 'word-def') {
-                question = questionData.english;
-                correctAnswer = questionData.definition;
-                allAnswers = words.map(w => w.definition);
-            } else if (currentMode === 'def-word') {
-                question = questionData.definition;
-                correctAnswer = questionData.english;
-                allAnswers = words.map(w => w.english);
-            } else if (currentMode === 'review') {
-                // For review mode, use the original mode that caused the mistake
-                // This is simplified - you might want to store the mode with the mistake
-                question = questionData.english;
-                correctAnswer = questionData.persian;
-                allAnswers = words.map(w => w.persian);
-            }
-            
-            // Set question text
-            questionElement.textContent = question;
-            
-            // Generate options
-            const wrongAnswers = allAnswers
-                .filter(ans => ans !== correctAnswer)
-                .sort(() => Math.random() - 0.5)
-                .slice(0, 3);
-            
-            const allOptions = [correctAnswer, ...wrongAnswers]
-                .sort(() => Math.random() - 0.5);
-            
-            // Clear previous options
-            optionsElement.innerHTML = '';
-            
-            // Create option elements
-            allOptions.forEach(option => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
-                optionElement.textContent = option;
-                
-                optionElement.addEventListener('click', () => {
-                    checkAnswer(option, correctAnswer, questionData);
-                });
-                
-                optionsElement.appendChild(optionElement);
-            });
-            
-            // Speak the question
-            if (!isMuted) {
-                speakQuestion();
-            }
-        }
-        
-        function checkAnswer(selected, correct, questionData) {
-            const options = document.querySelectorAll('.option');
-            const isCorrect = selected === correct;
-            
-            // Disable all options
-            options.forEach(opt => {
-                opt.style.pointerEvents = 'none';
-                
-                if (opt.textContent === correct) {
-                    opt.classList.add('correct');
-                }
-                
-                if (opt.textContent === selected && !isCorrect) {
-                    opt.classList.add('incorrect');
-                }
-            });
-            
-            // Update score
-            if (isCorrect) {
-                correctAnswers++;
-                
-                // Remove from mistakes if exists
-                if (currentMode !== 'review') {
-                    mistakes = mistakes.filter(m => m.english !== questionData.english);
-                }
-            } else if (currentMode !== 'review') {
-                // Add to mistakes if not already there
-                const alreadyExists = mistakes.some(m => m.english === questionData.english);
-                if (!alreadyExists) {
-                    mistakes.push(questionData);
-                }
-            }
-            
-            // Save mistakes
-            localStorage.setItem('fred_mistakes', JSON.stringify(mistakes));
-            
-            // Move to next question after delay
-            setTimeout(() => {
-                currentQuestionIndex++;
-                loadQuestion();
-            }, 1500);
-        }
-        
-        function finishQuiz() {
-            const scorePercentage = Math.round((correctAnswers / currentSession.length) * 100);
-            
-            // Update best score if needed
-            const currentBest = parseInt(localStorage.getItem('fred_best_score') || '0');
-            if (scorePercentage > currentBest) {
-                localStorage.setItem('fred_best_score', scorePercentage);
-                updateStars();
-            }
-            
-            // Show result and return to home
-            alert(`🎉 آزمون به پایان رسید!\n\nامتیاز شما: ${scorePercentage}%\nپاسخ‌های صحیح: ${correctAnswers} از ${currentSession.length}`);
-            exitQuiz();
-        }
-        
-        function exitQuiz() {
-            if (currentQuestionIndex < currentSession.length && currentSession.length > 0) {
-                const confirmExit = confirm('آیا مطمئنید می‌خواهید آزمون را رها کنید؟');
-                if (!confirmExit) {
-                    return;
-                }
-            }
-            
-            document.getElementById('quiz-screen').style.display = 'none';
-            document.getElementById('home-screen').style.display = 'flex';
-        }
-        
-        // ===== Speech Functions =====
-        function speakQuestion() {
-            if (isMuted) return;
-            
-            const questionElement = document.getElementById('question');
-            if (!questionElement) return;
-            
-            const text = questionElement.textContent;
-            if (!text) return;
-            
-            // Cancel any ongoing speech
-            window.speechSynthesis.cancel();
-            
-            // Create speech utterance
-            const utterance = new SpeechSynthesisUtterance(text);
-            
-            // Set language based on content
-            if (currentMode === 'en-fa' || currentMode === 'word-def') {
-                utterance.lang = 'en-US';
-            } else if (currentMode === 'fa-en') {
-                utterance.lang = 'fa-IR';
-            } else {
-                // Try to detect language
-                const hasPersian = /[\u0600-\u06FF]/.test(text);
-                utterance.lang = hasPersian ? 'fa-IR' : 'en-US';
-            }
-            
-            utterance.rate = 0.8;
-            utterance.volume = 1;
-            
-            // Speak
-            window.speechSynthesis.speak(utterance);
-        }
-        
-        // ===== PWA Functions =====
-        function initServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registered successfully:', registration);
-                    })
-                    .catch(error => {
-                        console.log('ServiceWorker registration failed:', error);
-                    });
-            }
-        }
-        
-        function installApp() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                
-                deferredPrompt.userChoice.then(choiceResult => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                        document.getElementById('install-btn').style.display = 'none';
-                    }
-                    
-                    deferredPrompt = null;
-                });
-            }
-        }
-        
-        // ===== Utility Functions =====
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-        
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(event) {
-            // Only in quiz screen
-            if (document.getElementById('quiz-screen').style.display === 'flex') {
-                // Number keys 1-4 for selecting options
-                if (event.key >= '1' && event.key <= '4') {
-                    const options = document.querySelectorAll('.option');
-                    const index = parseInt(event.key) - 1;
-                    
-                    if (options[index] && !options[index].classList.contains('correct') && 
-                        !options[index].classList.contains('incorrect')) {
-                        options[index].click();
-                    }
-                }
-                
-                // Space to speak question
-                if (event.code === 'Space') {
-                    event.preventDefault();
-                    speakQuestion();
-                }
-                
-                // Escape to exit
-                if (event.code === 'Escape') {
-                    exitQuiz();
-                }
-            }
-        });
-    </script>
+    <script src="pwa.js"></script>
+    <script src="speech.js"></script>
+    <script src="quiz.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
