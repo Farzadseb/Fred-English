@@ -3,100 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English with Fred Elite</title>
+    <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-grad: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            --glass-bg: rgba(255, 255, 255, 0.92);
-            --glass-border: rgba(255, 255, 255, 0.6);
+            --bg-page: #f0f7ff; /* آبی بسیار ملایم و لطیف */
+            --glass-bg: rgba(255, 255, 255, 0.95);
             --text-main: #2d3436;
             --primary-blue: #4a90e2;
             --soft-indigo: #6c5ce7;
+            --whatsapp-green: #25D366;
         }
+
         [data-theme="dark"] {
-            --bg-grad: linear-gradient(135deg, #1e272e 0%, #050505 100%);
+            --bg-page: #101418;
             --glass-bg: rgba(30, 39, 46, 0.98);
-            --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #f1f2f6;
-            --primary-blue: #54a0ff;
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; transition: background 0.3s; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-grad);
+            background-color: var(--bg-page);
             margin: 0; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 20px;
         }
+
         .screen {
-            background: var(--glass-bg); backdrop-filter: blur(20px);
-            width: 100%; max-width: 400px; min-height: 620px; border-radius: 40px; padding: 25px;
-            border: 1px solid var(--glass-border); box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            background: var(--glass-bg);
+            width: 100%; max-width: 400px; min-height: 630px; border-radius: 45px; padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
             display: flex; flex-direction: column; position: relative;
         }
-        .header-nav { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+
+        .header-nav { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .header-center { text-align: center; flex-grow: 1; }
+        .header-title { font-size: 24px; font-weight: 850; color: var(--text-main); margin: 0; }
+        
+        /* بخش ستاره‌ها و امتیاز */
+        .stars-container { color: #dfe6e9; font-size: 18px; margin-top: 5px; }
+        .stars-container .active { color: #f1c40f; }
+        .best-score { font-size: 12px; color: var(--text-main); opacity: 0.7; margin-top: 3px; font-weight: bold; }
+
         .top-icon { font-size: 22px; cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
-        .header-title { font-size: 22px; font-weight: 850; color: var(--text-main); margin: 0; cursor: pointer; user-select: none; }
+
         .btn-mode {
-            background: #fff; border: 1.5px solid #eee; padding: 16px; border-radius: 18px;
-            width: 100%; margin-bottom: 10px; font-weight: 600; cursor: pointer; color: var(--text-main); text-align: center;
+            background: #fff; border: 1.5px solid #eee; padding: 18px; border-radius: 20px;
+            width: 100%; margin-bottom: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); text-align: center; font-size: 16px;
         }
-        .btn-mode.active { border-color: var(--primary-blue); color: var(--primary-blue); background: rgba(74, 144, 226, 0.05); }
-        .en-text { direction: ltr !important; text-align: left !important; display: block; width: 100%; padding-left: 15px; }
+        .btn-mode.active { border-color: var(--primary-blue); color: var(--primary-blue); }
+
         .btn-action {
             border: none; color: white; font-weight: 700; width: 100%; padding: 18px;
-            border-radius: 20px; font-size: 17px; cursor: pointer; background: var(--primary-blue); margin-top: 10px;
+            border-radius: 22px; font-size: 17px; cursor: pointer; background: var(--primary-blue); margin-top: 10px;
         }
-        .btn-disabled { background: #ccc !important; cursor: not-allowed; opacity: 0.7; }
+
         .footer-contact {
-            margin-top: auto; padding-top: 20px; display: flex; flex-direction: column; align-items: center; border-top: 1px solid rgba(0,0,0,0.05);
+            margin-top: auto; padding-top: 15px; display: flex; flex-direction: column; align-items: center;
         }
         .whatsapp-link {
-            text-decoration: none; color: #25D366; font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 14px;
-            background: rgba(37, 211, 102, 0.1); padding: 10px 20px; border-radius: 50px;
+            text-decoration: none; color: white; font-weight: bold; display: flex; align-items: center; gap: 8px;
+            font-size: 15px; background: var(--whatsapp-green); padding: 12px 25px; border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
         }
-        .q-text { font-size: 1.6rem; font-weight: 800; color: var(--text-main); direction: ltr; text-align: center; margin: 30px 0; }
-        .correct { border-color: #55efc4 !important; color: #00b894 !important; }
-        .wrong { border-color: #ff7675 !important; color: #d63031 !important; }
-        #usageLimit { font-size: 12px; color: #e74c3c; margin-top: 5px; display: none; text-align: center; font-weight: bold; }
-        #versionTag { font-size: 10px; color: var(--primary-blue); opacity: 0.4; margin-bottom: 5px; text-align: center; }
+
+        .q-text { font-size: 1.8rem; font-weight: 800; color: var(--text-main); direction: ltr; text-align: center; margin: 40px 0; }
+        .en-text { direction: ltr !important; text-align: left !important; padding-left: 20px; }
+        .correct { border-color: #00b894 !important; color: #00b894 !important; background: #e6fffb !important; }
+        .wrong { border-color: #d63031 !important; color: #d63031 !important; background: #fff5f5 !important; }
     </style>
 </head>
-<body>
+<body id="mainBody">
 
     <div id="setup" class="screen">
         <div class="header-nav">
-            <div class="top-icon" onclick="toggleTheme()"><i class="fas fa-moon"></i></div>
-            <h1 class="header-title" onclick="masterTrigger()">English with Fred</h1>
-            <div id="mainMuteBtn" class="top-icon" onclick="toggleMute()"><i class="fas fa-volume-up"></i></div>
+            <div class="top-icon" onclick="toggleTheme()">🌓</div>
+            <div class="header-center">
+                <h1 class="header-title" onclick="masterTrigger()">English with Fred</h1>
+                <div class="stars-container" id="starBox">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                </div>
+                <div class="best-score">Best Score: <span id="highScore">0</span></div>
+            </div>
+            <div id="mainMuteBtn" class="top-icon" onclick="toggleMute()">🔊</div>
         </div>
         
-        <div id="versionTag">Standard Version</div>
-
-        <div id="modeList">
+        <div id="modeList" style="margin-top: 20px;">
             <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
             <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
             <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف</div>
             <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت</div>
         </div>
 
-        <button id="startBtn" class="btn-action" onclick="startQuiz(false)" style="margin-top: 20px;">🚀 شروع تمرین جدید</button>
-        <p id="usageLimit">❌ سهمیه تمرین رایگان (۱۰ بار در روز) تمام شد.</p>
-        
+        <button id="startBtn" class="btn-action" onclick="startQuiz(false)" style="margin-top: 15px;">🚀 شروع تمرین جدید</button>
         <button class="btn-action" style="background: var(--soft-indigo);" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
 
         <div class="footer-contact">
             <a id="waLink" href="#" target="_blank" class="whatsapp-link">
                 <i class="fab fa-whatsapp" style="font-size: 20px;"></i>
-                <span>مشاوره و ثبت‌نام کلاس (Fred)</span>
+                <span>ارتباط با Fred: 09121234567</span>
             </a>
         </div>
     </div>
 
     <div id="quiz" class="screen" style="display: none;">
         <div class="header-nav">
-            <div class="top-icon" onclick="say()"><i class="fas fa-volume-up"></i></div>
+            <div class="top-icon" onclick="say()">🔊</div>
             <div style="font-weight: 800; color: var(--text-main);" id="progressText">1 / 20</div>
-            <div class="top-icon" onclick="location.reload()"><i class="fas fa-times"></i></div>
+            <div class="top-icon" onclick="location.reload()">✕</div>
         </div>
         <div id="qDisplay" class="q-text"></div>
         <div id="opts"></div>
@@ -104,72 +118,44 @@
 
     <script src="dic.js"></script>
     <script>
-        // --- تنظیمات اختصاصی استاد Fred ---
-        const myPhone = "989120000000"; // شماره واقعی
-        const masterPass = "Fred77"; // رمزی که فقط خودتان می‌دانید
-        // ---------------------------------
+        const myPhone = "989121234567"; // شماره واقعی Fred
+        const masterPass = "Fred77";
 
-        const messageText = "سلام استاد Fred عزیز، من می‌خواستم برای آموزش زبان در کلاس‌های شما شرکت کنم. لطفاً من را راهنمایی کنید.";
-        document.getElementById('waLink').href = `https://wa.me/${myPhone}?text=${encodeURIComponent(messageText)}`;
+        document.getElementById('waLink').href = `https://wa.me/${myPhone}?text=${encodeURIComponent("سلام استاد Fred عزیز، من می‌خواستم در کلاس‌های شما شرکت کنم.")}`;
+
+        let score = parseInt(localStorage.getItem('fred_high_score')) || 0;
+        document.getElementById('highScore').textContent = score;
+        updateStars(score);
+
+        function updateStars(s) {
+            const stars = document.getElementById('starBox').children;
+            for(let i=0; i<4; i++) {
+                stars[i].className = i < Math.floor(s/5) ? "fas fa-star active" : "fas fa-star";
+            }
+        }
+
+        function toggleTheme() {
+            const b = document.getElementById('mainBody');
+            b.hasAttribute('data-theme') ? b.removeAttribute('data-theme') : b.setAttribute('data-theme', 'dark');
+        }
 
         let isMaster = localStorage.getItem('device_token_status') === 'premium_active';
         let clickCount = 0;
 
-        function checkUsage() {
-            if (isMaster) {
-                document.getElementById('versionTag').textContent = "★ Premium Version (Unlimited) ★";
-                document.getElementById('versionTag').style.opacity = "1";
-                return true;
-            }
-            const today = new Date().toDateString();
-            let usage = JSON.parse(localStorage.getItem('daily_usage')) || { date: today, count: 0 };
-            if (usage.date !== today) usage = { date: today, count: 0 };
-            
-            if (usage.count >= 10) {
-                const btn = document.getElementById('startBtn');
-                btn.classList.add('btn-disabled');
-                btn.onclick = null;
-                document.getElementById('usageLimit').style.display = 'block';
-                return false;
-            }
-            return true;
-        }
-
-        function incrementUsage() {
-            if (isMaster) return;
-            const today = new Date().toDateString();
-            let usage = JSON.parse(localStorage.getItem('daily_usage')) || { date: today, count: 0 };
-            usage.count++;
-            localStorage.setItem('daily_usage', JSON.stringify(usage));
-            checkUsage();
-        }
-
         function masterTrigger() {
             clickCount++;
             if (clickCount >= 3) {
-                const pass = prompt("کد فعالسازی نسخه نامحدود را وارد کنید:");
-                if (pass === masterPass) {
-                    isMaster = true;
+                if (prompt("کد استاد:") === masterPass) {
                     localStorage.setItem('device_token_status', 'premium_active');
-                    alert("این دستگاه با موفقیت به نسخه طلایی ارتقا یافت.");
-                    location.reload();
+                    alert("نسخه طلایی فعال شد."); location.reload();
                 }
                 clickCount = 0;
             }
         }
 
-        window.onload = checkUsage;
-
-        // منطق اصلی آزمون (همان کدهای قبلی با اصلاحات جزیی)
+        // --- منطق کوییز ---
         let db = [], session = [], idx = 0, currentMode = 1, busy = false, isMuted = false;
-        let mistakeBank = JSON.parse(localStorage.getItem('fred_mistakes_v4')) || [];
-
-        function toggleTheme() { document.body.toggleAttribute('data-theme'); }
-        function toggleMute() {
-            isMuted = !isMuted;
-            document.getElementById('mainMuteBtn').innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
-            if(isMuted) window.speechSynthesis.cancel();
-        }
+        let correctAnswers = 0;
 
         function setMode(m, el) { 
             currentMode = m; 
@@ -178,40 +164,35 @@
         }
 
         function startQuiz(fromMistakes) {
-            if (!fromMistakes && !checkUsage()) return;
-            if (!fromMistakes) incrementUsage();
-            let source = fromMistakes ? mistakeBank : (typeof permanentWords !== 'undefined' ? permanentWords.trim().split('\n') : []);
-            if(fromMistakes && mistakeBank.length === 0) return alert("لیست اشتباهات خالی است!");
+            let source = (typeof permanentWords !== 'undefined' ? permanentWords.trim().split('\n') : []);
             db = source.map(l => {
                 let p = l.split(' — ');
-                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Definition" } : null;
+                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Def" } : null;
             }).filter(x => x);
+
             session = [...db].sort(() => 0.5 - Math.random()).slice(0, 20);
             document.getElementById('setup').style.display = 'none';
             document.getElementById('quiz').style.display = 'flex';
-            idx = 0; render();
+            idx = 0; correctAnswers = 0; render();
         }
 
         function render() {
             busy = false; const q = session[idx]; let qText = "", ans = "";
             document.getElementById('progressText').textContent = `${idx + 1} / ${session.length}`;
+            
             if(currentMode === 1) { qText = q.en; ans = q.fa; }
             else if(currentMode === 2) { qText = q.fa; ans = q.en; }
             else if(currentMode === 3) { qText = q.en; ans = q.def; }
             else { qText = q.def; ans = q.en; }
+
             document.getElementById('qDisplay').textContent = qText;
-            const div = document.getElementById('opts');
-            div.innerHTML = '';
+            const div = document.getElementById('opts'); div.innerHTML = '';
+
             let opts = [ans];
-            let pool = db.filter(v => v.en !== q.en).map(v => {
-                if(currentMode === 1) return v.fa; if(currentMode === 2) return v.en;
-                if(currentMode === 3) return v.def; return v.en;
-            });
-            while(opts.length < 4 && pool.length) {
-                let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0];
-                if(!opts.includes(r)) opts.push(r);
-            }
+            let pool = db.filter(v => v.en !== q.en).map(v => (currentMode==1?v.fa:(currentMode==3?v.def:v.en)));
+            while(opts.length < 4) opts.push(pool.splice(Math.floor(Math.random()*pool.length), 1)[0]);
             opts.sort(() => 0.5 - Math.random());
+
             opts.forEach(o => {
                 const b = document.createElement('button');
                 b.className = 'btn-mode';
@@ -219,27 +200,33 @@
                 b.textContent = o;
                 b.onclick = () => {
                     if(busy) return; busy = true;
-                    if(o === ans) b.classList.add('correct');
-                    else {
-                        b.classList.add('wrong');
-                        if(!mistakeBank.some(m => m.en === q.en)) {
-                            mistakeBank.push(q);
-                            localStorage.setItem('fred_mistakes_v4', JSON.stringify(mistakeBank));
-                        }
-                        div.querySelectorAll('button').forEach(btn => { if(btn.textContent === ans) btn.classList.add('correct'); });
-                    }
-                    setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1200);
+                    if(o === ans) { b.classList.add('correct'); correctAnswers++; }
+                    else { b.classList.add('wrong'); }
+                    
+                    setTimeout(() => { 
+                        idx++; 
+                        if(idx < session.length) render(); 
+                        else finish();
+                    }, 1000);
                 };
                 div.appendChild(b);
             });
-            say(); 
+            say();
+        }
+
+        function finish() {
+            if(correctAnswers > score) {
+                localStorage.setItem('fred_high_score', correctAnswers);
+            }
+            alert(`تمرین تمام شد! امتیاز شما: ${correctAnswers}`);
+            location.reload();
         }
 
         function say() {
             if (!session[idx] || isMuted || currentMode === 2) return;
             window.speechSynthesis.cancel(); 
             const u = new SpeechSynthesisUtterance(currentMode === 4 ? session[idx].def : session[idx].en);
-            u.lang = 'en-US'; u.rate = 0.7;
+            u.lang = 'en-US'; u.rate = 0.8;
             window.speechSynthesis.speak(u);
         }
     </script>
