@@ -2,33 +2,32 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>English with Fred – A1</title>
 
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a90e2">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 :root{
   --blue:#4a90e2;
   --green:#25D366;
-  --red:#FF3B30;
-  --bg:#f0f7ff;
+  --red:#ff3b30;
+  --purple:#6c5ce7;
+  --bg:#f5f7fb;
   --card:#ffffff;
   --text:#2d3436;
-  --radius:18px;
 }
 [data-theme="dark"]{
-  --bg:#101418;
-  --card:#1e272e;
+  --bg:#111;
+  --card:#1e1e1e;
   --text:#f1f2f6;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family:-apple-system,system-ui,sans-serif;
   background:var(--bg);
   color:var(--text);
   height:100vh;
@@ -48,70 +47,42 @@ body{
   align-items:center;
   margin-bottom:15px;
 }
-.title{
-  font-size:22px;
-  font-weight:900;
-  cursor:pointer;
-}
-.icon{
-  width:44px;height:44px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;
-  cursor:pointer;
-}
+h1{margin:0;font-size:22px;font-weight:900;cursor:pointer}
+.icon{font-size:22px;cursor:pointer}
 .card{
   background:var(--card);
   width:100%;
-  max-width:320px;
+  max-width:330px;
   padding:15px;
-  border-radius:var(--radius);
-  box-shadow:0 8px 25px rgba(0,0,0,.08);
+  border-radius:18px;
   text-align:center;
-  margin-bottom:15px;
+  margin-bottom:12px;
 }
-.stars{font-size:22px;letter-spacing:4px}
-.active{color:#f1c40f}
-
 .btn{
   width:100%;
-  max-width:320px;
+  max-width:330px;
   padding:16px;
-  border-radius:16px;
-  border:none;
-  font-size:16px;
-  font-weight:800;
   margin:6px 0;
+  border:none;
+  border-radius:16px;
+  font-size:16px;
+  font-weight:700;
   cursor:pointer;
 }
-.primary{background:var(--blue);color:#fff}
-.secondary{background:#6c5ce7;color:#fff}
-
-.mode{
-  background:var(--card);
-  border:2px solid transparent;
-  color:var(--text);
-}
-.mode.active{
-  border-color:var(--blue);
-  color:var(--blue);
-}
-
+.primary{background:var(--blue);color:white}
+.secondary{background:var(--purple);color:white}
+.whatsapp{background:var(--green);color:white}
+.mode{background:var(--card);border:2px solid transparent}
+.mode.active{border-color:var(--blue);color:var(--blue)}
 #quiz{display:none}
-.qtext{
-  font-size:2rem;
-  font-weight:900;
-  text-align:center;
-  margin:40px 0;
-}
+.qtext{font-size:28px;font-weight:900;margin:30px 0;text-align:center}
 .opt{
   background:var(--card);
   padding:16px;
   margin:8px 0;
   border-radius:14px;
-  font-weight:600;
   cursor:pointer;
 }
-
 .modal{
   position:fixed;inset:0;
   background:rgba(0,0,0,.6);
@@ -122,20 +93,17 @@ body{
 .modal.show{display:flex}
 .modalBox{
   background:var(--card);
-  padding:25px;
-  border-radius:22px;
+  padding:22px;
+  border-radius:20px;
   width:90%;
-  max-width:380px;
+  max-width:360px;
 }
 </style>
 </head>
 
-<body id="body">
+<body id="app">
 
-<!-- ✅ WORDS -->
-<script src="words.js"></script>
-
-<!-- MODAL -->
+<!-- Modal -->
 <div id="modal" class="modal">
   <div class="modalBox">
     <h3 id="mTitle"></h3>
@@ -144,67 +112,72 @@ body{
   </div>
 </div>
 
-<!-- HOME -->
+<!-- Home -->
 <div id="home" class="screen">
   <div class="header">
     <div class="icon" onclick="toggleTheme()">🌓</div>
-    <div class="title" onclick="showInfo()">English with Fred</div>
+    <h1 onclick="showInfo()">English with Fred</h1>
     <div class="icon" onclick="toggleMute()" id="mute">🔊</div>
   </div>
 
   <div class="card">
-    <div id="stars" class="stars">☆☆☆☆</div>
+    ⭐⭐⭐⭐<br>
     بهترین امتیاز: <span id="best">0</span>%
   </div>
 
   <button class="btn mode active" onclick="setMode(1,this)">English → Persian</button>
   <button class="btn mode" onclick="setMode(2,this)">Persian → English</button>
+  <button class="btn mode" onclick="setMode(3,this)">Word → Definition</button>
+  <button class="btn mode" onclick="setMode(4,this)">Definition → Word</button>
 
-  <button class="btn primary" onclick="start()">🚀 شروع تمرین</button>
+  <button class="btn primary" onclick="start(false)">🚀 شروع تمرین</button>
+  <button class="btn secondary" onclick="start(true)" id="reviewBtn">🎯 مرور اشتباهات</button>
+  <button class="btn whatsapp" onclick="openWhatsApp()">💬 ثبت‌نام در واتساپ</button>
 </div>
 
-<!-- QUIZ -->
+<!-- Quiz -->
 <div id="quiz" class="screen">
   <div class="header">
     <div class="icon" onclick="speak()">🔊</div>
     <div id="prog">1/10</div>
     <div class="icon" onclick="location.reload()">✕</div>
   </div>
-
   <div id="q" class="qtext"></div>
   <div id="opts"></div>
 </div>
 
+<!-- Words -->
+<script src="words.js"></script>
+
 <script>
-/* ---------- DATA ---------- */
-let rawWords = "";
-if(typeof window.wordsData !== "undefined"){
-  rawWords = window.wordsData;
-}
+/* STATE */
+let db=[], session=[], idx=0, correct=0;
+let mode=1, muted=false;
+let mistakes=JSON.parse(localStorage.getItem("fred_mistakes")||"[]");
 
-/* ---------- STATE ---------- */
-let db=[],session=[],idx=0,correct=0;
-let mode=1,muted=false;
-
-/* ---------- INIT ---------- */
+/* INIT */
 window.onload=()=>{
-  if(!rawWords.trim()){
+  if(!window.wordsData){
     showModal("خطا","فایل words.js بارگذاری نشد");
     return;
   }
-  db = rawWords.split("\n").map(l=>{
-    const p=l.split(" — ");
-    return {en:p[0],fa:p[1]};
+  db = wordsData.split("\n").map(l=>{
+    const [en,fa,def]=l.split(" — ");
+    return {en,fa,def};
   }).filter(w=>w.en&&w.fa);
 
-  const best = localStorage.getItem("fred_best")||0;
-  document.getElementById("best").textContent = best;
-  renderStars(best);
+  best.textContent=localStorage.getItem("fred_best")||0;
+  updateReview();
 };
 
-/* ---------- QUIZ ---------- */
-function start(){
-  session=[...db].sort(()=>.5-Math.random()).slice(0,10);
+/* CORE */
+function start(review){
+  const src=review?mistakes:db;
+  if(src.length<4){
+    showModal("پیام","لغت کافی وجود ندارد");
+    return;
+  }
+  session=[...src].sort(()=>.5-Math.random()).slice(0,10);
   idx=0;correct=0;
   home.style.display="none";
   quiz.style.display="flex";
@@ -212,86 +185,99 @@ function start(){
 }
 
 function render(){
-  const q=session[idx];
+  const qObj=session[idx];
   prog.textContent=`${idx+1}/${session.length}`;
-  q.textContent = mode===1 ? q.en : q.fa;
 
-  const ans = mode===1 ? q.fa : q.en;
-  const pool = db.map(w=>mode===1?w.fa:w.en)
-    .filter(x=>x!==ans)
-    .sort(()=>.5-Math.random())
-    .slice(0,3);
+  let question,answer;
+  if(mode===1){question=qObj.en;answer=qObj.fa}
+  if(mode===2){question=qObj.fa;answer=qObj.en}
+  if(mode===3){question=qObj.en;answer=qObj.def}
+  if(mode===4){question=qObj.def;answer=qObj.en}
 
-  const options=[ans,...pool].sort(()=>.5-Math.random());
+  q.textContent=question;
+
+  const pool=db.map(w=>{
+    if(mode===1)return w.fa;
+    if(mode===2)return w.en;
+    if(mode===3)return w.def;
+    if(mode===4)return w.en;
+  }).filter(x=>x&&x!==answer).sort(()=>.5-Math.random()).slice(0,3);
+
+  const options=[answer,...pool].sort(()=>.5-Math.random());
   opts.innerHTML="";
   options.forEach(o=>{
     const d=document.createElement("div");
     d.className="opt";
     d.textContent=o;
-    d.onclick=()=>check(o,ans);
+    d.onclick=()=>check(o,answer,qObj);
     opts.appendChild(d);
   });
+
   speak();
 }
 
-function check(sel,ans){
+function check(sel,ans,qObj){
   const el=[...opts.children].find(e=>e.textContent===sel);
-  [...opts.children].forEach(e=>e.style.pointerEvents="none");
-
-  if(sel===ans){
+  const ok=sel===ans;
+  if(ok){
     correct++;
     el.style.background="var(--green)";
-    el.style.color="white";
+    el.style.color="#fff";
+    mistakes=mistakes.filter(m=>m.en!==qObj.en);
   }else{
     el.style.background="var(--red)";
-    el.style.color="white";
+    el.style.color="#fff";
+    if(!mistakes.find(m=>m.en===qObj.en))mistakes.push(qObj);
   }
-
+  localStorage.setItem("fred_mistakes",JSON.stringify(mistakes));
   setTimeout(()=>{
     idx++;
-    idx<session.length ? render() : finish();
-  },500);
+    idx<session.length?render():finish();
+  },400);
 }
 
 function finish(){
   const pct=Math.round(correct/session.length*100);
-  const best=localStorage.getItem("fred_best")||0;
-  if(pct>best) localStorage.setItem("fred_best",pct);
+  const bestScore=localStorage.getItem("fred_best")||0;
+  if(pct>bestScore)localStorage.setItem("fred_best",pct);
   showModal("پایان تمرین",`امتیاز شما: ${pct}%`);
 }
 
-/* ---------- UI ---------- */
+/* UI */
 function setMode(m,el){
   mode=m;
   document.querySelectorAll(".mode").forEach(b=>b.classList.remove("active"));
   el.classList.add("active");
 }
 function toggleTheme(){
-  body.dataset.theme = body.dataset.theme ? "" : "dark";
+  app.dataset.theme=app.dataset.theme?"":"dark";
 }
 function toggleMute(){
   muted=!muted;
-  mute.textContent = muted?"🔇":"🔊";
+  mute.textContent=muted?"🔇":"🔊";
 }
 function speak(){
-  if(muted) return;
-  const t = mode===1 ? session[idx].en : session[idx].fa;
+  if(muted)return;
+  const u=new SpeechSynthesisUtterance(q.textContent);
+  u.volume=0.5;
   speechSynthesis.cancel();
-  speechSynthesis.speak(new SpeechSynthesisUtterance(t));
+  speechSynthesis.speak(u);
 }
 function showModal(t,b){
   mTitle.textContent=t;
   mBody.textContent=b;
   modal.classList.add("show");
 }
-function hideModal(){
-  modal.classList.remove("show");
-}
+function hideModal(){modal.classList.remove("show")}
 function showInfo(){
   showModal("درباره","English with Fred\nA1 Vocabulary Trainer");
 }
-function renderStars(score){
-  stars.innerHTML=[1,2,3,4].map(i=>i<=score/25?"★":"☆").join("");
+function updateReview(){
+  reviewBtn.textContent=`🎯 مرور اشتباهات (${mistakes.length})`;
+}
+function openWhatsApp(){
+  const msg=encodeURIComponent("سلام، برای ثبت‌نام در کلاس‌های انگلیسی پیام می‌دهم.");
+  location.href=`https://wa.me/989017708544?text=${msg}`;
 }
 </script>
 </body>
