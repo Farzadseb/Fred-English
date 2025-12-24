@@ -2,10 +2,13 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+
+<title>English with Fred – A1</title>
+
 <meta name="theme-color" content="#4a90e2">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>English with Fred – A1</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 :root{
@@ -15,6 +18,7 @@
   --bg:#f0f7ff;
   --card:#ffffff;
   --text:#2d3436;
+  --radius:18px;
 }
 [data-theme="dark"]{
   --bg:#101418;
@@ -60,11 +64,14 @@ body{
   width:100%;
   max-width:320px;
   padding:15px;
-  border-radius:18px;
+  border-radius:var(--radius);
   box-shadow:0 8px 25px rgba(0,0,0,.08);
   text-align:center;
   margin-bottom:15px;
 }
+.stars{font-size:22px;letter-spacing:4px}
+.active{color:#f1c40f}
+
 .btn{
   width:100%;
   max-width:320px;
@@ -78,7 +85,7 @@ body{
 }
 .primary{background:var(--blue);color:#fff}
 .secondary{background:#6c5ce7;color:#fff}
-.exit{background:#ff6b6b;color:#fff}
+
 .mode{
   background:var(--card);
   border:2px solid transparent;
@@ -88,6 +95,7 @@ body{
   border-color:var(--blue);
   color:var(--blue);
 }
+
 #quiz{display:none}
 .qtext{
   font-size:2rem;
@@ -103,6 +111,7 @@ body{
   font-weight:600;
   cursor:pointer;
 }
+
 .modal{
   position:fixed;inset:0;
   background:rgba(0,0,0,.6);
@@ -123,9 +132,10 @@ body{
 
 <body id="body">
 
-<!-- words database -->
-<script src="./words.js"></script>
+<!-- ✅ WORDS -->
+<script src="words.js"></script>
 
+<!-- MODAL -->
 <div id="modal" class="modal">
   <div class="modalBox">
     <h3 id="mTitle"></h3>
@@ -134,15 +144,16 @@ body{
   </div>
 </div>
 
+<!-- HOME -->
 <div id="home" class="screen">
   <div class="header">
     <div class="icon" onclick="toggleTheme()">🌓</div>
     <div class="title" onclick="showInfo()">English with Fred</div>
-    <div class="icon" onclick="toggleMute()">🔊</div>
+    <div class="icon" onclick="toggleMute()" id="mute">🔊</div>
   </div>
 
   <div class="card">
-    ⭐⭐⭐⭐<br>
+    <div id="stars" class="stars">☆☆☆☆</div>
     بهترین امتیاز: <span id="best">0</span>%
   </div>
 
@@ -152,6 +163,7 @@ body{
   <button class="btn primary" onclick="start()">🚀 شروع تمرین</button>
 </div>
 
+<!-- QUIZ -->
 <div id="quiz" class="screen">
   <div class="header">
     <div class="icon" onclick="speak()">🔊</div>
@@ -164,101 +176,122 @@ body{
 </div>
 
 <script>
+/* ---------- DATA ---------- */
+let rawWords = "";
+if(typeof window.wordsData !== "undefined"){
+  rawWords = window.wordsData;
+}
+
 /* ---------- STATE ---------- */
 let db=[],session=[],idx=0,correct=0;
 let mode=1,muted=false;
 
 /* ---------- INIT ---------- */
 window.onload=()=>{
-  if(!window.wordsData){
-    showModal('خطا','فایل words.js بارگذاری نشد');
+  if(!rawWords.trim()){
+    showModal("خطا","فایل words.js بارگذاری نشد");
     return;
   }
-  db=wordsData.split('\n').map(l=>{
-    const p=l.split(' — ');
+  db = rawWords.split("\n").map(l=>{
+    const p=l.split(" — ");
     return {en:p[0],fa:p[1]};
   }).filter(w=>w.en&&w.fa);
 
-  document.getElementById('best').textContent=
-    localStorage.getItem('fred_best')||0;
+  const best = localStorage.getItem("fred_best")||0;
+  document.getElementById("best").textContent = best;
+  renderStars(best);
 };
 
-/* ---------- CORE ---------- */
+/* ---------- QUIZ ---------- */
 function start(){
   session=[...db].sort(()=>.5-Math.random()).slice(0,10);
   idx=0;correct=0;
-  home.style.display='none';
-  quiz.style.display='flex';
+  home.style.display="none";
+  quiz.style.display="flex";
   render();
 }
 
 function render(){
   const q=session[idx];
-  document.getElementById('prog').textContent=`${idx+1}/10`;
-  document.getElementById('q').textContent=
-    mode===1?q.en:q.fa;
+  prog.textContent=`${idx+1}/${session.length}`;
+  q.textContent = mode===1 ? q.en : q.fa;
 
-  const ans=mode===1?q.fa:q.en;
-  const pool=db.map(w=>mode===1?w.fa:w.en)
-               .filter(x=>x!==ans)
-               .sort(()=>.5-Math.random())
-               .slice(0,3);
-  const opts=[ans,...pool].sort(()=>.5-Math.random());
+  const ans = mode===1 ? q.fa : q.en;
+  const pool = db.map(w=>mode===1?w.fa:w.en)
+    .filter(x=>x!==ans)
+    .sort(()=>.5-Math.random())
+    .slice(0,3);
 
-  const box=document.getElementById('opts');
-  box.innerHTML='';
-  opts.forEach(o=>{
-    const b=document.createElement('div');
-    b.className='opt';
-    b.textContent=o;
-    b.onclick=()=>check(o,ans);
-    box.appendChild(b);
+  const options=[ans,...pool].sort(()=>.5-Math.random());
+  opts.innerHTML="";
+  options.forEach(o=>{
+    const d=document.createElement("div");
+    d.className="opt";
+    d.textContent=o;
+    d.onclick=()=>check(o,ans);
+    opts.appendChild(d);
   });
   speak();
 }
 
 function check(sel,ans){
-  if(sel===ans) correct++;
-  idx++;
-  if(idx<session.length) render();
-  else finish();
+  const el=[...opts.children].find(e=>e.textContent===sel);
+  [...opts.children].forEach(e=>e.style.pointerEvents="none");
+
+  if(sel===ans){
+    correct++;
+    el.style.background="var(--green)";
+    el.style.color="white";
+  }else{
+    el.style.background="var(--red)";
+    el.style.color="white";
+  }
+
+  setTimeout(()=>{
+    idx++;
+    idx<session.length ? render() : finish();
+  },500);
 }
 
 function finish(){
   const pct=Math.round(correct/session.length*100);
-  const best=localStorage.getItem('fred_best')||0;
-  if(pct>best) localStorage.setItem('fred_best',pct);
-  showModal('پایان تمرین',`امتیاز شما: ${pct}%`);
+  const best=localStorage.getItem("fred_best")||0;
+  if(pct>best) localStorage.setItem("fred_best",pct);
+  showModal("پایان تمرین",`امتیاز شما: ${pct}%`);
 }
 
 /* ---------- UI ---------- */
 function setMode(m,el){
   mode=m;
-  document.querySelectorAll('.mode').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
+  document.querySelectorAll(".mode").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
 }
 function toggleTheme(){
-  body.dataset.theme=body.dataset.theme?'':'dark';
+  body.dataset.theme = body.dataset.theme ? "" : "dark";
 }
 function toggleMute(){
   muted=!muted;
+  mute.textContent = muted?"🔇":"🔊";
 }
 function speak(){
   if(muted) return;
-  const t=mode===1?session[idx].en:session[idx].fa;
+  const t = mode===1 ? session[idx].en : session[idx].fa;
   speechSynthesis.cancel();
   speechSynthesis.speak(new SpeechSynthesisUtterance(t));
 }
 function showModal(t,b){
   mTitle.textContent=t;
   mBody.textContent=b;
-  modal.classList.add('show');
+  modal.classList.add("show");
 }
 function hideModal(){
-  modal.classList.remove('show');
+  modal.classList.remove("show");
 }
 function showInfo(){
-  showModal('درباره','English with Fred\nA1 Vocabulary Trainer');
+  showModal("درباره","English with Fred\nA1 Vocabulary Trainer");
+}
+function renderStars(score){
+  stars.innerHTML=[1,2,3,4].map(i=>i<=score/25?"★":"☆").join("");
 }
 </script>
 </body>
