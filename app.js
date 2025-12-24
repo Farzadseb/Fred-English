@@ -36,12 +36,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if PWA is already installed
     checkPWAInstallation();
     
-    // Auto-show install prompt after 5 seconds
+    // Auto-show install prompt after 15 seconds (نه 5 ثانیه)
     setTimeout(() => {
         if (deferredPrompt && !isPWAInstalled) {
-            showInstallPrompt();
+            setTimeout(() => {
+                showInstallPrompt();
+            }, 15000);
         }
-    }, 5000);
+    }, 1000);
 });
 
 // ===== Data Processing =====
@@ -129,11 +131,22 @@ function updateStars() {
     
     bestScoreElement.textContent = bestScore;
     
-    // Calculate how many stars to show (0-4)
-    const starCount = Math.floor(bestScore / 25);
-    
     // Clear container
     starsContainer.innerHTML = '';
+    
+    // 🎯 ستاره‌های صفر = کاملاً خنثی
+    if (bestScore === 0) {
+        for (let i = 0; i < 4; i++) {
+            const star = document.createElement('span');
+            star.className = 'star-zero';
+            star.textContent = '☆';
+            starsContainer.appendChild(star);
+        }
+        return;
+    }
+    
+    // Calculate how many stars to show (0-4)
+    const starCount = Math.floor(bestScore / 25);
     
     // Add stars
     for (let i = 0; i < 4; i++) {
@@ -195,14 +208,11 @@ function showToast(message, icon = 'ℹ️') {
 
 // ===== Exit Functions =====
 function exitApp() {
-    if (confirm('آیا می‌خواهید از برنامه خارج شوید؟')) {
-        // If running as PWA, close window
-        if (isPWAInstalled) {
-            window.close();
-        } else {
-            // Show thank you message
-            showToast('با تشکر از استفاده شما! 👋', '❤️');
-        }
+    if (confirm('برای خروج کامل، برنامه را از multitasking ببندید.\n\nبه صفحه اصلی برگردیم؟')) {
+        // همیشه فقط به صفحه اصلی برمی‌گردیم
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('home-screen').style.display = 'flex';
+        showToast('در صفحه اصلی هستید ✓', '🏠');
     }
 }
 
