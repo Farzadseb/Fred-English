@@ -19,17 +19,16 @@ function speakQuestion() {
     // Set language based on content
     if (currentMode === 'en-fa' || currentMode === 'word-def') {
         utterance.lang = 'en-US';
-        utterance.rate = 0.8;
     } else if (currentMode === 'fa-en') {
         utterance.lang = 'fa-IR';
-        utterance.rate = 0.9;
     } else {
         // Try to detect language
         const hasPersian = /[\u0600-\u06FF]/.test(text);
         utterance.lang = hasPersian ? 'fa-IR' : 'en-US';
-        utterance.rate = hasPersian ? 0.9 : 0.8;
     }
     
+    // 📢 A1 = کند، واضح، بی‌رحم - ثابت ۰.۵
+    utterance.rate = 0.5;
     utterance.volume = 1;
     utterance.pitch = 1;
     
