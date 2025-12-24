@@ -1,7 +1,7 @@
 {
   "name": "English with Fred",
   "short_name": "Fred",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#4a90e2",
   "theme_color": "#4a90e2",
