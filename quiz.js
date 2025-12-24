@@ -198,7 +198,7 @@ function finishQuiz() {
 
 function exitQuiz() {
     if (currentQuestionIndex < currentSession.length && currentSession.length > 0) {
-        const confirmExit = confirm('آیا مطمئنید می‌خواهید آزمون را رها کنید؟');
+        const confirmExit = confirm('آیا مطمئنید می‌خواهید آزمون را رها کنید؟\n\nپیشرفت ذخیره نخواهد شد.');
         if (!confirmExit) {
             return;
         }
@@ -206,4 +206,5 @@ function exitQuiz() {
     
     document.getElementById('quiz-screen').style.display = 'none';
     document.getElementById('home-screen').style.display = 'flex';
+    showToast('آزمون متوقف شد', '⏸️');
 }
