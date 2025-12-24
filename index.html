@@ -2,15 +2,21 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <!-- خطوط جدید برای جلوگیری از کش -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- خط زیر هم مهم است -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#4a90e2">
-    <link rel="manifest" href="manifest.json">
-    <title>English with Fred</title>
+    <link rel="manifest" href="manifest.json?v=2">
+    <title>English with Fred - Version 2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="dic.js"></script>
+    <script src="dic.js?v=2"></script>
     
     <style>
         :root { 
@@ -190,6 +196,8 @@
         
         // ========== وقتی صفحه لود شد ==========
         window.onload = () => {
+            console.log("🔄 English with Fred - Version 2 loaded!");
+            
             // بارگذاری بهترین امتیاز
             const best = localStorage.getItem('fred_best') || 0;
             document.getElementById('highScore').textContent = best;
@@ -214,6 +222,12 @@
             // خطا
             else {
                 console.error("❌ No words found! Check dic.js file");
+                // نمایش پیام کاربر پسند
+                setTimeout(() => {
+                    if (!window.rawWords) {
+                        alert("لطفاً صفحه را رفرش کنید. اگر مشکل ادامه داشت، کش مرورگر را پاک کنید.");
+                    }
+                }, 1000);
             }
             
             // مدیریت آفلاین
@@ -232,7 +246,7 @@
             
             // ثبت Service Worker برای PWA
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js')
+                navigator.serviceWorker.register('sw.js?v=2')
                     .then(() => console.log('✅ Service Worker registered'))
                     .catch(err => console.log('❌ Service Worker error:', err));
             }
@@ -242,7 +256,7 @@
         function setupOfflineSupport() {
             // ذخیره منابع در cache
             if ('caches' in window) {
-                caches.open('english-fred-cache').then(cache => {
+                caches.open('english-fred-cache-v2').then(cache => {
                     const urls = [
                         './',
                         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
@@ -481,6 +495,17 @@
                 alert("❌ کد اشتباه است!");
             }
         }
+        
+        // ========== تابع برای رفرش با پارامتر ==========
+        function forceRefresh() {
+            if (!localStorage.getItem('fred_version') || localStorage.getItem('fred_version') !== '2') {
+                localStorage.setItem('fred_version', '2');
+                location.href = location.href.split('?')[0] + '?v=' + new Date().getTime();
+            }
+        }
+        
+        // اجرای رفرش اگر نیاز باشد
+        setTimeout(forceRefresh, 100);
     </script>
 </body>
 </html>
