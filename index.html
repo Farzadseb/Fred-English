@@ -2,21 +2,18 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- خطوط جدید برای جلوگیری از کش -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <!-- خط زیر هم مهم است -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#4a90e2">
-    <link rel="manifest" href="manifest.json?v=2">
-    <title>English with Fred - Version 2</title>
+    <link rel="manifest" href="manifest.json">
+    <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="dic.js?v=2"></script>
+    <script src="dic.js"></script>
     
     <style>
         :root { 
@@ -105,20 +102,6 @@
             box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3), inset 0 1px 0 rgba(255,255,255,0.4);
         }
 
-        #offlineMessage {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #ff9800;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            z-index: 9999;
-            font-size: 14px;
-        }
-
         #quizScreen { 
             background: var(--bg-page);
             display: none; position: absolute; top:0; left:0; width:100%; z-index: 100; 
@@ -144,8 +127,6 @@
     </style>
 </head>
 <body id="mainBody">
-
-    <div id="offlineMessage"></div>
 
     <div id="setup" class="screen">
         <div class="header-nav">
@@ -196,92 +177,29 @@
         
         // ========== وقتی صفحه لود شد ==========
         window.onload = () => {
-            console.log("🔄 English with Fred - Version 2 loaded!");
+            console.log("📚 English with Fred - PDCS A1 Core Vocabulary");
             
             // بارگذاری بهترین امتیاز
             const best = localStorage.getItem('fred_best') || 0;
             document.getElementById('highScore').textContent = best;
             updateStars(best);
             
-            // تبدیل permanentWords به rawWords اگر در dic.js باشد
-            if (typeof permanentWords !== 'undefined') {
-                window.rawWords = permanentWords;
-                console.log("✅ Using permanentWords from dic.js");
-                localStorage.setItem('fred_words', permanentWords);
-            } 
-            // یا اگر rawWords مستقیم باشد
-            else if (typeof rawWords !== 'undefined') {
-                console.log("✅ Using rawWords from dic.js");
+            // بررسی وجود لغات
+            if (typeof rawWords !== 'undefined') {
+                console.log("✅ Loaded", rawWords.split('\n').length, "A1 words");
                 localStorage.setItem('fred_words', rawWords);
+            } else if (localStorage.getItem('fred_words')) {
+                console.log('📂 Using cached words');
+            } else {
+                console.error("❌ No words found!");
             }
-            // یا از localStorage
-            else if (localStorage.getItem('fred_words')) {
-                window.rawWords = localStorage.getItem('fred_words');
-                console.log('📂 Loaded words from localStorage');
-            }
-            // خطا
-            else {
-                console.error("❌ No words found! Check dic.js file");
-                // نمایش پیام کاربر پسند
-                setTimeout(() => {
-                    if (!window.rawWords) {
-                        alert("لطفاً صفحه را رفرش کنید. اگر مشکل ادامه داشت، کش مرورگر را پاک کنید.");
-                    }
-                }, 1000);
-            }
-            
-            // مدیریت آفلاین
-            setupOfflineSupport();
-            
-            // گوش دادن به وضعیت شبکه
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-            updateOnlineStatus();
             
             // اعمال تم تاریک اگر ذخیره شده
             const savedTheme = localStorage.getItem('fred_theme');
             if (savedTheme === 'dark') {
                 document.getElementById('mainBody').setAttribute('data-theme', 'dark');
             }
-            
-            // ثبت Service Worker برای PWA
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js?v=2')
-                    .then(() => console.log('✅ Service Worker registered'))
-                    .catch(err => console.log('❌ Service Worker error:', err));
-            }
         };
-
-        // ========== مدیریت آفلاین ==========
-        function setupOfflineSupport() {
-            // ذخیره منابع در cache
-            if ('caches' in window) {
-                caches.open('english-fred-cache-v2').then(cache => {
-                    const urls = [
-                        './',
-                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css'
-                    ];
-                    cache.addAll(urls).catch(() => {});
-                });
-            }
-        }
-
-        // ========== وضعیت آنلاین/آفلاین ==========
-        function updateOnlineStatus() {
-            const offlineMsg = document.getElementById('offlineMessage');
-            if (!navigator.onLine) {
-                offlineMsg.textContent = '📶 حالت آفلاین - از لغات ذخیره شده استفاده می‌شود';
-                offlineMsg.style.display = 'block';
-                
-                // مطمئن شو لغات از localStorage بارگذاری شده
-                if (!window.rawWords && localStorage.getItem('fred_words')) {
-                    window.rawWords = localStorage.getItem('fred_words');
-                    console.log("📂 Loaded words from localStorage for offline");
-                }
-            } else {
-                offlineMsg.style.display = 'none';
-            }
-        }
 
         // ========== توابع اصلی ==========
         function updateStars(score) {
@@ -335,12 +253,12 @@
             
             if (typeof rawWords !== 'undefined') {
                 wordsSource = rawWords;
-                console.log("📚 Using rawWords from dic.js");
+                console.log("📚 Using A1 vocabulary");
             } else if (localStorage.getItem('fred_words')) {
                 wordsSource = localStorage.getItem('fred_words');
-                console.log('📂 Using saved words from localStorage');
+                console.log('📂 Using cached words');
             } else {
-                alert("لغات یافت نشد! لطفاً اتصال اینترنت را بررسی کنید.");
+                alert("لغات A1 یافت نشد! لطفاً صفحه را رفرش کنید.");
                 return;
             }
             
@@ -348,15 +266,15 @@
             db = wordsSource.split('\n')
                 .map(l => {
                     let p = l.split(' — ');
-                    return p.length >= 2 ? { 
+                    return p.length >= 3 ? { 
                         en: p[0].trim(), 
                         fa: p[1].trim(), 
-                        def: p[2] ? p[2].trim() : "تعریف موجود نیست" 
+                        def: p[2].trim()
                     } : null;
                 })
-                .filter(x => x && x.en && x.fa);
+                .filter(x => x && x.en && x.fa && x.def);
             
-            console.log("✅ Words processed:", db.length);
+            console.log("✅ Processed", db.length, "A1 words");
             
             if (db.length < 4) {
                 alert("لغات کافی نیست! حداقل ۴ لغت نیاز است.");
@@ -446,7 +364,6 @@
                 updateStars(pct);
             }
             
-            // نمایش نتیجه با تأخیر
             setTimeout(() => {
                 alert(`🎉 آفرین!\nامتیاز شما: ${pct}%\nصحیح: ${correctCount} از ${session.length}`);
                 location.reload();
@@ -466,14 +383,11 @@
         // ========== دکمه خروج ==========
         function exitApp() {
             if (confirm("آیا می‌خواهید از برنامه خارج شوید؟")) {
-                // اگر در حالت PWA نصب شده
                 if (window.navigator.standalone) {
-                    // برای iOS
                     if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                         alert('برای خروج، دکمه Home را دو بار بزنید و برنامه را ببندید');
                     }
                 }
-                // بستن پنجره (اگر در مرورگر است)
                 if (window.history.length > 1) {
                     window.history.back();
                 } else {
@@ -495,17 +409,6 @@
                 alert("❌ کد اشتباه است!");
             }
         }
-        
-        // ========== تابع برای رفرش با پارامتر ==========
-        function forceRefresh() {
-            if (!localStorage.getItem('fred_version') || localStorage.getItem('fred_version') !== '2') {
-                localStorage.setItem('fred_version', '2');
-                location.href = location.href.split('?')[0] + '?v=' + new Date().getTime();
-            }
-        }
-        
-        // اجرای رفرش اگر نیاز باشد
-        setTimeout(forceRefresh, 100);
     </script>
 </body>
 </html>
