@@ -1,4 +1,4 @@
-const permanentWords = `be — بودن — To live or to stay.
+var rawWords = `be — بودن — To live or to stay.
 am — هستم — I ___ (Used with I).
 is — هست — He/She/It ___ (Used with one).
 are — هستید — You/We/They ___ (Used with many).
