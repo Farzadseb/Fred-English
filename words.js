@@ -55,4 +55,4 @@ job — شغل — occupation — I have a job
 money — پول — currency — I need money
 time — زمان — measurement — What time is it?
 day — روز — 24 hours — Have a nice day
-`;
+";
