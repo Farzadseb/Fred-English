@@ -5,39 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>English with Fred</title>
     <style>
-        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; }
-        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); margin: 0; display: flex; justify-content: center; padding-top: 20px; }
-        .screen { background: #fff; width: 92%; max-width: 420px; border-radius: 30px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
-        .header-title { font-size: 26px; font-weight: 800; margin-bottom: 20px; color: #000; }
-        .btn-main { border: none; color: white; font-weight: 700; width: 100%; padding: 18px; border-radius: 20px; margin-bottom: 12px; font-size: 17px; cursor: pointer; background: var(--ios-blue); }
-        .btn-mode { background: #fff; border: 1px solid #d1d1d6; padding: 15px; border-radius: 16px; width: 100%; margin-bottom: 8px; font-weight: 600; cursor: pointer; }
+        :root { --ios-blue: #007AFF; --ios-bg: #F2F2F7; --ios-indigo: #5856D6; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); margin: 0; display: flex; justify-content: center; padding-top: 20px; min-height: 100vh; }
+        .screen { background: #fff; width: 92%; max-width: 400px; border-radius: 30px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; align-items: center; position: relative; height: fit-content; }
+        .header-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; color: #000; }
+        .best-score { font-size: 14px; color: var(--ios-indigo); margin-bottom: 20px; font-weight: 600; }
+        .btn-main { border: none; color: white; font-weight: 700; width: 100%; padding: 18px; border-radius: 20px; margin-bottom: 12px; font-size: 17px; cursor: pointer; background: var(--ios-blue); transition: 0.2s; }
+        .btn-mode { background: #fff; border: 1px solid #d1d1d6; padding: 14px; border-radius: 16px; width: 100%; margin-bottom: 8px; font-weight: 600; cursor: pointer; text-align: center; font-size: 15px; }
         .btn-mode.active { border: 2.5px solid var(--ios-blue); color: var(--ios-blue); background: #f0f7ff; }
-        .q-text { font-size: 2.2rem; font-weight: 800; margin: 35px 0; width: 100%; text-align: center; direction: ltr; }
+        .q-text { font-size: 1.8rem; font-weight: 800; margin: 25px 0; width: 100%; text-align: center; direction: ltr; line-height: 1.4; color: #000; }
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
-        .btn-opt { padding: 18px; border-radius: 18px; border: 1px solid #d1d1d6; background: #fff; font-size: 16px; font-weight: 600; }
+        .btn-opt { padding: 16px; border-radius: 18px; border: 1px solid #d1d1d6; background: #fff; font-size: 16px; font-weight: 600; width: 100%; transition: 0.2s; color: #000; }
         .correct { background: #34C759 !important; color: white !important; border: none; }
         .wrong { background: #FF3B30 !important; color: white !important; border: none; }
-        .exit-btn { position: absolute; top: 15px; left: 15px; background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; }
+        .exit-btn { position: absolute; top: 15px; left: 15px; background: #eee; border: none; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; z-index: 10; }
+        #audioBtn { font-size: 3rem; margin-bottom: 15px; cursor: pointer; user-select: none; }
     </style>
 </head>
 <body>
 
     <div id="setup" class="screen">
         <h1 class="header-title">English with Fred</h1>
+        <div id="bestDisplay" class="best-score">Best Record: 0%</div>
+        
         <div style="width: 100%; margin-bottom: 15px;">
             <div class="btn-mode active" onclick="setMode(1, this)">۱. انگلیسی به فارسی</div>
             <div class="btn-mode" onclick="setMode(2, this)">۲. فارسی به انگلیسی</div>
-            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف</div>
-            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت</div>
+            <div class="btn-mode" onclick="setMode(3, this)">۳. لغت به تعریف (A1)</div>
+            <div class="btn-mode" onclick="setMode(4, this)">۴. تعریف به لغت (A1)</div>
         </div>
-        <button class="btn-main" onclick="startQuiz(false)">🚀 شروع تمرین</button>
-        <button class="btn-main" style="background:#5856D6;" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
+        
+        <button class="btn-main" onclick="startQuiz(false)">🚀 شروع تمرین جدید</button>
+        <button class="btn-main" style="background:var(--ios-indigo);" onclick="startQuiz(true)">🎯 مرور اشتباهات</button>
     </div>
 
     <div id="quiz" class="screen" style="display: none;">
         <button class="exit-btn" onclick="location.reload()">✕</button>
         <div id="qDisplay" class="q-text"></div>
-        <div id="audioBtn" style="font-size: 3rem; margin-bottom: 20px; cursor: pointer;" onclick="say()">🔊</div>
+        <div id="audioBtn" onclick="say()">🔊</div>
         <div class="options-grid" id="opts"></div>
     </div>
 
@@ -45,7 +51,10 @@
 
     <script>
         let db = [], session = [], idx = 0, currentMode = 1, busy = false;
-        let mistakeBank = JSON.parse(localStorage.getItem('fred_mistakes_v3')) || [];
+        // بانک اشتباهات نسخه ۴ برای جداسازی از تست‌های قبلی
+        let mistakeBank = JSON.parse(localStorage.getItem('fred_mistakes_v4')) || [];
+        
+        document.getElementById('bestDisplay').textContent = `Best Record: ${localStorage.getItem('fred_best_v4') || 0}%`;
 
         function setMode(m, el) { 
             currentMode = m; 
@@ -54,15 +63,25 @@
         }
 
         function startQuiz(fromMistakes) {
-            let data = fromMistakes ? mistakeBank : permanentWords.trim().split('\n');
-            if(fromMistakes && mistakeBank.length === 0) return alert("هنوز اشتباهی ثبت نشده است!");
+            let source = fromMistakes ? mistakeBank : (typeof permanentWords !== 'undefined' ? permanentWords.trim().split('\n') : []);
+            
+            if(fromMistakes && mistakeBank.length === 0) {
+                alert("لیست اشتباهات شما خالی است!");
+                return;
+            }
+            if(!fromMistakes && source.length === 0) {
+                alert("خطا: فایل لغات (dic.js) پیدا نشد یا خالی است.");
+                return;
+            }
 
-            db = data.map(l => {
+            db = source.map(l => {
                 let p = l.split(' — ');
-                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Basic" } : null;
+                return p.length >= 2 ? { en: p[0].trim(), fa: p[1].trim(), def: p[2] ? p[2].trim() : "Basic Definition" } : null;
             }).filter(x => x);
 
-            session = [...db].sort(() => 0.5 - Math.random()).slice(0, 20); // هر بار ۲۰ سوال تصادفی
+            session = [...db].sort(() => 0.5 - Math.random());
+            if(!fromMistakes) session = session.slice(0, 20); 
+            
             idx = 0;
             document.getElementById('setup').style.display = 'none';
             document.getElementById('quiz').style.display = 'flex';
@@ -70,45 +89,75 @@
         }
 
         function render() {
-            busy = false; const q = session[idx]; let qText = "", ans = "";
+            busy = false; 
+            const q = session[idx]; 
+            let qText = "", ans = "";
+            
             if(currentMode === 1) { qText = q.en; ans = q.fa; }
             else if(currentMode === 2) { qText = q.fa; ans = q.en; }
             else if(currentMode === 3) { qText = q.en; ans = q.def; }
             else { qText = q.def; ans = q.en; }
 
             document.getElementById('qDisplay').textContent = qText;
-            document.getElementById('audioBtn').style.display = (currentMode === 1 || currentMode === 3) ? 'block' : 'none';
             
-            let opts = [ans], pool = db.filter(v => v.en !== q.en).map(v => {
-                if(currentMode === 1) return v.fa; if(currentMode === 2) return v.en; if(currentMode === 3) return v.def; return v.en;
+            let opts = [ans];
+            let pool = db.filter(v => v.en !== q.en).map(v => {
+                if(currentMode === 1) return v.fa;
+                if(currentMode === 2) return v.en;
+                if(currentMode === 3) return v.def;
+                return v.en;
             });
-            while(opts.length < 4 && pool.length) { 
-                let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0]; 
-                if(!opts.includes(r)) opts.push(r); 
+            
+            while(opts.length < 4 && pool.length) {
+                let r = pool.splice(Math.floor(Math.random()*pool.length), 1)[0];
+                if(!opts.includes(r)) opts.push(r);
             }
             opts.sort(() => 0.5 - Math.random());
 
-            const div = document.getElementById('opts'); div.innerHTML = '';
+            const div = document.getElementById('opts');
+            div.innerHTML = '';
             opts.forEach(o => {
-                const b = document.createElement('button'); b.className = 'btn-opt'; b.textContent = o;
+                const b = document.createElement('button');
+                b.className = 'btn-opt';
+                b.textContent = o;
                 b.onclick = () => {
                     if(busy) return; busy = true;
-                    if(o === ans) { b.classList.add('correct'); } 
-                    else {
+                    if(o === ans) {
+                        b.classList.add('correct');
+                    } else {
                         b.classList.add('wrong');
                         if(!mistakeBank.some(m => m.en === q.en)) {
                             mistakeBank.push(q);
-                            localStorage.setItem('fred_mistakes_v3', JSON.stringify(mistakeBank));
+                            localStorage.setItem('fred_mistakes_v4', JSON.stringify(mistakeBank));
                         }
                         div.querySelectorAll('button').forEach(btn => { if(btn.textContent === ans) btn.classList.add('correct'); });
                     }
-                    setTimeout(() => { idx++; if(idx < session.length) render(); else location.reload(); }, 1200);
+                    setTimeout(() => { 
+                        idx++; 
+                        if(idx < session.length) render(); 
+                        else {
+                            alert("تمرین به پایان رسید!");
+                            location.reload();
+                        }
+                    }, 1500);
                 };
                 div.appendChild(b);
             });
-            if(currentMode === 1 || currentMode === 3) say();
+            say(); 
         }
-        function say() { const u = new SpeechSynthesisUtterance(session[idx].en); u.lang = 'en-US'; window.speechSynthesis.speak(u); }
+
+        function say() {
+            if (!session[idx]) return;
+            const q = session[idx];
+            // در حالت "تعریف به لغت" متن تعریف را بخواند، در بقیه حالات لغت انگلیسی را
+            let textToSay = (currentMode === 4) ? q.def : q.en;
+            
+            window.speechSynthesis.cancel(); 
+            const u = new SpeechSynthesisUtterance(textToSay);
+            u.lang = 'en-US';
+            u.rate = 0.6; // سرعت بسیار شمرده (درخواست استاد)
+            window.speechSynthesis.speak(u);
+        }
     </script>
 </body>
 </html>
