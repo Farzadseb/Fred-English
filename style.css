@@ -1,831 +1,341 @@
-/* ===== iOS MINIMAL THEME - نسخه نهایی ===== */
+/* ====== متغیرهای رنگ ====== */
 :root {
-    /* رنگ‌های اصلی iOS */
-    --ios-bg: #f2f2f7;
-    --ios-card: #ffffff;
-    --ios-text: #000000;
-    --ios-blue: #007aff;
-    --ios-green: #34c759;
-    --ios-red: #ff3b30;
-    --ios-orange: #ff9500;
-    --ios-border: #c7c7cc;
-    
-    /* حالت تاریک */
-    --ios-bg-dark: #000000;
-    --ios-card-dark: #1c1c1e;
-    --ios-text-dark: #ffffff;
-    --ios-border-dark: #38383a;
-    
-    /* سایه‌های ملایم */
-    --ios-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    --ios-shadow-dark: 0 2px 10px rgba(0, 0, 0, 0.2);
-    --ios-shadow-heavy: 0 10px 30px rgba(0, 0, 0, 0.15);
+    --bg: #f2f4f8;
+    --card: #ffffff;
+    --text: #222;
+    --primary: #0a66ff;
+    --secondary: #34c759;
+    --danger: #ff3b30;
+    --border-radius: 18px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
-/* ===== RESET & BASE ===== */
+body.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f8fafc;
+    --primary: #3b82f6;
+    --secondary: #22c55e;
+    --danger: #ef4444;
+    --shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* ====== بدنه اصلی ====== */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-html, body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    position: fixed; /* قفل ارتفاع برای iOS */
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-    background: var(--ios-bg);
-    color: var(--ios-text);
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+.app-container {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+/* ====== هدر و ستاره‌ها ====== */
+.app-header {
     text-align: center;
-    direction: rtl;
-    font-size: 17px;
-    line-height: 1.47059;
+    margin-bottom: 24px;
 }
 
-body.dark-mode {
-    background: var(--ios-bg-dark);
-    color: var(--ios-text-dark);
+.app-header h1 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    color: var(--primary);
 }
 
-/* ===== APP CONTAINER ===== */
-#app {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden; /* قفل اسکرول در سطح app */
-}
-
-/* ===== SCREENS - کنترل نمایش ===== */
-.screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none !important;
-    flex-direction: column;
-    opacity: 0;
-    visibility: hidden;
-    /* 🔴 اصلاح ۱: حذف transition (فعلاً لازم نیست) */
-    /* transition: opacity 0.3s ease, transform 0.3s ease; */
-    z-index: 1;
-    overflow-y: auto; /* 🔥 اصلاح: اسکرول داخلی */
-    -webkit-overflow-scrolling: touch; /* 🔥 اصلاح: اسکرول نرم iOS */
-}
-
-.screen.active {
-    display: flex !important;
-    opacity: 1;
-    visibility: visible;
-    z-index: 2;
-}
-
-/* ===== HEADER iOS ===== */
-.header {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: 0.5px solid var(--ios-border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.dark-mode .header {
-    background: rgba(28, 28, 30, 0.8);
-    border-bottom-color: var(--ios-border-dark);
-}
-
-.app-title {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--ios-blue);
-    flex-grow: 1;
-    letter-spacing: -0.024em;
-}
-
-.icon-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.8);
-    border: 0.5px solid rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-}
-
-.icon-btn:active {
-    transform: scale(0.95);
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.dark-mode .icon-btn {
-    background: rgba(60, 60, 67, 0.8);
-    border-color: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-}
-
-.dark-mode .icon-btn:active {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-/* ===== CONTENT ===== */
-.content {
-    flex: 1;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* 🔴 اصلاح ۲: بدون overflow-y (اسکرول توسط .screen کنترل می‌شود) */
-    /* اگر بعداً نیاز به header ثابت + content اسکرولی داشتید، این را تغییر دهید */
-}
-
-/* ===== SCORE DISPLAY ===== */
 .score-display {
-    width: 65%;
-    max-width: 300px;
-    background: var(--ios-card);
-    border-radius: 18px;
-    padding: 20px;
-    margin: 16px auto 28px auto;
-    border: 0.5px solid var(--ios-border);
-    box-shadow: var(--ios-shadow);
+    font-size: 18px;
+    margin: 12px 0;
+    padding: 10px;
+    background: var(--card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
-.dark-mode .score-display {
-    background: var(--ios-card-dark);
-    border-color: var(--ios-border-dark);
-}
-
-.stars {
-    font-size: 32px;
-    letter-spacing: 8px;
-    margin-bottom: 15px;
+.stars-container {
     display: flex;
     justify-content: center;
-    height: 40px;
-    align-items: center;
-}
-
-.stars.zero-score {
-    opacity: 0.3;
-    filter: grayscale(0.8);
-}
-
-.stars.zero-score .star {
-    color: #8e8e93 !important;
+    gap: 6px;
+    max-width: 160px; /* نصف عرض */
+    margin: 0 auto 15px;
 }
 
 .star {
-    color: #FFD700;
+    font-size: 24px;
+    color: #ccc;
+    transition: color 0.3s;
 }
 
-.star.empty {
-    color: var(--ios-border);
-    opacity: 0.6;
+.star.filled {
+    color: gold;
 }
 
-.dark-mode .star.empty {
-    color: var(--ios-border-dark);
-}
-
-.best-score {
-    font-size: 15px;
-    font-weight: 500;
-    color: #8e8e93;
-}
-
-.best-score-value {
-    color: var(--ios-blue);
-    font-size: 28px;
-    font-weight: 700;
-    margin-top: 5px;
-    display: block;
-}
-
-/* ===== BUTTONS ===== */
-.button-container {
-    width: 100%;
+/* ====== حالت‌های آزمون ====== */
+.quiz-modes {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 14px; /* فاصله واضح */
+    margin: 20px 0;
 }
 
-.btn {
-    width: 100%;
-    max-width: 400px;
-    padding: 18px 24px;
-    border-radius: 16px;
+.mode-button {
+    padding: 18px;
+    border-radius: var(--border-radius);
     border: none;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 500;
+    background: linear-gradient(135deg, var(--primary), #0050cc);
+    color: white;
     cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn:active {
-    transform: scale(0.98);
-    opacity: 0.9;
-}
-
-.btn-primary {
-    background: var(--ios-blue);
-    background: linear-gradient(135deg, #007aff, #0056d6);
-    color: white;
-}
-
-.btn-secondary {
-    background: var(--ios-green);
-    background: linear-gradient(135deg, #34c759, #28cd41);
-    color: white;
-}
-
-.btn-success {
-    background: #25D366;
-    color: white;
-}
-
-.btn-warning {
-    background: #ff9500;
-    color: #1d1d1f;
-    font-weight: 600;
-}
-
-.btn-danger {
-    background: var(--ios-red);
-    color: white;
-}
-
-/* ===== QUIZ SCREEN ===== */
-.question-container {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 0;
-}
-
-.question-box {
-    width: 100%;
-    background: var(--ios-card);
-    border: 0.5px solid var(--ios-border);
-    border-radius: 18px;
-    padding: 28px 24px;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 30px;
-    min-height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transition: all 0.3s ease;
     text-align: center;
-    line-height: 1.4;
+    box-shadow: var(--shadow);
 }
 
-.dark-mode .question-box {
-    background: var(--ios-card-dark);
-    border-color: var(--ios-border-dark);
+.mode-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+}
+
+/* ====== کوییز کانتینر ====== */
+.quiz-container {
+    background: var(--card);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: var(--shadow);
+    display: none;
+}
+
+#questionText {
+    font-size: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+    line-height: 1.5;
 }
 
 .options-container {
-    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    gap: 14px; /* فاصله واضح بین گزینه‌ها */
+    margin: 20px 0;
 }
 
-.option {
-    width: 100%;
-    max-width: 400px;
-    background: var(--ios-card);
-    border: 0.5px solid var(--ios-border);
-    border-radius: 16px;
-    padding: 20px;
-    font-size: 18px;
-    font-weight: 500;
+.option-button {
+    padding: 16px;
+    border-radius: var(--border-radius);
+    border: 2px solid #e0e0e0;
+    background: var(--card);
+    color: var(--text);
+    font-size: 16px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.3s ease;
     text-align: center;
 }
 
-.option:active {
-    background: rgba(0, 122, 255, 0.1);
+.option-button:hover {
+    border-color: var(--primary);
+    background: rgba(var(--primary-rgb), 0.1);
+    transform: translateY(-2px);
 }
 
-.dark-mode .option {
-    background: var(--ios-card-dark);
-    border-color: var(--ios-border-dark);
+.option-button.correct {
+    border-color: var(--secondary);
+    background: rgba(52, 199, 89, 0.1);
 }
 
-.option.correct {
-    background: var(--ios-green);
-    color: white;
-    border-color: var(--ios-green);
+.option-button.wrong {
+    border-color: var(--danger);
+    background: rgba(255, 59, 48, 0.1);
 }
 
-.option.incorrect {
-    background: var(--ios-red);
-    color: white;
-    border-color: var(--ios-red);
+/* ====== کنترل‌ها ====== */
+.controls-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.control-button {
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 120px;
+}
+
+.control-button:hover {
+    transform: translateY(-2px);
     opacity: 0.9;
 }
 
-.progress-bar {
-    font-size: 17px;
-    font-weight: 600;
-    padding: 12px;
-    color: var(--ios-blue);
+/* ====== گزارش پیشرفت (داخل کادر) ====== */
+.progress-report-container {
+    background: var(--card);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: var(--shadow);
+    display: none;
 }
 
-/* ===== EXIT CONTAINER ===== */
-.exit-container {
-    width: 100%;
-    padding: 20px 16px;
-    border-top: 0.5px solid var(--ios-border);
-    margin-top: auto;
-    flex-shrink: 0;
+.progress-header {
     display: flex;
-    justify-content: center;
-}
-
-.dark-mode .exit-container {
-    border-top-color: var(--ios-border-dark);
-}
-
-.exit-btn {
-    width: 90%;
-    max-width: 320px;
-    padding: 18px;
-    background: var(--ios-red);
-    color: white;
-    border: none;
-    border-radius: 16px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
 }
 
-.exit-btn:active {
-    transform: scale(0.98);
-}
-
-/* ===== Progress Badge ===== */
-.progress-badge {
-    position: fixed;
-    bottom: 100px;
-    left: 20px;
-    background: var(--ios-blue);
-    color: white;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
-    z-index: 999;
-    transition: all 0.3s ease;
-}
-
-/* 🔥 اصلاح: حالت تاریک برای progress-badge */
-.dark-mode .progress-badge {
-    background: #64d2ff !important;
-    box-shadow: 0 4px 20px rgba(100, 210, 255, 0.35) !important;
-}
-
-.progress-badge:active {
-    transform: scale(0.95);
-}
-
-/* ===== PROGRESS REPORT STYLES ===== */
-.progress-report {
-    background: var(--ios-card);
-    border-radius: 20px;
-    padding: 24px;
-    border: 0.5px solid var(--ios-border);
-    box-shadow: var(--ios-shadow);
-    text-align: right;
-}
-
-.dark-mode .progress-report {
-    background: var(--ios-card-dark);
-    border-color: var(--ios-border-dark);
-}
-
-.progress-report h3 {
-    color: var(--ios-blue);
+.progress-header h3 {
     font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 24px;
-    text-align: center;
-    border-bottom: 2px solid var(--ios-blue);
-    padding-bottom: 12px;
+    color: var(--primary);
 }
 
-.report-section {
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 0.5px solid var(--ios-border);
-}
-
-.report-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.report-section h4 {
-    color: var(--ios-text);
-    font-size: 17px;
-    font-weight: 600;
-    margin-bottom: 16px;
+.progress-header button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text);
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    border-radius: 50%;
 }
 
-.dark-mode .report-section h4 {
-    color: var(--ios-text-dark);
+.progress-header button:hover {
+    background: rgba(0,0,0,0.1);
 }
 
-.stats-grid {
+.progress-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 16px;
+    margin-bottom: 24px;
 }
 
 .stat-item {
-    background: rgba(0, 122, 255, 0.08);
-    border-radius: 14px;
+    background: var(--bg);
+    border-radius: 12px;
     padding: 16px;
     text-align: center;
 }
 
-.dark-mode .stat-item {
-    background: rgba(100, 210, 255, 0.15);
-}
-
-.stat-label {
-    display: block;
-    font-size: 13px;
-    color: #8e8e93;
+.stat-item h4 {
+    font-size: 14px;
+    color: #666;
     margin-bottom: 8px;
-    font-weight: 500;
 }
 
-.dark-mode .stat-label {
-    color: #aeaeb2;
-}
-
-.stat-value {
-    display: block;
+.stat-item p {
     font-size: 24px;
-    font-weight: 700;
-    color: var(--ios-blue);
+    font-weight: bold;
+    color: var(--primary);
 }
 
-.dark-mode .stat-value {
-    color: #64d2ff;
+/* ====== فوتتر ====== */
+.app-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
 }
 
-.last-session {
-    background: rgba(52, 199, 89, 0.08);
-    border-radius: 16px;
-    padding: 20px;
-}
-
-.dark-mode .last-session {
-    background: rgba(52, 199, 89, 0.15);
-}
-
-.last-session p {
-    margin: 8px 0;
+.footer-button {
+    padding: 14px;
+    border-radius: var(--border-radius);
+    border: none;
     font-size: 15px;
-    color: var(--ios-text);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
 }
 
-.dark-mode .last-session p {
-    color: var(--ios-text-dark);
+.footer-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
 }
 
-/* Modal برای نمایش گزارش */
-.custom-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    padding: 20px;
-    animation: modalFadeIn 0.3s ease;
-}
+/* ====== رنگ‌های دکمه‌ها ====== */
+#speakBtn { background: var(--secondary); color: white; }
+#hintBtn { background: #FF9800; color: white; }
+#nextBtn { background: var(--primary); color: white; }
+#endQuizBtn { background: var(--danger); color: white; }
+#whatsappBtn { background: #25D366; color: white; }
+#exitBtn { background: #9E9E9E; color: white; }
 
-.custom-modal.active {
-    display: flex;
-}
-
-.custom-modal-content {
-    background: var(--ios-card);
-    border-radius: 24px;
-    padding: 0;
-    max-width: 550px;
-    width: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
-    border: 0.5px solid var(--ios-border);
-    box-shadow: var(--ios-shadow-heavy);
-    animation: modalSlideUp 0.4s ease;
-}
-
-.dark-mode .custom-modal-content {
-    background: var(--ios-card-dark);
-    border-color: var(--ios-border-dark);
-}
-
-.custom-modal-header {
-    padding: 24px;
-    border-bottom: 0.5px solid var(--ios-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.custom-modal-header h2 {
-    color: var(--ios-blue);
-    font-size: 20px;
-    font-weight: 700;
-    margin: 0;
-}
-
-.modal-close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--ios-text);
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-
-.modal-close-btn:active {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.dark-mode .modal-close-btn {
-    color: var(--ios-text-dark);
-}
-
-.dark-mode .modal-close-btn:active {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.custom-modal-body {
-    padding: 24px;
-}
-
-@keyframes modalFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes modalSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Insight Cards */
-.insight-card {
-    background: rgba(0, 122, 255, 0.05);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.insight-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    background: white;
-}
-
-.dark-mode .insight-item {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.insight-item.good {
-    background: rgba(52, 199, 89, 0.1);
-    border-left: 4px solid #34c759;
-}
-
-.insight-item.warning {
-    background: rgba(255, 149, 0, 0.1);
-    border-left: 4px solid #ff9500;
-}
-
-.insight-item.needs-work {
-    background: rgba(255, 59, 48, 0.1);
-    border-left: 4px solid #ff3b30;
-}
-
-.insight-icon {
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-}
-
-.dark-mode .insight-icon {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.insight-text {
-    flex: 1;
-    text-align: right;
-}
-
-.insight-text strong {
-    display: block;
-    font-size: 16px;
-    margin-bottom: 4px;
-}
-
-.insight-text small {
-    display: block;
-    font-size: 13px;
-    color: #8e8e93;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-}
-
-.action-buttons .btn {
-    flex: 1;
-}
-
-/* Achievement Modal */
-.achievement-modal {
-    text-align: center;
-    padding: 20px;
-}
-
-.achievement-icon {
-    font-size: 64px;
-    margin-bottom: 20px;
-}
-
-.achievement-modal h3 {
-    color: var(--ios-blue);
-    font-size: 24px;
-    margin-bottom: 12px;
-}
-
-.achievement-modal p {
-    color: var(--ios-text);
-    font-size: 16px;
-    margin-bottom: 24px;
-    line-height: 1.5;
-}
-
-.dark-mode .achievement-modal p {
-    color: var(--ios-text-dark);
-}
-
-/* ===== RESPONSIVE ===== */
+/* ====== ریسپانسیو ====== */
 @media (max-width: 480px) {
-    .content {
-        padding: 16px 12px;
-    }
-    
-    .header {
-        padding: 10px 12px;
+    .app-container {
+        padding: 12px;
         max-width: 100%;
     }
     
-    .app-title {
-        font-size: 16px;
-    }
-    
-    .question-box {
+    .app-header h1 {
         font-size: 22px;
-        padding: 24px 20px;
-        margin-bottom: 24px;
     }
     
-    .option {
-        padding: 18px;
-        font-size: 16px;
+    .mode-button {
+        padding: 16px;
+        font-size: 15px;
     }
     
-    .btn {
-        padding: 16px 20px;
-        font-size: 16px;
-        max-width: 100%;
+    .option-button {
+        padding: 14px;
+        font-size: 15px;
     }
     
-    .score-display {
-        width: 85%;
-        padding: 18px;
+    .control-button {
+        padding: 10px 16px;
+        min-width: 100px;
+        font-size: 14px;
     }
     
-    .stars {
-        font-size: 28px;
-        letter-spacing: 6px;
-    }
-    
-    .best-score-value {
-        font-size: 24px;
-    }
-    
-    .progress-badge {
-        width: 50px;
-        height: 50px;
-        bottom: 80px;
-        left: 15px;
-        font-size: 20px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+    .progress-stats {
+        grid-template-columns: 1fr 1fr;
     }
 }
 
-/* ===== PREFERS REDUCED MOTION ===== */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 500px;
     }
+    
+    .options-container {
+        grid-template-columns: 1fr 1fr;
+        display: grid;
     }
+}
