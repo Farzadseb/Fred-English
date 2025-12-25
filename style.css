@@ -339,3 +339,51 @@ body {
         display: grid;
     }
 }
+/* ====== رنگ‌های مستقیم (Fallback) ====== */
+
+/* حالت روشن */
+body {
+    background: #f2f4f8 !important;
+    color: #222 !important;
+}
+
+body.dark {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+}
+
+/* دکمه‌ها */
+.mode-button {
+    background: linear-gradient(135deg, #0a66ff, #0050cc) !important;
+    color: white !important;
+}
+
+.control-button {
+    color: white !important;
+}
+
+#speakBtn { background: #34c759 !important; }
+#hintBtn { background: #FF9800 !important; }
+#nextBtn { background: #0a66ff !important; }
+#endQuizBtn { background: #ff3b30 !important; }
+
+.footer-button {
+    background: #666 !important;
+    color: white !important;
+}
+
+#whatsappBtn { background: #25D366 !important; }
+#exitBtn { background: #9E9E9E !important; }
+
+/* کارت‌ها */
+.card, .quiz-container, .progress-report-container {
+    background: white !important;
+    color: #222 !important;
+}
+
+body.dark .card,
+body.dark .quiz-container,
+body.dark .progress-report-container {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+}
