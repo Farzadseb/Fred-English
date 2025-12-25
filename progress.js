@@ -1,6 +1,6 @@
 /**
  * Progress Tracker - ردیابی هوشمند پیشرفت شاگرد
- * نسخه نهایی با اصلاحات منطقی
+ * نسخه نهایی v4.1 - Production Ready
  */
 
 const ProgressTracker = (() => {
@@ -13,7 +13,7 @@ const ProgressTracker = (() => {
         ACHIEVEMENTS: 'fred_achievements_v4'
     };
 
-    // توابع UI - ایمن‌سازی در برابر undefined
+    // توابع UI
     const UI = {
         showModal: typeof showCustomModal !== 'undefined' ? showCustomModal : null,
         reviewMistakes: typeof reviewSmartMistakes !== 'undefined' ? reviewSmartMistakes : null,
@@ -27,15 +27,15 @@ const ProgressTracker = (() => {
         wrongAnswers: 0,  
         accuracy: 0,  
         sessions: 0,  
-        streak: 0, // streak روزانه (در انتهای روز ریست می‌شود)
-        sessionStreak: 0, // streak درون جلسه فعلی
-        sessionMaxStreak: 0, // بیشترین streak در این جلسه
-        bestStreak: 0, // بهترین رکورد کلی
+        streak: 0,
+        sessionStreak: 0,
+        sessionMaxStreak: 0,
+        bestStreak: 0,
         lastSession: null,  
         lastActive: null,
-        totalTimeSpent: 0, // کل زمان صرف شده (دقیقه)
-        dailyGoal: 20, // هدف روزانه (تعداد سوال)
-        lastResetDate: null // تاریخ آخرین ریست streak روزانه
+        totalTimeSpent: 0,
+        dailyGoal: 20,
+        lastResetDate: null
     };  
     
     // اشتباهات هوشمند  
@@ -45,7 +45,7 @@ const ProgressTracker = (() => {
      * مقداردهی اولیه  
      */
     function init() {  
-        console.log('📊 Progress Tracker initialized v4');  
+        console.log('📊 Progress Tracker initialized v4.1');  
         loadStats();  
         loadSmartMistakes();  
         
@@ -59,9 +59,6 @@ const ProgressTracker = (() => {
         setTimeout(() => {  
             addProgressBadge();  
         }, 2000);  
-        
-        // تنظیم هندلرهای رویداد برای تست
-        setupEventHandlers();
     }
     
     /**
@@ -70,23 +67,11 @@ const ProgressTracker = (() => {
     function checkDailyStreakReset() {
         const today = new Date().toDateString();
         
-        // اگر اولین بار است یا تاریخ تغییر کرده
         if (!stats.lastResetDate || new Date(stats.lastResetDate).toDateString() !== today) {
             console.log('🔄 Resetting daily streak for new day');
-            stats.streak = 0; // ریست streak روزانه
+            stats.streak = 0;
             stats.lastResetDate = new Date().toISOString();
             saveStats();
-        }
-    }
-    
-    /**
-     * تنظیم هندلرهای رویداد
-     */
-    function setupEventHandlers() {
-        if (typeof window !== 'undefined') {
-            window.increaseMistakeReviewCount = function(mistakeId) {
-                increaseReviewCount(mistakeId);
-            };
         }
     }
     
@@ -94,50 +79,42 @@ const ProgressTracker = (() => {
      * ثبت سؤال جدید  
      */
     function recordQuestion(mode, isCorrect, word = null) {  
-        // به روزرسانی آمار  
         stats.totalQuestions++;  
         
         if (isCorrect) {  
             stats.correctAnswers++;  
-            stats.streak++; // streak روزانه
-            stats.sessionStreak++; // streak درون جلسه
+            stats.streak++;
+            stats.sessionStreak++;
             
-            // به روزرسانی بیشترین streak جلسه
             if (stats.sessionStreak > stats.sessionMaxStreak) {
                 stats.sessionMaxStreak = stats.sessionStreak;
             }
             
-            // به روزرسانی بهترین رکورد کلی  
             if (stats.streak > stats.bestStreak) {  
                 stats.bestStreak = stats.streak;  
             }  
             
-            // کاهش اولویت اشتباهات مربوطه  
             if (word) {  
                 decreaseMistakePriority(word, mode);  
             }  
         } else {  
             stats.wrongAnswers++;  
-            stats.streak = 0; // ریست streak روزانه
-            stats.sessionStreak = 0; // ریست streak جلسه
+            stats.streak = 0;
+            stats.sessionStreak = 0;
             
-            // افزایش اولویت اشتباه  
             if (word) {  
                 increaseMistakePriority(word, mode);  
             }  
         }  
         
-        // محاسبه دقت  
         stats.accuracy = stats.totalQuestions > 0 ?   
             Math.round((stats.correctAnswers / stats.totalQuestions) * 100) : 0;  
         
-        // ذخیره آمار  
         saveStats();  
         updateLastActive();  
         
-        console.log(`📝 Question recorded: ${isCorrect ? '✅ Correct' : '❌ Wrong'}, Daily Streak: ${stats.streak}, Session Streak: ${stats.sessionStreak}`);  
+        console.log(`📝 Question recorded: ${isCorrect ? '✅' : '❌'}, Streak: ${stats.streak}`);
         
-        // بررسی دستاوردها در طول جلسه
         checkInSessionAchievements();
     }  
     
@@ -145,19 +122,12 @@ const ProgressTracker = (() => {
      * ثبت جلسه جدید  
      */
     function recordSession(mode, score, totalQuestions, timeSpent = null) {  
-        // ریست کردن streak جلسه (اما ذخیره بیشترین مقدار)
         const sessionStreakRecord = stats.sessionMaxStreak;
         stats.sessionStreak = 0;
         stats.sessionMaxStreak = 0;
         
-        // ریست کردن streak روزانه (همانطور که در کد قبلی بود)
-        // این کار برای جلوگیری از streak مصنوعی چند روزه انجام می‌شود
-        // اگر می‌خواهید streak روزانه ادامه پیدا کند، این خط را حذف کنید
-        stats.streak = 0;
-        
         stats.sessions++;  
         
-        // افزودن زمان به کل زمان
         const estimatedTime = timeSpent || estimateTimeSpent(totalQuestions);
         stats.totalTimeSpent += estimatedTime;
         
@@ -167,21 +137,15 @@ const ProgressTracker = (() => {
             score: score,  
             totalQuestions: totalQuestions,  
             timeSpent: estimatedTime,
-            streakInSession: sessionStreakRecord // ذخیره بیشترین streak جلسه
+            streakInSession: sessionStreakRecord
         };  
         
-        // ذخیره در تاریخچه  
         saveToHistory(stats.lastSession);  
-        
-        // ذخیره آمار  
         saveStats();  
         
-        console.log(`📊 Session recorded: ${mode}, Score: ${score}%, Max Streak in Session: ${sessionStreakRecord}`);  
+        console.log(`📊 Session recorded: ${mode}, Score: ${score}%`);
         
-        // بررسی دستاوردها  
         checkAchievements();  
-        
-        // نشان‌دادن خلاصه جلسه
         showSessionSummary(stats.lastSession);
     }  
     
@@ -238,7 +202,6 @@ const ProgressTracker = (() => {
             </div>
         `;
         
-        // نمایش با تاخیر برای تجربه بهتر کاربر
         setTimeout(() => {
             UI.showModal('جلسه تکمیل شد', summaryHTML);
         }, 500);
@@ -256,21 +219,20 @@ const ProgressTracker = (() => {
                 id: mistakeId,  
                 word: word,  
                 mode: mode,  
-                wrongCount: 1, // تعداد دفعات اشتباه
-                correctStreak: 0, // تعداد پاسخ‌های صحیح متوالی
+                wrongCount: 1,
+                correctStreak: 0,
                 priority: 1.0,  
                 lastSeen: new Date().toISOString(),  
                 firstSeen: new Date().toISOString(),  
                 mastered: false,
-                timesReviewed: 0 // تعداد دفعات مرور - فقط در مرور افزایش می‌یابد
+                timesReviewed: 0
             };  
             smartMistakes.push(mistake);  
         } else {  
             mistake.wrongCount++;  
-            mistake.correctStreak = 0; // ریست کردن streak صحیح
+            mistake.correctStreak = 0;
             mistake.priority = calculatePriority(mistake);  
             mistake.lastSeen = new Date().toISOString();  
-            // timesReviewed اینجا افزایش نمی‌یابد - فقط در مرور افزایش می‌یابد
         }  
         
         saveSmartMistakes();  
@@ -285,7 +247,6 @@ const ProgressTracker = (() => {
             mistake.timesReviewed = (mistake.timesReviewed || 0) + 1;
             mistake.lastSeen = new Date().toISOString();
             saveSmartMistakes();
-            console.log(`📖 Increased review count for mistake: ${mistakeId}, total reviews: ${mistake.timesReviewed}`);
         }
     }
     
@@ -299,16 +260,14 @@ const ProgressTracker = (() => {
         if (mistake) {  
             mistake.correctStreak = (mistake.correctStreak || 0) + 1;  
             
-            // اگر ۳ بار متوالی درست جواب داده شد، mastered شود  
             if (mistake.correctStreak >= 3 && !mistake.mastered) {  
                 mistake.mastered = true;  
                 mistake.priority = 0.1;  
-                console.log(`🎓 Mastered: ${word.english} in ${mode} mode`);
+                console.log(`🎓 Mastered: ${word.english}`);
                 
-                // نمایش اعلان تسلط
                 showMasteryNotification(word, mode);
             } else if (mistake.priority > 0.1) {  
-                mistake.priority *= 0.7; // کاهش 30% اولویت  
+                mistake.priority *= 0.7;
             }  
             
             mistake.lastSeen = new Date().toISOString();  
@@ -333,7 +292,6 @@ const ProgressTracker = (() => {
             </div>
         `;
         
-        // نمایش اعلان با تاخیر کوتاه
         setTimeout(() => {
             UI.showModal('🎓 تسلط جدید', notificationHTML);
         }, 1000);
@@ -347,45 +305,36 @@ const ProgressTracker = (() => {
         const lastSeen = new Date(mistake.lastSeen);  
         const hoursDiff = (now - lastSeen) / (1000 * 60 * 60);  
         
-        // فاکتور زمان: اشتباهات اخیر اولویت بالاتر  
         let timeFactor = 1.0;  
-        if (hoursDiff < 1) timeFactor = 2.0;      // کمتر از 1 ساعت  
-        else if (hoursDiff < 24) timeFactor = 1.5; // امروز  
-        else if (hoursDiff < 72) timeFactor = 1.2; // 3 روز  
+        if (hoursDiff < 1) timeFactor = 2.0;
+        else if (hoursDiff < 24) timeFactor = 1.5;
+        else if (hoursDiff < 72) timeFactor = 1.2;
         
-        // فاکتور تکرار اشتباهات  
         const wrongFactor = Math.min((mistake.wrongCount || 1) * 0.8, 4);  
         
-        // کاهش اولویت برای پاسخ‌های صحیح متوالی  
         const streakReduction = mistake.correctStreak > 0 ?   
             Math.max(0.3, 1 - (mistake.correctStreak * 0.2)) : 1;  
         
-        // فاکتور تعداد مرورها - اگر مرور شده، اولویت کمتر
         const reviewFactor = mistake.timesReviewed > 0 ? 
             Math.max(0.5, 1 - (mistake.timesReviewed * 0.1)) : 1;
         
-        // اولویت نهایی  
         const priority = (wrongFactor * timeFactor * streakReduction * reviewFactor);  
         
-        return Math.min(Math.max(priority, 0.1), 10); // اولویت بین 0.1 تا 10  
+        return Math.min(Math.max(priority, 0.1), 10);
     }  
     
     /**
      * دریافت اشتباهات برای مرور  
      */
     function getMistakesForReview(limit = 10) {  
-        // فیلتر اشتباهات غیر mastered  
         const activeMistakes = smartMistakes.filter(m => !m.mastered);  
         
-        // محاسبه اولویت برای همه
         activeMistakes.forEach(m => {
             m.priority = calculatePriority(m);
         });
         
-        // اولویت‌بندی  
         const sortedMistakes = activeMistakes  
             .sort((a, b) => {  
-                // اول اولویت، سپس تاریخ  
                 if (b.priority !== a.priority) {  
                     return b.priority - a.priority;  
                 }  
@@ -393,7 +342,7 @@ const ProgressTracker = (() => {
             })  
             .slice(0, limit);  
         
-        console.log(`🎯 Smart review: ${sortedMistakes.length} high-priority mistakes`);  
+        console.log(`🎯 Smart review: ${sortedMistakes.length} mistakes`);
         
         return sortedMistakes;  
     }  
@@ -405,14 +354,12 @@ const ProgressTracker = (() => {
         const activeMistakes = smartMistakes.filter(m => !m.mastered);  
         const highPriorityMistakes = activeMistakes.filter(m => m.priority > 5);  
         
-        // اشتباهات اخیر (۷ روز گذشته)  
         const recentMistakes = activeMistakes.filter(m => {  
             const lastSeen = new Date(m.lastSeen);  
             const now = new Date();  
             return (now - lastSeen) < (7 * 24 * 60 * 60 * 1000);  
         });  
         
-        // محاسبه پیشرفت روزانه
         const dailyProgress = calculateDailyProgress();
         
         return {  
@@ -424,10 +371,10 @@ const ProgressTracker = (() => {
                 totalTimeSpent: stats.totalTimeSpent
             },  
             streaks: {  
-                daily: stats.streak,  // streak امروز
-                session: stats.sessionStreak, // streak جلسه فعلی
-                sessionMax: stats.sessionMaxStreak, // بیشترین streak این جلسه
-                best: stats.bestStreak  // بهترین رکورد کلی
+                daily: stats.streak,
+                session: stats.sessionStreak,
+                sessionMax: stats.sessionMaxStreak,
+                best: stats.bestStreak
             },  
             mistakes: {  
                 total: smartMistakes.length,  
@@ -488,7 +435,6 @@ const ProgressTracker = (() => {
             <div class="progress-report">  
                 <h3>📈 گزارش پیشرفت هوشمند</h3>  
                 
-                <!-- بخش پیشرفت روزانه -->
                 <div class="daily-progress">
                     <h4>🎯 هدف روزانه</h4>
                     <div class="progress-bar-container">
@@ -614,8 +560,6 @@ const ProgressTracker = (() => {
         
         if (UI.showModal) {
             UI.showModal('گزارش پیشرفت', reportHTML);
-        } else {
-            console.error('Cannot show progress report: showCustomModal not available');
         }
     }
     
@@ -665,7 +609,7 @@ const ProgressTracker = (() => {
                         </div>
                     `);
                 }
-                showProgressReport(); // بازگشت به گزارش
+                showProgressReport();
             }
         }
     }
@@ -676,37 +620,30 @@ const ProgressTracker = (() => {
     function checkAchievements() {  
         const report = getProgressReport();  
         
-        // دستاورد دقت بالا  
         if (report.overall.accuracy >= 90 && report.overall.totalQuestions >= 20) {  
             showAchievement('استاد دقت! 🎯', 'دقت شما به ۹۰٪ رسیده است!');  
         }  
         
-        // دستاورد رکورد متوالی روزانه
         if (report.streaks.daily >= 10) {  
             showAchievement('آتشنشان روزانه! 🔥', '۱۰ پاسخ صحیح متوالی امروز!');  
         }  
         
-        // دستاورد رکورد کلی
         if (report.streaks.best >= 15) {  
             showAchievement('رکوردشکن! 🏆', '۱۵ پاسخ صحیح متوالی (رکورد کلی)');  
         }
         
-        // دستاورد تمرین مداوم  
         if (report.overall.learningDays >= 7) {  
             showAchievement('یادگیرنده مستمر! 📅', '۷ روز متوالی تمرین کرده‌اید!');  
         }
         
-        // دستاورد تسلط بر اشتباهات
         if (report.mistakes.mastered >= 5) {
             showAchievement('متخصص رفع اشتباه! 🎓', `بر ${report.mistakes.mastered} اشتباه تسلط یافته‌اید!`);
         }
         
-        // دستاورد زمان تمرین
-        if (report.overall.totalTimeSpent >= 60) { // 1 ساعت
+        if (report.overall.totalTimeSpent >= 60) {
             showAchievement('ساعت‌طلا! ⏰', 'یک ساعت کامل تمرین کرده‌اید!');
         }
         
-        // دستاورد هدف روزانه
         const dailyProgress = calculateDailyProgress();
         if (dailyProgress.questionsToday >= stats.dailyGoal) {
             showAchievement('قهرمان روز! 🏆', 'به هدف روزانه خود رسیدید!');
@@ -717,7 +654,6 @@ const ProgressTracker = (() => {
      * بررسی دستاوردهای درون جلسه
      */
     function checkInSessionAchievements() {
-        // دستاورد streak درون جلسه
         if (stats.sessionStreak === 5) {
             showAchievement('نیم‌دهک! ✋', '۵ پاسخ صحیح متوالی در این جلسه!');
         }
@@ -725,7 +661,6 @@ const ProgressTracker = (() => {
             showAchievement('دهک طلایی! 🔟', '۱۰ پاسخ صحیح متوالی در این جلسه!');
         }
         
-        // دستاورد streak روزانه
         if (stats.streak === 15) {
             showAchievement('طلایه‌دار روز! 🌟', '۱۵ پاسخ صحیح متوالی امروز!');
         }
@@ -761,9 +696,28 @@ const ProgressTracker = (() => {
      * بستن modal
      */
     function closeModal() {
-        // این تابع برای استفاده از onclick در دستاوردها
         if (typeof closeCustomModal !== 'undefined') {
             closeCustomModal();
+        }
+    }
+    
+    /**
+     * هندلر مرور اشتباهات
+     */
+    function reviewMistakesHandler() {
+        if (UI.reviewMistakes) {
+            UI.reviewMistakes();
+        } else {
+            console.error('❌ reviewMistakes handler not available');
+        }
+    }
+    
+    /**
+     * هندلر شروع آزمون
+     */
+    function startQuizHandler(mode) {
+        if (UI.startQuiz) {
+            UI.startQuiz(mode);
         }
     }
     
@@ -775,8 +729,7 @@ const ProgressTracker = (() => {
     }  
     
     function estimateTimeSpent(questions) {  
-        // تخمین زمان: ۱۵-۲۵ ثانیه برای هر سؤال  
-        const avgTimePerQuestion = 20; // ثانیه
+        const avgTimePerQuestion = 20;
         return Math.round(questions * avgTimePerQuestion / 60);  
     }  
     
@@ -848,7 +801,6 @@ const ProgressTracker = (() => {
                 stats = JSON.parse(savedStats);  
                 console.log('📊 Stats loaded');  
                 
-                // تنظیم مقادیر پیش‌فرض برای فیلدهای جدید
                 if (!stats.sessionStreak) stats.sessionStreak = 0;
                 if (!stats.sessionMaxStreak) stats.sessionMaxStreak = 0;
                 if (!stats.totalTimeSpent) stats.totalTimeSpent = 0;
@@ -893,7 +845,6 @@ const ProgressTracker = (() => {
             const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.HISTORY) || '[]');  
             history.push(sessionData);  
             
-            // نگه داشتن فقط ۱۰۰ جلسه آخر  
             if (history.length > 100) {  
                 history.shift();  
             }  
@@ -908,7 +859,6 @@ const ProgressTracker = (() => {
      * اضافه کردن badge گزارش  
      */
     function addProgressBadge() {  
-        // فقط در صفحه اصلی  
         const currentPage = window.location.pathname;
         const isHomePage = currentPage.endsWith('index.html') || currentPage.endsWith('/') || currentPage === '';
         
@@ -916,13 +866,11 @@ const ProgressTracker = (() => {
             return;  
         }  
         
-        // حذف badge قبلی  
         const existingBadge = document.getElementById('progress-badge');  
         if (existingBadge) {  
             existingBadge.remove();  
         }  
         
-        // ایجاد badge جدید  
         const badgeHTML = `  
             <div id="progress-badge" class="progress-badge" onclick="ProgressTracker.showProgressReport()" title="گزارش پیشرفت">  
                 📊  
@@ -932,7 +880,6 @@ const ProgressTracker = (() => {
         
         document.body.insertAdjacentHTML('beforeend', badgeHTML);
         
-        // به روزرسانی تعداد اشتباهات
         updateBadgeNotification();
     }
     
@@ -953,7 +900,7 @@ const ProgressTracker = (() => {
     }
     
     /**
-     * ریست کردن آمار (برای توسعه)
+     * ریست کردن آمار
      */
     function resetStats(confirm = false) {
         if (!confirm) {
@@ -987,20 +934,19 @@ const ProgressTracker = (() => {
         
         console.log('✅ All stats reset successfully');
         
-        // بارگذاری مجدد
         loadStats();
         loadSmartMistakes();
     }
     
     /**
-     * خروجی گرفتن از داده‌ها (برای پشتیبان‌گیری)
+     * خروجی گرفتن از داده‌ها
      */
     function exportData() {
         const data = {
             stats,
             smartMistakes,
             history: JSON.parse(localStorage.getItem(STORAGE_KEYS.HISTORY) || '[]'),
-            version: '4.0',
+            version: '4.1',
             exportDate: new Date().toISOString()
         };
         
@@ -1031,28 +977,13 @@ const ProgressTracker = (() => {
         addProgressBadge,
         updateBadgeNotification,
         increaseReviewCount,
-        // هندلرهای UI
-        reviewMistakesHandler: () => {
-            if (UI.reviewMistakes) {
-                UI.reviewMistakes();
-            } else {
-                console.warn('reviewSmartMistakes function not available');
-            }
-        },
-        startQuizHandler: (mode) => {
-            if (UI.startQuiz) {
-                UI.startQuiz(mode);
-            } else {
-                console.warn('startQuiz function not available');
-            }
-        },
+        reviewMistakesHandler,
+        startQuizHandler,
         closeModal,
         updateDailyGoal,
         saveDailyGoal,
-        // توابع کمکی
         resetStats,
         exportData,
-        // تنظیم توابع UI
         setUIHandlers: (handlers) => {
             if (handlers.showModal) UI.showModal = handlers.showModal;
             if (handlers.reviewMistakes) UI.reviewMistakes = handlers.reviewMistakes;
@@ -1458,4 +1389,4 @@ if (typeof document !== 'undefined') {
     document.head.appendChild(styleElement);
 }
 
-console.log('✅ Progress Tracker v4.0 loaded successfully');
+console.log('✅ Progress Tracker v4.1 loaded successfully');
