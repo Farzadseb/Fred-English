@@ -20,6 +20,56 @@
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* ===== Base Styles ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg-light);
+    color: var(--text-light);
+    direction: rtl;
+}
+
+body.dark-mode {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ===== SCREENS ===== */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    overflow-y: auto; /* 🔥 اصلاح: اسکرول داخلی */
+    -webkit-overflow-scrolling: touch; /* 🔥 اصلاح: اسکرول نرم iOS */
+    z-index: 1;
+}
+
+.screen.active {
+    display: flex !important;
+}
+
 /* ===== Score Display ===== */
 .score-display {
     background: var(--card-light);
@@ -29,17 +79,15 @@
     text-align: center;
     border: 1px solid var(--border-light);
     box-shadow: var(--shadow);
-    width: 65%;  /* 📏 عرض کم شده */
-    max-width: 280px;  /* 📏 حداکثر عرض */
-    margin-left: auto;  /* 🔧 وسط‌چین */
-    margin-right: auto;  /* 🔧 وسط‌چین */
+    width: 65%;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .dark-mode .score-display {
     background: var(--card-dark);
     border-color: var(--border-dark);
-    width: 65%;  /* در حالت تاریک هم */
-    max-width: 280px;
 }
 
 /* ===== Buttons ===== */
@@ -48,15 +96,15 @@
     color: white;
 }
 
-/* 🟡 دکمه نصب - زرد */
+/* دکمه نصب - زرد */
 #install-btn {
-    background: var(--yellow) !important;  /* رنگ زرد */
-    color: #222 !important;  /* متن تیره */
+    background: var(--yellow) !important;
+    color: #222 !important;
     border: none !important;
 }
 
 #install-btn:active {
-    background: #FFA033 !important;  /* تیره‌تر هنگام لمس */
+    background: #FFA033 !important;
     transform: scale(0.98);
 }
 
@@ -65,8 +113,8 @@
     padding: 20px 0;
     border-top: 1px solid var(--border-light);
     margin-top: auto;
-    display: flex;  /* ✅ نمایش داده شود */
-    justify-content: center;  /* ✅ وسط‌چین */
+    display: flex;
+    justify-content: center;
 }
 
 .dark-mode .exit-container {
@@ -74,8 +122,8 @@
 }
 
 .exit-btn {
-    width: 90%;  /* کمی کوچکتر از عرض کامل */
-    max-width: 300px;  /* حداکثر عرض */
+    width: 90%;
+    max-width: 300px;
     padding: 18px;
     background: var(--danger);
     color: white;
@@ -99,4 +147,45 @@
 
 .dark-mode .star-zero {
     color: var(--border-dark) !important;
+}
+
+/* ===== Progress Badge ===== */
+.progress-badge {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    background: var(--primary);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(74, 144, 226, 0.3);
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+/* 🔥 اصلاح نهایی: حالت تاریک progress-badge */
+.dark-mode .progress-badge {
+    background: #64d2ff !important;
+    box-shadow: 0 4px 20px rgba(100, 210, 255, 0.35) !important;
+}
+
+.progress-badge:active {
+    transform: scale(0.95);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+    .progress-badge {
+        width: 50px;
+        height: 50px;
+        bottom: 80px;
+        left: 15px;
+        font-size: 20px;
+    }
 }
