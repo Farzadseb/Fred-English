@@ -1,6 +1,6 @@
 /**
  * Screen Controller - مدیریت حالت‌های صفحه
- * نسخه نهایی با انیمیشن‌های کنترل شده
+ * نسخه نهایی قابل قفل RC1 + بهینه‌سازی state change
  */
 
 const ScreenController = (() => {
@@ -13,7 +13,6 @@ const ScreenController = (() => {
     // وضعیت فعلی
     let currentState = STATE.HOME;
     let quizActive = false;
-    let animationEnabled = true;
     
     // عناصر DOM
     const elements = {
@@ -37,13 +36,10 @@ const ScreenController = (() => {
         elements.installOverlay = document.getElementById('install-prompt-overlay');
         elements.installPrompt = document.getElementById('install-prompt');
         
-        // بررسی ترجیح انیمیشن کاربر
-        checkAnimationPreferences();
-        
         // تنظیم حالت اولیه
         setState(STATE.HOME);
         
-        // جلوگیری از مشکلات رایج
+        // جلوگیری از مشکلات رایج (نسخه امن)
         preventCommonIssues();
         
         // تنظیم event listeners
@@ -51,20 +47,16 @@ const ScreenController = (() => {
     }
     
     /**
-     * بررسی ترجیح کاربر برای انیمیشن
-     */
-    function checkAnimationPreferences() {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        animationEnabled = !prefersReducedMotion;
-        
-        console.log(`🎬 Animation ${animationEnabled ? 'enabled' : 'disabled'} (user preference)`);
-    }
-    
-    /**
      * تغییر حالت برنامه
      */
     function setState(newState) {
-        console.log(`🔄 Changing state: ${currentState} → ${newState}`);
+        console.log(`🔄 Attempting state change: ${currentState} → ${newState}`);
+        
+        // ⭐ بهینه‌سازی: جلوگیری از state change تکراری
+        if (newState === currentState) {
+            console.log('⏭️  State unchanged, skipping');
+            return;
+        }
         
         // اعتبارسنجی حالت
         if (!Object.values(STATE).includes(newState)) {
@@ -99,21 +91,26 @@ const ScreenController = (() => {
         
         // اسکرول به بالا
         scrollToTop();
+        
+        console.log(`✅ State changed successfully: ${previousState} → ${newState}`);
     }
     
     /**
      * مخفی کردن همه صفحات
      */
     function hideAllScreens() {
-        if (elements.homeScreen) elements.homeScreen.classList.remove('active');
-        if (elements.quizScreen) elements.quizScreen.classList.remove('active');
+        document.querySelectorAll('.screen.active').forEach(screen => {
+            screen.classList.remove('active');
+        });
     }
     
     /**
      * مخفی کردن overlay ها
      */
     function hideOverlays() {
-        if (elements.installOverlay) elements.installOverlay.classList.remove('active');
+        if (elements.installOverlay) {
+            elements.installOverlay.classList.remove('active');
+        }
     }
     
     /**
@@ -122,7 +119,6 @@ const ScreenController = (() => {
     function showHomeScreen() {
         if (elements.homeScreen) {
             elements.homeScreen.classList.add('active');
-            console.log('✅ Home screen activated');
         }
     }
     
@@ -132,7 +128,6 @@ const ScreenController = (() => {
     function showQuizScreen() {
         if (elements.quizScreen) {
             elements.quizScreen.classList.add('active');
-            console.log('✅ Quiz screen activated');
         }
     }
     
@@ -165,7 +160,8 @@ const ScreenController = (() => {
                 oldState,
                 newState,
                 quizActive,
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                isDuplicate: false
             }
         });
         document.dispatchEvent(event);
@@ -175,32 +171,24 @@ const ScreenController = (() => {
      * اسکرول به بالای صفحه
      */
     function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (elements.app) {
-            elements.app.scrollTop = 0;
-        }
+        document.querySelectorAll('.screen.active').forEach(screen => {
+            screen.scrollTop = 0;
+        });
     }
     
     /**
-     * جلوگیری از مشکلات رایج UI
+     * جلوگیری از مشکلات رایج UI (نسخه امن)
      */
     function preventCommonIssues() {
-        // جلوگیری از کشیدن به روزرسانی (pull-to-refresh)
-        document.addEventListener('touchmove', function(e) {
-            if (window.scrollY === 0) {
+        // جلوگیری از focus روی عناصر خارج از صفحه
+        document.addEventListener('focusin', (e) => {
+            const activeScreen = document.querySelector('.screen.active');
+            if (activeScreen && !activeScreen.contains(e.target)) {
                 e.preventDefault();
+                const focusable = activeScreen.querySelector('button, [tabindex]:not([tabindex="-1"])');
+                if (focusable) focusable.focus();
             }
-        }, { passive: false });
-        
-        // جلوگیری از zoom با دابل تاپ
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(e) {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
+        }, true);
     }
     
     /**
@@ -222,12 +210,6 @@ const ScreenController = (() => {
                 e.stopPropagation();
             });
         }
-        
-        // گوش دادن به تغییر ترجیح انیمیشن کاربر
-        window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
-            animationEnabled = !e.matches;
-            console.log(`🎬 Animation ${animationEnabled ? 'enabled' : 'disabled'} (preference changed)`);
-        });
     }
     
     /**
