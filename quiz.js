@@ -1,448 +1,418 @@
 /**
- * Quiz Logic - منطق آزمون
- * نسخه نهایی RC1 (اصلاحات کامل مربی)
+ * Quiz System for English with Fred
+ * Version 2.2 - Production Ready
  */
 
-// متغیرهای quiz state
-let currentAnswerKey = null; // ⭐ اصلاح: ذخیره کلید جواب صحیح برای smart-review
+// Global quiz state
+let currentMode = 'en-fa';
+let questions = [];
+let currentQuestionIndex = 0;
+let correctCount = 0;
+let quizInProgress = false;
+let quizStartTime = null;
+let currentWord = null;
+let correctAnswer = null;
+let reviewedMistakeIds = new Set();
 
-// توابع اصلی آزمون
+// Shuffle بهتر
+function shuffle(array) {
+    const newArray = [...array];
+    for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+}
 
-/**
- * شروع آزمون جدید
- */
-function startQuiz(mode) {
-    console.log(`🎯 Starting quiz in ${mode} mode`);
+// Initialize quiz
+function initQuiz(mode = 'en-fa') {
+    console.log(`🎯 Initializing quiz in ${mode} mode`);
     
     currentMode = mode;
     currentQuestionIndex = 0;
-    correctAnswers = 0;
-    currentAnswerKey = null; // ریست کردن
+    correctCount = 0;
+    quizInProgress = true;
+    window.quizInProgress = true;
+    quizStartTime = Date.now();
+    currentWord = null;
+    correctAnswer = null;
+    reviewedMistakeIds.clear();
     
-    // آماده‌سازی سوالات (از کل دیتابیس)
-    const shuffledWords = [...words].sort(() => Math.random() - 0.5);
-    currentSession = shuffledWords.slice(0, 10);
+    // Load appropriate words
+    loadQuestions(mode);
     
-    // مخفی کردن badge گزارش هنگام شروع آزمون
-    const badge = document.getElementById('progress-badge');
-    if (badge) {
-        badge.style.display = 'none';
+    // Show first question
+    if (questions.length > 0) {
+        showQuestion();
+    } else {
+        console.error('❌ No questions available');
+        exitQuiz();
     }
-    
-    // تغییر به صفحه آزمون
-    ScreenController.setState(ScreenController.STATE.QUIZ);
-    
-    // بارگذاری اولین سوال
-    setTimeout(() => {
-        loadQuestion();
-    }, 100);
 }
 
-/**
- * بارگذاری سوال جاری
- */
-function loadQuestion() {
-    if (currentQuestionIndex >= currentSession.length) {
-        finishQuiz();
+// Load questions based on mode
+function loadQuestions(mode) {
+    questions = [];
+    
+    if (typeof window.wordsA1 === 'undefined' || !Array.isArray(window.wordsA1)) {
+        console.error('❌ Words data not available');
         return;
     }
     
-    const currentWord = currentSession[currentQuestionIndex];
-    let questionText = '';
+    const allWords = [...window.wordsA1];
+    
+    if (mode === 'mistake-review') {
+        // For mistake review, use provided questions
+        if (window.mistakeReviewWords && window.mistakeReviewWords.length > 0) {
+            questions = window.mistakeReviewWords.map(word => ({
+                word: word,
+                mode: word.mode || 'en-fa'
+            }));
+        }
+        return;
+    }
+    
+    // Shuffle words
+    const shuffledWords = shuffle(allWords);
+    
+    // Select first 10 words
+    const selectedWords = shuffledWords.slice(0, 10);
+    
+    // Create questions
+    selectedWords.forEach(word => {
+        questions.push({
+            word: word,
+            mode: mode
+        });
+    });
+    
+    console.log(`📝 Loaded ${questions.length} questions for ${mode} mode`);
+}
+
+// Start mistake review
+function startMistakeReview(mistakeWords) {
+    console.log('🎯 Starting mistake review with', mistakeWords.length, 'words');
+    
+    window.mistakeReviewWords = mistakeWords;
+    initQuiz('mistake-review');
+}
+
+// Display current question
+function showQuestion() {
+    if (currentQuestionIndex >= questions.length) {
+        endQuiz();
+        return;
+    }
+    
+    const questionData = questions[currentQuestionIndex];
+    currentWord = questionData.word;
+    const mode = questionData.mode;
+    
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    const progressElement = document.getElementById('progress');
+    
+    // Update progress
+    progressElement.textContent = `${currentQuestionIndex + 1}/${questions.length}`;
+    
+    // Clear previous options
+    optionsElement.innerHTML = '';
+    
+    // Prepare options
+    let correctAnswerText = '';
     let options = [];
     
-    // بر اساس حالت آزمون، سوال و گزینه‌ها را تنظیم کن
-    switch(currentMode) {
+    switch(mode) {
         case 'en-fa':
-            questionText = currentWord.english;
-            options = generateOptions(currentWord, 'persian');
-            currentAnswerKey = 'persian'; // ⭐ ذخیره کلید جواب
+            questionElement.textContent = `"${currentWord.english}" به فارسی چیست؟`;
+            correctAnswerText = currentWord.persian;
+            options = getRandomOptions(currentWord, 'persian', 4);
             break;
             
         case 'fa-en':
-            questionText = currentWord.persian;
-            options = generateOptions(currentWord, 'english');
-            currentAnswerKey = 'english';
+            questionElement.textContent = `"${currentWord.persian}" به انگلیسی چیست؟`;
+            correctAnswerText = currentWord.english;
+            options = getRandomOptions(currentWord, 'english', 4);
             break;
             
         case 'word-def':
-            questionText = currentWord.english;
-            options = generateOptions(currentWord, 'definition');
-            currentAnswerKey = 'definition';
+            questionElement.textContent = `معنی "${currentWord.english}" چیست؟`;
+            correctAnswerText = currentWord.persian;
+            options = getRandomOptions(currentWord, 'persian', 4);
             break;
             
         case 'def-word':
-            questionText = currentWord.definition;
-            options = generateOptions(currentWord, 'english');
-            currentAnswerKey = 'english';
+            questionElement.textContent = `کلمه‌ای که معنی آن "${currentWord.persian}" است چیست؟`;
+            correctAnswerText = currentWord.english;
+            options = getRandomOptions(currentWord, 'english', 4);
             break;
             
-        case 'smart-review':
-            // ⭐ اصلاح: ذخیره دقیق کلید جواب
-            const isPersianQuestion = Math.random() > 0.5;
-            if (isPersianQuestion) {
-                questionText = currentWord.persian;
-                options = generateOptions(currentWord, 'english');
-                currentAnswerKey = 'english';
+        case 'mistake-review':
+            const reviewMode = currentWord.mode || 'en-fa';
+            if (reviewMode === 'en-fa') {
+                questionElement.textContent = `"${currentWord.english}" به فارسی چیست؟`;
+                correctAnswerText = currentWord.persian;
+                options = getRandomOptions(currentWord, 'persian', 4);
             } else {
-                questionText = currentWord.english;
-                options = generateOptions(currentWord, 'persian');
-                currentAnswerKey = 'persian';
+                questionElement.textContent = `"${currentWord.persian}" به انگلیسی چیست؟`;
+                correctAnswerText = currentWord.english;
+                options = getRandomOptions(currentWord, 'english', 4);
             }
             break;
-            
-        default:
-            questionText = currentWord.english;
-            options = generateOptions(currentWord, 'persian');
-            currentAnswerKey = 'persian';
     }
     
-    // نمایش سوال
-    const questionElement = document.getElementById('question');
-    if (questionElement) {
-        questionElement.textContent = questionText;
-    }
+    correctAnswer = correctAnswerText;
     
-    // نمایش گزینه‌ها
-    const optionsContainer = document.getElementById('options-container');
-    if (optionsContainer) {
-        optionsContainer.innerHTML = '';
-        
-        options.forEach((option, index) => {
-            const optionElement = document.createElement('div');
-            optionElement.className = 'option';
-            optionElement.textContent = option.text;
-            optionElement.onclick = () => checkAnswer(index, option.isCorrect, currentWord);
-            optionsContainer.appendChild(optionElement);
-        });
-    }
+    // Display options
+    options.forEach((option, index) => {
+        const optionElement = document.createElement('button');
+        optionElement.className = 'option-btn';
+        optionElement.textContent = option;
+        optionElement.onclick = () => checkAnswer(option);
+        optionsElement.appendChild(optionElement);
+    });
     
-    // به‌روزرسانی نوار پیشرفت
-    updateProgressBar();
-    
-    // تلفظ سوال
-    if (window.speechSynthesis) {
-        setTimeout(speakQuestion, 300);
+    // Auto-speak for English questions
+    const displayMode = currentWord.mode || currentMode;
+    if ((displayMode === 'en-fa' || displayMode === 'word-def') && !window.isMuted) {
+        setTimeout(() => {
+            speakWord(currentWord.english);
+        }, 500);
     }
 }
 
-/**
- * تولید گزینه‌ها برای سوال - با fail-safe
- */
-function generateOptions(correctWord, type) {
-    const options = [];
-    
-    // fail-safe برای داده‌های ناقص
-    const correctText = correctWord[type] || '—';
-    
-    // گزینه صحیح
-    const correctOption = {
-        text: correctText,
-        isCorrect: true
-    };
-    options.push(correctOption);
-    
-    // ۳ گزینه غلط تصادفی
-    const otherWords = words.filter(word => word !== correctWord);
-    const shuffledOthers = [...otherWords].sort(() => Math.random() - 0.5).slice(0, 3);
-    
-    shuffledOthers.forEach(word => {
-        const wrongText = word[type] || '—';
-        options.push({
-            text: wrongText,
-            isCorrect: false
-        });
-    });
-    
-    // مخلوط کردن گزینه‌ها
-    return options.sort(() => Math.random() - 0.5);
-}
-
-/**
- * بررسی پاسخ کاربر - با جلوگیری از کلیک سریع
- */
-function checkAnswer(selectedIndex, isCorrect, questionData) {
-    const options = document.querySelectorAll('.option');
-    
-    // جلوگیری از کلیک سریع دوباره
-    if (options[0].style.pointerEvents === 'none') {
-        console.log('⏸️  Click prevented (already processing)');
-        return;
+// Get random options including correct answer
+function getRandomOptions(correctWord, field, count) {
+    if (typeof window.wordsA1 === 'undefined') {
+        return [correctWord[field]];
     }
     
-    // غیرفعال کردن کلیک روی گزینه‌ها
-    options.forEach(option => {
-        option.style.pointerEvents = 'none';
-    });
+    const allWords = window.wordsA1.filter(w => w[field] !== correctWord[field]);
+    const shuffled = shuffle(allWords);
+    const wrongOptions = shuffled.slice(0, count - 1).map(w => w[field]);
     
-    // نمایش نتیجه
-    if (isCorrect) {
-        options[selectedIndex].classList.add('correct');
-        playSound('correct');
-        correctAnswers++;
-        showToast('✅ درست بود!', '🎉');
-    } else {
-        options[selectedIndex].classList.add('incorrect');
-        playSound('incorrect');
-        showToast('❌ اشتباه بود', '📝');
+    // Combine and shuffle
+    const options = [correctWord[field], ...wrongOptions];
+    return shuffle(options);
+}
+
+// Check answer
+function checkAnswer(selectedOption) {
+    const isCorrect = selectedOption === correctAnswer;
+    const optionButtons = document.querySelectorAll('.option-btn');
+    
+    // Disable all buttons
+    optionButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.style.cursor = 'default';
         
-        // ⭐ اصلاح نهایی: تشخیص دقیق جواب صحیح
-        let correctKey = currentAnswerKey; // استفاده از کلید ذخیره شده
-        
-        // fallback برای backward compatibility
-        if (!correctKey) {
-            switch(currentMode) {
-                case 'en-fa': correctKey = 'persian'; break;
-                case 'fa-en': correctKey = 'english'; break;
-                case 'word-def': correctKey = 'definition'; break;
-                case 'def-word': correctKey = 'english'; break;
-                case 'smart-review': 
-                    // اگر currentAnswerKey نباشد، منطق قدیمی
-                    const hasPersian = options[0].textContent === questionData.persian;
-                    correctKey = hasPersian ? 'english' : 'persian';
-                    break;
-                default: correctKey = 'persian';
-            }
+        if (btn.textContent === correctAnswer) {
+            btn.classList.add('correct');
         }
         
-        const correctAnswerText = questionData[correctKey] || 
-                                 questionData.english || 
-                                 questionData.persian || 
-                                 '—';
-        
-        // highlight گزینه صحیح
-        options.forEach(option => {
-            if (option.textContent.trim() === correctAnswerText.trim()) {
-                option.classList.add('correct');
-            }
-        });
+        if (btn.textContent === selectedOption && !isCorrect) {
+            btn.classList.add('wrong');
+        }
+    });
+    
+    // Update score
+    if (isCorrect) {
+        correctCount++;
     }
     
-    // ثبت در ProgressTracker
-    ProgressTracker.recordQuestion(currentMode, isCorrect, questionData);
+    // ثبت سؤال در Progress Tracker
+    if (typeof ProgressTracker !== 'undefined' && currentWord) {
+        const trackingMode = currentWord.mode || currentMode;
+        ProgressTracker.recordQuestion(trackingMode, isCorrect, currentWord);
+        
+        // جلوگیری از ثبت دوباره
+        if (currentWord.mistakeId && isCorrect && !reviewedMistakeIds.has(currentWord.mistakeId)) {
+            ProgressTracker.increaseReviewCount(currentWord.mistakeId);
+            reviewedMistakeIds.add(currentWord.mistakeId);
+        }
+    }
     
-    // رفتن به سوال بعدی
+    // Show result
+    showResultFeedback(isCorrect);
+    
+    // Move to next question after delay
     setTimeout(() => {
         currentQuestionIndex++;
-        currentAnswerKey = null; // ریست برای سوال بعدی
-        loadQuestion();
-    }, 2000);
+        showQuestion();
+    }, 1500);
 }
 
-/**
- * به‌روزرسانی نوار پیشرفت
- */
-function updateProgressBar() {
-    const progressElement = document.getElementById('quiz-progress');
-    if (progressElement) {
-        const progress = currentSession.length > 0 
-            ? Math.round(((currentQuestionIndex + 1) / currentSession.length) * 100)
-            : 0;
-        
-        progressElement.textContent = `سوال ${currentQuestionIndex + 1} از ${currentSession.length}`;
-        
-        // می‌توانید progress bar بصری هم اضافه کنید
-        const progressBar = document.getElementById('progress-bar');
-        if (progressBar) {
-            progressBar.style.width = `${progress}%`;
-        }
-    }
-}
-
-/**
- * پایان آزمون
- */
-function finishQuiz() {
-    const scorePercentage = currentSession.length > 0 
-        ? Math.round((correctAnswers / currentSession.length) * 100)
-        : 0;
+// Show feedback for answer
+function showResultFeedback(isCorrect) {
+    const feedback = document.createElement('div');
+    feedback.className = `feedback ${isCorrect ? 'correct' : 'wrong'}`;
+    feedback.textContent = isCorrect ? '✅ درست!' : '❌ اشتباه';
+    feedback.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        padding: 20px 40px;
+        border-radius: 50px;
+        z-index: 1000;
+        animation: popIn 0.5s ease;
+    `;
     
-    // نمایش نتیجه
-    let message = '';
-    if (scorePercentage >= 90) {
-        message = `عالی! 🏆 امتیاز شما: ${scorePercentage}%`;
-    } else if (scorePercentage >= 70) {
-        message = `خوب! 👍 امتیاز شما: ${scorePercentage}%`;
-    } else if (scorePercentage >= 50) {
-        message = `قابل قبول 🤔 امتیاز شما: ${scorePercentage}%`;
-    } else {
-        message = `نیاز به تمرین بیشتر 📚 امتیاز شما: ${scorePercentage}%`;
-    }
-    
-    showToast(message, '📊');
-    
-    // ثبت جلسه در ProgressTracker
-    ProgressTracker.recordSession(currentMode, scorePercentage, currentSession.length);
-    
-    // بررسی دستاوردها
-    if (scorePercentage >= 90 && currentSession.length >= 5) {
-        showAchievement('استاد دقت! 🎯', 'امتیاز شما به ۹۰٪ رسیده است!');
-    }
-    
-    if (correctAnswers === currentSession.length && currentSession.length >= 5) {
-        showAchievement('کامل! 💯', 'به همه سوالات درست پاسخ دادید!');
-    }
-    
-    // برگشت به صفحه اصلی بعد از ۳ ثانیه
-    setTimeout(() => {
-        ScreenController.setState(ScreenController.STATE.HOME);
-        
-        // نمایش مجدد badge گزارش
-        setTimeout(() => {
-            ProgressTracker.addProgressBadge();
-        }, 300);
-    }, 3000);
-}
-
-/**
- * خروج از آزمون - با لغو صدا
- */
-function exitQuiz() {
-    // لغو صداهای در حال پخش
-    if (window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-    }
-    
-    // اگر آزمون در جریان است، تأیید بگیر
-    if (currentQuestionIndex < currentSession.length && currentSession.length > 0) {
-        const confirmExit = confirm('آیا مطمئنید می‌خواهید آزمون را رها کنید؟\n\nپیشرفت ذخیره نخواهد شد.');
-        if (!confirmExit) {
-            return;
-        }
-    }
-    
-    // استفاده از ScreenController
-    ScreenController.setState(ScreenController.STATE.HOME);
-    
-    showToast('آزمون متوقف شد', '⏸️');
-    
-    // نمایش مجدد badge گزارش
-    setTimeout(() => {
-        ProgressTracker.addProgressBadge();
-    }, 300);
-    
-    // ریست state
-    currentAnswerKey = null;
-}
-
-/**
- * مرور اشتباهات هوشمند - واقعاً smart
- */
-function reviewSmartMistakes() {
-    const mistakes = ProgressTracker.getMistakesForReview(10);
-    
-    if (mistakes.length === 0) {
-        showToast('🎉 هیچ اشتباهی برای مرور ندارید!', '🎯');
-        
-        // پیشنهاد تمرین معمولی
-        setTimeout(() => {
-            if (confirm('می‌خواهید یک تمرین معمولی شروع کنید؟')) {
-                startQuiz('en-fa');
-            }
-        }, 500);
-        
-        return;
-    }
-    
-    currentMode = 'smart-review';
-    currentQuestionIndex = 0;
-    correctAnswers = 0;
-    currentAnswerKey = null;
-    
-    // واقعاً از اشتباهات هوشمند استفاده کن
-    const prioritizedMistakes = [...mistakes].sort((a, b) => b.priority - a.priority);
-    
-    currentSession = prioritizedMistakes.map(mistake => {
-        // پیدا کردن کلمه مربوطه در دیتابیس
-        const word = words.find(w => 
-            w.english === mistake.word.english && 
-            w.persian === mistake.word.persian
-        );
-        
-        return word || mistake.word;
-    });
-    
-    // محدود کردن به ۱۰ سوال
-    currentSession = currentSession.slice(0, Math.min(10, currentSession.length));
-    
-    console.log(`🎯 Smart review starting with ${currentSession.length} mistake-based questions`);
-    showToast(`🎯 ${mistakes.length} اشتباه اولویت‌دار برای مرور`, '🧠');
-    
-    // مخفی کردن badge گزارش
-    const badge = document.getElementById('progress-badge');
-    if (badge) {
-        badge.style.display = 'none';
-    }
-    
-    ScreenController.setState(ScreenController.STATE.QUIZ);
+    document.body.appendChild(feedback);
     
     setTimeout(() => {
-        loadQuestion();
-    }, 100);
+        feedback.remove();
+    }, 1000);
 }
 
-/**
- * نمایش اعلان
- */
-function showToast(message, icon = '📢') {
-    // حذف toast قبلی
-    const existingToast = document.getElementById('custom-toast');
-    if (existingToast) {
-        existingToast.remove();
+// Speak question
+function speakQuestion() {
+    if (!currentWord) return;
+    
+    const mode = currentWord.mode || currentMode;
+    
+    if (mode === 'en-fa' || mode === 'word-def') {
+        speakWord(currentWord.english);
+    } else if (mode === 'fa-en' || mode === 'def-word') {
+        showCustomModal('🔊 تلفظ انگلیسی', `
+            <div style="text-align: center; padding: 20px;">
+                <p style="font-size: 24px; margin-bottom: 10px;">${currentWord.english}</p>
+                <p style="color: #666; margin-bottom: 20px;">${currentWord.phonetic || ''}</p>
+                <button class="btn btn-primary" onclick="speakWord('${currentWord.english}')">
+                    پخش تلفظ
+                </button>
+            </div>
+        `);
+    }
+}
+
+// End quiz and show results
+function endQuiz() {
+    quizInProgress = false;
+    window.quizInProgress = false;
+    const totalQuestions = questions.length;
+    const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+    
+    // Calculate time spent
+    const timeSpent = quizStartTime ? Math.round((Date.now() - quizStartTime) / 60000) : null;
+    
+    // ثبت جلسه در Progress Tracker
+    if (typeof ProgressTracker !== 'undefined') {
+        const sessionMode = currentMode === 'mistake-review' ? 'review' : currentMode;
+        ProgressTracker.recordSession(sessionMode, score, totalQuestions, timeSpent);
     }
     
-    // ایجاد toast جدید
-    const toastHTML = `
-        <div id="custom-toast" class="custom-toast">
-            <span class="toast-icon">${icon}</span>
-            <span class="toast-message">${message}</span>
+    // Update best score
+    if (typeof updateBestScore === 'function') {
+        updateBestScore(score);
+    }
+    
+    // Show results
+    showResults(score, totalQuestions, correctCount);
+}
+
+// Show quiz results
+function showResults(score, totalQuestions, correctCount) {
+    const displayMode = currentMode === 'mistake-review' ? 'review' : currentMode;
+    
+    const resultHTML = `
+        <div class="quiz-results">
+            <div class="result-header">
+                <div class="result-icon">${score >= 70 ? '🎉' : '📊'}</div>
+                <h3>نتایج آزمون</h3>
+            </div>
+            
+            <div class="result-stats">
+                <div class="stat-item">
+                    <span class="stat-label">نمره شما</span>
+                    <span class="stat-value ${score >= 70 ? 'good' : 'average'}">${score}%</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">پاسخ صحیح</span>
+                    <span class="stat-value">${correctCount} از ${totalQuestions}</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-label">حالت آزمون</span>
+                    <span class="stat-value">${getModeName(displayMode)}</span>
+                </div>
+            </div>
+            
+            <div class="result-feedback">
+                ${getFeedbackMessage(score)}
+            </div>
+            
+            <div class="result-actions">
+                <button class="btn btn-primary" onclick="restartQuiz()">
+                    <span>🔄</span> آزمون مجدد
+                </button>
+                
+                <button class="btn btn-secondary" onclick="exitQuiz()">
+                    <span>🏠</span> بازگشت به خانه
+                </button>
+                
+                ${score < 70 ? `
+                <button class="btn btn-warning" onclick="ProgressTracker.reviewMistakesHandler()">
+                    <span>🎯</span> مرور اشتباهات
+                </button>
+                ` : ''}
+            </div>
         </div>
     `;
     
-    document.body.insertAdjacentHTML('beforeend', toastHTML);
-    
-    // حذف خودکار بعد از ۳ ثانیه
-    setTimeout(() => {
-        const toast = document.getElementById('custom-toast');
-        if (toast) {
-            toast.remove();
-        }
-    }, 3000);
+    showCustomModal('نتایج آزمون', resultHTML);
 }
 
-/**
- * تغییر حالت تاریک/روشن
- */
-function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-    
-    const isDarkMode = document.body.classList.contains('dark-mode');
-    localStorage.setItem('darkMode', isDarkMode);
-    
-    const icon = document.querySelector('#dark-mode-btn .icon');
-    if (icon) {
-        icon.textContent = isDarkMode ? '☀️' : '🌙';
+// Restart quiz
+function restartQuiz() {
+    closeCustomModal();
+    initQuiz(currentMode);
+}
+
+// Reset quiz state
+function resetQuiz() {
+    quizInProgress = false;
+    window.quizInProgress = false;
+    currentQuestionIndex = 0;
+    correctCount = 0;
+    quizStartTime = null;
+    currentWord = null;
+    correctAnswer = null;
+    questions = [];
+    window.mistakeReviewWords = null;
+    reviewedMistakeIds.clear();
+}
+
+// Helper functions
+function getModeName(mode) {
+    const modes = {
+        'en-fa': 'انگلیسی → فارسی',
+        'fa-en': 'فارسی → انگلیسی',
+        'word-def': 'کلمه → معنی',
+        'def-word': 'معنی → کلمه',
+        'mistake-review': 'مرور اشتباهات',
+        'review': 'مرور اشتباهات'
+    };
+    return modes[mode] || mode;
+}
+
+function getFeedbackMessage(score) {
+    if (score >= 90) {
+        return 'عالی! شما تسلط بسیار خوبی دارید. 👏';
+    } else if (score >= 70) {
+        return 'خوب! در مسیر درستی هستید. 👍';
+    } else if (score >= 50) {
+        return 'قابل قبول، نیاز به تمرین بیشتر دارید. 📚';
+    } else {
+        return 'نیاز به تمرین جدی دارید. 💪';
     }
-    
-    showToast(isDarkMode ? 'حالت تاریک فعال شد' : 'حالت روشن فعال شد', isDarkMode ? '🌙' : '☀️');
 }
 
-/**
- * تنظیمات
- */
-function toggleSettings() {
-    ModalHelper.showInfoModal(
-        'تنظیمات',
-        `حالت فعلی: ${currentMode}<br>
-        تعداد کلمات: ${words.length}<br>
-        نسخه: ۱.۰.۰<br><br>
-        <small>English with Fred - A1 Student Edition</small>`
-    );
-}
+// Export for use in other files
+window.quizInProgress = false;
+window.initQuiz = initQuiz;
+window.startMistakeReview = startMistakeReview;
 
-// Global functions برای دسترسی از HTML
-window.startQuiz = startQuiz;
-window.exitQuiz = exitQuiz;
-window.toggleDarkMode = toggleDarkMode;
-window.toggleSettings = toggleSettings;
-window.reviewSmartMistakes = reviewSmartMistakes;
+console.log('✅ Quiz.js v2.2 loaded successfully');
