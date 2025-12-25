@@ -62,8 +62,12 @@
                 <span>📚</span> Definition → Word
             </button>
             
-            <button class="btn btn-secondary" onclick="reviewMistakes()">
-                <span>🎯</span> مرور اشتباهات
+            <button class="btn btn-secondary" onclick="ProgressTracker.reviewMistakesHandler()">
+                <span>🎯</span> مرور اشتباهات هوشمند
+            </button>
+            
+            <button class="btn btn-info" onclick="ProgressTracker.showProgressReport()">
+                <span>📊</span> گزارش پیشرفت
             </button>
             
             <button id="install-btn" class="btn btn-success" onclick="showInstallPrompt()">
@@ -110,7 +114,7 @@
     </div>
     
     <!-- پاپ‌آپ نصب PWA -->
-    <div id="install-prompt" class="install-prompt">
+    <div id="install-prompt" class="install-prompt" style="display: none;">
         <div class="install-prompt-content">
             <div class="install-icon">📱</div>
             <div class="install-text">
@@ -128,6 +132,7 @@
     <script src="pwa.js"></script>
     <script src="speech.js"></script>
     <script src="quiz.js"></script>
+    <script src="progress.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
