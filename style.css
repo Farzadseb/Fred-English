@@ -1,23 +1,27 @@
-/* ====== متغیرهای رنگ ====== */
+/* ====== متغیرهای رنگ جدید ====== */
 :root {
-    --bg: #f2f4f8;
-    --card: #ffffff;
-    --text: #222;
-    --primary: #0a66ff;
-    --secondary: #34c759;
-    --danger: #ff3b30;
-    --border-radius: 18px;
-    --shadow: 0 8px 24px rgba(0,0,0,0.08);
+    --primary: #4CAF50;      /* سبز زیبا */
+    --secondary: #2196F3;    /* آبی فیروزه‌ای */
+    --accent: #FF9800;       /* نارنجی */
+    --danger: #F44336;       /* قرمز */
+    --light-bg: #F5F5F5;     /* پس‌زمینه روشن */
+    --card-bg: #FFFFFF;      /* سفید */
+    --text: #212121;         /* مشکی */
+    --text-light: #757575;   /* خاکستری */
+    --border-radius: 16px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 body.dark {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --text: #f8fafc;
-    --primary: #3b82f6;
-    --secondary: #22c55e;
-    --danger: #ef4444;
-    --shadow: 0 8px 24px rgba(0,0,0,0.2);
+    --primary: #388E3C;
+    --secondary: #1976D2;
+    --accent: #F57C00;
+    --danger: #D32F2F;
+    --light-bg: #121212;
+    --card-bg: #1E1E1E;
+    --text: #FFFFFF;
+    --text-light: #BDBDBD;
+    --shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 /* ====== بدنه اصلی ====== */
@@ -29,117 +33,134 @@ body.dark {
 
 body {
     margin: 0;
-    background: var(--bg);
+    padding: 15px;
+    background: var(--light-bg);
     color: var(--text);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    transition: background 0.3s ease, color 0.3s ease;
+    font-family: 'Vazir', 'Segoe UI', system-ui, sans-serif;
+    transition: all 0.3s ease;
     min-height: 100vh;
-    padding: 10px;
+    line-height: 1.6;
 }
 
 .app-container {
-    max-width: 420px;
+    max-width: 450px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 0;
 }
 
-/* ====== هدر و ستاره‌ها ====== */
+/* ====== هدر ====== */
 .app-header {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: var(--primary);
+    border-radius: var(--border-radius);
+    color: white;
+    box-shadow: var(--shadow);
 }
 
 .app-header h1 {
-    font-size: 24px;
-    margin-bottom: 12px;
-    color: var(--primary);
-}
-
-.score-display {
-    font-size: 18px;
-    margin: 12px 0;
-    padding: 10px;
-    background: var(--card);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    font-size: 26px;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .stars-container {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    max-width: 160px; /* نصف عرض */
-    margin: 0 auto 15px;
+    gap: 8px;
+    margin: 15px auto;
+    max-width: 200px;
 }
 
 .star {
-    font-size: 24px;
-    color: #ccc;
-    transition: color 0.3s;
+    font-size: 28px;
+    color: #FFD700; /* طلایی */
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
 }
 
-.star.filled {
-    color: gold;
+.score-display {
+    font-size: 18px;
+    background: rgba(255,255,255,0.2);
+    padding: 10px 20px;
+    border-radius: 50px;
+    display: inline-block;
+    margin-top: 10px;
 }
 
-/* ====== حالت‌های آزمون ====== */
+/* ====== حالت‌های آزمون (۴ کادر) ====== */
 .quiz-modes {
-    display: flex;
-    flex-direction: column;
-    gap: 14px; /* فاصله واضح */
-    margin: 20px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 25px 0;
 }
 
 .mode-button {
-    padding: 18px;
+    padding: 22px 15px;
     border-radius: var(--border-radius);
     border: none;
-    font-size: 16px;
-    font-weight: 500;
-    background: linear-gradient(135deg, var(--primary), #0050cc);
-    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    background: var(--card-bg);
+    color: var(--text);
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
     box-shadow: var(--shadow);
+    border-left: 6px solid var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 .mode-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    border-left-color: var(--accent);
 }
+
+.mode-button:nth-child(2) { border-left-color: var(--secondary); }
+.mode-button:nth-child(3) { border-left-color: var(--accent); }
+.mode-button:nth-child(4) { border-left-color: #9C27B0; }
 
 /* ====== کوییز کانتینر ====== */
 .quiz-container {
-    background: var(--card);
+    background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 20px;
-    margin: 20px 0;
+    padding: 25px;
+    margin: 25px 0;
     box-shadow: var(--shadow);
     display: none;
 }
 
 #questionText {
     font-size: 20px;
-    margin-bottom: 24px;
+    margin-bottom: 30px;
     text-align: center;
-    line-height: 1.5;
+    line-height: 1.6;
+    color: var(--text);
+    padding: 15px;
+    background: var(--light-bg);
+    border-radius: var(--border-radius);
 }
 
 .options-container {
     display: flex;
     flex-direction: column;
-    gap: 14px; /* فاصله واضح بین گزینه‌ها */
-    margin: 20px 0;
+    gap: 15px;
+    margin: 25px 0;
 }
 
 .option-button {
-    padding: 16px;
+    padding: 18px;
     border-radius: var(--border-radius);
-    border: 2px solid #e0e0e0;
-    background: var(--card);
+    border: 2px solid #E0E0E0;
+    background: var(--card-bg);
     color: var(--text);
     font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
@@ -147,57 +168,69 @@ body {
 
 .option-button:hover {
     border-color: var(--primary);
-    background: rgba(var(--primary-rgb), 0.1);
+    background: rgba(76, 175, 80, 0.1);
     transform: translateY(-2px);
 }
 
 .option-button.correct {
-    border-color: var(--secondary);
-    background: rgba(52, 199, 89, 0.1);
+    border-color: var(--primary);
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--primary);
+    font-weight: bold;
 }
 
 .option-button.wrong {
     border-color: var(--danger);
-    background: rgba(255, 59, 48, 0.1);
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--danger);
 }
 
 /* ====== کنترل‌ها ====== */
 .controls-container {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin: 20px 0;
+    gap: 15px;
+    margin: 25px 0;
     flex-wrap: wrap;
 }
 
 .control-button {
-    padding: 12px 20px;
+    padding: 14px 24px;
     border-radius: 12px;
     border: none;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    min-width: 120px;
+    gap: 10px;
+    min-width: 130px;
+    color: white !important;
 }
 
 .control-button:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
+    transform: translateY(-3px);
+    opacity: 0.95;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* ====== گزارش پیشرفت (داخل کادر) ====== */
+/* ====== رنگ دکمه‌های کنترل ====== */
+#speakBtn { background: var(--primary); }
+#hintBtn { background: var(--accent); }
+#nextBtn { background: var(--secondary); }
+#endQuizBtn { background: var(--danger); }
+
+/* ====== گزارش پیشرفت ====== */
 .progress-report-container {
-    background: var(--card);
+    background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 20px;
-    margin: 20px 0;
+    padding: 25px;
+    margin: 25px 0;
     box-shadow: var(--shadow);
     display: none;
+    border-top: 5px solid var(--secondary);
 }
 
 .progress-header {
@@ -206,55 +239,65 @@ body {
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 2px solid #e0e0e0;
+    border-bottom: 2px solid var(--light-bg);
 }
 
 .progress-header h3 {
     font-size: 20px;
-    color: var(--primary);
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .progress-header button {
-    background: none;
+    background: var(--light-bg);
     border: none;
-    font-size: 24px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 20px;
     color: var(--text);
     cursor: pointer;
-    padding: 0;
-    width: 32px;
-    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+    transition: all 0.3s ease;
 }
 
 .progress-header button:hover {
-    background: rgba(0,0,0,0.1);
+    background: var(--danger);
+    color: white;
 }
 
 .progress-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 16px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
 .stat-item {
-    background: var(--bg);
+    background: var(--light-bg);
     border-radius: 12px;
-    padding: 16px;
+    padding: 20px;
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 
 .stat-item h4 {
     font-size: 14px;
-    color: #666;
-    margin-bottom: 8px;
+    color: var(--text-light);
+    margin-bottom: 10px;
 }
 
 .stat-item p {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
     color: var(--primary);
 }
@@ -264,43 +307,78 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid #e0e0e0;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px solid var(--light-bg);
 }
 
 .footer-button {
-    padding: 14px;
+    padding: 18px;
     border-radius: var(--border-radius);
     border: none;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 12px;
+    background: var(--card-bg);
+    color: var(--text);
+    box-shadow: var(--shadow);
 }
 
 .footer-button:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-/* ====== رنگ‌های دکمه‌ها ====== */
-#speakBtn { background: var(--secondary); color: white; }
-#hintBtn { background: #FF9800; color: white; }
-#nextBtn { background: var(--primary); color: white; }
-#endQuizBtn { background: var(--danger); color: white; }
-#whatsappBtn { background: #25D366; color: white; }
-#exitBtn { background: #9E9E9E; color: white; }
+/* رنگ‌های ویژه دکمه‌های فوتتر */
+.footer-button:nth-child(1) { border-right: 5px solid var(--accent); }
+.footer-button:nth-child(2) { border-right: 5px solid var(--primary); }
+.footer-button:nth-child(3) { border-right: 5px solid #25D366; }
+.footer-button:nth-child(4) { border-right: 5px solid #9E9E9E; }
+
+.footer-button:nth-child(1):hover { background: rgba(255, 152, 0, 0.1); }
+.footer-button:nth-child(2):hover { background: rgba(76, 175, 80, 0.1); }
+.footer-button:nth-child(3):hover { background: rgba(37, 211, 102, 0.1); }
+.footer-button:nth-child(4):hover { background: rgba(158, 158, 158, 0.1); }
+
+/* ====== دکمه تغییر تم ====== */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
 
 /* ====== ریسپانسیو ====== */
 @media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
     .app-container {
-        padding: 12px;
         max-width: 100%;
     }
     
@@ -309,19 +387,19 @@ body {
     }
     
     .mode-button {
-        padding: 16px;
-        font-size: 15px;
-    }
-    
-    .option-button {
-        padding: 14px;
-        font-size: 15px;
+        padding: 20px 12px;
+        font-size: 16px;
     }
     
     .control-button {
-        padding: 10px 16px;
-        min-width: 100px;
+        padding: 12px 20px;
+        min-width: 110px;
         font-size: 14px;
+    }
+    
+    .footer-button {
+        padding: 16px;
+        font-size: 15px;
     }
     
     .progress-stats {
@@ -330,60 +408,22 @@ body {
 }
 
 @media (min-width: 768px) {
-    .app-container {
-        max-width: 500px;
+    .quiz-modes {
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .options-container {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
         display: grid;
     }
 }
-/* ====== رنگ‌های مستقیم (Fallback) ====== */
 
-/* حالت روشن */
-body {
-    background: #f2f4f8 !important;
-    color: #222 !important;
+/* انیمیشن‌ها */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-body.dark {
-    background: #0f172a !important;
-    color: #f8fafc !important;
-}
-
-/* دکمه‌ها */
-.mode-button {
-    background: linear-gradient(135deg, #0a66ff, #0050cc) !important;
-    color: white !important;
-}
-
-.control-button {
-    color: white !important;
-}
-
-#speakBtn { background: #34c759 !important; }
-#hintBtn { background: #FF9800 !important; }
-#nextBtn { background: #0a66ff !important; }
-#endQuizBtn { background: #ff3b30 !important; }
-
-.footer-button {
-    background: #666 !important;
-    color: white !important;
-}
-
-#whatsappBtn { background: #25D366 !important; }
-#exitBtn { background: #9E9E9E !important; }
-
-/* کارت‌ها */
-.card, .quiz-container, .progress-report-container {
-    background: white !important;
-    color: #222 !important;
-}
-
-body.dark .card,
-body.dark .quiz-container,
-body.dark .progress-report-container {
-    background: #1e293b !important;
-    color: #f8fafc !important;
-}
+.mode-button, .quiz-container, .progress-report-container {
+    animation: fadeIn 0.5s ease-out;
+    }
