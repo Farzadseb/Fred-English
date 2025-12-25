@@ -1,0 +1,194 @@
+/**
+ * Modal Helper - مدیریت پنجره‌های گزارش
+ */
+
+const ModalHelper = {
+    /**
+     * نمایش modal سفارشی
+     */
+    showCustomModal(title, content, onClose = null) {
+        // حذف modal قبلی
+        this.closeCustomModal();
+        
+        // ایجاد modal جدید
+        const modalId = 'custom-modal-' + Date.now();
+        const modalHTML = `
+            <div id="${modalId}" class="custom-modal active">
+                <div class="custom-modal-content">
+                    <div class="custom-modal-header">
+                        <h2>${title}</h2>
+                        <button class="modal-close-btn" onclick="ModalHelper.closeModal('${modalId}')">×</button>
+                    </div>
+                    <div class="custom-modal-body">
+                        ${content}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // اضافه کردن به صفحه
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // ذخیره callback بستن
+        if (onClose) {
+            window[`modalCloseCallback_${modalId}`] = onClose;
+        }
+        
+        // جلوگیری از اسکرول پشت modal
+        document.body.style.overflow = 'hidden';
+        
+        // focus روی modal
+        setTimeout(() => {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.focus();
+            }
+        }, 100);
+    },
+    
+    /**
+     * بستن modal خاص
+     */
+    closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            
+            // اجرای callback بستن
+            const callbackName = `modalCloseCallback_${modalId}`;
+            if (window[callbackName]) {
+                window[callbackName]();
+                delete window[callbackName];
+            }
+            
+            // حذف modal بعد از انیمیشن
+            setTimeout(() => {
+                modal.remove();
+                
+                // اگر modal دیگری وجود ندارد، اسکرول را فعال کن
+                if (!document.querySelector('.custom-modal')) {
+                    document.body.style.overflow = 'auto';
+                }
+            }, 300);
+        }
+    },
+    
+    /**
+     * بستن همه modal ها
+     */
+    closeCustomModal() {
+        const modals = document.querySelectorAll('.custom-modal');
+        modals.forEach(modal => {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.remove();
+            }, 300);
+        });
+        
+        // فعال کردن اسکرول
+        document.body.style.overflow = 'auto';
+        
+        // حذف همه callbacks
+        Object.keys(window).forEach(key => {
+            if (key.startsWith('modalCloseCallback_')) {
+                delete window[key];
+            }
+        });
+    },
+    
+    /**
+     * نمایش modal تأیید
+     */
+    showConfirmModal(title, message, onConfirm, onCancel = null) {
+        const content = `
+            <div class="confirm-modal">
+                <p>${message}</p>
+                <div class="confirm-buttons">
+                    <button class="btn btn-primary" onclick="ModalHelper.handleConfirm('${Date.now()}')">
+                        تأیید
+                    </button>
+                    <button class="btn btn-secondary" onclick="ModalHelper.closeCustomModal()">
+                        انصراف
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        const modalId = 'confirm-modal-' + Date.now();
+        
+        // ذخیره callbacks
+        window[`confirmCallback_${modalId}`] = onConfirm;
+        if (onCancel) {
+            window[`cancelCallback_${modalId}`] = onCancel;
+        }
+        
+        this.showCustomModal(title, content, () => {
+            // اجرای callback انصراف
+            const cancelCallback = window[`cancelCallback_${modalId}`];
+            if (cancelCallback) {
+                cancelCallback();
+            }
+            
+            // حذف callbacks
+            delete window[`confirmCallback_${modalId}`];
+            delete window[`cancelCallback_${modalId}`];
+        });
+    },
+    
+    /**
+     * مدیریت تأیید
+     */
+    handleConfirm(modalId) {
+        const callback = window[`confirmCallback_${modalId}`];
+        if (callback) {
+            callback();
+        }
+        
+        // حذف callbacks
+        delete window[`confirmCallback_${modalId}`];
+        delete window[`cancelCallback_${modalId}`];
+        
+        // بستن modal
+        this.closeCustomModal();
+    },
+    
+    /**
+     * نمایش modal اطلاعات
+     */
+    showInfoModal(title, message, icon = 'ℹ️') {
+        const content = `
+            <div class="info-modal">
+                <div class="info-icon">${icon}</div>
+                <p>${message}</p>
+                <button class="btn btn-primary" onclick="ModalHelper.closeCustomModal()">
+                    فهمیدم
+                </button>
+            </div>
+        `;
+        
+        this.showCustomModal(title, content);
+    },
+    
+    /**
+     * نمایش modal دستاورد
+     */
+    showAchievementModal(title, message, icon = '🏆') {
+        const content = `
+            <div class="achievement-modal">
+                <div class="achievement-icon">${icon}</div>
+                <h3>${title}</h3>
+                <p>${message}</p>
+                <button class="btn btn-primary" onclick="ModalHelper.closeCustomModal()">
+                    عالی! ادامه می‌دهم
+                </button>
+            </div>
+        `;
+        
+        this.showCustomModal('دستاورد جدید! 🎉', content);
+    }
+};
+
+// در دسترس قرار دادن توابع عمومی
+window.showCustomModal = (title, content) => ModalHelper.showCustomModal(title, content);
+window.closeCustomModal = () => ModalHelper.closeCustomModal();
+window.ModalHelper = ModalHelper;
