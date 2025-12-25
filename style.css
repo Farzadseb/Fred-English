@@ -1,135 +1,401 @@
-/* ===== Variables ===== */
+/* ===== iOS MINIMAL THEME - نسخه نهایی ===== */
 :root {
-    --primary: #4a90e2;
-    --secondary: #6c5ce7;
-    --success: #25D366;
-    --danger: #ff6b6b;
-    --warning: #f39c12;
-    --yellow: #FFB347;  /* 🟡 رنگ زرد جدید */
+    /* رنگ‌های اصلی iOS */
+    --ios-bg: #f2f2f7;
+    --ios-card: #ffffff;
+    --ios-text: #000000;
+    --ios-blue: #007aff;
+    --ios-green: #34c759;
+    --ios-red: #ff3b30;
+    --ios-orange: #ff9500;
+    --ios-border: #c7c7cc;
     
-    --bg-light: #f5f7fa;
-    --card-light: #ffffff;
-    --text-light: #2d3748;
-    --border-light: #e2e8f0;
+    /* حالت تاریک */
+    --ios-bg-dark: #000000;
+    --ios-card-dark: #1c1c1e;
+    --ios-text-dark: #ffffff;
+    --ios-border-dark: #38383a;
     
-    --bg-dark: #1a202c;
-    --card-dark: #2d3748;
-    --text-dark: #e2e8f0;
-    --border-dark: #4a5568;
-    
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* سایه‌های ملایم */
+    --ios-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    --ios-shadow-dark: 0 2px 10px rgba(0, 0, 0, 0.2);
+    --ios-shadow-heavy: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* ===== Base Styles ===== */
+/* ===== RESET & BASE ===== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+    position: fixed; /* قفل ارتفاع برای iOS */
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg-light);
-    color: var(--text-light);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    background: var(--ios-bg);
+    color: var(--ios-text);
+    text-align: center;
     direction: rtl;
+    font-size: 17px;
+    line-height: 1.47059;
 }
 
 body.dark-mode {
-    background: var(--bg-dark);
-    color: var(--text-dark);
+    background: var(--ios-bg-dark);
+    color: var(--ios-text-dark);
 }
 
+/* ===== APP CONTAINER ===== */
 #app {
     width: 100%;
     height: 100%;
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* قفل اسکرول در سطح app */
 }
 
-/* ===== SCREENS ===== */
+/* ===== SCREENS - کنترل نمایش ===== */
 .screen {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    display: none;
+    display: none !important;
     flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    /* 🔴 اصلاح ۱: حذف transition (فعلاً لازم نیست) */
+    /* transition: opacity 0.3s ease, transform 0.3s ease; */
+    z-index: 1;
     overflow-y: auto; /* 🔥 اصلاح: اسکرول داخلی */
     -webkit-overflow-scrolling: touch; /* 🔥 اصلاح: اسکرول نرم iOS */
-    z-index: 1;
 }
 
 .screen.active {
     display: flex !important;
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
 }
 
-/* ===== Score Display ===== */
+/* ===== HEADER iOS ===== */
+.header {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 0.5px solid var(--ios-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.dark-mode .header {
+    background: rgba(28, 28, 30, 0.8);
+    border-bottom-color: var(--ios-border-dark);
+}
+
+.app-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ios-blue);
+    flex-grow: 1;
+    letter-spacing: -0.024em;
+}
+
+.icon-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.8);
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.icon-btn:active {
+    transform: scale(0.95);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .icon-btn {
+    background: rgba(60, 60, 67, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.dark-mode .icon-btn:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== CONTENT ===== */
+.content {
+    flex: 1;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 🔴 اصلاح ۲: بدون overflow-y (اسکرول توسط .screen کنترل می‌شود) */
+    /* اگر بعداً نیاز به header ثابت + content اسکرولی داشتید، این را تغییر دهید */
+}
+
+/* ===== SCORE DISPLAY ===== */
 .score-display {
-    background: var(--card-light);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 25px;
-    text-align: center;
-    border: 1px solid var(--border-light);
-    box-shadow: var(--shadow);
     width: 65%;
-    max-width: 280px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 300px;
+    background: var(--ios-card);
+    border-radius: 18px;
+    padding: 20px;
+    margin: 16px auto 28px auto;
+    border: 0.5px solid var(--ios-border);
+    box-shadow: var(--ios-shadow);
 }
 
 .dark-mode .score-display {
-    background: var(--card-dark);
-    border-color: var(--border-dark);
+    background: var(--ios-card-dark);
+    border-color: var(--ios-border-dark);
 }
 
-/* ===== Buttons ===== */
-.btn-success {
-    background: var(--success);
+.stars {
+    font-size: 32px;
+    letter-spacing: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    height: 40px;
+    align-items: center;
+}
+
+.stars.zero-score {
+    opacity: 0.3;
+    filter: grayscale(0.8);
+}
+
+.stars.zero-score .star {
+    color: #8e8e93 !important;
+}
+
+.star {
+    color: #FFD700;
+}
+
+.star.empty {
+    color: var(--ios-border);
+    opacity: 0.6;
+}
+
+.dark-mode .star.empty {
+    color: var(--ios-border-dark);
+}
+
+.best-score {
+    font-size: 15px;
+    font-weight: 500;
+    color: #8e8e93;
+}
+
+.best-score-value {
+    color: var(--ios-blue);
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 5px;
+    display: block;
+}
+
+/* ===== BUTTONS ===== */
+.button-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    width: 100%;
+    max-width: 400px;
+    padding: 18px 24px;
+    border-radius: 16px;
+    border: none;
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background: var(--ios-blue);
+    background: linear-gradient(135deg, #007aff, #0056d6);
     color: white;
 }
 
-/* دکمه نصب - زرد */
-#install-btn {
-    background: var(--yellow) !important;
-    color: #222 !important;
-    border: none !important;
+.btn-secondary {
+    background: var(--ios-green);
+    background: linear-gradient(135deg, #34c759, #28cd41);
+    color: white;
 }
 
-#install-btn:active {
-    background: #FFA033 !important;
-    transform: scale(0.98);
+.btn-success {
+    background: #25D366;
+    color: white;
 }
 
-/* ===== Exit Button ===== */
-.exit-container {
+.btn-warning {
+    background: #ff9500;
+    color: #1d1d1f;
+    font-weight: 600;
+}
+
+.btn-danger {
+    background: var(--ios-red);
+    color: white;
+}
+
+/* ===== QUIZ SCREEN ===== */
+.question-container {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 20px 0;
-    border-top: 1px solid var(--border-light);
+}
+
+.question-box {
+    width: 100%;
+    background: var(--ios-card);
+    border: 0.5px solid var(--ios-border);
+    border-radius: 18px;
+    padding: 28px 24px;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.dark-mode .question-box {
+    background: var(--ios-card-dark);
+    border-color: var(--ios-border-dark);
+}
+
+.options-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.option {
+    width: 100%;
+    max-width: 400px;
+    background: var(--ios-card);
+    border: 0.5px solid var(--ios-border);
+    border-radius: 16px;
+    padding: 20px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    text-align: center;
+}
+
+.option:active {
+    background: rgba(0, 122, 255, 0.1);
+}
+
+.dark-mode .option {
+    background: var(--ios-card-dark);
+    border-color: var(--ios-border-dark);
+}
+
+.option.correct {
+    background: var(--ios-green);
+    color: white;
+    border-color: var(--ios-green);
+}
+
+.option.incorrect {
+    background: var(--ios-red);
+    color: white;
+    border-color: var(--ios-red);
+    opacity: 0.9;
+}
+
+.progress-bar {
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px;
+    color: var(--ios-blue);
+}
+
+/* ===== EXIT CONTAINER ===== */
+.exit-container {
+    width: 100%;
+    padding: 20px 16px;
+    border-top: 0.5px solid var(--ios-border);
     margin-top: auto;
+    flex-shrink: 0;
     display: flex;
     justify-content: center;
 }
 
 .dark-mode .exit-container {
-    border-top-color: var(--border-dark);
+    border-top-color: var(--ios-border-dark);
 }
 
 .exit-btn {
     width: 90%;
-    max-width: 300px;
+    max-width: 320px;
     padding: 18px;
-    background: var(--danger);
+    background: var(--ios-red);
     color: white;
     border: none;
-    border-radius: 14px;
-    font-size: 18px;
+    border-radius: 16px;
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -138,15 +404,8 @@ body.dark-mode {
     gap: 10px;
 }
 
-/* ===== ستاره‌های صفر ===== */
-.star-zero {
-    color: var(--border-light) !important;
-    opacity: 0.3 !important;
-    text-shadow: none !important;
-}
-
-.dark-mode .star-zero {
-    color: var(--border-dark) !important;
+.exit-btn:active {
+    transform: scale(0.98);
 }
 
 /* ===== Progress Badge ===== */
@@ -154,7 +413,7 @@ body.dark-mode {
     position: fixed;
     bottom: 100px;
     left: 20px;
-    background: var(--primary);
+    background: var(--ios-blue);
     color: white;
     width: 60px;
     height: 60px;
@@ -164,12 +423,12 @@ body.dark-mode {
     justify-content: center;
     font-size: 24px;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(74, 144, 226, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
     z-index: 999;
     transition: all 0.3s ease;
 }
 
-/* 🔥 اصلاح نهایی: حالت تاریک progress-badge */
+/* 🔥 اصلاح: حالت تاریک برای progress-badge */
 .dark-mode .progress-badge {
     background: #64d2ff !important;
     box-shadow: 0 4px 20px rgba(100, 210, 255, 0.35) !important;
@@ -179,8 +438,373 @@ body.dark-mode {
     transform: scale(0.95);
 }
 
-/* ===== Responsive ===== */
+/* ===== PROGRESS REPORT STYLES ===== */
+.progress-report {
+    background: var(--ios-card);
+    border-radius: 20px;
+    padding: 24px;
+    border: 0.5px solid var(--ios-border);
+    box-shadow: var(--ios-shadow);
+    text-align: right;
+}
+
+.dark-mode .progress-report {
+    background: var(--ios-card-dark);
+    border-color: var(--ios-border-dark);
+}
+
+.progress-report h3 {
+    color: var(--ios-blue);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-align: center;
+    border-bottom: 2px solid var(--ios-blue);
+    padding-bottom: 12px;
+}
+
+.report-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 0.5px solid var(--ios-border);
+}
+
+.report-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.report-section h4 {
+    color: var(--ios-text);
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dark-mode .report-section h4 {
+    color: var(--ios-text-dark);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.stat-item {
+    background: rgba(0, 122, 255, 0.08);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+}
+
+.dark-mode .stat-item {
+    background: rgba(100, 210, 255, 0.15);
+}
+
+.stat-label {
+    display: block;
+    font-size: 13px;
+    color: #8e8e93;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.dark-mode .stat-label {
+    color: #aeaeb2;
+}
+
+.stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ios-blue);
+}
+
+.dark-mode .stat-value {
+    color: #64d2ff;
+}
+
+.last-session {
+    background: rgba(52, 199, 89, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.dark-mode .last-session {
+    background: rgba(52, 199, 89, 0.15);
+}
+
+.last-session p {
+    margin: 8px 0;
+    font-size: 15px;
+    color: var(--ios-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dark-mode .last-session p {
+    color: var(--ios-text-dark);
+}
+
+/* Modal برای نمایش گزارش */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: modalFadeIn 0.3s ease;
+}
+
+.custom-modal.active {
+    display: flex;
+}
+
+.custom-modal-content {
+    background: var(--ios-card);
+    border-radius: 24px;
+    padding: 0;
+    max-width: 550px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border: 0.5px solid var(--ios-border);
+    box-shadow: var(--ios-shadow-heavy);
+    animation: modalSlideUp 0.4s ease;
+}
+
+.dark-mode .custom-modal-content {
+    background: var(--ios-card-dark);
+    border-color: var(--ios-border-dark);
+}
+
+.custom-modal-header {
+    padding: 24px;
+    border-bottom: 0.5px solid var(--ios-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-header h2 {
+    color: var(--ios-blue);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--ios-text);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.modal-close-btn:active {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.dark-mode .modal-close-btn {
+    color: var(--ios-text-dark);
+}
+
+.dark-mode .modal-close-btn:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.custom-modal-body {
+    padding: 24px;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Insight Cards */
+.insight-card {
+    background: rgba(0, 122, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.insight-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    background: white;
+}
+
+.dark-mode .insight-item {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.insight-item.good {
+    background: rgba(52, 199, 89, 0.1);
+    border-left: 4px solid #34c759;
+}
+
+.insight-item.warning {
+    background: rgba(255, 149, 0, 0.1);
+    border-left: 4px solid #ff9500;
+}
+
+.insight-item.needs-work {
+    background: rgba(255, 59, 48, 0.1);
+    border-left: 4px solid #ff3b30;
+}
+
+.insight-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.dark-mode .insight-icon {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.insight-text {
+    flex: 1;
+    text-align: right;
+}
+
+.insight-text strong {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.insight-text small {
+    display: block;
+    font-size: 13px;
+    color: #8e8e93;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.action-buttons .btn {
+    flex: 1;
+}
+
+/* Achievement Modal */
+.achievement-modal {
+    text-align: center;
+    padding: 20px;
+}
+
+.achievement-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.achievement-modal h3 {
+    color: var(--ios-blue);
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.achievement-modal p {
+    color: var(--ios-text);
+    font-size: 16px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.dark-mode .achievement-modal p {
+    color: var(--ios-text-dark);
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 480px) {
+    .content {
+        padding: 16px 12px;
+    }
+    
+    .header {
+        padding: 10px 12px;
+        max-width: 100%;
+    }
+    
+    .app-title {
+        font-size: 16px;
+    }
+    
+    .question-box {
+        font-size: 22px;
+        padding: 24px 20px;
+        margin-bottom: 24px;
+    }
+    
+    .option {
+        padding: 18px;
+        font-size: 16px;
+    }
+    
+    .btn {
+        padding: 16px 20px;
+        font-size: 16px;
+        max-width: 100%;
+    }
+    
+    .score-display {
+        width: 85%;
+        padding: 18px;
+    }
+    
+    .stars {
+        font-size: 28px;
+        letter-spacing: 6px;
+    }
+    
+    .best-score-value {
+        font-size: 24px;
+    }
+    
     .progress-badge {
         width: 50px;
         height: 50px;
@@ -188,4 +812,20 @@ body.dark-mode {
         left: 15px;
         font-size: 20px;
     }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
 }
+
+/* ===== PREFERS REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    }
