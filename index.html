@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mute - یادگیری زبان انگلیسی</title>
+    <title>English With Fred - یادگیری زبان انگلیسی</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔇</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
 </head>
 <body>
     <!-- دکمه تغییر تم -->
@@ -15,9 +15,26 @@
     </button>
 
     <div class="app-container">
-        <!-- هدر -->
+        <!-- هدر - 40% کوچک‌تر با لوگو و دکمه Mute -->
         <div class="app-header">
-            <h1>🔇 Mute</h1>
+            <div class="header-top">
+                <!-- لوگوی کاربر -->
+                <div class="logo-container">
+                    <img src="logo.png" alt="English With Fred Logo" class="app-logo" 
+                         onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='flex';">
+                    
+                    <!-- جایگزین لوگو -->
+                    <div class="logo-fallback" style="display: none;">
+                        <span class="logo-icon">📚</span>
+                        <h1>English With Fred</h1>
+                    </div>
+                </div>
+                
+                <!-- دکمه Mute فعال -->
+                <button id="muteBtn" class="mute-toggle" onclick="toggleMute()" title="میکروفون">
+                    <span id="muteIcon">🎤</span>
+                </button>
+            </div>
             
             <div class="stars-container">
                 <span class="star">★</span>
@@ -117,10 +134,22 @@
     
     <script>
         // تست اولیه
-        console.log('=== Mute App Loaded ===');
+        console.log('=== English With Fred Loaded ===');
         console.log('words loaded:', typeof words !== 'undefined' ? '✅' : '❌');
         console.log('startQuiz function:', typeof startQuiz !== 'undefined' ? '✅' : '❌');
         console.log('Quiz modes count:', document.querySelectorAll('.mode-button').length);
+        
+        // بارگذاری لوگو fallback اگر لوگو موجود نیست
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const logo = document.querySelector('.app-logo');
+                const fallback = document.querySelector('.logo-fallback');
+                if (logo && logo.naturalHeight === 0) {
+                    logo.style.display = 'none';
+                    if (fallback) fallback.style.display = 'flex';
+                }
+            }, 1000);
+        });
     </script>
 </body>
 </html>
