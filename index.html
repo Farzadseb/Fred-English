@@ -15,25 +15,16 @@
     </button>
 
     <div class="app-container">
-        <!-- هدر - 40% کوچک‌تر با لوگو و دکمه Mute -->
+        <!-- هدر - اسم بزرگ و در وسط -->
         <div class="app-header">
             <div class="header-top">
-                <!-- لوگوی کاربر -->
-                <div class="logo-container">
-                    <img src="logo.png" alt="English With Fred Logo" class="app-logo" 
-                         onerror="this.style.display='none'; document.querySelector('.logo-fallback').style.display='flex';">
-                    
-                    <!-- جایگزین لوگو -->
-                    <div class="logo-fallback" style="display: none;">
-                        <span class="logo-icon">📚</span>
-                        <h1>English With Fred</h1>
-                    </div>
-                </div>
-                
-                <!-- دکمه Mute فعال -->
+                <!-- دکمه Mute در سمت چپ -->
                 <button id="muteBtn" class="mute-toggle" onclick="toggleMute()" title="میکروفون">
                     <span id="muteIcon">🎤</span>
                 </button>
+                
+                <!-- اسم برنامه - دو برابر بزرگتر -->
+                <h1 class="app-title">English With Fred</h1>
             </div>
             
             <div class="stars-container">
@@ -79,10 +70,8 @@
                 <!-- گزینه‌ها اینجا ساخته می‌شوند -->
             </div>
             
+            <!-- کنترل‌ها بدون دکمه تلفظ -->
             <div class="controls-container">
-                <button id="speakBtn" class="control-button" onclick="speakCurrentWord()">
-                    🔊 تلفظ
-                </button>
                 <button id="hintBtn" class="control-button" onclick="showHint()">
                     💡 راهنمایی
                 </button>
@@ -139,17 +128,12 @@
         console.log('startQuiz function:', typeof startQuiz !== 'undefined' ? '✅' : '❌');
         console.log('Quiz modes count:', document.querySelectorAll('.mode-button').length);
         
-        // بارگذاری لوگو fallback اگر لوگو موجود نیست
-        window.addEventListener('load', function() {
-            setTimeout(() => {
-                const logo = document.querySelector('.app-logo');
-                const fallback = document.querySelector('.logo-fallback');
-                if (logo && logo.naturalHeight === 0) {
-                    logo.style.display = 'none';
-                    if (fallback) fallback.style.display = 'flex';
-                }
-            }, 1000);
-        });
+        // تلفظ تستی برای بررسی صداها
+        setTimeout(() => {
+            if (window.speechSynthesis && typeof words !== 'undefined' && words.length > 0) {
+                console.log('🔊 Speech synthesis ready');
+            }
+        }, 1000);
     </script>
 </body>
 </html>
