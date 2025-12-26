@@ -77,11 +77,22 @@ body.dark {
     max-width: 500px;
     margin: 0 auto;
     animation: fadeIn 0.5s ease-out;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= CONTENT AREA ================= */
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 /* ================= TOP BAR ================= */
@@ -94,11 +105,12 @@ body.dark {
     -webkit-backdrop-filter: blur(20px);
     padding: 14px 18px;
     border-radius: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .top-bar::before {
@@ -153,42 +165,43 @@ body.dark {
     letter-spacing: -0.3px;
 }
 
-/* ================= SCORE CARD (ارتفاع 30% کمتر، فاصله ستاره‌ها 60% کمتر) ================= */
+/* ================= SCORE CARD ================= */
 .score-card {
     background: var(--card);
     border-radius: 22px;
-    padding: 15px 20px;
-    margin-bottom: 16px;
+    padding: 14px 20px;
+    margin-bottom: 14px;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: var(--transition);
     width: 100%;
-    min-height: 100px;
+    min-height: 90px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    flex-shrink: 0;
 }
 
-/* ستاره‌ها با فاصله 60% کمتر */
+/* ستاره‌ها با فاصله نصف شده */
 .stars-box {
-    width: 70%; /* عرض کمتر برای ستاره‌ها */
-    margin: 0 auto 6px; /* فاصله پایین کمتر */
+    width: 80%;
+    margin: 0 auto 8px;
     display: flex;
-    justify-content: space-around; /* جایگزین space-between با فضای کمتر */
+    justify-content: space-between;
     padding: 0;
-    gap: 6px; /* فاصله بین ستاره‌ها 60% کمتر */
 }
 
 .star {
-    font-size: 22px; /* ستاره‌های کمی کوچکتر */
+    font-size: 20px; /* ستاره‌های کوچکتر */
     color: var(--star-outline);
     transition: var(--transition);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
     flex: 1;
     text-align: center;
+    margin: 0 2px; /* فاصله نصف شده */
 }
 
 .star.filled {
@@ -199,20 +212,20 @@ body.dark {
 
 @keyframes starPulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.15); }
+    50% { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
 
 .score-text {
     text-align: center;
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 2px;
 }
 
 .score-value {
     display: block;
-    font-size: 28px;
+    font-size: 26px;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     background-clip: text;
@@ -225,30 +238,30 @@ body.dark {
 /* ================= MODE CARDS و BUTTONS (یکسان سازی ابعاد) ================= */
 /* همه کادرها با ابعاد یکسان */
 .mode-card, .btn {
-    background: var(--primary-gradient);
-    color: white;
-    padding: 16px 20px; /* پدینگ یکسان */
-    border-radius: 18px; /* شعاع یکسان */
-    font-size: 17px; /* سایز فونت یکسان */
+    padding: 14px 18px;
+    border-radius: 18px;
+    font-size: 16px;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     transition: var(--transition);
-    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.2);
     border: none;
     position: relative;
     overflow: hidden;
     z-index: 1;
-    width: 100%; /* عرض یکسان */
-    margin-bottom: 14px; /* فاصله پایین یکسان */
-    min-height: 60px; /* ارتفاع یکسان */
+    width: 100%;
+    margin-bottom: 10px;
+    min-height: 54px;
+    flex-shrink: 0;
 }
 
 /* MODE CARDS - فقط استایل خاص آنها */
 .mode-card {
-    /* رنگ گرادیان آبی-سبز از قبل اعمال شده */
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
 }
 
 /* افکت براق برای MODE CARDS */
@@ -285,31 +298,32 @@ body.dark {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    letter-spacing: -0.2px;
+    gap: 8px;
+    letter-spacing: -0.1px;
 }
 
 .btn.green { 
     background: var(--secondary);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
 }
 
 .btn.red { 
     background: var(--danger);
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
 }
 
 .btn.light { 
     background: var(--card);
     color: var(--text);
     border: 1px solid var(--border);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* افکت‌های مشترک برای همه کادرها */
 .mode-card:hover, .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 .mode-card:active, .btn:active {
@@ -348,31 +362,47 @@ body.dark {
 }
 
 .mode-icon {
-    font-size: 20px;
-    margin-right: 8px;
+    font-size: 18px;
+    margin-right: 6px;
+}
+
+/* ================= MAIN CONTENT ================= */
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 10px;
 }
 
 /* ================= MODES CONTAINER ================= */
 .modes {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin-bottom: 20px;
+    gap: 10px;
+    margin-bottom: 14px;
 }
 
-/* ================= REPORT ================= */
-.report {
-    margin-top: 20px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    font-size: 15px;
-    color: var(--text-secondary);
-    text-align: center;
-    line-height: 1.5;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+/* ================= VIEW SYSTEM ================= */
+.view { 
+    display: none; 
+    animation: slideIn 0.4s ease-out;
+    height: 100%;
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.view.active { 
+    display: flex; 
+    flex-direction: column;
+    height: 100%;
 }
 
 /* ================= MUTE BUTTON STATES ================= */
@@ -388,48 +418,12 @@ body.dark {
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2) !important;
 }
 
-/* ================= VIEW SYSTEM ================= */
-.view { 
-    display: none; 
-    animation: slideIn 0.4s ease-out;
-}
-
-@keyframes slideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
-.view.active { 
-    display: block; 
-}
-
-/* ================= LOADING STATE ================= */
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
 /* ================= RESPONSIVE ADJUSTMENTS ================= */
 @media (max-width: 380px) {
     .mode-card, .btn {
-        padding: 14px 16px;
-        font-size: 16px;
-        min-height: 56px;
+        padding: 12px 16px;
+        font-size: 15px;
+        min-height: 50px;
     }
     
     .title {
@@ -438,20 +432,94 @@ body.dark {
     
     .score-card {
         padding: 12px 16px;
-        min-height: 90px;
+        min-height: 80px;
     }
     
     .star {
-        font-size: 20px;
+        font-size: 18px;
     }
     
     .stars-box {
-        width: 75%;
-        gap: 4px;
+        width: 85%;
     }
     
     .score-value {
-        font-size: 26px;
+        font-size: 24px;
+    }
+}
+
+/* برای موبایل‌های با ارتفاع کم */
+@media (max-height: 700px) {
+    .top-bar {
+        padding: 12px 16px;
+        margin-bottom: 12px;
+    }
+    
+    .score-card {
+        padding: 12px 16px;
+        min-height: 80px;
+        margin-bottom: 12px;
+    }
+    
+    .mode-card, .btn {
+        padding: 12px 16px;
+        min-height: 48px;
+        margin-bottom: 8px;
+    }
+    
+    .modes {
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .star {
+        font-size: 18px;
+    }
+    
+    .score-value {
+        font-size: 24px;
+    }
+}
+
+/* برای موبایل‌های با ارتفاع بسیار کم */
+@media (max-height: 600px) {
+    body {
+        padding: 12px;
+    }
+    
+    .top-bar {
+        padding: 10px 14px;
+        margin-bottom: 10px;
+    }
+    
+    .score-card {
+        padding: 10px 14px;
+        min-height: 70px;
+        margin-bottom: 10px;
+    }
+    
+    .mode-card, .btn {
+        padding: 10px 14px;
+        min-height: 44px;
+        margin-bottom: 6px;
+        font-size: 15px;
+    }
+    
+    .modes {
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+    
+    .star {
+        font-size: 16px;
+    }
+    
+    .score-value {
+        font-size: 22px;
+    }
+    
+    .score-text {
+        font-size: 12px;
     }
 }
 
@@ -477,63 +545,59 @@ body.dark {
 
     <!-- HOME VIEW -->
     <div id="home" class="view active">
+        <div class="main-content">
+            <!-- SCORE CARD -->
+            <div class="score-card">
+                <div class="stars-box" id="starsContainer">
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                    <span class="star">☆</span>
+                </div>
+                <div class="score-text">
+                    بهترین امتیاز
+                    <strong class="score-value" id="scoreValue">0%</strong>
+                </div>
+            </div>
 
-        <!-- SCORE CARD -->
-        <div class="score-card">
-            <div class="stars-box" id="starsContainer">
-                <span class="star">☆</span>
-                <span class="star">☆</span>
-                <span class="star">☆</span>
-                <span class="star">☆</span>
-                <span class="star">☆</span>
+            <!-- MODE CARDS -->
+            <div class="modes">
+                <div class="mode-card">
+                    <span>English → Persian</span>
+                    <span class="mode-icon">🇺🇸→🇮🇷</span>
+                </div>
+                <div class="mode-card">
+                    <span>Persian → English</span>
+                    <span class="mode-icon">🇮🇷→🇺🇸</span>
+                </div>
+                <div class="mode-card">
+                    <span>Word → Definition</span>
+                    <span class="mode-icon">🔤</span>
+                </div>
+                <div class="mode-card">
+                    <span>Definition → Word</span>
+                    <span class="mode-icon">📚</span>
+                </div>
             </div>
-            <div class="score-text">
-                بهترین امتیاز
-                <strong class="score-value" id="scoreValue">0%</strong>
-            </div>
-        </div>
 
-        <!-- MODE CARDS -->
-        <div class="modes">
-            <div class="mode-card">
-                <span>English → Persian</span>
-                <span class="mode-icon">🇺🇸→🇮🇷</span>
-            </div>
-            <div class="mode-card">
-                <span>Persian → English</span>
-                <span class="mode-icon">🇮🇷→🇺🇸</span>
-            </div>
-            <div class="mode-card">
-                <span>Word → Definition</span>
-                <span class="mode-icon">🔤</span>
-            </div>
-            <div class="mode-card">
-                <span>Definition → Word</span>
-                <span class="mode-icon">📚</span>
-            </div>
-        </div>
-
-        <!-- ACTION BUTTONS -->
-        <button class="btn green">
-            <span>🎯</span>
-            <span>مرور اشتباهات هوشمند</span>
-        </button>
-        <button class="btn light">
-            <span>📊</span>
-            <span>گزارش پیشرفت</span>
-        </button>
-        <button class="btn green">
-            <span>💬</span>
-            <span>ثبت‌نام در واتساپ</span>
-        </button>
-        <button class="btn red">
-            <span>🚪</span>
-            <span>خروج</span>
-        </button>
-
-        <!-- REPORT -->
-        <div class="card report">
-            گزارش پیشرفت شما پس از اولین تمرین نمایش داده می‌شود.
+            <!-- ACTION BUTTONS -->
+            <button class="btn green">
+                <span>🎯</span>
+                <span>مرور اشتباهات هوشمند</span>
+            </button>
+            <button class="btn light">
+                <span>📊</span>
+                <span>گزارش پیشرفت</span>
+            </button>
+            <button class="btn green">
+                <span>💬</span>
+                <span>ثبت‌نام در واتساپ</span>
+            </button>
+            <button class="btn red">
+                <span>🚪</span>
+                <span>خروج</span>
+            </button>
         </div>
     </div>
 
@@ -588,8 +652,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
+    // Adjust layout for different screen sizes
+    adjustLayoutForScreen();
+    window.addEventListener('resize', adjustLayoutForScreen);
+    
     document.body.style.opacity = '1';
 });
+
+/* ====== ADJUST LAYOUT ====== */
+function adjustLayoutForScreen() {
+    const screenHeight = window.innerHeight;
+    const screenWidth = window.innerWidth;
+    
+    // Adjust app container for very small screens
+    if (screenHeight < 600 || screenWidth < 350) {
+        document.querySelector('.app').style.maxWidth = '95%';
+        document.body.style.padding = '10px';
+    } else {
+        document.querySelector('.app').style.maxWidth = '500px';
+        document.body.style.padding = '16px';
+    }
+}
 
 /* ====== THEME SYSTEM ====== */
 function loadTheme() {
