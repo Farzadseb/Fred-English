@@ -5,68 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>برنامه آموزش زبان</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
             direction: rtl;
         }
         
-        .app-container {
-            width: 100%;
-            max-width: 400px;
+        .app {
+            width: 320px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
+        /* هدر - دقیقاً مثل تصویر */
         .header {
-            background: #4285f4;
+            background: #4a6bff;
             color: white;
             padding: 20px;
             text-align: center;
         }
         
-        .language-mode {
+        .title {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 15px;
         }
         
-        .practice-modes {
+        .modes {
             display: flex;
             justify-content: center;
             gap: 10px;
         }
         
-        .mode-btn {
+        .mode {
             background: rgba(255,255,255,0.2);
             border: 1px solid rgba(255,255,255,0.5);
             color: white;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 4px;
             font-size: 14px;
             cursor: pointer;
         }
         
-        .mode-btn.active {
+        .mode.active {
             background: rgba(255,255,255,0.3);
-            border-color: white;
+            font-weight: bold;
         }
         
-        /* ستاره‌های امتیاز */
-        .star-rating {
+        /* ستاره امتیاز - اضافه شده */
+        .stars-container {
             padding: 15px;
             text-align: center;
             border-bottom: 1px solid #eee;
@@ -80,90 +75,88 @@
         }
         
         .star {
-            font-size: 28px;
-            color: #ddd; /* رنگ خالی */
+            font-size: 24px;
+            color: #ddd;
             position: relative;
-            width: 35px;
-            height: 35px;
-            line-height: 35px;
+            width: 30px;
+            height: 30px;
         }
         
         .star-filled {
             position: absolute;
             top: 0;
             left: 0;
-            color: #ffc107; /* رنگ زرد برای پر */
+            color: #ffc107;
             overflow: hidden;
-            width: 0%; /* با امتیاز تغییر می‌کند */
+            width: 0%;
         }
         
-        .score-text {
+        .score {
             font-size: 14px;
             color: #666;
         }
         
         /* بخش سوال */
-        .question-section {
-            padding: 25px;
+        .question-area {
+            padding: 25px 20px;
             text-align: center;
         }
         
         .question-box {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            padding: 30px 20px;
-            margin: 15px 0;
-            min-height: 120px;
+            background: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 30px 15px;
+            margin-bottom: 15px;
+            min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
-        .question-text {
-            font-size: 18px;
+        .question {
+            font-size: 16px;
             color: #333;
         }
         
         .hint-btn {
-            background: #34a853;
+            background: #4CAF50;
             color: white;
             border: none;
             padding: 10px 25px;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 14px;
             cursor: pointer;
-            margin-top: 10px;
         }
         
-        /* منوها */
-        .menu-section {
+        /* منوها - دقیقاً مثل تصویر */
+        .menu {
             padding: 0;
         }
         
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 16px 20px;
+            padding: 15px 20px;
             border-bottom: 1px solid #eee;
             cursor: pointer;
-            font-size: 15px;
         }
         
         .menu-item:hover {
-            background: #f8f9fa;
+            background: #f9f9f9;
         }
         
-        .menu-icon {
-            margin-left: 12px;
+        .icon {
+            margin-left: 10px;
             font-size: 18px;
         }
         
-        .menu-text {
+        .text {
+            font-size: 15px;
             color: #333;
         }
         
-        .loading-text {
+        .loading {
             color: #999;
             font-size: 13px;
             padding: 10px 20px;
@@ -171,183 +164,124 @@
             border-bottom: 1px solid #eee;
         }
         
-        .exit-item {
-            color: #ea4335;
+        .exit {
+            color: #f44336;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
+    <div class="app">
+        <!-- هدر مثل تصویر -->
         <div class="header">
-            <div class="language-mode">Persian → English</div>
-            <div class="practice-modes">
-                <button class="mode-btn active">Word → Definition</button>
-                <button class="mode-btn">Definition → Word</button>
+            <div class="title">Persian → English</div>
+            <div class="modes">
+                <div class="mode active">Word → Definition</div>
+                <div class="mode">Definition → Word</div>
             </div>
         </div>
         
-        <!-- ستاره‌های امتیاز -->
-        <div class="star-rating">
+        <!-- ستاره‌های امتیاز - اضافه شده -->
+        <div class="stars-container">
             <div class="stars">
-                <div class="star" id="star1">
-                    ★
-                    <div class="star-filled" id="star1-filled">★</div>
-                </div>
-                <div class="star" id="star2">
-                    ★
-                    <div class="star-filled" id="star2-filled">★</div>
-                </div>
-                <div class="star" id="star3">
-                    ★
-                    <div class="star-filled" id="star3-filled">★</div>
-                </div>
-                <div class="star" id="star4">
-                    ★
-                    <div class="star-filled" id="star4-filled">★</div>
-                </div>
-                <div class="star" id="star5">
-                    ★
-                    <div class="star-filled" id="star5-filled">★</div>
-                </div>
+                <div class="star">★<div class="star-filled" style="width: 70%">★</div></div>
+                <div class="star">★<div class="star-filled" style="width: 70%">★</div></div>
+                <div class="star">★<div class="star-filled" style="width: 70%">★</div></div>
+                <div class="star">★<div class="star-filled" style="width: 70%">★</div></div>
+                <div class="star">★<div class="star-filled" style="width: 70%">★</div></div>
             </div>
-            <div class="score-text">امتیاز: <span id="scoreValue">3</span> از 5</div>
+            <div class="score">امتیاز: 3.5 از 5</div>
         </div>
         
-        <div class="question-section">
+        <!-- بخش سوال -->
+        <div class="question-area">
             <div class="question-box">
-                <div class="question-text" id="questionText">
-                    سوال اینجا نمایش داده می‌شود...
-                </div>
+                <div class="question">سوال اینجا نمایش داده می‌شود...</div>
             </div>
-            
-            <button class="hint-btn" id="hintBtn">
-                راهنمایی
-            </button>
+            <button class="hint-btn">راهنمایی</button>
         </div>
         
-        <div class="menu-section">
-            <div class="menu-item" id="smartReview">
-                <span class="menu-icon">📌</span>
-                <span class="menu-text">مرور اشتباهات هوشمند</span>
+        <!-- منوها مثل تصویر -->
+        <div class="menu">
+            <div class="menu-item">
+                <span class="icon">📌</span>
+                <span class="text">مرور اشتباهات هوشمند</span>
             </div>
             
-            <div class="menu-item" id="progressReport">
-                <span class="menu-icon">✔</span>
-                <span class="menu-text">گزارش پیشرفت</span>
+            <div class="menu-item">
+                <span class="icon">✔</span>
+                <span class="text">گزارش پیشرفت</span>
             </div>
             
-            <div class="loading-text" id="loadingText">در حال بارگذاری گزارش...</div>
+            <div class="loading">در حال بارگذاری گزارش...</div>
             
-            <div class="menu-item" id="whatsappRegister">
-                <span class="menu-icon">📋</span>
-                <span class="menu-text">ثبت نام در واتساب</span>
+            <div class="menu-item">
+                <span class="icon">📋</span>
+                <span class="text">ثبت نام در واتساب</span>
             </div>
             
-            <div class="menu-item exit-item" id="exitApp">
-                <span class="menu-icon">📌</span>
-                <span class="menu-text">خروج از برنامه</span>
+            <div class="menu-item exit">
+                <span class="icon">📌</span>
+                <span class="text">خروج از برنامه</span>
             </div>
         </div>
     </div>
 
     <script>
-        // تنظیم ستاره‌ها بر اساس امتیاز
-        function setStars(rating) {
-            // rating بین 0 تا 5
-            rating = Math.max(0, Math.min(5, rating));
-            
-            // نمایش امتیاز
-            document.getElementById('scoreValue').textContent = rating.toFixed(1);
-            
-            // تنظیم هر ستاره
-            for (let i = 1; i <= 5; i++) {
-                const starFilled = document.getElementById(`star${i}-filled`);
-                if (i <= rating) {
-                    // ستاره کاملاً پر
-                    starFilled.style.width = '100%';
-                } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
-                    // ستاره جزئی پر
-                    starFilled.style.width = `${(rating % 1) * 100}%`;
+        // ستاره‌ها
+        const stars = document.querySelectorAll('.star');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                // وقتی روی ستاره کلیک می‌شود
+                const rating = this.getAttribute('data-rating') || 0;
+                updateStars(rating);
+            });
+        });
+        
+        function updateStars(rating) {
+            // به‌روزرسانی ستاره‌ها
+            const filledStars = document.querySelectorAll('.star-filled');
+            filledStars.forEach((star, index) => {
+                if (index < rating) {
+                    star.style.width = '100%';
                 } else {
-                    // ستاره خالی
-                    starFilled.style.width = '0%';
+                    star.style.width = '0%';
                 }
-            }
+            });
+            
+            // به‌روزرسانی متن امتیاز
+            document.querySelector('.score').textContent = `امتیاز: ${rating} از 5`;
         }
         
-        // امتیاز اولیه
-        setStars(3.5);
-        
-        // تغییر حالت تمرین
-        document.querySelectorAll('.mode-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        // حالت‌های تمرین
+        const modes = document.querySelectorAll('.mode');
+        modes.forEach(mode => {
+            mode.addEventListener('click', function() {
+                modes.forEach(m => m.classList.remove('active'));
                 this.classList.add('active');
                 
-                // تغییر سوال نمونه
-                const questions = {
-                    'Word → Definition': 'واژه "Computer" به فارسی چیست؟',
-                    'Definition → Word': 'معنی "رایانه" به انگلیسی چیست؟'
-                };
-                document.getElementById('questionText').textContent = questions[this.textContent] || 'سوال اینجا نمایش داده می‌شود...';
-                
-                // تغییر تصادفی امتیاز
-                setStars(Math.random() * 5);
+                // تغییر سوال بر اساس حالت
+                const question = document.querySelector('.question');
+                if (this.textContent.includes('Word → Definition')) {
+                    question.textContent = 'واژه "Computer" به فارسی چیست؟';
+                } else {
+                    question.textContent = 'معنی "رایانه" به انگلیسی چیست؟';
+                }
             });
         });
         
         // دکمه راهنمایی
-        document.getElementById('hintBtn').addEventListener('click', function() {
-            alert('راهنمایی: این کلمه در حوزه تکنولوژی است');
+        document.querySelector('.hint-btn').addEventListener('click', function() {
+            alert('این یک راهنمایی تستی است');
         });
         
         // منوها
-        document.getElementById('smartReview').addEventListener('click', function() {
-            alert('مرور اشتباهات هوشمند');
-            setStars(4.2);
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const text = this.querySelector('.text').textContent;
+                alert(`شما "${text}" را انتخاب کردید`);
+            });
         });
-        
-        document.getElementById('progressReport').addEventListener('click', function() {
-            const loading = document.getElementById('loadingText');
-            loading.textContent = 'گزارش بارگذاری شد ✓';
-            loading.style.color = '#34a853';
-            setTimeout(() => {
-                loading.textContent = 'در حال بارگذاری گزارش...';
-                loading.style.color = '#999';
-            }, 2000);
-        });
-        
-        document.getElementById('whatsappRegister').addEventListener('click', function() {
-            alert('ثبت نام در واتساپ');
-            setStars(4.8);
-        });
-        
-        document.getElementById('exitApp').addEventListener('click', function() {
-            if (confirm('آیا می‌خواهید از برنامه خارج شوید؟')) {
-                alert('برنامه بسته شد');
-            }
-        });
-        
-        // تغییر خودکار سوال هر 8 ثانیه
-        let questionIndex = 0;
-        const allQuestions = [
-            'واژه "Beautiful" به فارسی چیست؟',
-            'معنی "کتاب" به انگلیسی چیست؟',
-            'مترادف "Happy" چیست؟',
-            'جمله "من می‌خوانم" به انگلیسی؟',
-            'واژه "Apple" به فارسی چیست؟'
-        ];
-        
-        setInterval(() => {
-            questionIndex = (questionIndex + 1) % allQuestions.length;
-            document.getElementById('questionText').textContent = allQuestions[questionIndex];
-            
-            // افزایش کمی امتیاز
-            const current = parseFloat(document.getElementById('scoreValue').textContent);
-            if (current < 5) {
-                setStars(current + 0.1);
-            }
-        }, 8000);
     </script>
 </body>
 </html>
