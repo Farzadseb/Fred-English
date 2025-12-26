@@ -44,7 +44,7 @@ body {
     --card-shadow: 0 10px 30px rgba(33, 150, 243, 0.08);
     --text: #2c3e50;
     --text-secondary: #6c7b95;
-    --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50); /* گرادیان آبی-سبز */
+    --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
     --secondary: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
     --danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
     --muted: #8e9aaf;
@@ -56,13 +56,13 @@ body {
 }
 
 body.dark {
-    /* Dark theme - با حفظ گرادیان اصلی */
+    /* Dark theme */
     --bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
     --card: rgba(30, 41, 59, 0.97);
     --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     --text: #e2e8f0;
     --text-secondary: #94a3b8;
-    --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50); /* ثابت نگه داشتن گرادیان */
+    --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
     --secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     --muted: #64748b;
@@ -142,7 +142,7 @@ body.dark {
 
 .title {
     font-weight: 700;
-    background: var(--primary-gradient); /* استفاده از گرادیان جدید */
+    background: var(--primary-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -153,19 +153,24 @@ body.dark {
     letter-spacing: -0.3px;
 }
 
-/* ================= SCORE CARD (نصف اندازه) ================= */
+/* ================= SCORE CARD (عرض 30% کمتر، ارتفاع مشابه) ================= */
 .score-card {
     background: var(--card);
     border-radius: 22px;
-    padding: 16px; /* کاهش padding */
+    padding: 20px;
     margin: 0 auto 20px;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: var(--transition);
-    max-width: 280px; /* کاهش عرض */
-    text-align: center;
+    width: 70%; /* عرض 30% کمتر */
+    height: auto;
+    min-height: 140px; /* ارتفاع مشابه کارت‌های دیگر */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .score-card:hover {
@@ -177,20 +182,17 @@ body.dark {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 }
 
-/* ================= STARS (کوچکتر) ================= */
+/* ================= STARS ================= */
 .stars-box {
-    width: 90%; /* افزایش عرض برای فاصله بهتر */
+    width: 100%;
     margin: 0 auto 12px;
     display: flex;
     justify-content: space-between;
-    padding: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50px;
-    border: 1px solid var(--border);
+    padding: 8px 0;
 }
 
 .star {
-    font-size: 26px; /* کاهش اندازه ستاره‌ها */
+    font-size: 24px;
     color: var(--star-outline);
     transition: var(--transition);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -212,14 +214,14 @@ body.dark {
 .score-text {
     text-align: center;
     color: var(--text-secondary);
-    font-size: 14px; /* کوچکتر */
+    font-size: 14px;
     margin-bottom: 4px;
 }
 
 .score-value {
     display: block;
-    font-size: 32px; /* کوچکتر */
-    background: var(--primary-gradient); /* استفاده از گرادیان */
+    font-size: 28px;
+    background: var(--primary-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -228,7 +230,7 @@ body.dark {
     margin-top: 2px;
 }
 
-/* ================= MODE CARDS (گرادیان آبی-سبز) ================= */
+/* ================= MODE CARDS (عرض 15% کمتر) ================= */
 .modes {
     display: flex;
     flex-direction: column;
@@ -237,7 +239,7 @@ body.dark {
 }
 
 .mode-card {
-    background: var(--primary-gradient); /* گرادیان آبی-سبز */
+    background: var(--primary-gradient);
     color: white;
     padding: 18px 20px;
     border-radius: 18px;
@@ -253,6 +255,8 @@ body.dark {
     position: relative;
     overflow: hidden;
     z-index: 1;
+    width: 85%; /* عرض 15% کمتر */
+    margin: 0 auto; /* مرکز کردن */
 }
 
 /* افکت براق */
@@ -427,26 +431,27 @@ body.dark {
     display: block; 
 }
 
-/* ================= LOADING STATE ================= */
-.loading {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid rgba(255,255,255,.3);
-    border-radius: 50%;
-    border-top-color: white;
-    animation: spin 1s ease-in-out infinite;
+/* ================= CALIBRATION FOR MOBILE ================= */
+@media (max-width: 500px) {
+    .app {
+        width: 92%;
+        max-width: 92%;
+    }
+    
+    .mode-card {
+        width: 85%;
+    }
+    
+    .score-card {
+        width: 70%;
+    }
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* ================= RESPONSIVE ADJUSTMENTS ================= */
 @media (max-width: 380px) {
     .mode-card {
         padding: 16px 18px;
         font-size: 16px;
+        width: 88%;
     }
     
     .btn {
@@ -459,16 +464,17 @@ body.dark {
     }
     
     .score-card {
-        max-width: 250px;
-        padding: 14px;
+        width: 72%;
+        padding: 16px;
+        min-height: 130px;
     }
     
     .star {
-        font-size: 24px;
+        font-size: 22px;
     }
     
     .score-value {
-        font-size: 28px;
+        font-size: 26px;
     }
 }
 
@@ -495,7 +501,7 @@ body.dark {
     <!-- HOME VIEW -->
     <div id="home" class="view active">
 
-        <!-- SCORE CARD (نصف اندازه) -->
+        <!-- SCORE CARD (عرض 30% کمتر، ارتفاع مشابه) -->
         <div class="score-card">
             <div class="stars-box" id="starsContainer">
                 <span class="star">☆</span>
@@ -510,7 +516,7 @@ body.dark {
             </div>
         </div>
 
-        <!-- MODE CARDS (با گرادیان آبی-سبز) -->
+        <!-- MODE CARDS (عرض 15% کمتر) -->
         <div class="modes">
             <div class="mode-card">
                 <span>English → Persian</span>
@@ -605,8 +611,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
+    // Calibrate for mobile
+    calibrateLayout();
+    window.addEventListener('resize', calibrateLayout);
+    
     document.body.style.opacity = '1';
 });
+
+/* ====== CALIBRATE LAYOUT ====== */
+function calibrateLayout() {
+    const screenWidth = window.innerWidth;
+    const app = document.querySelector('.app');
+    
+    if (screenWidth < 500) {
+        // Adjust container width
+        app.style.width = '92%';
+        app.style.maxWidth = '92%';
+    } else {
+        app.style.width = '';
+        app.style.maxWidth = '500px';
+    }
+}
 
 /* ====== THEME SYSTEM ====== */
 function loadTheme() {
@@ -681,8 +706,6 @@ function updateMuteButton() {
 }
 
 function playToggleSound() {
-    // This is a silent audio for haptic-like feedback
-    // In a real app, you would play an actual sound
     console.log('Toggle sound played');
 }
 
