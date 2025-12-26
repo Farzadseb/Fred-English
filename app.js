@@ -55,7 +55,13 @@ function toggleMute() {
             muteBtn.title = 'میکروفون خاموش';
             console.log('🔇 حالت Mute فعال شد');
             
-            // نمایش پیغام
+            // متوقف کردن همه صداها
+            if (typeof window.stopSpeaking === 'function') {
+                window.stopSpeaking();
+            } else if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            
             showToast('میکروفون خاموش شد', 'info');
         } else {
             muteIcon.textContent = '🎤';
@@ -68,11 +74,6 @@ function toggleMute() {
     }
     
     localStorage.setItem('isMuted', isMuted);
-    
-    // متوقف کردن صداها
-    if (isMuted && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-    }
 }
 
 function loadMuteState() {
@@ -146,15 +147,15 @@ function showToast(message, type = 'info') {
     }
 }
 
-// ====== گزارش پیشرفت ======
+// صادر کردن تابع showToast
+window.showToast = showToast;
+
+// ====== بقیه توابع بدون تغییر ======
 function showProgressReport() {
     const quizContainer = document.getElementById('quizContainer');
     const progressReport = document.getElementById('progressReport');
     
-    // مخفی کردن کوییز
     if (quizContainer) quizContainer.style.display = 'none';
-    
-    // نمایش گزارش
     if (progressReport) {
         progressReport.style.display = 'block';
         loadProgressData();
@@ -163,23 +164,19 @@ function showProgressReport() {
 
 function hideProgressReport() {
     const progressReport = document.getElementById('progressReport');
-    if (progressReport) {
-        progressReport.style.display = 'none';
-    }
+    if (progressReport) progressReport.style.display = 'none';
 }
 
 function loadProgressData() {
     const content = document.getElementById('progressContent');
     if (!content) return;
     
-    let html = '';
-    
     if (typeof ProgressTracker !== 'undefined' && ProgressTracker.getStats) {
         try {
             const stats = ProgressTracker.getStats();
             const report = ProgressTracker.getProgressReport ? ProgressTracker.getProgressReport() : null;
             
-            html = `
+            content.innerHTML = `
                 <div class="progress-stats">
                     <div class="stat-item">
                         <h4>کل سوالات</h4>
@@ -217,10 +214,10 @@ function loadProgressData() {
                 </div>
             `;
         } catch (error) {
-            html = `<p style="color: var(--danger); text-align: center; padding: 20px; font-size: 14px;">خطا در بارگذاری گزارش</p>`;
+            content.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 20px; font-size: 14px;">خطا در بارگذاری گزارش</p>';
         }
     } else {
-        html = `
+        content.innerHTML = `
             <div style="text-align: center; padding: 30px 20px;">
                 <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary);">📊</div>
                 <p style="font-size: 16px; margin-bottom: 8px; color: var(--primary);">سیستم گزارش‌گیری</p>
@@ -229,11 +226,8 @@ function loadProgressData() {
             </div>
         `;
     }
-    
-    content.innerHTML = html;
 }
 
-// ====== توابع کمکی ======
 function registerWhatsApp() {
     const phone = "+989123456789";
     const message = "سلام! می‌خواهم در برنامه English With Fred ثبت‌نام کنم.";
@@ -265,30 +259,17 @@ function reviewSmartMistakes() {
     }
 }
 
-// ====== بررسی و ترمیم لغات ======
 function checkAndFixWords() {
     if (typeof words === 'undefined' || !Array.isArray(words) || words.length === 0) {
         console.warn('⚠️ لغات بارگذاری نشدند، استفاده از لغات پیش‌فرض...');
         
-        // لغات پیش‌فرض
         window.words = [
             {english: "hello", persian: "سلام", definition: "greeting word"},
             {english: "book", persian: "کتاب", definition: "something to read"},
             {english: "teacher", persian: "معلم", definition: "person who teaches"},
             {english: "student", persian: "دانش‌آموز", definition: "person who learns"},
-            {english: "school", persian: "مدرسه", definition: "place of learning"},
-            {english: "pen", persian: "قلم", definition: "writing tool"},
-            {english: "desk", persian: "میز", definition: "study table"},
-            {english: "chair", persian: "صندلی", definition: "to sit on"},
-            {english: "window", persian: "پنجره", definition: "glass in wall"},
-            {english: "door", persian: "در", definition: "enter/exit"}
+            {english: "school", persian: "مدرسه", definition: "place of learning"}
         ];
-        
-        // مخفی کردن پیغام خطا
-        const errorMsg = document.querySelector('.quiz-modes div[style*="danger"]');
-        if (errorMsg) {
-            errorMsg.style.display = 'none';
-        }
         
         console.log(`✅ ${window.words.length} لغت پیش‌فرض بارگذاری شد`);
     } else {
@@ -296,18 +277,13 @@ function checkAndFixWords() {
     }
 }
 
-// ====== ترمیم حالت‌های آزمون ======
 function fixQuizModes() {
     const quizModes = document.querySelector('.quiz-modes');
-    if (!quizModes) {
-        console.error('❌ بخش quiz-modes پیدا نشد!');
-        return;
-    }
+    if (!quizModes) return;
     
-    // فقط اگر دکمه‌ها کمتر از 4 هستند ترمیم کن
     const modeButtons = document.querySelectorAll('.mode-button');
     if (modeButtons.length < 4) {
-        const correctHTML = `
+        quizModes.innerHTML = `
             <button class="mode-button" onclick="startQuiz('en-fa')">
                 <span class="mode-icon">🇺🇸→🇮🇷</span>
                 <span class="mode-text">English → Persian</span>
@@ -325,13 +301,10 @@ function fixQuizModes() {
                 <span class="mode-text">Definition → Word</span>
             </button>
         `;
-        
-        quizModes.innerHTML = correctHTML;
         console.log('✅ حالت‌های آزمون ترمیم شدند');
     }
 }
 
-// ====== آپدیت ستاره‌ها ======
 function updateStars(score) {
     const stars = document.querySelectorAll('.star');
     const scoreNum = parseInt(score) || 0;
@@ -350,35 +323,22 @@ function updateStars(score) {
 function initApp() {
     console.log('🚀 راه‌اندازی English With Fred...');
     
-    // بارگذاری تم
     loadTheme();
-    
-    // بارگذاری حالت Mute
     loadMuteState();
-    
-    // بررسی و ترمیم لغات
     checkAndFixWords();
-    
-    // ترمیم حالت‌های آزمون
     setTimeout(fixQuizModes, 100);
     
-    // بررسی فایل‌ها
     console.log('🔍 بررسی فایل‌ها:');
     console.log('- words.js:', typeof words !== 'undefined' ? '✅' : '❌');
-    console.log('- startQuiz:', typeof startQuiz !== 'undefined' ? '✅' : '❌');
-    console.log('- ProgressTracker:', typeof ProgressTracker !== 'undefined' ? '✅' : '❌');
     console.log('- دکمه‌های آزمون:', document.querySelectorAll('.mode-button').length, '/ 4');
     
-    // تنظیم Progress Tracker
     setTimeout(() => {
         if (typeof ProgressTracker !== 'undefined') {
-            console.log('⚙️ راه‌اندازی Progress Tracker...');
             ProgressTracker.init();
             console.log('✅ Progress Tracker فعال شد');
         }
     }, 1000);
     
-    // آپدیت بهترین امتیاز از localStorage
     const bestScore = localStorage.getItem('bestScore') || '0';
     const bestScoreElement = document.getElementById('bestScore');
     if (bestScoreElement) {
@@ -392,7 +352,6 @@ function initApp() {
 // ====== رویدادهای صفحه ======
 document.addEventListener('DOMContentLoaded', initApp);
 
-// ریسپانسیو کردن
 window.addEventListener('resize', function() {
     const container = document.querySelector('.app-container');
     if (container && window.innerWidth < 480) {
@@ -402,7 +361,6 @@ window.addEventListener('resize', function() {
     }
 });
 
-// رویداد برای آپدیت بهترین امتیاز
 window.updateBestScore = function(score) {
     const currentBest = parseInt(localStorage.getItem('bestScore') || '0');
     if (score > currentBest) {
@@ -416,7 +374,7 @@ window.updateBestScore = function(score) {
     }
 };
 
-// صادر کردن تابع Mute برای استفاده در quiz.js
+// صادر کردن تابع Mute برای استفاده در quiz.js و speech.js
 window.isMuted = function() {
     return isMuted;
 };
