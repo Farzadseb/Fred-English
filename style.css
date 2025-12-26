@@ -8,9 +8,9 @@
     --card-bg: #FFFFFF;
     --text: #212121;
     --text-light: #757575;
-    --border-radius: 14px;
-    --shadow: 0 3px 10px rgba(0,0,0,0.08);
-    --shadow-hover: 0 6px 18px rgba(0,0,0,0.15);
+    --border-radius: 16px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.15);
 }
 
 body.dark {
@@ -22,8 +22,8 @@ body.dark {
     --card-bg: #1E1E1E;
     --text: #FFFFFF;
     --text-light: #BDBDBD;
-    --shadow: 0 3px 10px rgba(0,0,0,0.2);
-    --shadow-hover: 0 6px 18px rgba(0,0,0,0.3);
+    --shadow: 0 4px 12px rgba(0,0,0,0.2);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 /* ====== بدنه اصلی ====== */
@@ -35,7 +35,7 @@ body.dark {
 
 body {
     margin: 0;
-    padding: 12px;
+    padding: 15px;
     background: var(--light-bg);
     color: var(--text);
     font-family: 'Vazir', 'Segoe UI', system-ui, sans-serif;
@@ -50,340 +50,176 @@ body {
     padding: 0;
 }
 
-/* ====== هدر - 40% کوچک‌تر با اسم بزرگ ====== */
-.app-header {
-    text-align: center;
-    margin-bottom: 15px;
-    padding: 15px 12px;
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    color: var(--text);
-    box-shadow: var(--shadow);
-    border: 2px solid var(--primary);
-    position: relative;
+/* ====== فوتتر - نسخه قشنگ ====== */
+.app-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid var(--light-bg);
 }
 
-.app-header::before {
+.footer-button {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 18px;
+    padding: 22px 25px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: right;
+    background: var(--card-bg);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.footer-button::before {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    width: 8px;
+    height: 100%;
+    transition: width 0.3s ease;
+    z-index: 1;
 }
 
-/* بخش بالای هدر */
-.header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 15px;
-    position: relative;
-}
-
-/* اسم برنامه - دو برابر بزرگتر و در وسط */
-.app-title {
-    font-size: 28px; /* دو برابر بزرگتر */
-    font-weight: 800;
-    color: var(--primary);
-    text-align: center;
-    margin: 0;
-    flex: 1;
-    text-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-}
-
-/* دکمه Mute در سمت چپ */
-.mute-toggle {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--primary);
-    border: 2px solid var(--card-bg);
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
-    flex-shrink: 0;
+.footer-button::after {
+    content: '';
     position: absolute;
+    top: 0;
     right: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.2), transparent);
+    transition: width 0.3s ease;
 }
 
-.mute-toggle:hover {
-    transform: scale(1.08);
+.footer-button:hover {
+    transform: translateX(-10px);
+    box-shadow: var(--shadow-hover);
+}
+
+.footer-button:hover::before {
+    width: 12px;
+}
+
+.footer-button:hover::after {
+    width: 30px;
+}
+
+/* رنگ‌های ویژه هر دکمه */
+.footer-button:nth-child(1) {
+    border-right: 6px solid var(--accent);
+}
+.footer-button:nth-child(1)::before {
+    background: var(--accent);
+}
+.footer-button:nth-child(1):hover {
+    background: rgba(255, 152, 0, 0.05);
+}
+
+.footer-button:nth-child(2) {
+    border-right: 6px solid var(--secondary);
+}
+.footer-button:nth-child(2)::before {
     background: var(--secondary);
-    box-shadow: 0 4px 14px rgba(76, 175, 80, 0.4);
+}
+.footer-button:nth-child(2):hover {
+    background: rgba(76, 175, 80, 0.05);
 }
 
-.mute-toggle.active {
-    background: var(--danger);
-    box-shadow: 0 3px 10px rgba(244, 67, 54, 0.3);
+.footer-button:nth-child(3) {
+    border-right: 6px solid #25D366;
+}
+.footer-button:nth-child(3)::before {
+    background: #25D366;
+}
+.footer-button:nth-child(3):hover {
+    background: rgba(37, 211, 102, 0.05);
 }
 
-.mute-toggle.active:hover {
-    background: #D32F2F;
+.footer-button:nth-child(4) {
+    border-right: 6px solid #9E9E9E;
+}
+.footer-button:nth-child(4)::before {
+    background: #9E9E9E;
+}
+.footer-button:nth-child(4):hover {
+    background: rgba(158, 158, 158, 0.05);
 }
 
-/* ستاره‌ها */
-.stars-container {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin: 10px auto;
-    max-width: 160px;
-}
-
-.star {
-    font-size: 20px;
-    color: #E0E0E0;
-    opacity: 0.6;
-    transition: all 0.3s ease;
-}
-
-.star.filled {
-    color: #FFD700;
-    opacity: 1;
-    text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
-}
-
-/* امتیاز */
-.score-display {
-    font-size: 15px;
-    background: var(--light-bg);
-    padding: 6px 15px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-top: 8px;
-    color: var(--text);
-    border: 2px solid var(--primary);
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.score-display:hover {
-    background: var(--primary);
-    color: white;
-    transform: translateY(-1px);
-}
-
-/* ====== دکمه تغییر تم ====== */
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--secondary);
-    border: 2px solid var(--card-bg);
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 1000;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
+/* آیکون‌ها */
+.footer-button span:first-child {
+    font-size: 24px;
+    min-width: 40px;
+    text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.theme-toggle:hover {
-    transform: scale(1.08) rotate(15deg);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+/* ====== هدر ====== */
+.app-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 25px 20px;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    border: 2px solid var(--primary);
 }
 
-/* ====== بقیه استایل‌ها بدون تغییر مهم ====== */
+.app-header h1 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* ====== حالت‌های آزمون ====== */
 .quiz-modes {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin: 20px 0;
-    padding: 20px;
+    gap: 16px;
+    margin: 25px 0;
+    padding: 25px;
     background: var(--card-bg);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .mode-button {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 18px 16px;
+    gap: 18px;
+    padding: 22px 20px;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     color: white;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
     text-align: right;
-    position: relative;
-    overflow: hidden;
-}
-
-.mode-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 6px;
-    height: 100%;
-    background: rgba(255,255,255,0.3);
-    transition: width 0.3s ease;
 }
 
 .mode-button:hover {
-    transform: translateX(-6px);
+    transform: translateX(-8px);
     box-shadow: var(--shadow-hover);
 }
 
-.mode-button:hover::before {
-    width: 10px;
-}
-
-.mode-icon {
-    font-size: 20px;
-    background: rgba(255,255,255,0.2);
-    padding: 8px;
-    border-radius: 8px;
-    min-width: 48px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-}
-
-.mode-text {
-    flex: 1;
-    text-align: center;
-    font-size: 16px;
-    letter-spacing: -0.5px;
-}
-
-/* ====== کوییز کانتینر ====== */
-.quiz-container {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 22px 20px;
-    margin: 20px 0;
-    box-shadow: var(--shadow);
-    display: none;
-    border-top: 4px solid var(--accent);
-}
-
-#questionText {
-    font-size: 18px;
-    margin-bottom: 22px;
-    text-align: center;
-    line-height: 1.6;
-    color: var(--text);
-    padding: 16px;
-    background: var(--light-bg);
-    border-radius: var(--border-radius);
-    border-right: 3px solid var(--primary);
-}
-
-.options-container {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin: 20px 0;
-}
-
-.option-button {
-    padding: 16px;
-    border-radius: 12px;
-    border: 2px solid #E0E0E0;
-    background: var(--card-bg);
-    color: var(--text);
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    position: relative;
-}
-
-.option-button:hover {
-    border-color: var(--primary);
-    background: rgba(33, 150, 243, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(33, 150, 243, 0.1);
-}
-
-.option-button.correct {
-    border-color: var(--secondary);
-    background: rgba(76, 175, 80, 0.12);
-    color: var(--secondary);
-    font-weight: bold;
-}
-
-.option-button.wrong {
-    border-color: var(--danger);
-    background: rgba(244, 67, 54, 0.12);
-    color: var(--danger);
-}
-
-/* ====== کنترل‌ها (بدون دکمه تلفظ) ====== */
-.controls-container {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin: 22px 0;
-    flex-wrap: wrap;
-}
-
-.control-button {
-    padding: 14px 22px;
-    border-radius: 12px;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    min-width: 120px;
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.control-button:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
-    opacity: 0.95;
-}
-
-.control-button::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
-    border-radius: inherit;
-}
-
-#hintBtn { background: var(--accent); }
-#nextBtn { background: var(--primary); }
-#endQuizBtn { background: var(--danger); }
-
-/* ====== برای موبایل ====== */
+/* ====== ریسپانسیو ====== */
 @media (max-width: 480px) {
     body {
         padding: 10px;
@@ -393,50 +229,43 @@ body {
         max-width: 100%;
     }
     
-    .app-header {
-        padding: 12px 10px;
+    .footer-button {
+        padding: 20px 22px;
+        font-size: 16px;
+        gap: 15px;
     }
     
-    .app-title {
+    .footer-button span:first-child {
         font-size: 22px;
+        min-width: 36px;
     }
     
-    .mute-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-    
-    .theme-toggle {
-        left: 15px;
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
+    .app-header h1 {
+        font-size: 24px;
     }
     
     .mode-button {
-        padding: 16px 14px;
-        font-size: 15px;
+        padding: 20px 18px;
+        font-size: 16px;
     }
-    
-    .mode-icon {
-        font-size: 18px;
-        min-width: 42px;
-        padding: 6px;
+}
+
+/* انیمیشن */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
     }
-    
-    .mode-text {
-        font-size: 15px;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
-    
-    .control-button {
-        padding: 12px 18px;
-        min-width: 110px;
-        font-size: 14px;
-    }
-    
-    .footer-button {
-        padding: 14px;
-        font-size: 15px;
-    }
-    }
+}
+
+.app-footer {
+    animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.quiz-modes {
+    animation: fadeInUp 0.6s ease 0.1s both;
+}
