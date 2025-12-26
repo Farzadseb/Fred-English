@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English with Fred</title>
+    <title>Mute - یادگیری زبان انگلیسی</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔇</text></svg>">
 </head>
 <body>
     <!-- دکمه تغییر تم -->
@@ -17,7 +17,7 @@
     <div class="app-container">
         <!-- هدر -->
         <div class="app-header">
-            <h1>English with Fred</h1>
+            <h1>🔇 Mute</h1>
             
             <div class="stars-container">
                 <span class="star">★</span>
@@ -35,16 +35,20 @@
         <!-- حالت‌های آزمون -->
         <div class="quiz-modes">
             <button class="mode-button" onclick="startQuiz('en-fa')">
-                English → Persian
+                <span class="mode-icon">🇺🇸→🇮🇷</span>
+                <span class="mode-text">English → Persian</span>
             </button>
             <button class="mode-button" onclick="startQuiz('fa-en')">
-                Persian → English
+                <span class="mode-icon">🇮🇷→🇺🇸</span>
+                <span class="mode-text">Persian → English</span>
             </button>
             <button class="mode-button" onclick="startQuiz('word-def')">
-                Word → Definition
+                <span class="mode-icon">📝</span>
+                <span class="mode-text">Word → Definition</span>
             </button>
             <button class="mode-button" onclick="startQuiz('def-word')">
-                Definition → Word
+                <span class="mode-icon">💭</span>
+                <span class="mode-text">Definition → Word</span>
             </button>
         </div>
 
@@ -113,10 +117,10 @@
     
     <script>
         // تست اولیه
-        console.log('=== English with Fred Loaded ===');
+        console.log('=== Mute App Loaded ===');
         console.log('words loaded:', typeof words !== 'undefined' ? '✅' : '❌');
         console.log('startQuiz function:', typeof startQuiz !== 'undefined' ? '✅' : '❌');
-        console.log('ProgressTracker:', typeof ProgressTracker !== 'undefined' ? '✅' : '❌');
+        console.log('Quiz modes count:', document.querySelectorAll('.mode-button').length);
     </script>
 </body>
 </html>
