@@ -1,3 +1,5 @@
+// app.js - مدیریت برنامه Mute
+
 // ====== مدیریت تم ======
 let currentTheme = 'light';
 
@@ -90,29 +92,34 @@ function loadProgressData() {
                         <p>${stats.accuracy || 0}%</p>
                     </div>
                 </div>
-                <div style="margin-top: 20px; padding: 15px; background: var(--bg); border-radius: 12px;">
-                    <h4 style="margin-bottom: 10px;">📈 آخرین آزمون‌ها</h4>
-                    <div style="font-size: 14px; color: var(--text); opacity: 0.8;">
-                        ${report && report.recentSessions ? 
-                            report.recentSessions.map(s => 
-                                `<div style="margin-bottom: 8px; padding: 8px; border-bottom: 1px solid #eee;">
-                                    ${s.mode} - ${s.score}% (${s.date})
+                <div style="margin-top: 25px; padding: 20px; background: var(--light-bg); border-radius: 14px;">
+                    <h4 style="margin-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 10px;">📈 آخرین فعالیت‌ها</h4>
+                    <div style="font-size: 15px; color: var(--text);">
+                        ${report && report.recentSessions && report.recentSessions.length > 0 ? 
+                            report.recentSessions.slice(0, 5).map(s => 
+                                `<div style="margin-bottom: 12px; padding: 12px; background: var(--card-bg); border-radius: 10px; border-right: 4px solid var(--accent);">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span style="font-weight: bold;">${s.mode}</span>
+                                        <span style="color: ${s.score >= 70 ? 'var(--secondary)' : s.score >= 50 ? 'var(--accent)' : 'var(--danger)'};">${s.score}%</span>
+                                    </div>
+                                    <div style="font-size: 13px; color: var(--text-light); margin-top: 5px;">${s.date}</div>
                                 </div>`
                             ).join('') : 
-                            '<p>هنوز آزمونی انجام نداده‌اید.</p>'
+                            '<p style="text-align: center; padding: 20px; color: var(--text-light);">هنوز آزمونی انجام نداده‌اید.</p>'
                         }
                     </div>
                 </div>
             `;
         } catch (error) {
-            html = `<p style="color: var(--danger);">خطا در بارگذاری گزارش: ${error.message}</p>`;
+            html = `<p style="color: var(--danger); text-align: center; padding: 20px;">خطا در بارگذاری گزارش: ${error.message}</p>`;
         }
     } else {
         html = `
-            <div style="text-align: center; padding: 40px 20px; color: #666;">
-                <p style="font-size: 18px; margin-bottom: 10px;">📊 سیستم گزارش‌گیری</p>
-                <p style="font-size: 14px;">هنوز فعال نشده است.</p>
-                <p style="font-size: 12px; margin-top: 20px;">برای فعال‌سازی، چند آزمون بدهید.</p>
+            <div style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 48px; margin-bottom: 15px;">📊</div>
+                <p style="font-size: 18px; margin-bottom: 10px; color: var(--primary);">سیستم گزارش‌گیری</p>
+                <p style="font-size: 14px; color: var(--text-light); margin-bottom: 20px;">هنوز فعال نشده است.</p>
+                <p style="font-size: 13px; color: var(--text-light);">برای فعال‌سازی، چند آزمون بدهید.</p>
             </div>
         `;
     }
@@ -122,19 +129,17 @@ function loadProgressData() {
 
 // ====== توابع کمکی ======
 function registerWhatsApp() {
-    const phone = "+989123456789"; // شماره واتساپ
-    const message = "سلام! می‌خواهم در برنامه English with Fred ثبت‌نام کنم.";
+    const phone = "+989123456789";
+    const message = "سلام! می‌خواهم در برنامه Mute ثبت‌نام کنم.";
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
 }
 
 function exitApp() {
     if (confirm("آیا می‌خواهید از برنامه خارج شوید؟")) {
-        // اگر PWA است
         if (window.navigator.standalone) {
             window.close();
         } else {
-            // برای مرورگر معمولی
             window.location.href = "about:blank";
         }
     }
@@ -142,7 +147,12 @@ function exitApp() {
 
 function reviewSmartMistakes() {
     if (typeof ProgressTracker !== 'undefined' && ProgressTracker.reviewMistakes) {
-        ProgressTracker.reviewMistakes();
+        const mistakes = ProgressTracker.getProgressReport().mistakes;
+        if (mistakes && mistakes.active > 0) {
+            ProgressTracker.reviewMistakes();
+        } else {
+            alert("🎉 هیچ اشتباهی برای مرور ندارید!");
+        }
     } else {
         alert("سیستم مرور اشتباهات هنوز فعال نیست. ابتدا چند آزمون بدهید.");
     }
@@ -150,7 +160,7 @@ function reviewSmartMistakes() {
 
 // ====== مقداردهی اولیه ======
 function initApp() {
-    console.log('🚀 شروع برنامه English with Fred...');
+    console.log('🚀 راه‌اندازی برنامه Mute...');
     
     // بارگذاری تم
     loadTheme();
@@ -161,15 +171,29 @@ function initApp() {
     console.log('- startQuiz:', typeof startQuiz !== 'undefined' ? '✅' : '❌');
     console.log('- ProgressTracker:', typeof ProgressTracker !== 'undefined' ? '✅' : '❌');
     
+    // بررسی و نمایش حالت‌های آزمون
+    const modeButtons = document.querySelectorAll('.mode-button');
+    console.log(`- دکمه‌های آزمون: ${modeButtons.length} / 4`);
+    
+    if (modeButtons.length !== 4) {
+        console.warn('⚠️ تعداد دکمه‌های آزمون نادرست است!');
+        // سعی در ترمیم
+        fixQuizModes();
+    }
+    
     // اگر words وجود ندارد
     if (typeof words === 'undefined' || !Array.isArray(words) || words.length === 0) {
         console.error('❌ فایل لغات بارگذاری نشد!');
         const quizModes = document.querySelector('.quiz-modes');
         if (quizModes) {
             quizModes.innerHTML = `
-                <div style="text-align: center; padding: 20px; color: var(--danger);">
-                    <p>⚠️ فایل لغات یافت نشد!</p>
-                    <p style="font-size: 14px;">لطفاً فایل words.js را بررسی کنید.</p>
+                <div style="text-align: center; padding: 30px; background: rgba(244, 67, 54, 0.1); border-radius: 15px; border: 2px solid var(--danger);">
+                    <div style="font-size: 48px; margin-bottom: 15px;">📚</div>
+                    <p style="color: var(--danger); font-size: 18px; margin-bottom: 15px;">⚠️ فایل لغات یافت نشد</p>
+                    <p style="color: var(--text-light); font-size: 14px;">لطفاً فایل words.js را بررسی کنید.</p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        🔄 رفرش صفحه
+                    </button>
                 </div>
             `;
         }
@@ -191,9 +215,58 @@ function initApp() {
     const bestScoreElement = document.getElementById('bestScore');
     if (bestScoreElement) {
         bestScoreElement.textContent = bestScore;
+        
+        // ستاره‌ها را بر اساس امتیاز پر کن
+        updateStars(bestScore);
     }
     
     console.log('✅ برنامه با موفقیت راه‌اندازی شد');
+}
+
+// ====== ترمیم حالت‌های آزمون ======
+function fixQuizModes() {
+    const quizModes = document.querySelector('.quiz-modes');
+    if (!quizModes) {
+        console.error('❌ بخش quiz-modes پیدا نشد!');
+        return;
+    }
+    
+    const correctHTML = `
+        <button class="mode-button" onclick="startQuiz('en-fa')">
+            <span class="mode-icon">🇺🇸→🇮🇷</span>
+            <span class="mode-text">English → Persian</span>
+        </button>
+        <button class="mode-button" onclick="startQuiz('fa-en')">
+            <span class="mode-icon">🇮🇷→🇺🇸</span>
+            <span class="mode-text">Persian → English</span>
+        </button>
+        <button class="mode-button" onclick="startQuiz('word-def')">
+            <span class="mode-icon">📝</span>
+            <span class="mode-text">Word → Definition</span>
+        </button>
+        <button class="mode-button" onclick="startQuiz('def-word')">
+            <span class="mode-icon">💭</span>
+            <span class="mode-text">Definition → Word</span>
+        </button>
+    `;
+    
+    quizModes.innerHTML = correctHTML;
+    console.log('✅ حالت‌های آزمون ترمیم شدند');
+}
+
+// ====== آپدیت ستاره‌ها ======
+function updateStars(score) {
+    const stars = document.querySelectorAll('.star');
+    const scoreNum = parseInt(score) || 0;
+    const filledStars = Math.min(5, Math.floor(scoreNum / 20));
+    
+    stars.forEach((star, index) => {
+        if (index < filledStars) {
+            star.classList.add('filled');
+        } else {
+            star.classList.remove('filled');
+        }
+    });
 }
 
 // ====== رویدادهای صفحه ======
@@ -203,7 +276,9 @@ document.addEventListener('DOMContentLoaded', initApp);
 window.addEventListener('resize', function() {
     const container = document.querySelector('.app-container');
     if (container && window.innerWidth < 480) {
-        container.style.padding = '10px';
+        container.style.padding = '0 5px';
+    } else if (container) {
+        container.style.padding = '0';
     }
 });
 
@@ -215,15 +290,7 @@ window.updateBestScore = function(score) {
         const bestScoreElement = document.getElementById('bestScore');
         if (bestScoreElement) {
             bestScoreElement.textContent = score;
-            // انیمیشن برای ستاره‌ها
-            const stars = document.querySelectorAll('.star');
-            stars.forEach((star, index) => {
-                if (index < Math.floor(score / 20)) {
-                    star.classList.add('filled');
-                } else {
-                    star.classList.remove('filled');
-                }
-            });
+            updateStars(score);
         }
     }
 };
