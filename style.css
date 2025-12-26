@@ -10,6 +10,7 @@
     --text-light: #757575;
     --border-radius: 16px;
     --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.15);
 }
 
 body.dark {
@@ -22,6 +23,7 @@ body.dark {
     --text: #FFFFFF;
     --text-light: #BDBDBD;
     --shadow: 0 4px 12px rgba(0,0,0,0.2);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 /* ====== بدنه اصلی ====== */
@@ -52,93 +54,517 @@ body {
 .app-header {
     text-align: center;
     margin-bottom: 25px;
-    padding: 20px;
-    background: var(--card-bg); /* سفید/تیره */
+    padding: 25px 20px;
+    background: var(--card-bg);
     border-radius: var(--border-radius);
-    color: var(--text); /* متن مشکی/سفید */
+    color: var(--text);
     box-shadow: var(--shadow);
-    border-top: 5px solid var(--primary); /* خط آبی بالا */
+    border: 2px solid var(--primary);
+    position: relative;
+}
+
+.app-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 .app-header h1 {
-    font-size: 26px;
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: var(--primary); /* آبی */
+    font-size: 28px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: var(--primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 15px;
 }
 
 .stars-container {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    margin: 15px auto;
-    max-width: 200px;
+    gap: 10px;
+    margin: 20px auto;
+    max-width: 240px;
 }
 
 .star {
-    font-size: 28px;
-    color: var(--primary); /* آبی */
-    opacity: 0.4;
+    font-size: 32px;
+    color: #E0E0E0;
+    opacity: 0.6;
     transition: all 0.3s ease;
 }
 
 .star.filled {
-    color: #FFD700; /* طلایی */
+    color: #FFD700;
     opacity: 1;
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
 }
 
 .score-display {
     font-size: 18px;
     background: var(--light-bg);
-    padding: 10px 20px;
-    border-radius: 50px;
+    padding: 12px 25px;
+    border-radius: 30px;
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 15px;
     color: var(--text);
     border: 2px solid var(--primary);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.score-display:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
 }
 
 /* ====== حالت‌های آزمون ====== */
 .quiz-modes {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     margin: 25px 0;
+    padding: 25px;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .mode-button {
-    padding: 22px 15px;
-    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 20px;
     border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
     font-size: 17px;
     font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: right;
+    position: relative;
+    overflow: hidden;
+}
+
+.mode-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    background: rgba(255,255,255,0.3);
+    transition: width 0.3s ease;
+}
+
+.mode-button:hover {
+    transform: translateX(-8px);
+    box-shadow: var(--shadow-hover);
+}
+
+.mode-button:hover::before {
+    width: 12px;
+}
+
+.mode-icon {
+    font-size: 22px;
+    background: rgba(255,255,255,0.2);
+    padding: 10px;
+    border-radius: 10px;
+    min-width: 55px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.mode-text {
+    flex: 1;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+}
+
+/* ====== کوییز کانتینر ====== */
+.quiz-container {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 30px 25px;
+    margin: 25px 0;
+    box-shadow: var(--shadow);
+    display: none;
+    border-top: 5px solid var(--accent);
+}
+
+#questionText {
+    font-size: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+    line-height: 1.7;
+    color: var(--text);
+    padding: 20px;
+    background: var(--light-bg);
+    border-radius: var(--border-radius);
+    border-right: 4px solid var(--primary);
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 25px 0;
+}
+
+.option-button {
+    padding: 20px;
+    border-radius: 14px;
+    border: 2px solid #E0E0E0;
     background: var(--card-bg);
     color: var(--text);
+    font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
-    box-shadow: var(--shadow);
-    border-left: 6px solid var(--primary);
+    position: relative;
+}
+
+.option-button:hover {
+    border-color: var(--primary);
+    background: rgba(33, 150, 243, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+}
+
+.option-button.correct {
+    border-color: var(--secondary);
+    background: rgba(76, 175, 80, 0.12);
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.option-button.wrong {
+    border-color: var(--danger);
+    background: rgba(244, 67, 54, 0.12);
+    color: var(--danger);
+}
+
+/* ====== کنترل‌ها ====== */
+.controls-container {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.control-button {
+    padding: 16px 26px;
+    border-radius: 14px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
+    min-width: 140px;
+    color: white;
+    position: relative;
+    overflow: hidden;
 }
 
-.mode-button:hover {
+.control-button:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    border-left-color: var(--accent);
+    box-shadow: var(--shadow-hover);
+    opacity: 0.95;
 }
 
-.mode-button:nth-child(2) { border-left-color: var(--secondary); }
-.mode-button:nth-child(3) { border-left-color: var(--accent); }
-.mode-button:nth-child(4) { border-left-color: #9C27B0; }
+.control-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+    border-radius: inherit;
+}
 
-/* ====== بقیه استایل‌ها مانند قبل ====== */
-/* ... کدهای قبلی را اینجا قرار بده ... */
+#speakBtn { background: var(--secondary); }
+#hintBtn { background: var(--accent); }
+#nextBtn { background: var(--primary); }
+#endQuizBtn { background: var(--danger); }
+
+/* ====== گزارش پیشرفت ====== */
+.progress-report-container {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    margin: 25px 0;
+    box-shadow: var(--shadow);
+    display: none;
+    border-top: 5px solid var(--primary);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--light-bg);
+}
+
+.progress-header h3 {
+    font-size: 22px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-header button {
+    background: var(--light-bg);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 22px;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.progress-header button:hover {
+    background: var(--danger);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.stat-item {
+    background: var(--light-bg);
+    border-radius: 14px;
+    padding: 22px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.stat-item:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+}
+
+.stat-item h4 {
+    font-size: 15px;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.stat-item p {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* ====== فوتتر ====== */
+.app-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 35px;
+    padding-top: 30px;
+    border-top: 2px solid var(--light-bg);
+}
+
+.footer-button {
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: var(--card-bg);
+    color: var(--text);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-button:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.footer-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.footer-button:nth-child(1)::before { background: var(--accent); }
+.footer-button:nth-child(2)::before { background: var(--secondary); }
+.footer-button:nth-child(3)::before { background: #25D366; }
+.footer-button:nth-child(4)::before { background: #9E9E9E; }
+
+.footer-button:hover::before {
+    width: 10px;
+}
+
+/* ====== دکمه تغییر تم ====== */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid var(--card-bg);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.12) rotate(15deg);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+/* ====== ریسپانسیو ====== */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .app-container {
+        max-width: 100%;
+    }
+    
+    .app-header {
+        padding: 20px 15px;
+    }
+    
+    .app-header h1 {
+        font-size: 24px;
+    }
+    
+    .mode-button {
+        padding: 20px 15px;
+        font-size: 16px;
+    }
+    
+    .mode-icon {
+        font-size: 20px;
+        min-width: 50px;
+        padding: 8px;
+    }
+    
+    .mode-text {
+        font-size: 16px;
+    }
+    
+    .control-button {
+        padding: 14px 20px;
+        min-width: 120px;
+        font-size: 15px;
+    }
+    
+    .footer-button {
+        padding: 18px;
+        font-size: 16px;
+    }
+    
+    .progress-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stat-item {
+        padding: 18px;
+    }
+    
+    .stat-item p {
+        font-size: 28px;
+    }
+}
+
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 500px;
+    }
+    
+    .quiz-modes {
+        padding: 30px;
+    }
+    
+    .mode-button {
+        padding: 24px 25px;
+    }
+}
+
+/* انیمیشن‌ها */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.quiz-modes, .quiz-container, .progress-report-container {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.mode-button:hover .mode-icon {
+    animation: pulse 0.5s ease;
+}
