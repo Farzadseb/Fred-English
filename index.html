@@ -1,832 +1,370 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English With Fred</title>
-    
-    <!-- فونت Vazir -->
-    <link rel="stylesheet" href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css">
-    
-    <!-- آیکون‌های Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- CSS -->
+    <title>برنامه آموزش زبان</title>
     <style>
-        /* ====== متغیرهای رنگ - آیفونی ====== */
-        :root {
-            --primary: #007AFF;
-            --secondary: #34C759;
-            --accent: #FF9500;
-            --danger: #FF3B30;
-            --light-bg: #F2F2F7;
-            --card-bg: #FFFFFF;
-            --text: #000000;
-            --text-light: #8E8E93;
-            --border-radius: 14px;
-            --shadow: 0 4px 12px rgba(0,0,0,0.08);
-            --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
-        }
-
-        body.dark {
-            --primary: #0A84FF;
-            --secondary: #30D158;
-            --accent: #FF9F0A;
-            --danger: #FF453A;
-            --light-bg: #000000;
-            --card-bg: #1C1C1E;
-            --text: #FFFFFF;
-            --text-light: #98989D;
-            --shadow: 0 4px 12px rgba(0,0,0,0.3);
-            --shadow-hover: 0 8px 24px rgba(0,0,0,0.4);
-        }
-
-        /* ====== بدنه اصلی ====== */
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            margin: 0;
-            padding: 16px;
-            background: var(--light-bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Vazir', 'Segoe UI', system-ui, sans-serif;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            direction: rtl;
         }
-
-        .app-container {
-            max-width: 430px;
-            margin: 0 auto;
-            padding: 0;
-        }
-
-        /* ====== هدر ====== */
-        .app-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 20px 16px;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            color: var(--text);
-            box-shadow: var(--shadow);
-            position: relative;
+        
+        .container {
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
             overflow: hidden;
-            border: none;
         }
-
-        .app-header::before {
-            content: '';
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .language-mode {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .practice-modes {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+        
+        .main-content {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .score-section {
+            margin-bottom: 25px;
+        }
+        
+        .star-container {
+            position: relative;
+            display: inline-block;
+            font-size: 3rem;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+        }
+        
+        .star-filled {
             position: absolute;
             top: 0;
-            right: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            left: 0;
+            color: #fbbf24;
+            width: 70%; /* این مقدار با امتیاز کاربر تغییر می‌کند */
+            overflow: hidden;
+            white-space: nowrap;
         }
-
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            gap: 15px;
-            position: relative;
+        
+        .score-text {
+            color: #666;
+            font-size: 0.9rem;
         }
-
-        .app-title {
-            font-size: 32px;
-            font-weight: 700;
-            text-align: center;
-            margin: 0 0 8px 0;
-            flex: 1;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* دکمه Mute */
-        .mute-toggle {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--card-bg);
-            border: none;
-            color: var(--text);
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-            flex-shrink: 0;
-            position: absolute;
-            right: 0;
-        }
-
-        .mute-toggle:hover {
-            transform: scale(1.08);
-            background: rgba(0, 122, 255, 0.1);
-        }
-
-        .mute-toggle.active {
-            color: var(--danger);
-            background: rgba(255, 59, 48, 0.1);
-        }
-
-        /* ستاره‌ها */
-        .stars-container {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin: 12px auto;
-            max-width: 180px;
-        }
-
-        .star {
-            font-size: 22px;
-            color: var(--text-light);
-            opacity: 0.7;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            filter: grayscale(1);
-        }
-
-        .star.filled {
-            color: #FFD700;
-            opacity: 1;
-            filter: grayscale(0);
-            transform: scale(1.1);
-            text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-        }
-
-        /* امتیاز */
-        .score-display {
-            font-size: 16px;
-            background: var(--light-bg);
-            padding: 8px 20px;
+        
+        .question-box {
+            background: #f8fafc;
             border-radius: 20px;
-            display: inline-block;
-            margin-top: 10px;
-            color: var(--text);
-            border: 1.5px solid var(--primary);
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .score-display:hover {
-            background: rgba(0, 122, 255, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        /* دکمه تغییر تم */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--card-bg);
-            border: none;
-            color: var(--text);
-            font-size: 20px;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            padding: 40px 25px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+            min-height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
-        .theme-toggle:hover {
-            transform: scale(1.08);
-            box-shadow: var(--shadow-hover);
+        
+        .question-text {
+            font-size: 1.8rem;
+            color: #1e293b;
+            font-weight: 600;
+            line-height: 1.5;
         }
-
-        /* حالت‌های کوییز */
-        .quiz-modes {
+        
+        .hint-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .hint-btn:hover {
+            background: #2563eb;
+        }
+        
+        .menu-buttons {
+            margin-top: 30px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            margin: 20px 0;
-            padding: 20px;
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.05);
+            gap: 12px;
         }
-
-        body.dark .quiz-modes {
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .mode-button {
+        
+        .menu-btn {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 18px 20px;
-            border: none;
-            border-radius: 14px;
-            background: var(--card-bg);
-            color: var(--text);
-            font-size: 17px;
-            font-weight: 600;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 16px 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: right;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.05);
         }
-
-        body.dark .mode-button {
-            border: 1px solid rgba(255,255,255,0.05);
+        
+        .menu-btn:hover {
+            background: #e2e8f0;
+            transform: translateX(-5px);
         }
-
-        .mode-button:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-hover);
+        
+        .menu-icon {
+            margin-left: 15px;
+            font-size: 1.2rem;
         }
-
-        .mode-icon {
-            font-size: 22px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 10px;
-            border-radius: 10px;
-            min-width: 48px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-
-        .mode-text {
-            flex: 1;
-            text-align: center;
-            font-size: 16px;
-            letter-spacing: -0.5px;
-        }
-
-        /* کوییز کانتینر */
-        .quiz-container {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 24px;
-            margin: 20px 0;
-            box-shadow: var(--shadow);
-            display: none;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        body.dark .quiz-container {
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        #questionText {
-            font-size: 18px;
-            margin-bottom: 24px;
-            text-align: center;
-            line-height: 1.7;
-            color: var(--text);
-            padding: 20px;
-            background: var(--light-bg);
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        body.dark #questionText {
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 24px 0;
-        }
-
-        .option-button {
-            padding: 18px 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.1);
-            background: var(--light-bg);
-            color: var(--text);
-            font-size: 16px;
+        
+        .menu-text {
+            flex-grow: 1;
+            color: #334155;
             font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            position: relative;
         }
-
-        body.dark .option-button {
-            border: 1px solid rgba(255,255,255,0.1);
+        
+        .progress-loading {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 5px;
         }
-
-        .option-button:hover {
-            background: rgba(0, 122, 255, 0.1);
-            border-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .option-button.correct {
-            border-color: var(--secondary);
-            background: rgba(52, 199, 89, 0.12);
-            color: var(--secondary);
-            font-weight: bold;
-        }
-
-        .option-button.wrong {
-            border-color: var(--danger);
-            background: rgba(255, 59, 48, 0.12);
-            color: var(--danger);
-        }
-
-        /* کنترل‌ها */
-        .controls-container {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin: 24px 0;
-            flex-wrap: wrap;
-        }
-
-        .control-button {
-            padding: 16px 24px;
-            border-radius: 12px;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-width: 120px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .control-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-
-        #hintBtn { background: var(--accent); }
-        #nextBtn { background: var(--primary); }
-        #endQuizBtn { background: var(--danger); }
-
-        /* پیام‌های سیستم */
-        .system-message {
-            background: var(--light-bg);
-            border-radius: var(--border-radius);
-            padding: 15px;
-            margin: 15px 0;
-            text-align: center;
-            font-weight: 500;
-            color: var(--text);
-            display: none;
-            border-right: 3px solid var(--accent);
-        }
-
-        #loadingDisplay { border-color: var(--primary); }
-        #reportDisplay { border-color: var(--secondary); }
-
-        /* پاورقی */
-        .footer-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .footer-button {
-            padding: 16px;
-            border-radius: 12px;
-            border: none;
-            background: var(--card-bg);
-            color: var(--text);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .footer-button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        /* برای موبایل */
+        
         @media (max-width: 480px) {
-            body {
-                padding: 12px;
+            .container {
+                border-radius: 20px;
             }
             
-            .app-container {
-                max-width: 100%;
+            .header {
+                padding: 20px;
             }
             
-            .app-header {
-                padding: 16px;
+            .main-content {
+                padding: 20px;
             }
             
-            .app-title {
-                font-size: 28px;
+            .question-text {
+                font-size: 1.5rem;
             }
-            
-            .theme-toggle,
-            .mute-toggle {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-            
-            .mode-button {
-                padding: 16px;
-                font-size: 16px;
-            }
-            
-            .mode-icon {
-                font-size: 20px;
-                min-width: 44px;
-                padding: 8px;
-            }
-            
-            .control-button {
-                padding: 14px 20px;
-                min-width: 110px;
-                font-size: 15px;
-            }
-            
-            .star {
-                font-size: 20px;
-            }
-            
-            .system-message {
-                padding: 12px;
-                font-size: 14px;
-            }
-        }
-
-        /* انیمیشن */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .app-header,
-        .quiz-modes,
-        .quiz-container {
-            animation: fadeIn 0.5s ease-out;
         }
     </style>
 </head>
 <body>
-    <!-- دکمه تغییر تم -->
-    <button class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon"></i>
-    </button>
-
-    <div class="app-container">
-        <!-- هدر برنامه -->
-        <header class="app-header">
-            <div class="header-top">
-                <h1 class="app-title">English With Fred</h1>
-                <button class="mute-toggle" id="muteToggle">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-            </div>
-            
-            <!-- ستاره‌ها -->
-            <div class="stars-container" id="starsContainer">
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-            </div>
-            
-            <!-- امتیاز -->
-            <div class="score-display" id="scoreDisplay">
-                بهترین امتیاز: <span id="bestScore">0</span>%
-            </div>
-        </header>
-
-        <!-- منوی اصلی -->
-        <div class="quiz-modes" id="mainMenu">
-            <button class="mode-button" id="startQuizBtn">
-                <div class="mode-icon">
-                    <i class="fas fa-play"></i>
-                </div>
-                <span class="mode-text">شروع کوییز جدید</span>
-            </button>
-            
-            <button class="mode-button" id="practiceModeBtn">
-                <div class="mode-icon">
-                    <i class="fas fa-dumbbell"></i>
-                </div>
-                <span class="mode-text">حالت تمرین</span>
-            </button>
-            
-            <button class="mode-button" id="vocabularyBtn">
-                <div class="mode-icon">
-                    <i class="fas fa-book"></i>
-                </div>
-                <span class="mode-text">مرور واژگان</span>
-            </button>
-            
-            <button class="mode-button" id="statsBtn">
-                <div class="mode-icon">
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-                <span class="mode-text">آمار و گزارش</span>
-            </button>
-        </div>
-
-        <!-- کانتینر کوییز -->
-        <div class="quiz-container" id="quizContainer">
-            <div id="questionText">سوال اینجا نمایش داده می‌شود</div>
-            
-            <!-- گزینه‌ها -->
-            <div class="options-container" id="optionsContainer">
-                <button class="option-button">گزینه ۱</button>
-                <button class="option-button">گزینه ۲</button>
-                <button class="option-button">گزینه ۳</button>
-                <button class="option-button">گزینه ۴</button>
-            </div>
-            
-            <!-- پیام‌های سیستم -->
-            <div class="system-message" id="hintDisplay">راهنمایی</div>
-            <div class="system-message" id="progressDisplay">گزارش پیشرفت</div>
-            <div class="system-message" id="loadingDisplay">در حال بارگذاری...</div>
-            <div class="system-message" id="reportDisplay">گزارش</div>
-            
-            <!-- دکمه‌های کنترل -->
-            <div class="controls-container">
-                <button class="control-button" id="hintBtn">
-                    <i class="fas fa-lightbulb"></i>
-                    راهنمایی
-                </button>
-                <button class="control-button" id="nextBtn">
-                    <i class="fas fa-forward"></i>
-                    بعدی
-                </button>
-                <button class="control-button" id="endQuizBtn">
-                    <i class="fas fa-stop"></i>
-                    پایان
-                </button>
+    <div class="container">
+        <div class="header">
+            <div class="language-mode">Persian → English</div>
+            <div class="practice-modes">
+                <button class="mode-btn active">Word → Definition</button>
+                <button class="mode-btn">Definition → Word</button>
             </div>
         </div>
-
-        <!-- پاورقی -->
-        <div class="footer-buttons">
-            <button class="footer-button" id="settingsBtn">
-                <i class="fas fa-cog"></i>
-                تنظیمات
+        
+        <div class="main-content">
+            <div class="score-section">
+                <div class="star-container">
+                    ★
+                    <div class="star-filled" id="starFill">★</div>
+                </div>
+                <div class="score-text">امتیاز: <span id="scoreValue">70</span>%</div>
+            </div>
+            
+            <div class="question-box">
+                <div class="question-text" id="questionText">
+                    سوال اینجا نمایش داده می‌شود...
+                </div>
+            </div>
+            
+            <button class="hint-btn" id="hintBtn">
+                راهنمایی
             </button>
-            <button class="footer-button" id="helpBtn">
-                <i class="fas fa-question-circle"></i>
-                راهنما
-            </button>
+            
+            <div class="menu-buttons">
+                <div class="menu-btn" id="smartReview">
+                    <span class="menu-icon">📌</span>
+                    <span class="menu-text">مرور اشتباهات هوشمند</span>
+                </div>
+                
+                <div class="menu-btn" id="progressReport">
+                    <span class="menu-icon">✔</span>
+                    <span class="menu-text">گزارش پیشرفت</span>
+                </div>
+                <div class="progress-loading" id="loadingText">در حال بارگذاری گزارش...</div>
+                
+                <div class="menu-btn" id="whatsappRegister">
+                    <span class="menu-icon">📋</span>
+                    <span class="menu-text">ثبت نام در واتساب</span>
+                </div>
+                
+                <div class="menu-btn" id="exitApp">
+                    <span class="menu-icon">📌</span>
+                    <span class="menu-text">خروج از برنامه</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
-        // متغیرهای全局
-        let currentScore = 0;
-        let bestScore = localStorage.getItem('bestScore') || 0;
-        let isMuted = false;
-        let isDarkMode = localStorage.getItem('darkMode') === 'true';
-        let starCount = 0;
-
-        // عناصر DOM
-        const themeToggle = document.getElementById('themeToggle');
-        const muteToggle = document.getElementById('muteToggle');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const bestScoreElement = document.getElementById('bestScore');
-        const starsContainer = document.getElementById('starsContainer');
-        const stars = starsContainer.querySelectorAll('.star');
-        const mainMenu = document.getElementById('mainMenu');
-        const quizContainer = document.getElementById('quizContainer');
-        const questionText = document.getElementById('questionText');
-        const optionsContainer = document.getElementById('optionsContainer');
-        const optionButtons = optionsContainer.querySelectorAll('.option-button');
-        const hintDisplay = document.getElementById('hintDisplay');
-        const progressDisplay = document.getElementById('progressDisplay');
-        const loadingDisplay = document.getElementById('loadingDisplay');
-        const reportDisplay = document.getElementById('reportDisplay');
-        const hintBtn = document.getElementById('hintBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const endQuizBtn = document.getElementById('endQuizBtn');
-        const startQuizBtn = document.getElementById('startQuizBtn');
-        const practiceModeBtn = document.getElementById('practiceModeBtn');
-        const vocabularyBtn = document.getElementById('vocabularyBtn');
-        const statsBtn = document.getElementById('statsBtn');
-        const settingsBtn = document.getElementById('settingsBtn');
-        const helpBtn = document.getElementById('helpBtn');
-
-        // مقداردهی اولیه
-        document.addEventListener('DOMContentLoaded', function() {
-            // تنظیم تم
-            if (isDarkMode) {
-                document.body.classList.add('dark');
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-            }
+        // مدیریت ستاره امتیاز
+        const starFill = document.getElementById('starFill');
+        const scoreValue = document.getElementById('scoreValue');
+        
+        // تابع برای به‌روزرسانی ستاره بر اساس امتیاز
+        function updateScore(score) {
+            // محدود کردن امتیاز بین 0 تا 100
+            score = Math.max(0, Math.min(100, score));
             
-            // نمایش بهترین امتیاز
-            bestScoreElement.textContent = bestScore;
+            // به‌روزرسانی متن امتیاز
+            scoreValue.textContent = score;
             
-            // به‌روزرسانی ستاره‌ها
-            updateStars();
-        });
-
-        // تغییر تم
-        themeToggle.addEventListener('click', function() {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark');
+            // به‌روزرسانی عرض ستاره پر شده
+            starFill.style.width = `${score}%`;
             
-            if (isDarkMode) {
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            // تغییر رنگ بر اساس امتیاز
+            if (score < 30) {
+                starFill.style.color = '#ef4444'; // قرمز برای امتیاز کم
+            } else if (score < 70) {
+                starFill.style.color = '#f59e0b'; // نارنجی برای امتیاز متوسط
             } else {
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                starFill.style.color = '#fbbf24'; // زرد برای امتیاز بالا
             }
-            
-            localStorage.setItem('darkMode', isDarkMode);
-        });
-
-        // دکمه Mute
-        muteToggle.addEventListener('click', function() {
-            isMuted = !isMuted;
-            muteToggle.classList.toggle('active');
-            
-            if (isMuted) {
-                muteToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
-            } else {
-                muteToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
-            }
-        });
-
-        // به‌روزرسانی ستاره‌ها
-        function updateStars() {
-            stars.forEach((star, index) => {
-                if (index < starCount) {
-                    star.classList.add('filled');
+        }
+        
+        // تنظیم امتیاز اولیه
+        updateScore(70);
+        
+        // مدیریت دکمه‌های حالت تمرین
+        const modeButtons = document.querySelectorAll('.mode-btn');
+        modeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                modeButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // تغییر متن سوال بر اساس حالت انتخاب شده
+                const questionText = document.getElementById('questionText');
+                if (this.textContent.includes('Word → Definition')) {
+                    questionText.textContent = 'کلمه به فارسی ترجمه می‌شود...';
                 } else {
-                    star.classList.remove('filled');
+                    questionText.textContent = 'تعریف به کلمه انگلیسی ترجمه می‌شود...';
                 }
+                
+                // تغییر امتیاز تصادفی برای نمایش عملکرد
+                const randomScore = Math.floor(Math.random() * 30) + 60;
+                updateScore(randomScore);
             });
-        }
-
-        // افزایش امتیاز
-        function increaseScore(points) {
-            currentScore += points;
-            if (currentScore > bestScore) {
-                bestScore = currentScore;
-                bestScoreElement.textContent = bestScore;
-                localStorage.setItem('bestScore', bestScore);
+        });
+        
+        // مدیریت دکمه راهنمایی
+        document.getElementById('hintBtn').addEventListener('click', function() {
+            const hints = [
+                'راهنمایی: به زمان فعل توجه کنید',
+                'راهنمایی: این کلمه مترادف "زیبا" است',
+                'راهنمایی: معنی این کلمه مرتبط با طبیعت است',
+                'راهنمایی: این کلمه با حرف "A" شروع می‌شود'
+            ];
+            
+            const randomHint = hints[Math.floor(Math.random() * hints.length)];
+            alert(randomHint);
+            
+            // کاهش امتیاز به دلیل استفاده از راهنمایی
+            const currentScore = parseInt(scoreValue.textContent);
+            updateScore(Math.max(0, currentScore - 5));
+        });
+        
+        // مدیریت دکمه‌های منو
+        document.getElementById('smartReview').addEventListener('click', function() {
+            alert('مرور اشتباهات هوشمند فعال شد');
+            updateScore(85); // افزایش امتیاز به دلیل مرور
+        });
+        
+        document.getElementById('progressReport').addEventListener('click', function() {
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = 'گزارش آماده است!';
+            loadingText.style.color = '#10b981';
+            
+            setTimeout(() => {
+                alert('گزارش پیشرفت نمایش داده شد');
+                loadingText.textContent = 'در حال بارگذاری گزارش...';
+                loadingText.style.color = '#94a3b8';
+            }, 500);
+        });
+        
+        document.getElementById('whatsappRegister').addEventListener('click', function() {
+            alert('به واتساپ منتقل می‌شوید...');
+            updateScore(95);
+        });
+        
+        document.getElementById('exitApp').addEventListener('click', function() {
+            if (confirm('آیا می‌خواهید از برنامه خارج شوید؟')) {
+                alert('با موفقیت خارج شدید');
+                // در اینجا کد خروج واقعی قرار می‌گیرد
             }
+        });
+        
+        // شبیه‌سازی تغییر سوال در بازه‌های زمانی
+        let questionIndex = 0;
+        const sampleQuestions = [
+            "واژه 'Beautiful' به فارسی چیست؟",
+            "معنی 'درخت' به انگلیسی چیست؟",
+            "مترادف 'Happy' چیست؟",
+            "جملۀ 'من کتاب می‌خوانم' به انگلیسی؟"
+        ];
+        
+        // تغییر سوال هر 10 ثانیه (برای نمایش)
+        setInterval(() => {
+            questionIndex = (questionIndex + 1) % sampleQuestions.length;
+            document.getElementById('questionText').textContent = sampleQuestions[questionIndex];
             
-            // به‌روزرسانی ستاره‌ها (هر 20 امتیاز یک ستاره)
-            starCount = Math.min(Math.floor(currentScore / 20), 5);
-            updateStars();
-            
-            // نمایش امتیاز فعلی
-            scoreDisplay.innerHTML = `امتیاز: <strong>${currentScore}</strong> | بهترین: <strong>${bestScore}</strong>`;
-        }
-
-        // شروع کوییز
-        startQuizBtn.addEventListener('click', function() {
-            mainMenu.style.display = 'none';
-            quizContainer.style.display = 'block';
-            
-            // نمایش سوال نمونه
-            questionText.textContent = "کلمه 'Apple' به فارسی چه معنایی دارد؟";
-            
-            // تنظیم گزینه‌ها
-            const options = ["سیب", "موز", "پرتقال", "هلو"];
-            optionButtons.forEach((button, index) => {
-                button.textContent = options[index];
-                button.classList.remove('correct', 'wrong');
-                
-                // ریست ایونت‌ها
-                button.onclick = function() {
-                    // اینجا منطق بررسی پاسخ
-                    if (index === 0) {
-                        button.classList.add('correct');
-                        increaseScore(10);
-                        showSystemMessage(hintDisplay, "آفرین! پاسخ درست است.");
-                    } else {
-                        button.classList.add('wrong');
-                        optionButtons[0].classList.add('correct');
-                        showSystemMessage(hintDisplay, "پاسخ صحیح: سیب");
-                    }
-                };
-            });
-            
-            showSystemMessage(loadingDisplay, "در حال آماده‌سازی سوالات...");
-            setTimeout(() => {
-                loadingDisplay.style.display = 'none';
-            }, 1500);
-        });
-
-        // نمایش پیام سیستم
-        function showSystemMessage(element, message) {
-            element.textContent = message;
-            element.style.display = 'block';
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, 3000);
-        }
-
-        // دکمه راهنمایی
-        hintBtn.addEventListener('click', function() {
-            showSystemMessage(hintDisplay, "این یک کلمه میوه است که با حرف A شروع می‌شود.");
-        });
-
-        // دکمه بعدی
-        nextBtn.addEventListener('click', function() {
-            // سوال بعدی
-            questionText.textContent = "مترادف کلمه 'Happy' چیست؟";
-            const options = ["Sad", "Joyful", "Angry", "Tired"];
-            
-            optionButtons.forEach((button, index) => {
-                button.textContent = options[index];
-                button.classList.remove('correct', 'wrong');
-                
-                button.onclick = function() {
-                    if (index === 1) {
-                        button.classList.add('correct');
-                        increaseScore(10);
-                        showSystemMessage(hintDisplay, "عالی! پاسخ درست است.");
-                    } else {
-                        button.classList.add('wrong');
-                        optionButtons[1].classList.add('correct');
-                        showSystemMessage(hintDisplay, "پاسخ صحیح: Joyful");
-                    }
-                };
-            });
-        });
-
-        // پایان کوییز
-        endQuizBtn.addEventListener('click', function() {
-            quizContainer.style.display = 'none';
-            mainMenu.style.display = 'block';
-            
-            showSystemMessage(reportDisplay, `کوییز به پایان رسید! امتیاز شما: ${currentScore}`);
-            currentScore = 0;
-            starCount = 0;
-            updateStars();
-        });
-
-        // سایر دکمه‌ها
-        practiceModeBtn.addEventListener('click', function() {
-            showSystemMessage(progressDisplay, "حالت تمرین به زودی فعال می‌شود...");
-        });
-
-        vocabularyBtn.addEventListener('click', function() {
-            showSystemMessage(progressDisplay, "مرور واژگان به زودی فعال می‌شود...");
-        });
-
-        statsBtn.addEventListener('click', function() {
-            showSystemMessage(reportDisplay, `بهترین امتیاز شما: ${bestScore}%`);
-        });
-
-        settingsBtn.addEventListener('click', function() {
-            showSystemMessage(progressDisplay, "تنظیمات به زودی در دسترس خواهد بود...");
-        });
-
-        helpBtn.addEventListener('click', function() {
-            showSystemMessage(hintDisplay, "راهنما: برای شروع، روی 'شروع کوییز جدید' کلیک کنید.");
-        });
+            // افزایش تدریجی امتیاز
+            const currentScore = parseInt(scoreValue.textContent);
+            if (currentScore < 100) {
+                updateScore(currentScore + 1);
+            }
+        }, 10000);
     </script>
 </body>
 </html>
