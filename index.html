@@ -1,139 +1,370 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English With Fred - یادگیری زبان انگلیسی</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
+    <title>برنامه آموزش زبان</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .language-mode {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .practice-modes {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
+        }
+        
+        .main-content {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .score-section {
+            margin-bottom: 25px;
+        }
+        
+        .star-container {
+            position: relative;
+            display: inline-block;
+            font-size: 3rem;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+        }
+        
+        .star-filled {
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #fbbf24;
+            width: 70%; /* این مقدار با امتیاز کاربر تغییر می‌کند */
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .score-text {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .question-box {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 40px 25px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .question-text {
+            font-size: 1.8rem;
+            color: #1e293b;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+        
+        .hint-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .hint-btn:hover {
+            background: #2563eb;
+        }
+        
+        .menu-buttons {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+        }
+        
+        .menu-btn:hover {
+            background: #e2e8f0;
+            transform: translateX(-5px);
+        }
+        
+        .menu-icon {
+            margin-left: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .menu-text {
+            flex-grow: 1;
+            color: #334155;
+            font-weight: 500;
+        }
+        
+        .progress-loading {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .question-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- دکمه تغییر تم -->
-    <button class="theme-toggle" onclick="toggleTheme()" title="تغییر تم">
-        🌙
-    </button>
-
-    <div class="app-container">
-        <!-- هدر - اسم بزرگ و در وسط -->
-        <div class="app-header">
-            <div class="header-top">
-                <!-- دکمه Mute در سمت چپ -->
-                <button id="muteBtn" class="mute-toggle" onclick="toggleMute()" title="میکروفون">
-                    <span id="muteIcon">🎤</span>
-                </button>
+    <div class="container">
+        <div class="header">
+            <div class="language-mode">Persian → English</div>
+            <div class="practice-modes">
+                <button class="mode-btn active">Word → Definition</button>
+                <button class="mode-btn">Definition → Word</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="score-section">
+                <div class="star-container">
+                    ★
+                    <div class="star-filled" id="starFill">★</div>
+                </div>
+                <div class="score-text">امتیاز: <span id="scoreValue">70</span>%</div>
+            </div>
+            
+            <div class="question-box">
+                <div class="question-text" id="questionText">
+                    سوال اینجا نمایش داده می‌شود...
+                </div>
+            </div>
+            
+            <button class="hint-btn" id="hintBtn">
+                راهنمایی
+            </button>
+            
+            <div class="menu-buttons">
+                <div class="menu-btn" id="smartReview">
+                    <span class="menu-icon">📌</span>
+                    <span class="menu-text">مرور اشتباهات هوشمند</span>
+                </div>
                 
-                <!-- اسم برنامه - دو برابر بزرگتر -->
-                <h1 class="app-title">English With Fred</h1>
+                <div class="menu-btn" id="progressReport">
+                    <span class="menu-icon">✔</span>
+                    <span class="menu-text">گزارش پیشرفت</span>
+                </div>
+                <div class="progress-loading" id="loadingText">در حال بارگذاری گزارش...</div>
+                
+                <div class="menu-btn" id="whatsappRegister">
+                    <span class="menu-icon">📋</span>
+                    <span class="menu-text">ثبت نام در واتساب</span>
+                </div>
+                
+                <div class="menu-btn" id="exitApp">
+                    <span class="menu-icon">📌</span>
+                    <span class="menu-text">خروج از برنامه</span>
+                </div>
             </div>
-            
-            <div class="stars-container">
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-            </div>
-            
-            <div class="score-display">
-                بهترین امتیاز: <span id="bestScore">0</span>%
-            </div>
-        </div>
-
-        <!-- حالت‌های آزمون -->
-        <div class="quiz-modes">
-            <button class="mode-button" onclick="startQuiz('en-fa')">
-                <span class="mode-icon">🇺🇸→🇮🇷</span>
-                <span class="mode-text">English → Persian</span>
-            </button>
-            <button class="mode-button" onclick="startQuiz('fa-en')">
-                <span class="mode-icon">🇮🇷→🇺🇸</span>
-                <span class="mode-text">Persian → English</span>
-            </button>
-            <button class="mode-button" onclick="startQuiz('word-def')">
-                <span class="mode-icon">📝</span>
-                <span class="mode-text">Word → Definition</span>
-            </button>
-            <button class="mode-button" onclick="startQuiz('def-word')">
-                <span class="mode-icon">💭</span>
-                <span class="mode-text">Definition → Word</span>
-            </button>
-        </div>
-
-        <!-- کوییز کانتینر -->
-        <div id="quizContainer" class="quiz-container">
-            <div id="questionText" class="question-text">
-                سوال اینجا نمایش داده می‌شود...
-            </div>
-            
-            <div id="optionsContainer" class="options-container">
-                <!-- گزینه‌ها اینجا ساخته می‌شوند -->
-            </div>
-            
-            <!-- کنترل‌ها بدون دکمه تلفظ -->
-            <div class="controls-container">
-                <button id="hintBtn" class="control-button" onclick="showHint()">
-                    💡 راهنمایی
-                </button>
-                <button id="nextBtn" class="control-button" onclick="nextQuestion()" style="display: none;">
-                    ⏭️ بعدی
-                </button>
-                <button id="endQuizBtn" class="control-button" onclick="endQuiz()" style="display: none;">
-                    ⏹️ پایان آزمون
-                </button>
-            </div>
-        </div>
-
-        <!-- کادر گزارش پیشرفت -->
-        <div id="progressReport" class="progress-report-container">
-            <div class="progress-header">
-                <h3>📊 گزارش پیشرفت</h3>
-                <button onclick="hideProgressReport()">✕</button>
-            </div>
-            <div id="progressContent">
-                <!-- محتوای گزارش اینجا لود می‌شود -->
-                <p>در حال بارگذاری گزارش...</p>
-            </div>
-        </div>
-
-        <!-- فوتتر -->
-        <div class="app-footer">
-            <button class="footer-button" onclick="reviewSmartMistakes()">
-                🔄 مرور اشتباهات هوشمند
-            </button>
-            <button class="footer-button" onclick="showProgressReport()">
-                📈 گزارش پیشرفت
-            </button>
-            <button class="footer-button" onclick="registerWhatsApp()">
-                📱 ثبت نام در واتساپ
-            </button>
-            <button class="footer-button" onclick="exitApp()">
-                🚪 خروج از برنامه
-            </button>
         </div>
     </div>
 
-    <!-- اسکریپت‌ها -->
-    <script src="words.js"></script>
-    <script src="pwa.js"></script>
-    <script src="speech.js"></script>
-    <script src="quiz.js"></script>
-    <script src="progress.js"></script>
-    <script src="app.js"></script>
-    
     <script>
-        // تست اولیه
-        console.log('=== English With Fred Loaded ===');
-        console.log('words loaded:', typeof words !== 'undefined' ? '✅' : '❌');
-        console.log('startQuiz function:', typeof startQuiz !== 'undefined' ? '✅' : '❌');
-        console.log('Quiz modes count:', document.querySelectorAll('.mode-button').length);
+        // مدیریت ستاره امتیاز
+        const starFill = document.getElementById('starFill');
+        const scoreValue = document.getElementById('scoreValue');
         
-        // تلفظ تستی برای بررسی صداها
-        setTimeout(() => {
-            if (window.speechSynthesis && typeof words !== 'undefined' && words.length > 0) {
-                console.log('🔊 Speech synthesis ready');
+        // تابع برای به‌روزرسانی ستاره بر اساس امتیاز
+        function updateScore(score) {
+            // محدود کردن امتیاز بین 0 تا 100
+            score = Math.max(0, Math.min(100, score));
+            
+            // به‌روزرسانی متن امتیاز
+            scoreValue.textContent = score;
+            
+            // به‌روزرسانی عرض ستاره پر شده
+            starFill.style.width = `${score}%`;
+            
+            // تغییر رنگ بر اساس امتیاز
+            if (score < 30) {
+                starFill.style.color = '#ef4444'; // قرمز برای امتیاز کم
+            } else if (score < 70) {
+                starFill.style.color = '#f59e0b'; // نارنجی برای امتیاز متوسط
+            } else {
+                starFill.style.color = '#fbbf24'; // زرد برای امتیاز بالا
             }
-        }, 1000);
+        }
+        
+        // تنظیم امتیاز اولیه
+        updateScore(70);
+        
+        // مدیریت دکمه‌های حالت تمرین
+        const modeButtons = document.querySelectorAll('.mode-btn');
+        modeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                modeButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // تغییر متن سوال بر اساس حالت انتخاب شده
+                const questionText = document.getElementById('questionText');
+                if (this.textContent.includes('Word → Definition')) {
+                    questionText.textContent = 'کلمه به فارسی ترجمه می‌شود...';
+                } else {
+                    questionText.textContent = 'تعریف به کلمه انگلیسی ترجمه می‌شود...';
+                }
+                
+                // تغییر امتیاز تصادفی برای نمایش عملکرد
+                const randomScore = Math.floor(Math.random() * 30) + 60;
+                updateScore(randomScore);
+            });
+        });
+        
+        // مدیریت دکمه راهنمایی
+        document.getElementById('hintBtn').addEventListener('click', function() {
+            const hints = [
+                'راهنمایی: به زمان فعل توجه کنید',
+                'راهنمایی: این کلمه مترادف "زیبا" است',
+                'راهنمایی: معنی این کلمه مرتبط با طبیعت است',
+                'راهنمایی: این کلمه با حرف "A" شروع می‌شود'
+            ];
+            
+            const randomHint = hints[Math.floor(Math.random() * hints.length)];
+            alert(randomHint);
+            
+            // کاهش امتیاز به دلیل استفاده از راهنمایی
+            const currentScore = parseInt(scoreValue.textContent);
+            updateScore(Math.max(0, currentScore - 5));
+        });
+        
+        // مدیریت دکمه‌های منو
+        document.getElementById('smartReview').addEventListener('click', function() {
+            alert('مرور اشتباهات هوشمند فعال شد');
+            updateScore(85); // افزایش امتیاز به دلیل مرور
+        });
+        
+        document.getElementById('progressReport').addEventListener('click', function() {
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = 'گزارش آماده است!';
+            loadingText.style.color = '#10b981';
+            
+            setTimeout(() => {
+                alert('گزارش پیشرفت نمایش داده شد');
+                loadingText.textContent = 'در حال بارگذاری گزارش...';
+                loadingText.style.color = '#94a3b8';
+            }, 500);
+        });
+        
+        document.getElementById('whatsappRegister').addEventListener('click', function() {
+            alert('به واتساپ منتقل می‌شوید...');
+            updateScore(95);
+        });
+        
+        document.getElementById('exitApp').addEventListener('click', function() {
+            if (confirm('آیا می‌خواهید از برنامه خارج شوید؟')) {
+                alert('با موفقیت خارج شدید');
+                // در اینجا کد خروج واقعی قرار می‌گیرد
+            }
+        });
+        
+        // شبیه‌سازی تغییر سوال در بازه‌های زمانی
+        let questionIndex = 0;
+        const sampleQuestions = [
+            "واژه 'Beautiful' به فارسی چیست؟",
+            "معنی 'درخت' به انگلیسی چیست؟",
+            "مترادف 'Happy' چیست؟",
+            "جملۀ 'من کتاب می‌خوانم' به انگلیسی؟"
+        ];
+        
+        // تغییر سوال هر 10 ثانیه (برای نمایش)
+        setInterval(() => {
+            questionIndex = (questionIndex + 1) % sampleQuestions.length;
+            document.getElementById('questionText').textContent = sampleQuestions[questionIndex];
+            
+            // افزایش تدریجی امتیاز
+            const currentScore = parseInt(scoreValue.textContent);
+            if (currentScore < 100) {
+                updateScore(currentScore + 1);
+            }
+        }, 10000);
     </script>
 </body>
 </html>
