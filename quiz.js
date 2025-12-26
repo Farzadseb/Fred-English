@@ -1,4 +1,4 @@
-// quiz.js - سیستم آزمون کامل
+// quiz.js - سیستم آزمون کامل Mute
 let currentMode = '';
 let currentWord = null;
 let currentQuestion = null;
