@@ -1,370 +1,446 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>برنامه آموزش زبان</title>
+    <title>زبان یادب</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
             padding: 20px;
             direction: rtl;
+            color: #333;
         }
-        
+
         .container {
-            background-color: white;
-            border-radius: 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 500px;
-            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        
+
+        /* Header */
         .header {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
-        
-        .language-mode {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        
-        .practice-modes {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        
-        .mode-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .mode-btn.active {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: white;
-        }
-        
-        .main-content {
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .score-section {
-            margin-bottom: 25px;
-        }
-        
-        .star-container {
-            position: relative;
-            display: inline-block;
-            font-size: 3rem;
-            color: #e0e0e0;
-            margin-bottom: 10px;
-        }
-        
-        .star-filled {
-            position: absolute;
-            top: 0;
-            left: 0;
-            color: #fbbf24;
-            width: 70%; /* این مقدار با امتیاز کاربر تغییر می‌کند */
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        
-        .score-text {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .question-box {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 40px 25px;
-            margin: 20px 0;
-            border: 2px solid #e2e8f0;
-            min-height: 200px;
+
+        .moon-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #66bb6a, #4caf50);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .question-text {
-            font-size: 1.8rem;
-            color: #1e293b;
-            font-weight: 600;
-            line-height: 1.5;
-        }
-        
-        .hint-btn {
-            background: #3b82f6;
             color: white;
-            border: none;
-            padding: 12px 30px;
+            font-size: 24px;
+        }
+
+        .progress-box {
+            border: 2px solid #2196f3;
+            padding: 10px 15px;
             border-radius: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: #2196f3;
         }
-        
-        .hint-btn:hover {
-            background: #2563eb;
-        }
-        
-        .menu-buttons {
-            margin-top: 30px;
+
+        /* Mode Buttons */
+        .mode-buttons {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
+            margin-bottom: 20px;
         }
-        
-        .menu-btn {
+
+        .mode-btn {
             display: flex;
             align-items: center;
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 16px 20px;
+            justify-content: space-between;
+            background: linear-gradient(90deg, #2196f3, #4caf50);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: right;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        
-        .menu-btn:hover {
-            background: #e2e8f0;
-            transform: translateX(-5px);
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        
-        .menu-icon {
-            margin-left: 15px;
-            font-size: 1.2rem;
+
+        .flag-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-        
-        .menu-text {
-            flex-grow: 1;
-            color: #334155;
-            font-weight: 500;
+
+        .flag {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 0 3px rgba(0,0,0,0.2);
         }
-        
-        .progress-loading {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            margin-top: 5px;
+
+        .flag img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        
-        @media (max-width: 480px) {
-            .container {
-                border-radius: 20px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
-            
-            .question-text {
-                font-size: 1.5rem;
-            }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* Question Area (Hidden by default) */
+        .question-area {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .question-text {
+            font-size: 18px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .hint-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .hint-btn:hover {
+            background-color: #f5f5f5;
+        }
+
+        .hint-btn i {
+            margin-left: 8px;
+            font-size: 18px;
+            color: #ffc107;
+        }
+
+        /* Report Section */
+        .report-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .report-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .chart-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .close-btn {
+            width: 24px;
+            height: 24px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .status-text {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #eee;
+        }
+
+        .action-btn i {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        /* Option Buttons (for question mode) */
+        .option-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            background-color: #f5f5f5;
+            border-color: #bbb;
+        }
+
+        .option-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, #ff9800, #ff5722);
+        }
+
+        .option-btn:nth-child(2)::after {
+            background: linear-gradient(to bottom, #4caf50, #8bc34a);
+        }
+
+        .option-btn:nth-child(3)::after {
+            background: linear-gradient(to bottom, #4caf50, #8bc34a);
+        }
+
+        .option-btn:nth-child(4)::after {
+            background: linear-gradient(to bottom, #9e9e9e, #757575);
+        }
+
+        .option-btn i {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        /* Toggle between home and question view */
+        .view-switcher {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .switch-btn {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .switch-btn:hover {
+            background: #1976d2;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="language-mode">Persian → English</div>
-            <div class="practice-modes">
-                <button class="mode-btn active">Word → Definition</button>
-                <button class="mode-btn">Definition → Word</button>
+
+        <!-- Home View -->
+        <div id="home-view">
+            <!-- Header -->
+            <div class="header">
+                <div class="moon-icon">🌙</div>
+                <div class="progress-box">%10: بهترین امتیاز</div>
+            </div>
+
+            <!-- Mode Buttons -->
+            <div class="mode-buttons">
+                <div class="mode-btn" onclick="showQuestionView()">
+                    English → Persian
+                    <div class="flag-container">
+                        <div class="flag"><img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="US"></div>
+                        <span>→</span>
+                        <div class="flag"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Flag_of_Iran.svg" alt="IR"></div>
+                    </div>
+                </div>
+                <div class="mode-btn" onclick="showQuestionView()">
+                    Persian → English
+                    <div class="flag-container">
+                        <div class="flag"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Flag_of_Iran.svg" alt="IR"></div>
+                        <span>→</span>
+                        <div class="flag"><img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="US"></div>
+                    </div>
+                </div>
+                <div class="mode-btn" onclick="showQuestionView()">
+                    Word → Definition
+                    <div class="icon">📝</div>
+                </div>
+                <div class="mode-btn" onclick="showQuestionView()">
+                    Definition → Word
+                    <div class="icon">💭</div>
+                </div>
+            </div>
+
+            <!-- Report Section -->
+            <div class="report-section">
+                <div class="report-header">
+                    <div class="report-title">گزارش پیشرفته</div>
+                    <div class="chart-icon">📊</div>
+                </div>
+                <div class="status-text">در حال بارگذاری گزارش...</div>
+                <div class="action-buttons">
+                    <div class="action-btn">
+                        <i>📈</i> گزارش پیشرفته
+                    </div>
+                    <div class="action-btn">
+                        <i>🔄</i> مرور اشتباهات هوشمند
+                    </div>
+                    <div class="action-btn">
+                        <i>🚪</i> خروج از برنامه
+                    </div>
+                    <div class="action-btn">
+                        <i>📱</i> ثبت نام در واتساپ
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <div class="main-content">
-            <div class="score-section">
-                <div class="star-container">
-                    ★
-                    <div class="star-filled" id="starFill">★</div>
+
+        <!-- Question View (Initially Hidden) -->
+        <div id="question-view" style="display: none;">
+
+            <!-- Mode Buttons (repeated for context) -->
+            <div class="mode-buttons">
+                <div class="mode-btn">
+                    Word → Definition
+                    <div class="icon">📝</div>
                 </div>
-                <div class="score-text">امتیاز: <span id="scoreValue">70</span>%</div>
+                <div class="mode-btn">
+                    Definition → Word
+                    <div class="icon">💭</div>
+                </div>
             </div>
-            
-            <div class="question-box">
-                <div class="question-text" id="questionText">
-                    سوال اینجا نمایش داده می‌شود...
+
+            <!-- Question Area -->
+            <div class="question-area">
+                <div class="question-text">...سوال اینجا نمایش داده می‌شود</div>
+                <div class="hint-btn">
+                    راهنمایی <i>💡</i>
                 </div>
             </div>
-            
-            <button class="hint-btn" id="hintBtn">
-                راهنمایی
-            </button>
-            
-            <div class="menu-buttons">
-                <div class="menu-btn" id="smartReview">
-                    <span class="menu-icon">📌</span>
-                    <span class="menu-text">مرور اشتباهات هوشمند</span>
+
+            <!-- Report Section -->
+            <div class="report-section">
+                <div class="report-header">
+                    <div class="report-title">گزارش پیشرفته</div>
+                    <div class="chart-icon">📊</div>
                 </div>
-                
-                <div class="menu-btn" id="progressReport">
-                    <span class="menu-icon">✔</span>
-                    <span class="menu-text">گزارش پیشرفت</span>
+                <div class="status-text">در حال بارگذاری گزارش...</div>
+            </div>
+
+            <!-- Option Buttons -->
+            <div class="option-buttons">
+                <div class="option-btn">
+                    <i>🔄</i> مرور اشتباهات هوشمند
                 </div>
-                <div class="progress-loading" id="loadingText">در حال بارگذاری گزارش...</div>
-                
-                <div class="menu-btn" id="whatsappRegister">
-                    <span class="menu-icon">📋</span>
-                    <span class="menu-text">ثبت نام در واتساب</span>
+                <div class="option-btn">
+                    <i>📈</i> گزارش پیشرفته
                 </div>
-                
-                <div class="menu-btn" id="exitApp">
-                    <span class="menu-icon">📌</span>
-                    <span class="menu-text">خروج از برنامه</span>
+                <div class="option-btn">
+                    <i>📱</i> ثبت نام در واتساپ
                 </div>
+                <div class="option-btn">
+                    <i>🚪</i> خروج از برنامه
+                </div>
+            </div>
+
+            <!-- Back to Home Button -->
+            <div class="view-switcher">
+                <button class="switch-btn" onclick="showHomeView()">بازگشت به صفحه اصلی</button>
             </div>
         </div>
+
     </div>
 
     <script>
-        // مدیریت ستاره امتیاز
-        const starFill = document.getElementById('starFill');
-        const scoreValue = document.getElementById('scoreValue');
-        
-        // تابع برای به‌روزرسانی ستاره بر اساس امتیاز
-        function updateScore(score) {
-            // محدود کردن امتیاز بین 0 تا 100
-            score = Math.max(0, Math.min(100, score));
-            
-            // به‌روزرسانی متن امتیاز
-            scoreValue.textContent = score;
-            
-            // به‌روزرسانی عرض ستاره پر شده
-            starFill.style.width = `${score}%`;
-            
-            // تغییر رنگ بر اساس امتیاز
-            if (score < 30) {
-                starFill.style.color = '#ef4444'; // قرمز برای امتیاز کم
-            } else if (score < 70) {
-                starFill.style.color = '#f59e0b'; // نارنجی برای امتیاز متوسط
-            } else {
-                starFill.style.color = '#fbbf24'; // زرد برای امتیاز بالا
-            }
+        function showQuestionView() {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('question-view').style.display = 'block';
         }
-        
-        // تنظیم امتیاز اولیه
-        updateScore(70);
-        
-        // مدیریت دکمه‌های حالت تمرین
-        const modeButtons = document.querySelectorAll('.mode-btn');
-        modeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                modeButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                
-                // تغییر متن سوال بر اساس حالت انتخاب شده
-                const questionText = document.getElementById('questionText');
-                if (this.textContent.includes('Word → Definition')) {
-                    questionText.textContent = 'کلمه به فارسی ترجمه می‌شود...';
-                } else {
-                    questionText.textContent = 'تعریف به کلمه انگلیسی ترجمه می‌شود...';
-                }
-                
-                // تغییر امتیاز تصادفی برای نمایش عملکرد
-                const randomScore = Math.floor(Math.random() * 30) + 60;
-                updateScore(randomScore);
-            });
-        });
-        
-        // مدیریت دکمه راهنمایی
-        document.getElementById('hintBtn').addEventListener('click', function() {
-            const hints = [
-                'راهنمایی: به زمان فعل توجه کنید',
-                'راهنمایی: این کلمه مترادف "زیبا" است',
-                'راهنمایی: معنی این کلمه مرتبط با طبیعت است',
-                'راهنمایی: این کلمه با حرف "A" شروع می‌شود'
-            ];
-            
-            const randomHint = hints[Math.floor(Math.random() * hints.length)];
-            alert(randomHint);
-            
-            // کاهش امتیاز به دلیل استفاده از راهنمایی
-            const currentScore = parseInt(scoreValue.textContent);
-            updateScore(Math.max(0, currentScore - 5));
-        });
-        
-        // مدیریت دکمه‌های منو
-        document.getElementById('smartReview').addEventListener('click', function() {
-            alert('مرور اشتباهات هوشمند فعال شد');
-            updateScore(85); // افزایش امتیاز به دلیل مرور
-        });
-        
-        document.getElementById('progressReport').addEventListener('click', function() {
-            const loadingText = document.getElementById('loadingText');
-            loadingText.textContent = 'گزارش آماده است!';
-            loadingText.style.color = '#10b981';
-            
-            setTimeout(() => {
-                alert('گزارش پیشرفت نمایش داده شد');
-                loadingText.textContent = 'در حال بارگذاری گزارش...';
-                loadingText.style.color = '#94a3b8';
-            }, 500);
-        });
-        
-        document.getElementById('whatsappRegister').addEventListener('click', function() {
-            alert('به واتساپ منتقل می‌شوید...');
-            updateScore(95);
-        });
-        
-        document.getElementById('exitApp').addEventListener('click', function() {
-            if (confirm('آیا می‌خواهید از برنامه خارج شوید؟')) {
-                alert('با موفقیت خارج شدید');
-                // در اینجا کد خروج واقعی قرار می‌گیرد
-            }
-        });
-        
-        // شبیه‌سازی تغییر سوال در بازه‌های زمانی
-        let questionIndex = 0;
-        const sampleQuestions = [
-            "واژه 'Beautiful' به فارسی چیست؟",
-            "معنی 'درخت' به انگلیسی چیست؟",
-            "مترادف 'Happy' چیست؟",
-            "جملۀ 'من کتاب می‌خوانم' به انگلیسی؟"
-        ];
-        
-        // تغییر سوال هر 10 ثانیه (برای نمایش)
-        setInterval(() => {
-            questionIndex = (questionIndex + 1) % sampleQuestions.length;
-            document.getElementById('questionText').textContent = sampleQuestions[questionIndex];
-            
-            // افزایش تدریجی امتیاز
-            const currentScore = parseInt(scoreValue.textContent);
-            if (currentScore < 100) {
-                updateScore(currentScore + 1);
-            }
-        }, 10000);
+
+        function showHomeView() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('question-view').style.display = 'none';
+        }
     </script>
 </body>
 </html>
