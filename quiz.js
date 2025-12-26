@@ -1,4 +1,4 @@
-// quiz.js - سیستم آزمون کامل Mute
+// quiz.js - English With Fred
 let currentMode = '';
 let currentWord = null;
 let currentQuestion = null;
@@ -75,13 +75,14 @@ function generateQuestions(mode) {
     // اطمینان از وجود لغات
     if (!words || words.length === 0) {
         console.error('❌ لغات یافت نشد!');
-        alert('خطا: فایل لغات بارگذاری نشده است!');
+        showToast('خطا: فایل لغات بارگذاری نشده!', 'error');
+        returnToMainMenu();
         return;
     }
     
     // انتخاب 10 لغت تصادفی
     const shuffledWords = [...words].sort(() => Math.random() - 0.5);
-    const selectedWords = shuffledWords.slice(0, 10);
+    const selectedWords = shuffledWords.slice(0, Math.min(10, words.length));
     
     // تولید سوال برای هر لغت
     selectedWords.forEach(word => {
@@ -295,14 +296,16 @@ function showFeedback(isCorrect, selectedOption) {
         transform: translate(-50%, -50%);
         background: ${isCorrect ? '#34c759' : '#ff3b30'};
         color: white;
-        padding: 20px 30px;
-        border-radius: 15px;
-        font-size: 18px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 16px;
         font-weight: bold;
         z-index: 1000;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
         text-align: center;
         animation: fadeInOut 2s ease-in-out;
+        max-width: 90%;
+        line-height: 1.5;
     `;
     
     feedbackDiv.textContent = message;
@@ -367,20 +370,20 @@ function showQuizResult(score) {
     if (questionTextElement) {
         questionTextElement.innerHTML = `
             <div style="text-align: center; padding: 20px;">
-                <h2 style="color: var(--primary); margin-bottom: 20px;">🎯 آزمون پایان یافت!</h2>
-                <div style="font-size: 48px; font-weight: bold; color: ${score >= 70 ? '#34c759' : score >= 50 ? '#FF9800' : '#ff3b30'}; margin: 20px 0;">
+                <h2 style="color: var(--primary); margin-bottom: 16px; font-size: 20px;">🎯 آزمون پایان یافت!</h2>
+                <div style="font-size: 42px; font-weight: bold; color: ${score >= 70 ? '#34c759' : score >= 50 ? '#FF9800' : '#ff3b30'}; margin: 16px 0;">
                     ${score}%
                 </div>
-                <p style="font-size: 18px; margin: 10px 0;">
+                <p style="font-size: 16px; margin: 8px 0;">
                     ✅ پاسخ‌های درست: <strong>${correctCount}</strong>
                 </p>
-                <p style="font-size: 18px; margin: 10px 0;">
+                <p style="font-size: 16px; margin: 8px 0;">
                     ❌ پاسخ‌های نادرست: <strong>${totalQuestions - correctCount}</strong>
                 </p>
-                <p style="font-size: 18px; margin: 10px 0;">
+                <p style="font-size: 16px; margin: 8px 0;">
                     📊 کل سوالات: <strong>${totalQuestions}</strong>
                 </p>
-                <p style="margin-top: 30px; font-size: 14px; color: #666;">
+                <p style="margin-top: 25px; font-size: 13px; color: var(--text-light);">
                     به صورت خودکار به منوی اصلی بازمی‌گردید...
                 </p>
             </div>
@@ -407,7 +410,10 @@ function returnToMainMenu() {
     }
     
     // نمایش مجدد حالت‌ها
-    document.querySelector('.quiz-modes').style.display = 'flex';
+    const quizModes = document.querySelector('.quiz-modes');
+    if (quizModes) {
+        quizModes.style.display = 'flex';
+    }
     
     // ریست متغیرها
     currentMode = '';
@@ -431,8 +437,8 @@ function updateQuestionCounter() {
         counterDiv.className = 'question-counter';
         counterDiv.style.cssText = `
             text-align: center;
-            margin: 10px 0;
-            font-size: 14px;
+            margin: 8px 0;
+            font-size: 13px;
             color: var(--text);
             opacity: 0.7;
         `;
@@ -449,8 +455,14 @@ function updateQuestionCounter() {
     }
 }
 
-// تلفظ کلمه جاری
+// تلفظ کلمه جاری (با قابلیت Mute)
 function speakCurrentWord() {
+    // بررسی حالت Mute
+    if (typeof window.isMuted === 'function' && window.isMuted()) {
+        showToast('🔇 میکروفون خاموش است', 'warning');
+        return;
+    }
+    
     if (!currentWord || !window.speechSynthesis) return;
     
     const text = currentMode === 'en-fa' || currentMode === 'word-def' || currentMode === 'def-word' 
@@ -462,12 +474,14 @@ function speakCurrentWord() {
     // تنظیم زبان
     if (currentMode === 'fa-en') {
         utterance.lang = 'fa-IR';
+        utterance.rate = 0.7;
     } else {
         utterance.lang = 'en-US';
+        utterance.rate = 0.8;
     }
     
-    utterance.rate = 0.8;
     utterance.pitch = 1;
+    utterance.volume = 1;
     
     // متوقف کردن تلفظ قبلی
     window.speechSynthesis.cancel();
@@ -484,6 +498,8 @@ function speakCurrentWord() {
             }
         }, 200);
     }
+    
+    console.log(`🗣️ تلفظ: ${text}`);
 }
 
 // نمایش راهنمایی
@@ -512,18 +528,19 @@ function showHint() {
     hintDiv.className = 'hint-message';
     hintDiv.style.cssText = `
         position: fixed;
-        bottom: 100px;
+        bottom: 90px;
         left: 50%;
         transform: translateX(-50%);
         background: var(--primary);
         color: white;
-        padding: 15px 25px;
-        border-radius: 12px;
-        font-size: 16px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 15px;
         z-index: 1000;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         text-align: center;
-        animation: slideUp 0.5s ease-out;
+        animation: slideUp 0.4s ease-out;
+        max-width: 85%;
     `;
     
     hintDiv.textContent = hint;
@@ -563,15 +580,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // بررسی وجود فایل words
     if (typeof words === 'undefined') {
-        console.error('❌ words array not found! Please check words.js');
+        console.error('❌ words array not found!');
         
         // پیغام خطا در صفحه
         const quizModes = document.querySelector('.quiz-modes');
         if (quizModes) {
             quizModes.innerHTML = `
-                <div style="text-align: center; padding: 30px; background: rgba(255, 59, 48, 0.1); border-radius: 15px; border: 2px solid #ff3b30;">
-                    <p style="color: #ff3b30; font-size: 18px; margin-bottom: 15px;">⚠️ خطا در بارگذاری لغات</p>
-                    <p style="color: #666; font-size: 14px;">فایل words.js یافت نشد یا دارای مشکل است.</p>
+                <div style="text-align: center; padding: 25px; background: rgba(244, 67, 54, 0.1); border-radius: 12px; border: 2px solid var(--danger); margin: 10px 0;">
+                    <p style="color: var(--danger); font-size: 16px; margin-bottom: 12px;">⚠️ خطا در بارگذاری لغات</p>
+                    <p style="color: var(--text-light); font-size: 13px;">فایل words.js یافت نشد یا دارای مشکل است.</p>
+                    <button onclick="location.reload()" style="margin-top: 15px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px;">
+                        🔄 تلاش مجدد
+                    </button>
                 </div>
             `;
         }
@@ -585,3 +605,4 @@ window.nextQuestion = nextQuestion;
 window.endQuiz = endQuiz;
 window.speakCurrentWord = speakCurrentWord;
 window.showHint = showHint;
+window.returnToMainMenu = returnToMainMenu;
