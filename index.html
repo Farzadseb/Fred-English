@@ -169,7 +169,7 @@ body.dark {
 .score-card {
     background: var(--card);
     border-radius: 22px;
-    padding: 14px 20px;
+    padding: 12px 20px;
     margin-bottom: 14px;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
@@ -177,31 +177,29 @@ body.dark {
     -webkit-backdrop-filter: blur(10px);
     transition: var(--transition);
     width: 100%;
-    min-height: 90px;
+    min-height: 85px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex-shrink: 0;
 }
 
-/* ستاره‌ها با فاصله نصف شده */
+/* ستاره‌ها 70% به هم نزدیکتر */
 .stars-box {
-    width: 80%;
-    margin: 0 auto 8px;
+    width: 90%;
+    margin: 0 auto 5px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0;
 }
 
 .star {
-    font-size: 20px; /* ستاره‌های کوچکتر */
+    font-size: 20px;
     color: var(--star-outline);
     transition: var(--transition);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-    flex: 1;
-    text-align: center;
-    margin: 0 2px; /* فاصله نصف شده */
+    margin: 0 0.5px; /* فاصله 70% کمتر - از 2px به 0.5px */
 }
 
 .star.filled {
@@ -216,23 +214,24 @@ body.dark {
     100% { transform: scale(1); }
 }
 
+/* بهترین امتیاز و عددش 30% کوچکتر */
 .score-text {
     text-align: center;
     color: var(--text-secondary);
-    font-size: 13px;
-    margin-bottom: 2px;
+    font-size: 11px; /* 30% کوچکتر از 16px */
+    margin-bottom: 0;
 }
 
 .score-value {
     display: block;
-    font-size: 26px;
+    font-size: 22px; /* 30% کوچکتر از 32px */
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     font-weight: 800;
     letter-spacing: -1px;
-    margin-top: 0;
+    margin-top: 2px;
 }
 
 /* ================= MODE CARDS و BUTTONS (یکسان سازی ابعاد) ================= */
@@ -252,9 +251,10 @@ body.dark {
     overflow: hidden;
     z-index: 1;
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* فاصله بین کادرها یکسان */
     min-height: 54px;
     flex-shrink: 0;
+    text-decoration: none;
 }
 
 /* MODE CARDS - فقط استایل خاص آنها */
@@ -377,7 +377,7 @@ body.dark {
 .modes {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 10px; /* فاصله بین 4 کادر بالایی = فاصله بین 4 کادر پایینی */
     margin-bottom: 14px;
 }
 
@@ -431,8 +431,8 @@ body.dark {
     }
     
     .score-card {
-        padding: 12px 16px;
-        min-height: 80px;
+        padding: 10px 16px;
+        min-height: 75px;
     }
     
     .star {
@@ -440,11 +440,15 @@ body.dark {
     }
     
     .stars-box {
-        width: 85%;
+        width: 95%;
     }
     
     .score-value {
-        font-size: 24px;
+        font-size: 20px;
+    }
+    
+    .score-text {
+        font-size: 10px;
     }
 }
 
@@ -456,8 +460,8 @@ body.dark {
     }
     
     .score-card {
-        padding: 12px 16px;
-        min-height: 80px;
+        padding: 10px 16px;
+        min-height: 75px;
         margin-bottom: 12px;
     }
     
@@ -477,7 +481,11 @@ body.dark {
     }
     
     .score-value {
-        font-size: 24px;
+        font-size: 20px;
+    }
+    
+    .score-text {
+        font-size: 10px;
     }
 }
 
@@ -493,8 +501,8 @@ body.dark {
     }
     
     .score-card {
-        padding: 10px 14px;
-        min-height: 70px;
+        padding: 8px 14px;
+        min-height: 65px;
         margin-bottom: 10px;
     }
     
@@ -512,14 +520,15 @@ body.dark {
     
     .star {
         font-size: 16px;
+        margin: 0 0.3px;
     }
     
     .score-value {
-        font-size: 22px;
+        font-size: 18px;
     }
     
     .score-text {
-        font-size: 12px;
+        font-size: 9px;
     }
 }
 
@@ -590,10 +599,10 @@ body.dark {
                 <span>📊</span>
                 <span>گزارش پیشرفت</span>
             </button>
-            <button class="btn green">
+            <a href="https://wa.me/989017708544?text=سلام%20استاد%20Fred%20میخواهم%20در%20کلاس%20انگلیسی%20ثبت%20نام%20کنم" class="btn green" target="_blank">
                 <span>💬</span>
                 <span>ثبت‌نام در واتساپ</span>
-            </button>
+            </a>
             <button class="btn red">
                 <span>🚪</span>
                 <span>خروج</span>
@@ -811,6 +820,27 @@ document.querySelectorAll('.mode-card').forEach((mode, index) => {
             window.navigator.vibrate(30);
         }
     });
+});
+
+/* ====== WHATSAPP FUNCTIONALITY ====== */
+function openWhatsAppRegistration() {
+    const phoneNumber = "989017708544"; // بدون + و 0 اول
+    const message = encodeURIComponent("سلام استاد Fred میخواهم در کلاس انگلیسی ثبت نام کنم");
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
+    
+    // باز کردن واتساپ در پنجره جدید
+    window.open(whatsappURL, '_blank');
+}
+
+// اضافه کردن event listener به دکمه واتساپ
+document.addEventListener('DOMContentLoaded', function() {
+    const whatsappBtn = document.querySelector('a.btn.green[href*="wa.me"]');
+    if (whatsappBtn) {
+        whatsappBtn.addEventListener('click', function(e) {
+            // لاگ کردن برای دیباگ
+            console.log('واتساپ کلیک شد - ارسال پیام ثبت نام به استاد Fred');
+        });
+    }
 });
 
 // Demo: Click title to increase score
