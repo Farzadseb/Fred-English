@@ -9,15 +9,15 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: #f0f2f5;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             padding: 20px;
             direction: rtl;
         }
@@ -26,22 +26,21 @@
             width: 100%;
             max-width: 400px;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             overflow: hidden;
         }
         
-        /* هدر مانند تصویر دوم */
         .header {
-            background: #6c63ff;
+            background: #4285f4;
             color: white;
             padding: 20px;
             text-align: center;
         }
         
         .language-mode {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: bold;
             margin-bottom: 15px;
         }
         
@@ -52,24 +51,23 @@
         }
         
         .mode-btn {
-            background: transparent;
-            border: 2px solid rgba(255, 255, 255, 0.7);
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
         
         .mode-btn.active {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.3);
             border-color: white;
         }
         
-        /* بخش ستاره امتیاز */
-        .score-section {
-            padding: 20px;
+        /* ستاره‌های امتیاز */
+        .star-rating {
+            padding: 15px;
             text-align: center;
             border-bottom: 1px solid #eee;
         }
@@ -78,32 +76,33 @@
             display: flex;
             justify-content: center;
             gap: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .star {
-            font-size: 2rem;
-            color: #ddd; /* رنگ خالی ستاره */
+            font-size: 28px;
+            color: #ddd; /* رنگ خالی */
             position: relative;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
         }
         
         .star-filled {
             position: absolute;
             top: 0;
             left: 0;
-            color: #ffd700; /* رنگ زرد برای قسمت پر */
+            color: #ffc107; /* رنگ زرد برای پر */
             overflow: hidden;
-            width: 0%; /* این مقدار با امتیاز تغییر می‌کند */
+            width: 0%; /* با امتیاز تغییر می‌کند */
         }
         
         .score-text {
+            font-size: 14px;
             color: #666;
-            font-size: 0.9rem;
         }
         
-        /* بخش سوال - دقیقاً مانند تصویر دوم */
+        /* بخش سوال */
         .question-section {
             padding: 25px;
             text-align: center;
@@ -111,46 +110,44 @@
         
         .question-box {
             background: #f8f9fa;
-            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
             padding: 30px 20px;
             margin: 15px 0;
-            border: 1px solid #e0e0e0;
-            min-height: 150px;
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         
         .question-text {
-            font-size: 1.3rem;
+            font-size: 18px;
             color: #333;
-            line-height: 1.5;
         }
         
         .hint-btn {
-            background: #4a90e2;
+            background: #34a853;
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
+            padding: 10px 25px;
+            border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
-            transition: background 0.3s ease;
             margin-top: 10px;
         }
         
-        /* منوها مانند تصویر دوم */
+        /* منوها */
         .menu-section {
-            padding: 0 20px 20px;
+            padding: 0;
         }
         
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 15px;
+            padding: 16px 20px;
             border-bottom: 1px solid #eee;
             cursor: pointer;
-            transition: background 0.2s ease;
+            font-size: 15px;
         }
         
         .menu-item:hover {
@@ -158,29 +155,24 @@
         }
         
         .menu-icon {
-            margin-left: 15px;
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
+            margin-left: 12px;
+            font-size: 18px;
         }
         
         .menu-text {
-            flex-grow: 1;
             color: #333;
         }
         
         .loading-text {
             color: #999;
-            font-size: 0.85rem;
-            padding: 10px 15px;
+            font-size: 13px;
+            padding: 10px 20px;
             text-align: center;
+            border-bottom: 1px solid #eee;
         }
         
-        /* دکمه خروج */
-        .exit-btn {
-            color: #ff6b6b;
-            border-top: 1px solid #eee;
-            margin-top: 10px;
+        .exit-item {
+            color: #ea4335;
         }
     </style>
 </head>
@@ -194,29 +186,25 @@
             </div>
         </div>
         
-        <div class="score-section">
+        <!-- ستاره‌های امتیاز -->
+        <div class="star-rating">
             <div class="stars">
-                <!-- ستاره 1 -->
                 <div class="star" id="star1">
                     ★
                     <div class="star-filled" id="star1-filled">★</div>
                 </div>
-                <!-- ستاره 2 -->
                 <div class="star" id="star2">
                     ★
                     <div class="star-filled" id="star2-filled">★</div>
                 </div>
-                <!-- ستاره 3 -->
                 <div class="star" id="star3">
                     ★
                     <div class="star-filled" id="star3-filled">★</div>
                 </div>
-                <!-- ستاره 4 -->
                 <div class="star" id="star4">
                     ★
                     <div class="star-filled" id="star4-filled">★</div>
                 </div>
-                <!-- ستاره 5 -->
                 <div class="star" id="star5">
                     ★
                     <div class="star-filled" id="star5-filled">★</div>
@@ -255,7 +243,7 @@
                 <span class="menu-text">ثبت نام در واتساب</span>
             </div>
             
-            <div class="menu-item exit-btn" id="exitApp">
+            <div class="menu-item exit-item" id="exitApp">
                 <span class="menu-icon">📌</span>
                 <span class="menu-text">خروج از برنامه</span>
             </div>
@@ -263,24 +251,23 @@
     </div>
 
     <script>
-        // تابع برای به‌روزرسانی ستاره‌ها بر اساس امتیاز
-        function updateStars(score) {
-            // score باید بین 0 تا 5 باشد
-            score = Math.max(0, Math.min(5, score));
+        // تنظیم ستاره‌ها بر اساس امتیاز
+        function setStars(rating) {
+            // rating بین 0 تا 5
+            rating = Math.max(0, Math.min(5, rating));
             
-            // به‌روزرسانی متن امتیاز
-            document.getElementById('scoreValue').textContent = score;
+            // نمایش امتیاز
+            document.getElementById('scoreValue').textContent = rating.toFixed(1);
             
-            // به‌روزرسانی هر ستاره
+            // تنظیم هر ستاره
             for (let i = 1; i <= 5; i++) {
                 const starFilled = document.getElementById(`star${i}-filled`);
-                if (i <= score) {
+                if (i <= rating) {
                     // ستاره کاملاً پر
                     starFilled.style.width = '100%';
-                } else if (i === Math.ceil(score) && score % 1 !== 0) {
-                    // ستاره جزئی پر (برای امتیاز اعشاری)
-                    const partialFill = (score % 1) * 100;
-                    starFilled.style.width = `${partialFill}%`;
+                } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+                    // ستاره جزئی پر
+                    starFilled.style.width = `${(rating % 1) * 100}%`;
                 } else {
                     // ستاره خالی
                     starFilled.style.width = '0%';
@@ -288,88 +275,77 @@
             }
         }
         
-        // تنظیم امتیاز اولیه
-        updateStars(3);
+        // امتیاز اولیه
+        setStars(3.5);
         
-        // مدیریت دکمه‌های حالت تمرین
-        const modeButtons = document.querySelectorAll('.mode-btn');
-        modeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                modeButtons.forEach(btn => btn.classList.remove('active'));
+        // تغییر حالت تمرین
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 
-                // تغییر متن سوال
-                const questionText = document.getElementById('questionText');
-                if (this.textContent.includes('Word → Definition')) {
-                    questionText.textContent = 'واژه "Beautiful" به فارسی چیست؟';
-                } else {
-                    questionText.textContent = 'معنی "زیبا" به انگلیسی چیست؟';
-                }
+                // تغییر سوال نمونه
+                const questions = {
+                    'Word → Definition': 'واژه "Computer" به فارسی چیست؟',
+                    'Definition → Word': 'معنی "رایانه" به انگلیسی چیست؟'
+                };
+                document.getElementById('questionText').textContent = questions[this.textContent] || 'سوال اینجا نمایش داده می‌شود...';
                 
-                // تغییر امتیاز تصادفی
-                const randomScore = Math.random() * 5;
-                updateStars(randomScore);
+                // تغییر تصادفی امتیاز
+                setStars(Math.random() * 5);
             });
         });
         
-        // مدیریت دکمه راهنمایی
+        // دکمه راهنمایی
         document.getElementById('hintBtn').addEventListener('click', function() {
-            const hints = [
-                'راهنمایی: این کلمه 8 حرف دارد',
-                'راهنمایی: با حرف B شروع می‌شود',
-                'راهنمایی: مترادف "زیبا" است',
-                'راهنمایی: در زبان فارسی "زیبا" معنی می‌دهد'
-            ];
-            alert(hints[Math.floor(Math.random() * hints.length)]);
+            alert('راهنمایی: این کلمه در حوزه تکنولوژی است');
         });
         
-        // مدیریت منوها
+        // منوها
         document.getElementById('smartReview').addEventListener('click', function() {
-            alert('مرور اشتباهات هوشمند فعال شد');
-            updateStars(4.5);
+            alert('مرور اشتباهات هوشمند');
+            setStars(4.2);
         });
         
         document.getElementById('progressReport').addEventListener('click', function() {
-            const loadingText = document.getElementById('loadingText');
-            loadingText.textContent = 'گزارش بارگذاری شد';
-            loadingText.style.color = '#4CAF50';
-            
+            const loading = document.getElementById('loadingText');
+            loading.textContent = 'گزارش بارگذاری شد ✓';
+            loading.style.color = '#34a853';
             setTimeout(() => {
-                alert('گزارش پیشرفت نمایش داده شد');
-                loadingText.textContent = 'در حال بارگذاری گزارش...';
-                loadingText.style.color = '#999';
-            }, 500);
+                loading.textContent = 'در حال بارگذاری گزارش...';
+                loading.style.color = '#999';
+            }, 2000);
         });
         
         document.getElementById('whatsappRegister').addEventListener('click', function() {
             alert('ثبت نام در واتساپ');
-            updateStars(5);
+            setStars(4.8);
         });
         
         document.getElementById('exitApp').addEventListener('click', function() {
             if (confirm('آیا می‌خواهید از برنامه خارج شوید؟')) {
-                alert('خروج از برنامه');
+                alert('برنامه بسته شد');
             }
         });
         
-        // شبیه‌سازی تغییر سوال
-        const questions = [
-            "واژه 'Computer' به فارسی چیست؟",
-            "معنی 'کتاب' به انگلیسی چیست؟",
-            "مترادف 'Happy' چیست؟",
-            "جمله 'من دانش آموز هستم' به انگلیسی؟",
-            "واژه 'Apple' به فارسی چیست؟"
+        // تغییر خودکار سوال هر 8 ثانیه
+        let questionIndex = 0;
+        const allQuestions = [
+            'واژه "Beautiful" به فارسی چیست؟',
+            'معنی "کتاب" به انگلیسی چیست؟',
+            'مترادف "Happy" چیست؟',
+            'جمله "من می‌خوانم" به انگلیسی؟',
+            'واژه "Apple" به فارسی چیست؟'
         ];
         
-        let currentQuestion = 0;
         setInterval(() => {
-            currentQuestion = (currentQuestion + 1) % questions.length;
-            document.getElementById('questionText').textContent = questions[currentQuestion];
+            questionIndex = (questionIndex + 1) % allQuestions.length;
+            document.getElementById('questionText').textContent = allQuestions[questionIndex];
             
-            // افزایش تدریجی امتیاز
-            const currentStars = parseFloat(document.getElementById('scoreValue').textContent);
-            if (currentStars < 5) {
-                updateStars(currentStars + 0.1);
+            // افزایش کمی امتیاز
+            const current = parseFloat(document.getElementById('scoreValue').textContent);
+            if (current < 5) {
+                setStars(current + 0.1);
             }
         }, 8000);
     </script>
