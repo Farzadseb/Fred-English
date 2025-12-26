@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>English with Fred</title>
 
 <style>
@@ -18,10 +18,12 @@
     --bg: #f4f6f8;
     --card: #ffffff;
     --text: #222;
-    --primary: #1e88e5;
+    --primary: #2196f3;
     --secondary: #4caf50;
-    --danger: #f44336;
+    --danger: #f53;
     --muted: #777;
+    --star-outline: #ccc;
+    --star-filled: #ffc107;
 }
 
 body.dark {
@@ -32,16 +34,21 @@ body.dark {
     --secondary: #4ade80;
     --danger: #ef4444;
     --muted: #9ca3af;
+    --star-outline: #555;
+    --star-filled: #fbbf24;
 }
 
 /* ================= BODY ================= */
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     padding: 16px;
-    visibility: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Prevent iOS zoom on input focus */
+    touch-action: manipulation;
 }
 
 /* ================= CONTAINER ================= */
@@ -59,6 +66,7 @@ body {
     padding: 12px 16px;
     border-radius: 14px;
     margin-bottom: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .top-btn {
@@ -71,11 +79,14 @@ body {
     justify-content: center;
     cursor: pointer;
     font-size: 20px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .title {
     font-weight: 700;
     color: var(--primary);
+    font-size: 20px;
+    user-select: none;
 }
 
 /* ================= CARD ================= */
@@ -84,20 +95,25 @@ body {
     border-radius: 18px;
     padding: 20px;
     margin-bottom: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 /* ================= STARS ================= */
 .stars-box {
-    width: 50%;
-    margin: auto;
+    width: 70%;
+    margin: 0 auto 12px;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
 }
 
 .star {
-    font-size: 26px;
-    color: gold;
+    font-size: 28px;
+    color: var(--star-outline);
+    transition: color 0.4s ease;
+}
+
+.star.filled {
+    color: var(--star-filled);
 }
 
 .score {
@@ -109,6 +125,7 @@ body {
     display: block;
     font-size: 34px;
     color: var(--primary);
+    margin-top: 6px;
 }
 
 /* ================= MODES ================= */
@@ -120,7 +137,7 @@ body {
 }
 
 .mode {
-    background: linear-gradient(135deg, var(--primary), #42a5f5);
+    background: linear-gradient(90deg, #2196f3, #4caf50); /* ✔️ رنگ قبلی */
     color: white;
     padding: 16px;
     border-radius: 14px;
@@ -130,23 +147,46 @@ body {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s;
+}
+
+.mode:active {
+    transform: scale(0.98);
 }
 
 /* ================= ACTION BUTTONS ================= */
 .btn {
     width: 100%;
-    padding: 14px;
+    padding: 16px;
     border-radius: 14px;
     border: none;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
     margin-bottom: 12px;
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.2s;
 }
 
-.btn.green { background: var(--secondary); color: white; }
-.btn.red { background: var(--danger); color: white; }
-.btn.light { background: var(--card); color: var(--text); border: 1px solid #ccc; }
+.btn:active {
+    opacity: 0.9;
+}
+
+.btn.green { 
+    background: linear-gradient(90deg, #2196f3, #4caf50); 
+    color: white; 
+}
+.btn.red { 
+    background: var(--danger); 
+    color: white;
+    box-shadow: 0 2px 4px rgba(245, 51, 51, 0.3);
+}
+.btn.light { 
+    background: var(--card); 
+    color: var(--text); 
+    border: 1px solid #ccc; 
+}
 
 /* ================= REPORT ================= */
 .report {
@@ -156,11 +196,16 @@ body {
     border-radius: 14px;
     font-size: 14px;
     color: var(--muted);
+    text-align: center;
 }
 
 /* ================= VIEW SYSTEM ================= */
-.view { display: none; }
-.view.active { display: block; }
+.view { 
+    display: none; 
+}
+.view.active { 
+    display: block; 
+}
 </style>
 </head>
 
@@ -170,7 +215,7 @@ body {
     <!-- TOP BAR -->
     <div class="top-bar">
         <div class="top-btn" id="muteBtn">🔊</div>
-        <div class="title">English with Fred</div>
+        <div class="title" id="titleClick">English with Fred</div>
         <div class="top-btn" id="themeBtn">🌙</div>
     </div>
 
@@ -179,23 +224,23 @@ body {
 
         <!-- SCORE -->
         <div class="card">
-            <div class="stars-box">
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
+            <div class="stars-box" id="starsContainer">
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
+                <span class="star">☆</span>
             </div>
             <div class="score">
                 بهترین امتیاز
-                <strong>0%</strong>
+                <strong id="scoreValue">0%</strong>
             </div>
         </div>
 
         <!-- MODES -->
         <div class="modes">
-            <div class="mode">English → Persian 📖</div>
-            <div class="mode">Persian → English ✍️</div>
+            <div class="mode">English → Persian 🇺🇸→🇮🇷</div>
+            <div class="mode">Persian → English 🇮🇷→🇺🇸</div>
             <div class="mode">Word → Definition 🔤</div>
             <div class="mode">Definition → Word 📚</div>
         </div>
@@ -215,14 +260,30 @@ body {
 </div>
 
 <script>
-/* ================= INIT ================= */
+/* ====== STATE ====== */
+let bestScore = 0; // in percent (0–100)
+const stars = document.querySelectorAll('#starsContainer .star');
+const scoreEl = document.getElementById('scoreValue');
+
+/* ====== UPDATE SCORE DISPLAY ====== */
+function updateScoreDisplay() {
+    scoreEl.textContent = bestScore + '%';
+    // Fill stars: each 20% = 1 star
+    const filledCount = Math.floor(bestScore / 20);
+    stars.forEach((star, i) => {
+        star.classList.toggle('filled', i < filledCount);
+    });
+}
+
+/* ====== INIT ====== */
 document.addEventListener('DOMContentLoaded', () => {
     loadTheme();
     loadMute();
+    loadBestScore();
     document.body.style.visibility = 'visible';
 });
 
-/* ================= THEME ================= */
+/* ====== THEME ====== */
 const themeBtn = document.getElementById('themeBtn');
 
 function loadTheme() {
@@ -246,26 +307,44 @@ function updateThemeIcon() {
 
 themeBtn.onclick = toggleTheme;
 
-/* ================= MUTE ================= */
+/* ====== MUTE ====== */
 const muteBtn = document.getElementById('muteBtn');
-let muted = false;
 
 function loadMute() {
-    muted = localStorage.getItem('muted') === 'true';
-    updateMuteIcon();
-}
-
-function toggleMute() {
-    muted = !muted;
-    localStorage.setItem('muted', muted);
-    updateMuteIcon();
-}
-
-function updateMuteIcon() {
+    const muted = localStorage.getItem('muted') === 'true';
     muteBtn.textContent = muted ? '🔇' : '🔊';
 }
 
+function toggleMute() {
+    const muted = localStorage.getItem('muted') === 'true';
+    localStorage.setItem('muted', !muted);
+    muteBtn.textContent = !muted ? '🔇' : '🔊';
+}
+
 muteBtn.onclick = toggleMute;
+
+/* ====== BEST SCORE (PERSISTENT) ====== */
+function loadBestScore() {
+    const saved = localStorage.getItem('bestScore');
+    if (saved !== null) {
+        bestScore = parseInt(saved, 10);
+        if (isNaN(bestScore)) bestScore = 0;
+    }
+    updateScoreDisplay();
+}
+
+function setBestScore(newScore) {
+    if (newScore > bestScore) {
+        bestScore = Math.min(100, Math.max(0, newScore));
+        localStorage.setItem('bestScore', bestScore);
+        updateScoreDisplay();
+    }
+}
+
+// 🔧 Test: Click on title to increase score by 20% (for demo only — remove in production)
+document.getElementById('titleClick').onclick = () => {
+    setBestScore(bestScore + 20);
+};
 </script>
 </body>
 </html>
