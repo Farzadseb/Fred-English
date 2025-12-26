@@ -1,32 +1,32 @@
-/* ====== متغیرهای رنگ ====== */
+/* ====== متغیرهای رنگ - آیفونی ====== */
 :root {
-    --primary: #2196F3;
-    --secondary: #4CAF50;
-    --accent: #FF9800;
-    --danger: #F44336;
-    --light-bg: #F5F5F5;
+    --primary: #007AFF; /* آبی آیفون */
+    --secondary: #34C759; /* سبز آیفون */
+    --accent: #FF9500; /* نارنجی آیفون */
+    --danger: #FF3B30; /* قرمز آیفون */
+    --light-bg: #F2F2F7; /* خاکستری روشن آیفون */
     --card-bg: #FFFFFF;
-    --text: #212121;
-    --text-light: #757575;
+    --text: #000000;
+    --text-light: #8E8E93;
     --border-radius: 14px;
-    --shadow: 0 3px 10px rgba(0,0,0,0.08);
-    --shadow-hover: 0 6px 18px rgba(0,0,0,0.15);
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
 }
 
 body.dark {
-    --primary: #1976D2;
-    --secondary: #388E3C;
-    --accent: #F57C00;
-    --danger: #D32F2F;
-    --light-bg: #121212;
-    --card-bg: #1E1E1E;
+    --primary: #0A84FF; /* آبی آیفون (تاریک) */
+    --secondary: #30D158; /* سبز آیفون (تاریک) */
+    --accent: #FF9F0A; /* نارنجی آیفون (تاریک) */
+    --danger: #FF453A; /* قرمز آیفون (تاریک) */
+    --light-bg: #000000; /* سیاه */
+    --card-bg: #1C1C1E; /* خاکستری تیره آیفون */
     --text: #FFFFFF;
-    --text-light: #BDBDBD;
-    --shadow: 0 3px 10px rgba(0,0,0,0.2);
-    --shadow-hover: 0 6px 18px rgba(0,0,0,0.3);
+    --text-light: #98989D;
+    --shadow: 0 4px 12px rgba(0,0,0,0.3);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.4);
 }
 
-/* ====== بدنه اصلی ====== */
+/* ====== بدنه اصلی - بهینه برای آیفون ====== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -35,32 +35,35 @@ body.dark {
 
 body {
     margin: 0;
-    padding: 12px;
+    padding: 16px;
     background: var(--light-bg);
     color: var(--text);
-    font-family: 'Vazir', 'Segoe UI', system-ui, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Vazir', 'Segoe UI', system-ui, sans-serif;
     transition: all 0.3s ease;
     min-height: 100vh;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .app-container {
-    max-width: 450px;
+    max-width: 430px; /* کمی کمتر برای آیفون */
     margin: 0 auto;
     padding: 0;
 }
 
-/* ====== هدر - 40% کوچک‌تر با اسم بزرگ ====== */
+/* ====== هدر - استایل آیفونی ====== */
 .app-header {
     text-align: center;
-    margin-bottom: 15px;
-    padding: 15px 12px;
+    margin-bottom: 20px;
+    padding: 20px 16px;
     background: var(--card-bg);
     border-radius: var(--border-radius);
     color: var(--text);
     box-shadow: var(--shadow);
-    border: 2px solid var(--primary);
     position: relative;
+    overflow: hidden;
+    border: none;
 }
 
 .app-header::before {
@@ -74,6 +77,20 @@ body {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
+.app-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+}
+
+body.dark .app-header::after {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+}
+
 /* بخش بالای هدر */
 .header-top {
     display: flex;
@@ -84,123 +101,130 @@ body {
     position: relative;
 }
 
-/* اسم برنامه - دو برابر بزرگتر و در وسط */
+/* اسم برنامه */
 .app-title {
-    font-size: 28px; /* دو برابر بزرگتر */
-    font-weight: 800;
-    color: var(--primary);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
     text-align: center;
-    margin: 0;
+    margin: 0 0 8px 0;
     flex: 1;
-    text-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
     letter-spacing: -0.5px;
     line-height: 1.2;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-/* دکمه Mute در سمت چپ */
+/* دکمه Mute */
 .mute-toggle {
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    background: var(--primary);
-    border: 2px solid var(--card-bg);
-    color: white;
+    border-radius: 12px; /* گوشه‌های گردتر */
+    background: var(--card-bg);
+    border: none;
+    color: var(--text);
     font-size: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
+    box-shadow: var(--shadow);
     flex-shrink: 0;
     position: absolute;
     right: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .mute-toggle:hover {
     transform: scale(1.08);
-    background: var(--secondary);
-    box-shadow: 0 4px 14px rgba(76, 175, 80, 0.4);
+    background: rgba(0, 122, 255, 0.1);
 }
 
 .mute-toggle.active {
-    background: var(--danger);
-    box-shadow: 0 3px 10px rgba(244, 67, 54, 0.3);
+    color: var(--danger);
+    background: rgba(255, 59, 48, 0.1);
 }
 
-.mute-toggle.active:hover {
-    background: #D32F2F;
-}
-
-/* ستاره‌ها */
+/* ستاره‌ها - خالی در ابتدا */
 .stars-container {
     display: flex;
     justify-content: center;
-    gap: 5px;
-    margin: 10px auto;
-    max-width: 160px;
+    gap: 6px;
+    margin: 12px auto;
+    max-width: 180px;
 }
 
 .star {
-    font-size: 20px;
-    color: #E0E0E0;
-    opacity: 0.6;
-    transition: all 0.3s ease;
+    font-size: 22px;
+    color: var(--text-light); /* خاکستری در حالت عادی */
+    opacity: 0.7;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    filter: grayscale(1);
 }
 
 .star.filled {
-    color: #FFD700;
+    color: #FFD700; /* زرد طلایی */
     opacity: 1;
-    text-shadow: 0 0 6px rgba(255, 215, 0, 0.3);
+    filter: grayscale(0);
+    transform: scale(1.1);
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
 }
 
 /* امتیاز */
 .score-display {
-    font-size: 15px;
+    font-size: 16px;
     background: var(--light-bg);
-    padding: 6px 15px;
+    padding: 8px 20px;
     border-radius: 20px;
     display: inline-block;
-    margin-top: 8px;
+    margin-top: 10px;
     color: var(--text);
-    border: 2px solid var(--primary);
+    border: 1.5px solid var(--primary);
     font-weight: 600;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .score-display:hover {
-    background: var(--primary);
-    color: white;
-    transform: translateY(-1px);
+    background: rgba(0, 122, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* ====== دکمه تغییر تم ====== */
+/* ====== دکمه تغییر تم - آیفونی ====== */
 .theme-toggle {
     position: fixed;
     top: 20px;
     left: 20px;
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    background: var(--secondary);
-    border: 2px solid var(--card-bg);
-    color: white;
+    border-radius: 12px; /* گوشه‌های گردتر */
+    background: var(--card-bg);
+    border: none;
+    color: var(--text);
     font-size: 20px;
     cursor: pointer;
     z-index: 1000;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
-    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 .theme-toggle:hover {
-    transform: scale(1.08) rotate(15deg);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    transform: scale(1.08);
+    box-shadow: var(--shadow-hover);
 }
 
-/* ====== بقیه استایل‌ها بدون تغییر مهم ====== */
+/* ====== بقیه استایل‌ها - آیفونی ====== */
 .quiz-modes {
     display: flex;
     flex-direction: column;
@@ -213,55 +237,67 @@ body {
     border: 1px solid rgba(0,0,0,0.05);
 }
 
+body.dark .quiz-modes {
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
 .mode-button {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 18px 16px;
+    padding: 18px 20px;
     border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: white;
-    font-size: 16px;
+    border-radius: 14px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 17px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: right;
     position: relative;
     overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
-.mode-button::before {
+body.dark .mode-button {
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.mode-button:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.mode-button::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
-    width: 6px;
+    width: 100%;
     height: 100%;
-    background: rgba(255,255,255,0.3);
-    transition: width 0.3s ease;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
 }
 
-.mode-button:hover {
-    transform: translateX(-6px);
-    box-shadow: var(--shadow-hover);
-}
-
-.mode-button:hover::before {
-    width: 10px;
+.mode-button:hover::after {
+    opacity: 0.1;
 }
 
 .mode-icon {
-    font-size: 20px;
-    background: rgba(255,255,255,0.2);
-    padding: 8px;
-    border-radius: 8px;
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    padding: 10px;
+    border-radius: 10px;
     min-width: 48px;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(5px);
+    color: white;
 }
 
 .mode-text {
@@ -271,43 +307,54 @@ body {
     letter-spacing: -0.5px;
 }
 
-/* ====== کوییز کانتینر ====== */
+/* ====== کوییز کانتینر - آیفونی ====== */
 .quiz-container {
     background: var(--card-bg);
     border-radius: var(--border-radius);
-    padding: 22px 20px;
+    padding: 24px;
     margin: 20px 0;
     box-shadow: var(--shadow);
     display: none;
-    border-top: 4px solid var(--accent);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+body.dark .quiz-container {
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 #questionText {
     font-size: 18px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
     text-align: center;
-    line-height: 1.6;
+    line-height: 1.7;
     color: var(--text);
-    padding: 16px;
+    padding: 20px;
     background: var(--light-bg);
     border-radius: var(--border-radius);
-    border-right: 3px solid var(--primary);
+    font-weight: 600;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+body.dark #questionText {
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 .options-container {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin: 20px 0;
+    gap: 12px;
+    margin: 24px 0;
 }
 
 .option-button {
-    padding: 16px;
+    padding: 18px 20px;
     border-radius: 12px;
-    border: 2px solid #E0E0E0;
-    background: var(--card-bg);
+    border: 1px solid rgba(0,0,0,0.1);
+    background: var(--light-bg);
     color: var(--text);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -315,78 +362,95 @@ body {
     position: relative;
 }
 
+body.dark .option-button {
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
 .option-button:hover {
+    background: rgba(0, 122, 255, 0.1);
     border-color: var(--primary);
-    background: rgba(33, 150, 243, 0.08);
     transform: translateY(-2px);
-    box-shadow: 0 3px 10px rgba(33, 150, 243, 0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .option-button.correct {
     border-color: var(--secondary);
-    background: rgba(76, 175, 80, 0.12);
+    background: rgba(52, 199, 89, 0.12);
     color: var(--secondary);
     font-weight: bold;
 }
 
 .option-button.wrong {
     border-color: var(--danger);
-    background: rgba(244, 67, 54, 0.12);
+    background: rgba(255, 59, 48, 0.12);
     color: var(--danger);
 }
 
-/* ====== کنترل‌ها (بدون دکمه تلفظ) ====== */
+/* ====== کنترل‌ها - آیفونی ====== */
 .controls-container {
     display: flex;
     justify-content: center;
-    gap: 14px;
-    margin: 22px 0;
+    gap: 12px;
+    margin: 24px 0;
     flex-wrap: wrap;
 }
 
 .control-button {
-    padding: 14px 22px;
+    padding: 16px 24px;
     border-radius: 12px;
     border: none;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 120px;
     color: white;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .control-button:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
-    opacity: 0.95;
-}
-
-.control-button::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
-    border-radius: inherit;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
 #hintBtn { background: var(--accent); }
 #nextBtn { background: var(--primary); }
 #endQuizBtn { background: var(--danger); }
 
-/* ====== برای موبایل ====== */
-@media (max-width: 480px) {
+/* ====== استایل برای پیام‌های سیستم ====== */
+#hintDisplay,
+#progressDisplay,
+#loadingDisplay,
+#reportDisplay {
+    background: var(--light-bg);
+    border-radius: var(--border-radius);
+    padding: 15px;
+    margin: 15px 0;
+    text-align: center;
+    border-right: 3px solid var(--accent);
+    font-weight: 500;
+    color: var(--text);
+    display: none;
+}
+
+#loadingDisplay {
+    border-color: var(--primary);
+}
+
+#reportDisplay {
+    border-color: var(--secondary);
+}
+
+/* ====== برای آیفون ====== */
+@media (max-width: 428px) { /* سایز آیفون */
     body {
-        padding: 10px;
+        padding: 12px;
     }
     
     .app-container {
@@ -394,49 +458,67 @@ body {
     }
     
     .app-header {
-        padding: 12px 10px;
+        padding: 16px;
     }
     
     .app-title {
-        font-size: 22px;
+        font-size: 28px;
     }
     
+    .theme-toggle,
     .mute-toggle {
         width: 40px;
         height: 40px;
         font-size: 18px;
     }
     
-    .theme-toggle {
-        left: 15px;
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-    
     .mode-button {
-        padding: 16px 14px;
-        font-size: 15px;
+        padding: 16px;
+        font-size: 16px;
     }
     
     .mode-icon {
-        font-size: 18px;
-        min-width: 42px;
-        padding: 6px;
-    }
-    
-    .mode-text {
-        font-size: 15px;
+        font-size: 20px;
+        min-width: 44px;
+        padding: 8px;
     }
     
     .control-button {
-        padding: 12px 18px;
+        padding: 14px 20px;
         min-width: 110px;
-        font-size: 14px;
-    }
-    
-    .footer-button {
-        padding: 14px;
         font-size: 15px;
     }
-        }
+    
+    .star {
+        font-size: 20px;
+    }
+    
+    #hintDisplay,
+    #progressDisplay,
+    #loadingDisplay,
+    #reportDisplay {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
+/* انیمیشن‌های ظریف */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.app-header,
+.quiz-modes,
+.quiz-container {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* افکت‌های لمسی آیفون */
+@media (hover: hover) {
+    .mode-button:hover,
+    .control-button:hover,
+    .option-button:hover {
+        transition: all 0.2s ease;
+    }
+}
