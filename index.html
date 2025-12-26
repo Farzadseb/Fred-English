@@ -103,9 +103,9 @@ body.dark {
     background: var(--card);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    padding: 14px 18px;
+    padding: 12px 16px; /* کاهش 15% */
     border-radius: 20px;
-    margin-bottom: 16px;
+    margin-bottom: 12px; /* کاهش 25% */
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
     position: relative;
@@ -127,15 +127,15 @@ body.dark {
 }
 
 .top-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
+    width: 40px; /* کاهش 10% */
+    height: 40px; /* کاهش 10% */
+    border-radius: 12px; /* کاهش 15% */
     background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 20px; /* کاهش 10% */
     transition: var(--transition);
     border: 1px solid var(--border);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -158,9 +158,9 @@ body.dark {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-size: 22px;
-    padding: 4px 12px;
-    border-radius: 12px;
+    font-size: 20px; /* کاهش 10% */
+    padding: 3px 10px; /* کاهش 20% */
+    border-radius: 10px; /* کاهش 15% */
     user-select: none;
     letter-spacing: -0.3px;
 }
@@ -168,16 +168,16 @@ body.dark {
 /* ================= SCORE CARD ================= */
 .score-card {
     background: var(--card);
-    border-radius: 22px;
-    padding: 12px 20px;
-    margin-bottom: 14px;
+    border-radius: 20px; /* کاهش 10% */
+    padding: 10px 16px; /* کاهش 20% */
+    margin-bottom: 10px; /* کاهش 30% */
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: var(--transition);
     width: 100%;
-    min-height: 85px;
+    min-height: 75px; /* کاهش 15% */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -186,20 +186,20 @@ body.dark {
 
 /* ستاره‌ها 70% به هم نزدیکتر */
 .stars-box {
-    width: 90%;
-    margin: 0 auto 5px;
+    width: 85%; /* کاهش 5% */
+    margin: 0 auto 4px; /* کاهش 20% */
     display: flex;
     justify-content: center;
     padding: 0;
 }
 
 .star {
-    font-size: 20px;
+    font-size: 18px; /* کاهش 10% */
     color: var(--star-outline);
     transition: var(--transition);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-    margin: 0 0.5px; /* فاصله 70% کمتر - از 2px به 0.5px */
+    margin: 0 0.3px; /* فاصله 70% کمتر */
 }
 
 .star.filled {
@@ -218,28 +218,28 @@ body.dark {
 .score-text {
     text-align: center;
     color: var(--text-secondary);
-    font-size: 11px; /* 30% کوچکتر از 16px */
+    font-size: 10px; /* 30% کوچکتر از 16px */
     margin-bottom: 0;
 }
 
 .score-value {
     display: block;
-    font-size: 22px; /* 30% کوچکتر از 32px */
+    font-size: 20px; /* 30% کوچکتر از 32px */
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     font-weight: 800;
     letter-spacing: -1px;
-    margin-top: 2px;
+    margin-top: 1px; /* کاهش 50% */
 }
 
 /* ================= MODE CARDS و BUTTONS (یکسان سازی ابعاد) ================= */
 /* همه کادرها با ابعاد یکسان */
 .mode-card, .btn {
-    padding: 14px 18px;
-    border-radius: 18px;
-    font-size: 16px;
+    padding: 12px 16px; /* کاهش 15% */
+    border-radius: 16px; /* کاهش 10% */
+    font-size: 15px; /* کاهش 7% */
     font-weight: 600;
     display: flex;
     justify-content: space-between;
@@ -251,8 +251,8 @@ body.dark {
     overflow: hidden;
     z-index: 1;
     width: 100%;
-    margin-bottom: 10px; /* فاصله بین کادرها یکسان */
-    min-height: 54px;
+    margin-bottom: 5px; /* فاصله نصف شده - از 10px به 5px */
+    min-height: 48px; /* کاهش 12% */
     flex-shrink: 0;
     text-decoration: none;
 }
@@ -261,7 +261,7 @@ body.dark {
 .mode-card {
     background: var(--primary-gradient);
     color: white;
-    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2); /* کاهش 20% */
 }
 
 /* افکت براق برای MODE CARDS */
@@ -298,27 +298,27 @@ body.dark {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px; /* کاهش 25% */
     letter-spacing: -0.1px;
 }
 
 .btn.green { 
     background: var(--secondary);
     color: white;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2); /* کاهش 20% */
 }
 
 .btn.red { 
     background: var(--danger);
     color: white;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); /* کاهش 20% */
 }
 
 .btn.light { 
     background: var(--card);
     color: var(--text);
     border: 1px solid var(--border);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* کاهش 33% */
 }
 
 /* افکت‌های مشترک برای همه کادرها */
@@ -362,23 +362,23 @@ body.dark {
 }
 
 .mode-icon {
-    font-size: 18px;
-    margin-right: 6px;
+    font-size: 16px; /* کاهش 12% */
+    margin-right: 4px; /* کاهش 33% */
 }
 
 /* ================= MAIN CONTENT ================= */
 .main-content {
     flex: 1;
     overflow-y: auto;
-    padding-bottom: 10px;
+    padding-bottom: 8px; /* کاهش 20% */
 }
 
 /* ================= MODES CONTAINER ================= */
 .modes {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* فاصله بین 4 کادر بالایی = فاصله بین 4 کادر پایینی */
-    margin-bottom: 14px;
+    gap: 5px; /* فاصله نصف شده - از 10px به 5px */
+    margin-bottom: 10px; /* کاهش 30% */
 }
 
 /* ================= VIEW SYSTEM ================= */
@@ -421,106 +421,28 @@ body.dark {
 /* ================= RESPONSIVE ADJUSTMENTS ================= */
 @media (max-width: 380px) {
     .mode-card, .btn {
-        padding: 12px 16px;
-        font-size: 15px;
-        min-height: 50px;
+        padding: 10px 14px; /* کاهش بیشتر */
+        font-size: 14px;
+        min-height: 44px;
+        margin-bottom: 4px; /* نصف شده در موبایل */
     }
     
     .title {
-        font-size: 20px;
-    }
-    
-    .score-card {
-        padding: 10px 16px;
-        min-height: 75px;
-    }
-    
-    .star {
         font-size: 18px;
-    }
-    
-    .stars-box {
-        width: 95%;
-    }
-    
-    .score-value {
-        font-size: 20px;
-    }
-    
-    .score-text {
-        font-size: 10px;
-    }
-}
-
-/* برای موبایل‌های با ارتفاع کم */
-@media (max-height: 700px) {
-    .top-bar {
-        padding: 12px 16px;
-        margin-bottom: 12px;
-    }
-    
-    .score-card {
-        padding: 10px 16px;
-        min-height: 75px;
-        margin-bottom: 12px;
-    }
-    
-    .mode-card, .btn {
-        padding: 12px 16px;
-        min-height: 48px;
-        margin-bottom: 8px;
-    }
-    
-    .modes {
-        gap: 8px;
-        margin-bottom: 12px;
-    }
-    
-    .star {
-        font-size: 18px;
-    }
-    
-    .score-value {
-        font-size: 20px;
-    }
-    
-    .score-text {
-        font-size: 10px;
-    }
-}
-
-/* برای موبایل‌های با ارتفاع بسیار کم */
-@media (max-height: 600px) {
-    body {
-        padding: 12px;
-    }
-    
-    .top-bar {
-        padding: 10px 14px;
-        margin-bottom: 10px;
     }
     
     .score-card {
         padding: 8px 14px;
         min-height: 65px;
-        margin-bottom: 10px;
-    }
-    
-    .mode-card, .btn {
-        padding: 10px 14px;
-        min-height: 44px;
-        margin-bottom: 6px;
-        font-size: 15px;
-    }
-    
-    .modes {
-        gap: 6px;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     
     .star {
         font-size: 16px;
-        margin: 0 0.3px;
+    }
+    
+    .stars-box {
+        width: 90%;
     }
     
     .score-value {
@@ -529,6 +451,91 @@ body.dark {
     
     .score-text {
         font-size: 9px;
+    }
+    
+    .modes {
+        gap: 4px; /* نصف شده در موبایل */
+        margin-bottom: 8px;
+    }
+}
+
+/* برای موبایل‌های با ارتفاع کم */
+@media (max-height: 700px) {
+    .top-bar {
+        padding: 10px 14px;
+        margin-bottom: 10px;
+    }
+    
+    .score-card {
+        padding: 8px 14px;
+        min-height: 65px;
+        margin-bottom: 8px;
+    }
+    
+    .mode-card, .btn {
+        padding: 10px 14px;
+        min-height: 44px;
+        margin-bottom: 4px; /* نصف شده */
+    }
+    
+    .modes {
+        gap: 4px; /* نصف شده */
+        margin-bottom: 8px;
+    }
+    
+    .star {
+        font-size: 16px;
+    }
+    
+    .score-value {
+        font-size: 18px;
+    }
+    
+    .score-text {
+        font-size: 9px;
+    }
+}
+
+/* برای موبایل‌های با ارتفاع بسیار کم */
+@media (max-height: 600px) {
+    body {
+        padding: 10px; /* کاهش 20% */
+    }
+    
+    .top-bar {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+    }
+    
+    .score-card {
+        padding: 6px 12px;
+        min-height: 55px;
+        margin-bottom: 6px;
+    }
+    
+    .mode-card, .btn {
+        padding: 8px 12px;
+        min-height: 40px;
+        margin-bottom: 3px; /* نصف شده */
+        font-size: 14px;
+    }
+    
+    .modes {
+        gap: 3px; /* نصف شده */
+        margin-bottom: 6px;
+    }
+    
+    .star {
+        font-size: 14px;
+        margin: 0 0.2px;
+    }
+    
+    .score-value {
+        font-size: 16px;
+    }
+    
+    .score-text {
+        font-size: 8px;
     }
 }
 
@@ -824,20 +831,17 @@ document.querySelectorAll('.mode-card').forEach((mode, index) => {
 
 /* ====== WHATSAPP FUNCTIONALITY ====== */
 function openWhatsAppRegistration() {
-    const phoneNumber = "989017708544"; // بدون + و 0 اول
+    const phoneNumber = "989017708544";
     const message = encodeURIComponent("سلام استاد Fred میخواهم در کلاس انگلیسی ثبت نام کنم");
     const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
     
-    // باز کردن واتساپ در پنجره جدید
     window.open(whatsappURL, '_blank');
 }
 
-// اضافه کردن event listener به دکمه واتساپ
 document.addEventListener('DOMContentLoaded', function() {
     const whatsappBtn = document.querySelector('a.btn.green[href*="wa.me"]');
     if (whatsappBtn) {
         whatsappBtn.addEventListener('click', function(e) {
-            // لاگ کردن برای دیباگ
             console.log('واتساپ کلیک شد - ارسال پیام ثبت نام به استاد Fred');
         });
     }
