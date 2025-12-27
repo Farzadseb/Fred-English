@@ -103,9 +103,9 @@ body.dark {
     background: var(--card);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    padding: 12px 16px; /* کاهش 15% */
+    padding: 12px 16px;
     border-radius: 20px;
-    margin-bottom: 12px; /* کاهش 25% */
+    margin-bottom: 12px;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
     position: relative;
@@ -127,15 +127,15 @@ body.dark {
 }
 
 .top-btn {
-    width: 40px; /* کاهش 10% */
-    height: 40px; /* کاهش 10% */
-    border-radius: 12px; /* کاهش 15% */
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
     background: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 20px; /* کاهش 10% */
+    font-size: 20px;
     transition: var(--transition);
     border: 1px solid var(--border);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -158,9 +158,9 @@ body.dark {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    font-size: 20px; /* کاهش 10% */
-    padding: 3px 10px; /* کاهش 20% */
-    border-radius: 10px; /* کاهش 15% */
+    font-size: 20px;
+    padding: 3px 10px;
+    border-radius: 10px;
     user-select: none;
     letter-spacing: -0.3px;
 }
@@ -168,16 +168,16 @@ body.dark {
 /* ================= SCORE CARD ================= */
 .score-card {
     background: var(--card);
-    border-radius: 20px; /* کاهش 10% */
-    padding: 10px 16px; /* کاهش 20% */
-    margin-bottom: 10px; /* کاهش 30% */
+    border-radius: 20px;
+    padding: 10px 16px;
+    margin-bottom: 10px;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     transition: var(--transition);
     width: 100%;
-    min-height: 75px; /* کاهش 15% */
+    min-height: 75px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -186,20 +186,20 @@ body.dark {
 
 /* ستاره‌ها 70% به هم نزدیکتر */
 .stars-box {
-    width: 85%; /* کاهش 5% */
-    margin: 0 auto 4px; /* کاهش 20% */
+    width: 85%;
+    margin: 0 auto 4px;
     display: flex;
     justify-content: center;
     padding: 0;
 }
 
 .star {
-    font-size: 18px; /* کاهش 10% */
+    font-size: 18px;
     color: var(--star-outline);
     transition: var(--transition);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-    margin: 0 0.3px; /* فاصله 70% کمتر */
+    margin: 0 0.3px;
 }
 
 .star.filled {
@@ -218,28 +218,28 @@ body.dark {
 .score-text {
     text-align: center;
     color: var(--text-secondary);
-    font-size: 10px; /* 30% کوچکتر از 16px */
+    font-size: 10px;
     margin-bottom: 0;
 }
 
 .score-value {
     display: block;
-    font-size: 20px; /* 30% کوچکتر از 32px */
+    font-size: 20px;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     font-weight: 800;
     letter-spacing: -1px;
-    margin-top: 1px; /* کاهش 50% */
+    margin-top: 1px;
 }
 
 /* ================= MODE CARDS و BUTTONS (یکسان سازی ابعاد) ================= */
 /* همه کادرها با ابعاد یکسان */
 .mode-card, .btn {
-    padding: 12px 16px; /* کاهش 15% */
-    border-radius: 16px; /* کاهش 10% */
-    font-size: 15px; /* کاهش 7% */
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 15px;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
@@ -251,8 +251,8 @@ body.dark {
     overflow: hidden;
     z-index: 1;
     width: 100%;
-    margin-bottom: 5px; /* فاصله نصف شده - از 10px به 5px */
-    min-height: 48px; /* کاهش 12% */
+    margin-bottom: 5px;
+    min-height: 48px;
     flex-shrink: 0;
     text-decoration: none;
 }
@@ -261,7 +261,7 @@ body.dark {
 .mode-card {
     background: var(--primary-gradient);
     color: white;
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2); /* کاهش 20% */
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
 }
 
 /* افکت براق برای MODE CARDS */
@@ -298,27 +298,27 @@ body.dark {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px; /* کاهش 25% */
+    gap: 6px;
     letter-spacing: -0.1px;
 }
 
 .btn.green { 
     background: var(--secondary);
     color: white;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2); /* کاهش 20% */
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
 }
 
 .btn.red { 
     background: var(--danger);
     color: white;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); /* کاهش 20% */
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 .btn.light { 
     background: var(--card);
     color: var(--text);
     border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* کاهش 33% */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* افکت‌های مشترک برای همه کادرها */
@@ -362,23 +362,49 @@ body.dark {
 }
 
 .mode-icon {
-    font-size: 16px; /* کاهش 12% */
-    margin-right: 4px; /* کاهش 33% */
+    font-size: 16px;
+    margin-right: 4px;
 }
 
 /* ================= MAIN CONTENT ================= */
 .main-content {
     flex: 1;
     overflow-y: auto;
-    padding-bottom: 8px; /* کاهش 20% */
+    padding-bottom: 8px;
 }
 
 /* ================= MODES CONTAINER ================= */
 .modes {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* فاصله نصف شده - از 10px به 5px */
-    margin-bottom: 10px; /* کاهش 30% */
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+/* ================= NOTIFICATION ================= */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    left: 20px;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+    z-index: 1000;
+    text-align: center;
+    font-weight: 600;
+    transform: translateY(-100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 /* ================= VIEW SYSTEM ================= */
@@ -421,10 +447,10 @@ body.dark {
 /* ================= RESPONSIVE ADJUSTMENTS ================= */
 @media (max-width: 380px) {
     .mode-card, .btn {
-        padding: 10px 14px; /* کاهش بیشتر */
+        padding: 10px 14px;
         font-size: 14px;
         min-height: 44px;
-        margin-bottom: 4px; /* نصف شده در موبایل */
+        margin-bottom: 4px;
     }
     
     .title {
@@ -454,88 +480,16 @@ body.dark {
     }
     
     .modes {
-        gap: 4px; /* نصف شده در موبایل */
+        gap: 4px;
         margin-bottom: 8px;
     }
-}
-
-/* برای موبایل‌های با ارتفاع کم */
-@media (max-height: 700px) {
-    .top-bar {
+    
+    .notification {
+        right: 10px;
+        left: 10px;
+        top: 10px;
         padding: 10px 14px;
-        margin-bottom: 10px;
-    }
-    
-    .score-card {
-        padding: 8px 14px;
-        min-height: 65px;
-        margin-bottom: 8px;
-    }
-    
-    .mode-card, .btn {
-        padding: 10px 14px;
-        min-height: 44px;
-        margin-bottom: 4px; /* نصف شده */
-    }
-    
-    .modes {
-        gap: 4px; /* نصف شده */
-        margin-bottom: 8px;
-    }
-    
-    .star {
-        font-size: 16px;
-    }
-    
-    .score-value {
-        font-size: 18px;
-    }
-    
-    .score-text {
-        font-size: 9px;
-    }
-}
-
-/* برای موبایل‌های با ارتفاع بسیار کم */
-@media (max-height: 600px) {
-    body {
-        padding: 10px; /* کاهش 20% */
-    }
-    
-    .top-bar {
-        padding: 8px 12px;
-        margin-bottom: 8px;
-    }
-    
-    .score-card {
-        padding: 6px 12px;
-        min-height: 55px;
-        margin-bottom: 6px;
-    }
-    
-    .mode-card, .btn {
-        padding: 8px 12px;
-        min-height: 40px;
-        margin-bottom: 3px; /* نصف شده */
         font-size: 14px;
-    }
-    
-    .modes {
-        gap: 3px; /* نصف شده */
-        margin-bottom: 6px;
-    }
-    
-    .star {
-        font-size: 14px;
-        margin: 0 0.2px;
-    }
-    
-    .score-value {
-        font-size: 16px;
-    }
-    
-    .score-text {
-        font-size: 8px;
     }
 }
 
@@ -579,30 +533,30 @@ body.dark {
 
             <!-- MODE CARDS -->
             <div class="modes">
-                <div class="mode-card">
+                <div class="mode-card" data-mode="english-persian">
                     <span>English → Persian</span>
                     <span class="mode-icon">🇺🇸→🇮🇷</span>
                 </div>
-                <div class="mode-card">
+                <div class="mode-card" data-mode="persian-english">
                     <span>Persian → English</span>
                     <span class="mode-icon">🇮🇷→🇺🇸</span>
                 </div>
-                <div class="mode-card">
+                <div class="mode-card" data-mode="word-definition">
                     <span>Word → Definition</span>
                     <span class="mode-icon">🔤</span>
                 </div>
-                <div class="mode-card">
+                <div class="mode-card" data-mode="definition-word">
                     <span>Definition → Word</span>
                     <span class="mode-icon">📚</span>
                 </div>
             </div>
 
             <!-- ACTION BUTTONS -->
-            <button class="btn green">
+            <button class="btn green" id="reviewMistakesBtn">
                 <span>🎯</span>
                 <span>مرور اشتباهات هوشمند</span>
             </button>
-            <button class="btn light">
+            <button class="btn light" id="progressReportBtn">
                 <span>📊</span>
                 <span>گزارش پیشرفت</span>
             </button>
@@ -610,12 +564,15 @@ body.dark {
                 <span>💬</span>
                 <span>ثبت‌نام در واتساپ</span>
             </a>
-            <button class="btn red">
+            <button class="btn red" id="exitBtn">
                 <span>🚪</span>
                 <span>خروج</span>
             </button>
         </div>
     </div>
+
+    <!-- NOTIFICATION -->
+    <div class="notification" id="notification"></div>
 
 </div>
 
@@ -627,6 +584,17 @@ const stars = document.querySelectorAll('#starsContainer .star');
 const scoreEl = document.getElementById('scoreValue');
 const muteBtn = document.getElementById('muteBtn');
 const themeBtn = document.getElementById('themeBtn');
+const notification = document.getElementById('notification');
+
+/* ====== NOTIFICATION SYSTEM ====== */
+function showNotification(message, duration = 2000) {
+    notification.textContent = message;
+    notification.classList.add('show');
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, duration);
+}
 
 /* ====== UPDATE SCORE DISPLAY ====== */
 function updateScoreDisplay() {
@@ -659,35 +627,112 @@ document.addEventListener('DOMContentLoaded', () => {
     loadMuteState();
     loadBestScore();
     
-    // Add haptic feedback for buttons
-    document.querySelectorAll('.btn, .mode-card, .top-btn').forEach(btn => {
-        btn.addEventListener('touchstart', () => {
-            if (window.navigator.vibrate) {
-                window.navigator.vibrate(10);
-            }
-        });
-    });
-    
-    // Adjust layout for different screen sizes
-    adjustLayoutForScreen();
-    window.addEventListener('resize', adjustLayoutForScreen);
+    // Initialize all button functionalities
+    initializeButtonFunctions();
     
     document.body.style.opacity = '1';
 });
 
-/* ====== ADJUST LAYOUT ====== */
-function adjustLayoutForScreen() {
-    const screenHeight = window.innerHeight;
-    const screenWidth = window.innerWidth;
+/* ====== BUTTON FUNCTIONS ====== */
+function initializeButtonFunctions() {
+    // 1. چهار کارد حالت (Mode Cards)
+    document.querySelectorAll('.mode-card').forEach((modeCard) => {
+        modeCard.addEventListener('click', function() {
+            const mode = this.getAttribute('data-mode');
+            let modeName = '';
+            
+            switch(mode) {
+                case 'english-persian':
+                    modeName = 'انگلیسی به فارسی';
+                    break;
+                case 'persian-english':
+                    modeName = 'فارسی به انگلیسی';
+                    break;
+                case 'word-definition':
+                    modeName = 'کلمه به تعریف';
+                    break;
+                case 'definition-word':
+                    modeName = 'تعریف به کلمه';
+                    break;
+            }
+            
+            showNotification(`حالت "${modeName}" فعال شد. شروع آزمون...`);
+            
+            // Ripple effect
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = rect.width / 2;
+            const y = rect.height / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.5);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                width: ${size}px;
+                height: ${size}px;
+                top: ${y - size/2}px;
+                right: ${x - size/2}px;
+            `;
+            
+            this.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+            
+            // Haptic feedback
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(30);
+            }
+            
+            // افزایش امتیاز برای تست (در برنامه واقعی اینجا با سرویس‌سرور ارتباط برقرار می‌شود)
+            setTimeout(() => {
+                const newScore = Math.min(100, bestScore + Math.floor(Math.random() * 10) + 5);
+                setBestScore(newScore);
+            }, 500);
+        });
+    });
     
-    // Adjust app container for very small screens
-    if (screenHeight < 600 || screenWidth < 350) {
-        document.querySelector('.app').style.maxWidth = '95%';
-        document.body.style.padding = '10px';
-    } else {
-        document.querySelector('.app').style.maxWidth = '500px';
-        document.body.style.padding = '16px';
-    }
+    // 2. دکمه مرور اشتباهات هوشمند
+    document.getElementById('reviewMistakesBtn').addEventListener('click', function() {
+        showNotification('سیستم مرور اشتباهات در حال بارگذاری...');
+        
+        // شبیه‌سازی بارگذاری
+        setTimeout(() => {
+            showNotification('۱۰ سوال برای مرور اشتباهات آماده شد!');
+            
+            // افزایش امتیاز
+            const newScore = Math.min(100, bestScore + Math.floor(Math.random() * 8) + 3);
+            setBestScore(newScore);
+        }, 1500);
+    });
+    
+    // 3. دکمه گزارش پیشرفت
+    document.getElementById('progressReportBtn').addEventListener('click', function() {
+        showNotification('گزارش پیشرفت شما در حال تولید است...');
+        
+        // شبیه‌سازی تولید گزارش
+        setTimeout(() => {
+            const progressDetails = `🎯 پیشرفت کلی: ${bestScore}%\n📊 تعداد تمرینات: ${Math.floor(bestScore/5)}\n⭐️ مهارت کسب شده: ${Math.floor(bestScore/20)} ستاره\n📈 روند یادگیری: صعودی`;
+            showNotification(progressDetails, 3000);
+        }, 1000);
+    });
+    
+    // 4. دکمه خروج
+    document.getElementById('exitBtn').addEventListener('click', function() {
+        showNotification('آیا مطمئن هستید که می‌خواهید خارج شوید؟', 2500);
+        
+        // تأیید خروج
+        setTimeout(() => {
+            showNotification('با موفقیت از برنامه خارج شدید. امتیاز شما ذخیره شد.', 2000);
+            
+            // افکت خروج
+            document.body.style.opacity = '0.7';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 500);
+        }, 2500);
+    });
 }
 
 /* ====== THEME SYSTEM ====== */
@@ -714,6 +759,7 @@ function toggleTheme() {
     }, 500);
     
     updateThemeIcon();
+    showNotification(isDark ? 'تم تاریک فعال شد 🌙' : 'تم روشن فعال شد ☀️');
 }
 
 function updateThemeIcon() {
@@ -748,6 +794,8 @@ function toggleMute() {
     if (!isMuted) {
         playToggleSound();
     }
+    
+    showNotification(isMuted ? 'صدا خاموش شد 🔇' : 'صدا روشن شد 🔊');
 }
 
 function updateMuteButton() {
@@ -763,6 +811,7 @@ function updateMuteButton() {
 }
 
 function playToggleSound() {
+    // This is a silent audio for haptic-like feedback
     console.log('Toggle sound played');
 }
 
@@ -787,6 +836,7 @@ function setBestScore(newScore) {
         
         // Celebration effect for new high score
         if (newScore >= 80) {
+            showNotification('🎉 تبریک! شما رکورد جدیدی ثبت کردید!');
             document.querySelectorAll('.star').forEach(star => {
                 star.style.animation = 'starPulse 0.8s ease-out infinite';
                 setTimeout(() => {
@@ -797,59 +847,15 @@ function setBestScore(newScore) {
     }
 }
 
-/* ====== ENHANCED MODE CARDS ====== */
-document.querySelectorAll('.mode-card').forEach((mode, index) => {
-    mode.addEventListener('click', function() {
-        // Ripple effect
-        const ripple = document.createElement('span');
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = rect.width / 2;
-        const y = rect.height / 2;
-        
-        ripple.style.cssText = `
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            width: ${size}px;
-            height: ${size}px;
-            top: ${y - size/2}px;
-            right: ${x - size/2}px;
-        `;
-        
-        this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
-        
-        // Haptic feedback
-        if (window.navigator.vibrate) {
-            window.navigator.vibrate(30);
-        }
-    });
-});
-
-/* ====== WHATSAPP FUNCTIONALITY ====== */
-function openWhatsAppRegistration() {
-    const phoneNumber = "989017708544";
-    const message = encodeURIComponent("سلام استاد Fred میخواهم در کلاس انگلیسی ثبت نام کنم");
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
-    
-    window.open(whatsappURL, '_blank');
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const whatsappBtn = document.querySelector('a.btn.green[href*="wa.me"]');
-    if (whatsappBtn) {
-        whatsappBtn.addEventListener('click', function(e) {
-            console.log('واتساپ کلیک شد - ارسال پیام ثبت نام به استاد Fred');
-        });
-    }
-});
-
 // Demo: Click title to increase score
 document.getElementById('titleClick').onclick = () => {
-    setBestScore(bestScore + 20);
+    const newScore = bestScore + 20;
+    if (newScore <= 100) {
+        setBestScore(newScore);
+        showNotification(`امتیاز شما ${newScore}% شد!`);
+    } else {
+        showNotification('امتیاز شما در حداکثر ممکن است (۱۰۰%)');
+    }
 };
 
 /* ====== SAFE AREA SUPPORT ====== */
