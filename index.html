@@ -1,364 +1,30 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>English with Fred</title>
-    
-    <style>
-        /* ================= RESET & OPTIMIZATIONS ================= */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-        }
-
-        html {
-            height: 100%;
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 16px;
-            padding-bottom: max(16px, env(safe-area-inset-bottom));
-            padding-top: env(safe-area-inset-top);
-            overscroll-behavior: none;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            transition: background 0.3s ease;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* ================= THEME VARIABLES ================= */
-        :root {
-            /* Light theme - Soft pastel */
-            --bg: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
-            --card: rgba(255, 255, 255, 0.97);
-            --card-shadow: 0 10px 30px rgba(33, 150, 243, 0.08);
-            --text: #2c3e50;
-            --text-secondary: #6c7b95;
-            --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
-            --secondary: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-            --danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            --muted: #8e9aaf;
-            --border: rgba(0, 0, 0, 0.08);
-            --star-outline: #e0e6ff;
-            --star-filled: #ffd93d;
-            --glow: 0 0 30px rgba(102, 126, 234, 0.15);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        body.dark {
-            /* Dark theme */
-            --bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --card: rgba(30, 41, 59, 0.97);
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --text: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
-            --secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            --danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            --muted: #64748b;
-            --border: rgba(255, 255, 255, 0.1);
-            --star-outline: #334155;
-            --star-filled: #fbbf24;
-            --glow: 0 0 40px rgba(139, 92, 246, 0.25);
-        }
-
-        /* ================= APP CONTAINER ================= */
-        .app {
-            max-width: 500px;
-            margin: 0 auto;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ================= TOP BAR ================= */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 12px 16px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-
-        .top-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-            transition: var(--transition);
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            user-select: none;
-            outline: none;
-        }
-
-        .top-btn:active {
-            transform: scale(0.95);
-            opacity: 0.8;
-        }
-
-        .dark .top-btn {
-            background: rgba(15, 23, 42, 0.5);
-        }
-
-        .title {
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 20px;
-            padding: 3px 10px;
-            border-radius: 10px;
-            user-select: none;
-            letter-spacing: -0.3px;
-        }
-
-        /* ================= SCORE CARD ================= */
-        .score-card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 10px 16px;
-            margin-bottom: 10px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: var(--transition);
-            width: 100%;
-            min-height: 75px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .stars-box {
-            width: 85%;
-            margin: 0 auto 4px;
-            display: flex;
-            justify-content: center;
-            padding: 0;
-        }
-
-        .star {
-            font-size: 18px;
-            color: var(--star-outline);
-            transition: var(--transition);
-            margin: 0 0.3px;
-        }
-
-        .star.filled {
-            color: var(--star-filled);
-        }
-
-        .score-text {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 10px;
-            margin-bottom: 0;
-        }
-
-        .score-value {
-            display: block;
-            font-size: 20px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-top: 1px;
-        }
-
-        /* ================= MODE CARDS ================= */
-        .mode-card, .btn {
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 15px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            width: 100%;
-            margin-bottom: 5px;
-            min-height: 48px;
-            flex-shrink: 0;
-            text-decoration: none;
-            outline: none;
-        }
-
-        .mode-card {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
-        }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn.green { 
-            background: var(--secondary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
-        }
-
-        .btn.red { 
-            background: var(--danger);
-            color: white;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-        }
-
-        .btn.light { 
-            background: var(--card);
-            color: var(--text);
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .mode-card:active, .btn:active {
-            transform: scale(0.98);
-        }
-
-        .mode-icon {
-            font-size: 16px;
-            margin-right: 4px;
-        }
-
-        /* ================= MAIN CONTENT ================= */
-        .main-content {
-            flex: 1;
-            padding-bottom: 8px;
-        }
-
-        /* ================= MODES CONTAINER ================= */
-        .modes {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-
-        /* ================= NOTIFICATION ================= */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            left: 20px;
-            background: var(--primary-gradient);
-            color: white;
-            padding: 12px 16px;
-            border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
-            z-index: 1000;
-            text-align: center;
-            font-weight: 600;
-            transform: translateY(-100px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 380px) {
-            .mode-card, .btn {
-                padding: 10px 14px;
-                font-size: 14px;
-                min-height: 44px;
-                margin-bottom: 4px;
-            }
-            
-            .title {
-                font-size: 18px;
-            }
-            
-            .score-card {
-                padding: 8px 14px;
-                min-height: 65px;
-                margin-bottom: 8px;
-            }
-            
-            .star {
-                font-size: 16px;
-            }
-            
-            .score-value {
-                font-size: 18px;
-            }
-            
-            .notification {
-                right: 10px;
-                left: 10px;
-                top: 10px;
-                padding: 10px 14px;
-                font-size: 14px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>English with Fred</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="app">
-        <!-- TOP BAR -->
-        <div class="top-bar">
-            <button class="top-btn" id="muteBtn">🔊</button>
-            <div class="title" id="titleClick">English with Fred</div>
-            <button class="top-btn" id="themeBtn">🌙</button>
-        </div>
 
-        <!-- HOME VIEW -->
+<body>
+<div class="app">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="top-btn" id="muteBtn">🔊</div>
+        <div class="title">English with Fred</div>
+        <div class="top-btn" id="themeBtn">🌙</div>
+    </div>
+
+    <!-- HOME -->
+    <div id="home" class="view active">
         <div class="main-content">
-            <!-- SCORE CARD -->
+
             <div class="score-card">
                 <div class="stars-box" id="starsContainer">
-                    <span class="star">☆</span>
-                    <span class="star">☆</span>
-                    <span class="star">☆</span>
-                    <span class="star">☆</span>
+                    <span class="star">☆</span><span class="star">☆</span>
+                    <span class="star">☆</span><span class="star">☆</span>
                     <span class="star">☆</span>
                 </div>
                 <div class="score-text">
@@ -367,334 +33,50 @@
                 </div>
             </div>
 
-            <!-- MODE CARDS -->
             <div class="modes">
-                <button class="mode-card" data-mode="english-persian">
-                    <span>English → Persian</span>
-                    <span class="mode-icon">🇺🇸→🇮🇷</span>
-                </button>
-                <button class="mode-card" data-mode="persian-english">
-                    <span>Persian → English</span>
-                    <span class="mode-icon">🇮🇷→🇺🇸</span>
-                </button>
-                <button class="mode-card" data-mode="word-definition">
-                    <span>Word → Definition</span>
-                    <span class="mode-icon">🔤</span>
-                </button>
-                <button class="mode-card" data-mode="definition-word">
-                    <span>Definition → Word</span>
-                    <span class="mode-icon">📚</span>
-                </button>
+                <div class="mode-card" data-mode="english-persian">English → Persian</div>
+                <div class="mode-card" data-mode="persian-english">Persian → English</div>
+                <div class="mode-card" data-mode="word-definition">Word → Definition</div>
+                <div class="mode-card" data-mode="definition-word">Definition → Word</div>
             </div>
 
-            <!-- ACTION BUTTONS -->
-            <button class="btn green" id="reviewMistakesBtn">
-                <span>🎯</span>
-                <span>مرور اشتباهات هوشمند</span>
-            </button>
-            <button class="btn light" id="progressReportBtn">
-                <span>📊</span>
-                <span>گزارش پیشرفت</span>
-            </button>
-            <a href="https://wa.me/989017708544?text=سلام%20استاد%20Fred%20میخواهم%20در%20کلاس%20انگلیسی%20ثبت%20نام%20کنم" 
-               class="btn green" target="_blank">
-                <span>💬</span>
-                <span>ثبت‌نام در واتساپ</span>
-            </a>
-            <button class="btn red" id="exitBtn">
-                <span>🚪</span>
-                <span>خروج</span>
-            </button>
-        </div>
+            <button class="btn green" id="reviewMistakesBtn">🎯 مرور اشتباهات</button>
+            <button class="btn light" id="progressReportBtn">📊 گزارش پیشرفت</button>
+            <button class="btn red" id="exitBtn">🚪 خروج</button>
 
-        <!-- NOTIFICATION -->
-        <div class="notification" id="notification"></div>
+        </div>
     </div>
 
-    <script>
-        // ====== STATE MANAGEMENT ======
-        let appState = {
-            bestScore: 0,
-            isMuted: false,
-            isDark: false
-        };
+    <!-- QUIZ -->
+    <div id="quiz" class="view">
+        <div class="main-content">
 
-        // ====== DOM ELEMENTS ======
-        const elements = {
-            muteBtn: document.getElementById('muteBtn'),
-            themeBtn: document.getElementById('themeBtn'),
-            titleClick: document.getElementById('titleClick'),
-            scoreValue: document.getElementById('scoreValue'),
-            stars: document.querySelectorAll('.star'),
-            notification: document.getElementById('notification'),
-            modeCards: document.querySelectorAll('.mode-card'),
-            reviewMistakesBtn: document.getElementById('reviewMistakesBtn'),
-            progressReportBtn: document.getElementById('progressReportBtn'),
-            exitBtn: document.getElementById('exitBtn')
-        };
+            <div class="score-card">
+                <div class="score-text">
+                    سوال <span id="currentQuestion">1</span> از 10
+                    <strong class="score-value">امتیاز: <span id="quizScore">0</span></strong>
+                </div>
+            </div>
 
-        // ====== UTILITY FUNCTIONS ======
-        function showNotification(message, duration = 2000) {
-            const notification = elements.notification;
-            notification.textContent = message;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, duration);
-        }
+            <div class="score-card">
+                <div id="questionText" style="text-align:center;font-size:18px;"></div>
+            </div>
 
-        // ====== THEME MANAGEMENT ======
-        function loadTheme() {
-            const savedTheme = localStorage.getItem('theme');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                document.body.classList.add('dark');
-                appState.isDark = true;
-                elements.themeBtn.textContent = '☀️';
-            }
-        }
+            <input id="answerInput" type="text" placeholder="پاسخت رو بنویس…">
+            <button class="btn green" id="submitAnswer">✔ بررسی</button>
+            <div id="feedback" style="text-align:center;"></div>
+            <button class="btn red" id="backHome">🏠 بازگشت</button>
 
-        function toggleTheme() {
-            document.body.classList.toggle('dark');
-            appState.isDark = document.body.classList.contains('dark');
-            localStorage.setItem('theme', appState.isDark ? 'dark' : 'light');
-            
-            elements.themeBtn.textContent = appState.isDark ? '☀️' : '🌙';
-            showNotification(appState.isDark ? 'تم تاریک فعال شد 🌙' : 'تم روشن فعال شد ☀️');
-        }
+        </div>
+    </div>
 
-        // ====== MUTE MANAGEMENT ======
-        function loadMuteState() {
-            const savedMute = localStorage.getItem('muted');
-            appState.isMuted = savedMute === 'true';
-            updateMuteButton();
-        }
+    <div class="notification" id="notification"></div>
 
-        function toggleMute() {
-            appState.isMuted = !appState.isMuted;
-            localStorage.setItem('muted', appState.isMuted);
-            updateMuteButton();
-            showNotification(appState.isMuted ? 'صدا خاموش شد 🔇' : 'صدا روشن شد 🔊');
-        }
+</div>
 
-        function updateMuteButton() {
-            elements.muteBtn.textContent = appState.isMuted ? '🔇' : '🔊';
-            elements.muteBtn.style.animation = 'none';
-            setTimeout(() => {
-                elements.muteBtn.style.animation = 'fadeIn 0.5s ease';
-            }, 10);
-        }
-
-        // ====== SCORE MANAGEMENT ======
-        function loadBestScore() {
-            const saved = localStorage.getItem('bestScore');
-            if (saved !== null) {
-                appState.bestScore = parseInt(saved, 10) || 0;
-            }
-            updateScoreDisplay();
-        }
-
-        function setBestScore(newScore) {
-            newScore = Math.min(100, Math.max(0, newScore));
-            
-            if (newScore > appState.bestScore) {
-                appState.bestScore = newScore;
-                localStorage.setItem('bestScore', appState.bestScore.toString());
-                updateScoreDisplay();
-                
-                // Celebration for high score
-                if (newScore >= 80) {
-                    showNotification('🎉 تبریک! شما رکورد جدیدی ثبت کردید!');
-                    elements.stars.forEach(star => {
-                        star.style.animation = 'fadeIn 0.8s ease infinite';
-                        setTimeout(() => {
-                            star.style.animation = '';
-                        }, 2000);
-                    });
-                }
-            }
-        }
-
-        function updateScoreDisplay() {
-            elements.scoreValue.textContent = appState.bestScore + '%';
-            const filledCount = Math.floor(appState.bestScore / 20);
-            
-            elements.stars.forEach((star, index) => {
-                if (index < filledCount) {
-                    star.classList.add('filled');
-                } else {
-                    star.classList.remove('filled');
-                }
-            });
-        }
-
-        // ====== BUTTON HANDLERS ======
-        function handleModeCardClick() {
-            const mode = this.getAttribute('data-mode');
-            let modeName = '';
-            
-            switch(mode) {
-                case 'english-persian':
-                    modeName = 'انگلیسی به فارسی';
-                    break;
-                case 'persian-english':
-                    modeName = 'فارسی به انگلیسی';
-                    break;
-                case 'word-definition':
-                    modeName = 'کلمه به تعریف';
-                    break;
-                case 'definition-word':
-                    modeName = 'تعریف به کلمه';
-                    break;
-            }
-            
-            showNotification(`حالت "${modeName}" فعال شد. شروع آزمون...`);
-            
-            // Visual feedback
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 150);
-            
-            // Haptic feedback
-            if (window.navigator.vibrate) {
-                window.navigator.vibrate(30);
-            }
-            
-            // Increase score for demo
-            setTimeout(() => {
-                const newScore = Math.min(100, appState.bestScore + Math.floor(Math.random() * 10) + 5);
-                setBestScore(newScore);
-            }, 500);
-        }
-
-        function handleReviewMistakes() {
-            showNotification('سیستم مرور اشتباهات در حال بارگذاری...');
-            setTimeout(() => {
-                showNotification('۱۰ سوال برای مرور اشتباهات آماده شد!');
-                const newScore = Math.min(100, appState.bestScore + Math.floor(Math.random() * 8) + 3);
-                setBestScore(newScore);
-            }, 1500);
-        }
-
-        function handleProgressReport() {
-            showNotification('گزارش پیشرفت شما در حال تولید است...');
-            setTimeout(() => {
-                const progressDetails = `🎯 پیشرفت کلی: ${appState.bestScore}%\n📊 تعداد تمرینات: ${Math.floor(appState.bestScore/5)}\n⭐️ مهارت کسب شده: ${Math.floor(appState.bestScore/20)} ستاره\n📈 روند یادگیری: صعودی`;
-                showNotification(progressDetails, 3000);
-            }, 1000);
-        }
-
-        function handleExit() {
-            showNotification('آیا مطمئن هستید که می‌خواهید خارج شوید؟', 2500);
-            setTimeout(() => {
-                showNotification('با موفقیت از برنامه خارج شدید. امتیاز شما ذخیره شد.', 2000);
-                // Visual exit effect
-                document.body.style.opacity = '0.7';
-                setTimeout(() => {
-                    document.body.style.opacity = '1';
-                }, 500);
-            }, 2500);
-        }
-
-        function handleTitleClick() {
-            const newScore = appState.bestScore + 20;
-            if (newScore <= 100) {
-                setBestScore(newScore);
-                showNotification(`امتیاز شما ${newScore}% شد!`);
-            } else {
-                showNotification('امتیاز شما در حداکثر ممکن است (۱۰۰%)');
-            }
-        }
-
-        // ====== EVENT LISTENERS SETUP ======
-        function setupEventListeners() {
-            console.log('🔧 Setting up event listeners...');
-            
-            // Theme button
-            elements.themeBtn.addEventListener('click', toggleTheme);
-            
-            // Mute button
-            elements.muteBtn.addEventListener('click', toggleMute);
-            
-            // Title click
-            elements.titleClick.addEventListener('click', handleTitleClick);
-            
-            // Mode cards
-            elements.modeCards.forEach(card => {
-                card.addEventListener('click', handleModeCardClick);
-            });
-            
-            // Action buttons
-            elements.reviewMistakesBtn.addEventListener('click', handleReviewMistakes);
-            elements.progressReportBtn.addEventListener('click', handleProgressReport);
-            elements.exitBtn.addEventListener('click', handleExit);
-            
-            console.log('✅ All event listeners set up');
-        }
-
-        // ====== INITIALIZATION ======
-        function initApp() {
-            console.log('🚀 Initializing English with Fred...');
-            
-            // Load saved states
-            loadTheme();
-            loadMuteState();
-            loadBestScore();
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Prevent iOS zoom
-            document.addEventListener('touchstart', (e) => {
-                if (e.touches.length > 1) e.preventDefault();
-            }, { passive: false });
-            
-            // Fade in
-            setTimeout(() => {
-                document.body.style.opacity = '1';
-            }, 100);
-            
-            console.log('✅ App initialized successfully');
-        }
-
-        // ====== START APP ======
-        // Wait for DOM to be fully loaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
-
-        // ====== DEBUG HELPERS ======
-        window.debugApp = function() {
-            console.log('🔍 Debugging app...');
-            console.log('App State:', appState);
-            console.log('Elements found:', {
-                modeCards: elements.modeCards.length,
-                buttons: {
-                    muteBtn: !!elements.muteBtn,
-                    themeBtn: !!elements.themeBtn,
-                    reviewMistakesBtn: !!elements.reviewMistakesBtn,
-                    progressReportBtn: !!elements.progressReportBtn,
-                    exitBtn: !!elements.exitBtn
-                }
-            });
-            
-            // Test click on first mode card
-            if (elements.modeCards.length > 0) {
-                console.log('Testing first mode card...');
-                elements.modeCards[0].click();
-            }
-        };
-
-        // Run debug after 2 seconds
-        setTimeout(() => {
-            console.log('English with Fred is ready!');
-            console.log('Type debugApp() in console to test');
-        }, 2000);
-    </script>
+<script src="words.js"></script>
+<script src="progress.js"></script>
+<script src="speech.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
