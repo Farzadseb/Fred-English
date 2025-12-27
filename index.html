@@ -850,7 +850,7 @@ function setBestScore(newScore) {
 // Demo: Click title to increase score
 document.getElementById('titleClick').onclick = () => {
     const newScore = bestScore + 20;
-    if (newScore <= 100) {
+    if (newScore <= 100) {5h
         setBestScore(newScore);
         showNotification(`امتیاز شما ${newScore}% شد!`);
     } else {
@@ -866,6 +866,281 @@ function updateSafeArea() {
 
 window.addEventListener('resize', updateSafeArea);
 updateSafeArea();
+</script>
+    <script>
+/* ====== SCREEN CONTROLLER ====== */
+const ScreenController = {
+    currentView: 'home',
+    
+    switchTo: function(viewId) {
+        // مخفی کردن همه صفحات
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.remove('active');
+        });
+        
+        // نمایش صفحه جدید
+        const newView = document.getElementById(viewId);
+        if (newView) {
+            newView.classList.add('active');
+            this.currentView = viewId;
+            console.log('📱 Switched to view:', viewId);
+            
+            // اسکرول به بالا
+            window.scrollTo(0, 0);
+        }
+    }
+};
+
+/* ====== QUIZ FUNCTIONS ====== */
+function startQuiz(mode) {
+    console.log('🎯 Starting quiz in mode:', mode);
+    
+    // تغییر به صفحه آزمون
+    ScreenController.switchTo('quiz');
+    
+    // به روزرسانی عنوان
+    document.querySelector('.title').textContent = 'آزمون انگلیسی';
+    
+    // نمایش اطلاعات آزمون
+    const questionText = document.getElementById('questionText');
+    if (questionText) {
+        const modeNames = {
+            'english-persian': 'انگلیسی به فارسی',
+            'persian-english': 'فارسی به انگلیسی', 
+            'word-definition': 'کلمه به تعریف',
+            'definition-word': 'تعریف به کلمه'
+        };
+        questionText.textContent = `آزمون حالت: ${modeNames[mode] || mode}`;
+    }
+}
+
+function goBackToHome() {
+    ScreenController.switchTo('home');
+    document.querySelector('.title').textContent = 'English with Fred';
+}
+
+/* ====== UPDATE INITIALIZE BUTTON FUNCTIONS ====== */
+function initializeButtonFunctions() {
+    console.log('🔧 Initializing buttons...');
+    
+    // 1. چهار کارد حالت (Mode Cards)
+    document.querySelectorAll('.mode-card').forEach((modeCard) => {
+        modeCard.addEventListener('click', function() {
+            const mode = this.getAttribute('data-mode');
+            let modeName = '';
+            
+            switch(mode) {
+                case 'english-persian':
+                    modeName = 'انگلیسی به فارسی';
+                    break;
+                case 'persian-english':
+                    modeName = 'فارسی به انگلیسی';
+                    break;
+                case 'word-definition':
+                    modeName = 'کلمه به تعریف';
+                    break;
+                case 'definition-word':
+                    modeName = 'تعریف به کلمه';
+                    break;
+            }
+            
+            showNotification(`حالت "${modeName}" فعال شد. شروع آزمون...`);
+            startQuiz(mode);
+        });
+    });
+    
+    // 2. دکمه بازگشت به خانه (اگر وجود دارد)
+    const backToHomeBtn = document.getElementById('backToHomeBtn');
+    if (backToHomeBtn) {
+        backToHomeBtn.addEventListener('click', goBackToHome);
+    }
+    
+    // 3. دکمه سوال بعدی (اگر وجود دارد)
+    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+    if (nextQuestionBtn) {
+        nextQuestionBtn.addEventListener('click', function() {
+            showNotification('سوال بعدی در حال بارگذاری...');
+            // افزایش امتیاز تست
+            const currentScore = parseInt(localStorage.getItem('bestScore') || '0');
+            const newScore = Math.min(100, currentScore + Math.floor(Math.random() * 10) + 5);
+            
+            // ذخیره امتیاز جدید
+            localStorage.setItem('bestScore', newScore);
+            document.getElementById('scoreValue').textContent = newScore + '%';
+            
+            // به روزرسانی ستاره‌ها
+            const stars = document.querySelectorAll('.star');
+            const filledCount = Math.floor(newScore / 20);
+            stars.forEach((star, i) => {
+                if (i < filledCount) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        });
+    }
+    
+    // بقیه دکمه‌ها (کدهای قبلی)
+    // ...
+}
+
+/* ====== UPDATE DOMContentLoaded ====== */
+document.addEventListener('DOMContentLoaded', () => {
+    // Prevent iOS zoom
+    document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    
+    // Load saved states
+    loadTheme();
+    loadMuteState();
+    loadBestScore();
+    
+    // Initialize all button functionalities
+    initializeButtonFunctions();
+    
+    document.body.style.opacity = '1';
+    
+    console.log('✅ App initialized successfully');
+});
+    <script>
+/* ====== SCREEN CONTROLLER ====== */
+const ScreenController = {
+    currentView: 'home',
+    
+    switchTo: function(viewId) {
+        // مخفی کردن همه صفحات
+        document.querySelectorAll('.view').forEach(view => {
+            view.classList.remove('active');
+        });
+        
+        // نمایش صفحه جدید
+        const newView = document.getElementById(viewId);
+        if (newView) {
+            newView.classList.add('active');
+            this.currentView = viewId;
+            console.log('📱 Switched to view:', viewId);
+            
+            // اسکرول به بالا
+            window.scrollTo(0, 0);
+        }
+    }
+};
+
+/* ====== QUIZ FUNCTIONS ====== */
+function startQuiz(mode) {
+    console.log('🎯 Starting quiz in mode:', mode);
+    
+    // تغییر به صفحه آزمون
+    ScreenController.switchTo('quiz');
+    
+    // به روزرسانی عنوان
+    document.querySelector('.title').textContent = 'آزمون انگلیسی';
+    
+    // نمایش اطلاعات آزمون
+    const questionText = document.getElementById('questionText');
+    if (questionText) {
+        const modeNames = {
+            'english-persian': 'انگلیسی به فارسی',
+            'persian-english': 'فارسی به انگلیسی', 
+            'word-definition': 'کلمه به تعریف',
+            'definition-word': 'تعریف به کلمه'
+        };
+        questionText.textContent = `آزمون حالت: ${modeNames[mode] || mode}`;
+    }
+}
+
+function goBackToHome() {
+    ScreenController.switchTo('home');
+    document.querySelector('.title').textContent = 'English with Fred';
+}
+
+/* ====== UPDATE INITIALIZE BUTTON FUNCTIONS ====== */
+function initializeButtonFunctions() {
+    console.log('🔧 Initializing buttons...');
+    
+    // 1. چهار کارد حالت (Mode Cards)
+    document.querySelectorAll('.mode-card').forEach((modeCard) => {
+        modeCard.addEventListener('click', function() {
+            const mode = this.getAttribute('data-mode');
+            let modeName = '';
+            
+            switch(mode) {
+                case 'english-persian':
+                    modeName = 'انگلیسی به فارسی';
+                    break;
+                case 'persian-english':
+                    modeName = 'فارسی به انگلیسی';
+                    break;
+                case 'word-definition':
+                    modeName = 'کلمه به تعریف';
+                    break;
+                case 'definition-word':
+                    modeName = 'تعریف به کلمه';
+                    break;
+            }
+            
+            showNotification(`حالت "${modeName}" فعال شد. شروع آزمون...`);
+            startQuiz(mode);
+        });
+    });
+    
+    // 2. دکمه بازگشت به خانه (اگر وجود دارد)
+    const backToHomeBtn = document.getElementById('backToHomeBtn');
+    if (backToHomeBtn) {
+        backToHomeBtn.addEventListener('click', goBackToHome);
+    }
+    
+    // 3. دکمه سوال بعدی (اگر وجود دارد)
+    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+    if (nextQuestionBtn) {
+        nextQuestionBtn.addEventListener('click', function() {
+            showNotification('سوال بعدی در حال بارگذاری...');
+            // افزایش امتیاز تست
+            const currentScore = parseInt(localStorage.getItem('bestScore') || '0');
+            const newScore = Math.min(100, currentScore + Math.floor(Math.random() * 10) + 5);
+            
+            // ذخیره امتیاز جدید
+            localStorage.setItem('bestScore', newScore);
+            document.getElementById('scoreValue').textContent = newScore + '%';
+            
+            // به روزرسانی ستاره‌ها
+            const stars = document.querySelectorAll('.star');
+            const filledCount = Math.floor(newScore / 20);
+            stars.forEach((star, i) => {
+                if (i < filledCount) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        });
+    }
+    
+    // بقیه دکمه‌ها (کدهای قبلی)
+    // ...
+}
+
+/* ====== UPDATE DOMContentLoaded ====== */
+document.addEventListener('DOMContentLoaded', () => {
+    // Prevent iOS zoom
+    document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    
+    // Load saved states
+    loadTheme();
+    loadMuteState();
+    loadBestScore();
+    
+    // Initialize all button functionalities
+    initializeButtonFunctions();
+    
+    document.body.style.opacity = '1';
+    
+    console.log('✅ App initialized successfully');
+});
 </script>
 </body>
 </html>
