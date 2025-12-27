@@ -1142,5 +1142,109 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✅ App initialized successfully');
 });
 </script>
+    <script>
+/* ========= SINGLE SOURCE OF TRUTH ========= */
+
+const App = {
+    state: {
+        view: 'home',
+        mode: null,
+        muted: localStorage.getItem('muted') === 'true',
+        theme: localStorage.getItem('theme') || 'light',
+        bestScore: parseInt(localStorage.getItem('bestScore') || '0', 10)
+    }
+};
+
+/* ========= VIEW CONTROL ========= */
+
+function switchView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    App.state.view = id;
+    window.scrollTo(0,0);
+}
+
+/* ========= THEME ========= */
+
+function applyTheme() {
+    document.body.classList.toggle('dark', App.state.theme === 'dark');
+    document.getElementById('themeBtn').textContent =
+        App.state.theme === 'dark' ? '☀️' : '🌙';
+}
+
+function toggleTheme() {
+    App.state.theme = App.state.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', App.state.theme);
+    applyTheme();
+}
+
+/* ========= MUTE ========= */
+
+function applyMute() {
+    document.getElementById('muteBtn').textContent =
+        App.state.muted ? '🔇' : '🔊';
+}
+
+function toggleMute() {
+    App.state.muted = !App.state.muted;
+    localStorage.setItem('muted', App.state.muted);
+    applyMute();
+}
+
+/* ========= SCORE ========= */
+
+function renderScore() {
+    const el = document.getElementById('scoreValue');
+    if (el) el.textContent = App.state.bestScore + '%';
+}
+
+/* ========= QUIZ ========= */
+
+function startQuiz(mode) {
+    App.state.mode = mode;
+    console.log('QUIZ START:', mode);
+    switchView('quiz');
+
+    const names = {
+        'english-persian':'انگلیسی به فارسی',
+        'persian-english':'فارسی به انگلیسی',
+        'word-definition':'کلمه به تعریف',
+        'definition-word':'تعریف به کلمه'
+    };
+
+    const q = document.getElementById('questionText');
+    if (q) q.textContent = 'حالت آزمون: ' + (names[mode] || mode);
+}
+
+/* ========= EVENTS ========= */
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    applyTheme();
+    applyMute();
+    renderScore();
+
+    document.getElementById('themeBtn')?.addEventListener('click', toggleTheme);
+    document.getElementById('muteBtn')?.addEventListener('click', toggleMute);
+
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const mode = card.dataset.mode;
+            if (!mode) return;
+            startQuiz(mode);
+        });
+    });
+
+    document.getElementById('backToHomeBtn')?.addEventListener('click', () => {
+        switchView('home');
+    });
+
+    document.getElementById('progressReportBtn')?.addEventListener('click', () => {
+        switchView('progressReport');
+    });
+
+});
+    </script>
 </body>
 </html>
