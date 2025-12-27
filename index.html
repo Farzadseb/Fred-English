@@ -34,6 +34,7 @@ body {
     overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background 0.3s ease;
 }
 
 /* ================= THEME VARIABLES ================= */
@@ -47,6 +48,7 @@ body {
     --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
     --secondary: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
     --danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    --warning: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
     --muted: #8e9aaf;
     --border: rgba(0, 0, 0, 0.08);
     --star-outline: #e0e6ff;
@@ -65,6 +67,7 @@ body.dark {
     --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
     --secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    --warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     --muted: #64748b;
     --border: rgba(255, 255, 255, 0.1);
     --star-outline: #334155;
@@ -85,6 +88,34 @@ body.dark {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(40, 40);
+        opacity: 0;
+    }
+}
+
+@keyframes starPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
 /* ================= CONTENT AREA ================= */
@@ -163,6 +194,7 @@ body.dark {
     border-radius: 10px;
     user-select: none;
     letter-spacing: -0.3px;
+    cursor: pointer;
 }
 
 /* ================= SCORE CARD ================= */
@@ -206,12 +238,6 @@ body.dark {
     color: var(--star-filled);
     animation: starPulse 0.5s ease-out;
     text-shadow: 0 0 15px rgba(255, 217, 61, 0.5);
-}
-
-@keyframes starPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
 }
 
 /* بهترین امتیاز و عددش 30% کوچکتر */
@@ -314,6 +340,12 @@ body.dark {
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
+.btn.warning { 
+    background: var(--warning);
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
 .btn.light { 
     background: var(--card);
     color: var(--text);
@@ -348,17 +380,6 @@ body.dark {
 
 .mode-card:active::before, .btn:active::before {
     animation: ripple 0.6s ease-out;
-}
-
-@keyframes ripple {
-    0% {
-        transform: scale(0, 0);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(40, 40);
-        opacity: 0;
-    }
 }
 
 .mode-icon {
@@ -412,17 +433,6 @@ body.dark {
     display: none; 
     animation: slideIn 0.4s ease-out;
     height: 100%;
-}
-
-@keyframes slideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
 }
 
 .view.active { 
@@ -635,6 +645,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ====== BUTTON FUNCTIONS ====== */
 function initializeButtonFunctions() {
+    console.log('🔧 Initializing buttons...');
+    
     // 1. چهار کارد حالت (Mode Cards)
     document.querySelectorAll('.mode-card').forEach((modeCard) => {
         modeCard.addEventListener('click', function() {
@@ -685,7 +697,7 @@ function initializeButtonFunctions() {
                 window.navigator.vibrate(30);
             }
             
-            // افزایش امتیاز برای تست (در برنامه واقعی اینجا با سرویس‌سرور ارتباط برقرار می‌شود)
+            // افزایش امتیاز برای تست
             setTimeout(() => {
                 const newScore = Math.min(100, bestScore + Math.floor(Math.random() * 10) + 5);
                 setBestScore(newScore);
@@ -850,7 +862,7 @@ function setBestScore(newScore) {
 // Demo: Click title to increase score
 document.getElementById('titleClick').onclick = () => {
     const newScore = bestScore + 20;
-    if (newScore <= 100) {5h
+    if (newScore <= 100) {
         setBestScore(newScore);
         showNotification(`امتیاز شما ${newScore}% شد!`);
     } else {
@@ -860,391 +872,17 @@ document.getElementById('titleClick').onclick = () => {
 
 /* ====== SAFE AREA SUPPORT ====== */
 function updateSafeArea() {
-    document.body.style.setProperty('--safe-top', env(safe-area-inset-top) + 'px');
-    document.body.style.setProperty('--safe-bottom', env(safe-area-inset-bottom) + 'px');
+    document.body.style.setProperty('--safe-top', env('safe-area-inset-top') + 'px');
+    document.body.style.setProperty('--safe-bottom', env('safe-area-inset-bottom') + 'px');
 }
 
 window.addEventListener('resize', updateSafeArea);
 updateSafeArea();
+
+/* ====== CONSOLE LOG FOR DEBUGGING ====== */
+console.log('✅ English with Fred loaded successfully');
+console.log('✨ All buttons should be working now');
+console.log('🔍 If buttons still don\'t work, check browser console for errors');
 </script>
-    <script>
-/* ====== SCREEN CONTROLLER ====== */
-const ScreenController = {
-    currentView: 'home',
-    
-    switchTo: function(viewId) {
-        // مخفی کردن همه صفحات
-        document.querySelectorAll('.view').forEach(view => {
-            view.classList.remove('active');
-        });
-        
-        // نمایش صفحه جدید
-        const newView = document.getElementById(viewId);
-        if (newView) {
-            newView.classList.add('active');
-            this.currentView = viewId;
-            console.log('📱 Switched to view:', viewId);
-            
-            // اسکرول به بالا
-            window.scrollTo(0, 0);
-        }
-    }
-};
-
-/* ====== QUIZ FUNCTIONS ====== */
-function startQuiz(mode) {
-    console.log('🎯 Starting quiz in mode:', mode);
-    
-    // تغییر به صفحه آزمون
-    ScreenController.switchTo('quiz');
-    
-    // به روزرسانی عنوان
-    document.querySelector('.title').textContent = 'آزمون انگلیسی';
-    
-    // نمایش اطلاعات آزمون
-    const questionText = document.getElementById('questionText');
-    if (questionText) {
-        const modeNames = {
-            'english-persian': 'انگلیسی به فارسی',
-            'persian-english': 'فارسی به انگلیسی', 
-            'word-definition': 'کلمه به تعریف',
-            'definition-word': 'تعریف به کلمه'
-        };
-        questionText.textContent = `آزمون حالت: ${modeNames[mode] || mode}`;
-    }
-}
-
-function goBackToHome() {
-    ScreenController.switchTo('home');
-    document.querySelector('.title').textContent = 'English with Fred';
-}
-
-/* ====== UPDATE INITIALIZE BUTTON FUNCTIONS ====== */
-function initializeButtonFunctions() {
-    console.log('🔧 Initializing buttons...');
-    
-    // 1. چهار کارد حالت (Mode Cards)
-    document.querySelectorAll('.mode-card').forEach((modeCard) => {
-        modeCard.addEventListener('click', function() {
-            const mode = this.getAttribute('data-mode');
-            let modeName = '';
-            
-            switch(mode) {
-                case 'english-persian':
-                    modeName = 'انگلیسی به فارسی';
-                    break;
-                case 'persian-english':
-                    modeName = 'فارسی به انگلیسی';
-                    break;
-                case 'word-definition':
-                    modeName = 'کلمه به تعریف';
-                    break;
-                case 'definition-word':
-                    modeName = 'تعریف به کلمه';
-                    break;
-            }
-            
-            showNotification(`حالت "${modeName}" فعال شد. شروع آزمون...`);
-            startQuiz(mode);
-        });
-    });
-    
-    // 2. دکمه بازگشت به خانه (اگر وجود دارد)
-    const backToHomeBtn = document.getElementById('backToHomeBtn');
-    if (backToHomeBtn) {
-        backToHomeBtn.addEventListener('click', goBackToHome);
-    }
-    
-    // 3. دکمه سوال بعدی (اگر وجود دارد)
-    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
-    if (nextQuestionBtn) {
-        nextQuestionBtn.addEventListener('click', function() {
-            showNotification('سوال بعدی در حال بارگذاری...');
-            // افزایش امتیاز تست
-            const currentScore = parseInt(localStorage.getItem('bestScore') || '0');
-            const newScore = Math.min(100, currentScore + Math.floor(Math.random() * 10) + 5);
-            
-            // ذخیره امتیاز جدید
-            localStorage.setItem('bestScore', newScore);
-            document.getElementById('scoreValue').textContent = newScore + '%';
-            
-            // به روزرسانی ستاره‌ها
-            const stars = document.querySelectorAll('.star');
-            const filledCount = Math.floor(newScore / 20);
-            stars.forEach((star, i) => {
-                if (i < filledCount) {
-                    star.classList.add('filled');
-                } else {
-                    star.classList.remove('filled');
-                }
-            });
-        });
-    }
-    
-    // بقیه دکمه‌ها (کدهای قبلی)
-    // ...
-}
-
-/* ====== UPDATE DOMContentLoaded ====== */
-document.addEventListener('DOMContentLoaded', () => {
-    // Prevent iOS zoom
-    document.addEventListener('touchstart', (e) => {
-        if (e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-    
-    // Load saved states
-    loadTheme();
-    loadMuteState();
-    loadBestScore();
-    
-    // Initialize all button functionalities
-    initializeButtonFunctions();
-    
-    document.body.style.opacity = '1';
-    
-    console.log('✅ App initialized successfully');
-});
-    <script>
-/* ====== SCREEN CONTROLLER ====== */
-const ScreenController = {
-    currentView: 'home',
-    
-    switchTo: function(viewId) {
-        // مخفی کردن همه صفحات
-        document.querySelectorAll('.view').forEach(view => {
-            view.classList.remove('active');
-        });
-        
-        // نمایش صفحه جدید
-        const newView = document.getElementById(viewId);
-        if (newView) {
-            newView.classList.add('active');
-            this.currentView = viewId;
-            console.log('📱 Switched to view:', viewId);
-            
-            // اسکرول به بالا
-            window.scrollTo(0, 0);
-        }
-    }
-};
-
-/* ====== QUIZ FUNCTIONS ====== */
-function startQuiz(mode) {
-    console.log('🎯 Starting quiz in mode:', mode);
-    
-    // تغییر به صفحه آزمون
-    ScreenController.switchTo('quiz');
-    
-    // به روزرسانی عنوان
-    document.querySelector('.title').textContent = 'آزمون انگلیسی';
-    
-    // نمایش اطلاعات آزمون
-    const questionText = document.getElementById('questionText');
-    if (questionText) {
-        const modeNames = {
-            'english-persian': 'انگلیسی به فارسی',
-            'persian-english': 'فارسی به انگلیسی', 
-            'word-definition': 'کلمه به تعریف',
-            'definition-word': 'تعریف به کلمه'
-        };
-        questionText.textContent = `آزمون حالت: ${modeNames[mode] || mode}`;
-    }
-}
-
-function goBackToHome() {
-    ScreenController.switchTo('home');
-    document.querySelector('.title').textContent = 'English with Fred';
-}
-
-/* ====== UPDATE INITIALIZE BUTTON FUNCTIONS ====== */
-function initializeButtonFunctions() {
-    console.log('🔧 Initializing buttons...');
-    
-    // 1. چهار کارد حالت (Mode Cards)
-    document.querySelectorAll('.mode-card').forEach((modeCard) => {
-        modeCard.addEventListener('click', function() {
-            const mode = this.getAttribute('data-mode');
-            let modeName = '';
-            
-            switch(mode) {
-                case 'english-persian':
-                    modeName = 'انگلیسی به فارسی';
-                    break;
-                case 'persian-english':
-                    modeName = 'فارسی به انگلیسی';
-                    break;
-                case 'word-definition':
-                    modeName = 'کلمه به تعریف';
-                    break;
-                case 'definition-word':
-                    modeName = 'تعریف به کلمه';
-                    break;
-            }
-            
-            showNotification(`حالت "${modeName}" فعال شد. شروع آزمون...`);
-            startQuiz(mode);
-        });
-    });
-    
-    // 2. دکمه بازگشت به خانه (اگر وجود دارد)
-    const backToHomeBtn = document.getElementById('backToHomeBtn');
-    if (backToHomeBtn) {
-        backToHomeBtn.addEventListener('click', goBackToHome);
-    }
-    
-    // 3. دکمه سوال بعدی (اگر وجود دارد)
-    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
-    if (nextQuestionBtn) {
-        nextQuestionBtn.addEventListener('click', function() {
-            showNotification('سوال بعدی در حال بارگذاری...');
-            // افزایش امتیاز تست
-            const currentScore = parseInt(localStorage.getItem('bestScore') || '0');
-            const newScore = Math.min(100, currentScore + Math.floor(Math.random() * 10) + 5);
-            
-            // ذخیره امتیاز جدید
-            localStorage.setItem('bestScore', newScore);
-            document.getElementById('scoreValue').textContent = newScore + '%';
-            
-            // به روزرسانی ستاره‌ها
-            const stars = document.querySelectorAll('.star');
-            const filledCount = Math.floor(newScore / 20);
-            stars.forEach((star, i) => {
-                if (i < filledCount) {
-                    star.classList.add('filled');
-                } else {
-                    star.classList.remove('filled');
-                }
-            });
-        });
-    }
-    
-    // بقیه دکمه‌ها (کدهای قبلی)
-    // ...
-}
-
-/* ====== UPDATE DOMContentLoaded ====== */
-document.addEventListener('DOMContentLoaded', () => {
-    // Prevent iOS zoom
-    document.addEventListener('touchstart', (e) => {
-        if (e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-    
-    // Load saved states
-    loadTheme();
-    loadMuteState();
-    loadBestScore();
-    
-    // Initialize all button functionalities
-    initializeButtonFunctions();
-    
-    document.body.style.opacity = '1';
-    
-    console.log('✅ App initialized successfully');
-});
-</script>
-    <script>
-/* ========= SINGLE SOURCE OF TRUTH ========= */
-
-const App = {
-    state: {
-        view: 'home',
-        mode: null,
-        muted: localStorage.getItem('muted') === 'true',
-        theme: localStorage.getItem('theme') || 'light',
-        bestScore: parseInt(localStorage.getItem('bestScore') || '0', 10)
-    }
-};
-
-/* ========= VIEW CONTROL ========= */
-
-function switchView(id) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    const el = document.getElementById(id);
-    if (el) el.classList.add('active');
-    App.state.view = id;
-    window.scrollTo(0,0);
-}
-
-/* ========= THEME ========= */
-
-function applyTheme() {
-    document.body.classList.toggle('dark', App.state.theme === 'dark');
-    document.getElementById('themeBtn').textContent =
-        App.state.theme === 'dark' ? '☀️' : '🌙';
-}
-
-function toggleTheme() {
-    App.state.theme = App.state.theme === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', App.state.theme);
-    applyTheme();
-}
-
-/* ========= MUTE ========= */
-
-function applyMute() {
-    document.getElementById('muteBtn').textContent =
-        App.state.muted ? '🔇' : '🔊';
-}
-
-function toggleMute() {
-    App.state.muted = !App.state.muted;
-    localStorage.setItem('muted', App.state.muted);
-    applyMute();
-}
-
-/* ========= SCORE ========= */
-
-function renderScore() {
-    const el = document.getElementById('scoreValue');
-    if (el) el.textContent = App.state.bestScore + '%';
-}
-
-/* ========= QUIZ ========= */
-
-function startQuiz(mode) {
-    App.state.mode = mode;
-    console.log('QUIZ START:', mode);
-    switchView('quiz');
-
-    const names = {
-        'english-persian':'انگلیسی به فارسی',
-        'persian-english':'فارسی به انگلیسی',
-        'word-definition':'کلمه به تعریف',
-        'definition-word':'تعریف به کلمه'
-    };
-
-    const q = document.getElementById('questionText');
-    if (q) q.textContent = 'حالت آزمون: ' + (names[mode] || mode);
-}
-
-/* ========= EVENTS ========= */
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    applyTheme();
-    applyMute();
-    renderScore();
-
-    document.getElementById('themeBtn')?.addEventListener('click', toggleTheme);
-    document.getElementById('muteBtn')?.addEventListener('click', toggleMute);
-
-    document.querySelectorAll('.mode-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const mode = card.dataset.mode;
-            if (!mode) return;
-            startQuiz(mode);
-        });
-    });
-
-    document.getElementById('backToHomeBtn')?.addEventListener('click', () => {
-        switchView('home');
-    });
-
-    document.getElementById('progressReportBtn')?.addEventListener('click', () => {
-        switchView('progressReport');
-    });
-
-});
-    </script>
 </body>
 </html>
