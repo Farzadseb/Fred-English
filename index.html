@@ -1,530 +1,356 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>English with Fred</title>
-
-<style>
-/* ================= RESET & OPTIMIZATIONS ================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-}
-
-html {
-    height: 100%;
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 16px;
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-    padding-top: env(safe-area-inset-top);
-    overscroll-behavior: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    transition: background 0.3s ease;
-}
-
-/* ================= THEME VARIABLES ================= */
-:root {
-    /* Light theme - Soft pastel */
-    --bg: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
-    --card: rgba(255, 255, 255, 0.97);
-    --card-shadow: 0 10px 30px rgba(33, 150, 243, 0.08);
-    --text: #2c3e50;
-    --text-secondary: #6c7b95;
-    --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
-    --secondary: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
-    --danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-    --warning: linear-gradient(135deg, #ffb347 0%, #ffcc33 100%);
-    --muted: #8e9aaf;
-    --border: rgba(0, 0, 0, 0.08);
-    --star-outline: #e0e6ff;
-    --star-filled: #ffd93d;
-    --glow: 0 0 30px rgba(102, 126, 234, 0.15);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-body.dark {
-    /* Dark theme */
-    --bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-    --card: rgba(30, 41, 59, 0.97);
-    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    --text: #e2e8f0;
-    --text-secondary: #94a3b8;
-    --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
-    --secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    --warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    --muted: #64748b;
-    --border: rgba(255, 255, 255, 0.1);
-    --star-outline: #334155;
-    --star-filled: #fbbf24;
-    --glow: 0 0 40px rgba(139, 92, 246, 0.25);
-}
-
-/* ================= APP CONTAINER ================= */
-.app {
-    max-width: 500px;
-    margin: 0 auto;
-    animation: fadeIn 0.5s ease-out;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(20px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
-@keyframes ripple {
-    0% {
-        transform: scale(0, 0);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(40, 40);
-        opacity: 0;
-    }
-}
-
-@keyframes starPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* ================= CONTENT AREA ================= */
-.content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* ================= TOP BAR ================= */
-.top-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    padding: 12px 16px;
-    border-radius: 20px;
-    margin-bottom: 12px;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.top-bar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(102, 126, 234, 0.3) 50%, 
-        transparent 100%);
-}
-
-.top-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 20px;
-    transition: var(--transition);
-    border: 1px solid var(--border);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    user-select: none;
-}
-
-.top-btn:active {
-    transform: scale(0.95);
-    opacity: 0.8;
-}
-
-.dark .top-btn {
-    background: rgba(15, 23, 42, 0.5);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.title {
-    font-weight: 700;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-size: 20px;
-    padding: 3px 10px;
-    border-radius: 10px;
-    user-select: none;
-    letter-spacing: -0.3px;
-    cursor: pointer;
-}
-
-/* ================= SCORE CARD ================= */
-.score-card {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 10px 16px;
-    margin-bottom: 10px;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--border);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: var(--transition);
-    width: 100%;
-    min-height: 75px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-/* ستاره‌ها 70% به هم نزدیکتر */
-.stars-box {
-    width: 85%;
-    margin: 0 auto 4px;
-    display: flex;
-    justify-content: center;
-    padding: 0;
-}
-
-.star {
-    font-size: 18px;
-    color: var(--star-outline);
-    transition: var(--transition);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-    margin: 0 0.3px;
-}
-
-.star.filled {
-    color: var(--star-filled);
-    animation: starPulse 0.5s ease-out;
-    text-shadow: 0 0 15px rgba(255, 217, 61, 0.5);
-}
-
-/* بهترین امتیاز و عددش 30% کوچکتر */
-.score-text {
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 10px;
-    margin-bottom: 0;
-}
-
-.score-value {
-    display: block;
-    font-size: 20px;
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-top: 1px;
-}
-
-/* ================= MODE CARDS و BUTTONS (یکسان سازی ابعاد) ================= */
-/* همه کادرها با ابعاد یکسان */
-.mode-card, .btn {
-    padding: 12px 16px;
-    border-radius: 16px;
-    font-size: 15px;
-    font-weight: 600;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-    width: 100%;
-    margin-bottom: 5px;
-    min-height: 48px;
-    flex-shrink: 0;
-    text-decoration: none;
-}
-
-/* MODE CARDS - فقط استایل خاص آنها */
-.mode-card {
-    background: var(--primary-gradient);
-    color: white;
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
-}
-
-/* افکت براق برای MODE CARDS */
-.mode-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.5) 50%, 
-        transparent 100%);
-    z-index: 1;
-}
-
-.mode-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.05) 50%, 
-        rgba(255, 255, 255, 0) 100%);
-    z-index: -1;
-}
-
-/* BUTTONS - استایل‌های خاص هر نوع دکمه */
-.btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    letter-spacing: -0.1px;
-}
-
-.btn.green { 
-    background: var(--secondary);
-    color: white;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
-}
-
-.btn.red { 
-    background: var(--danger);
-    color: white;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
-}
-
-.btn.warning { 
-    background: var(--warning);
-    color: white;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
-}
-
-.btn.light { 
-    background: var(--card);
-    color: var(--text);
-    border: 1px solid var(--border);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* افکت‌های مشترک برای همه کادرها */
-.mode-card:hover, .btn:hover {
-    transform: translateY(-1px);
-}
-
-.mode-card:active, .btn:active {
-    transform: translateY(0);
-    transition: all 0.1s ease;
-}
-
-/* افکت ripple برای همه */
-.mode-card::before, .btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.5);
-    opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%);
-    transform-origin: 50% 50%;
-}
-
-.mode-card:active::before, .btn:active::before {
-    animation: ripple 0.6s ease-out;
-}
-
-.mode-icon {
-    font-size: 16px;
-    margin-right: 4px;
-}
-
-/* ================= MAIN CONTENT ================= */
-.main-content {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 8px;
-}
-
-/* ================= MODES CONTAINER ================= */
-.modes {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 10px;
-}
-
-/* ================= NOTIFICATION ================= */
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    left: 20px;
-    background: var(--primary-gradient);
-    color: white;
-    padding: 12px 16px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
-    z-index: 1000;
-    text-align: center;
-    font-weight: 600;
-    transform: translateY(-100px);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-.notification.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* ================= VIEW SYSTEM ================= */
-.view { 
-    display: none; 
-    animation: slideIn 0.4s ease-out;
-    height: 100%;
-}
-
-.view.active { 
-    display: flex; 
-    flex-direction: column;
-    height: 100%;
-}
-
-/* ================= MUTE BUTTON STATES ================= */
-.mute-on {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%) !important;
-    color: white !important;
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2) !important;
-}
-
-.mute-off {
-    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%) !important;
-    color: white !important;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2) !important;
-}
-
-/* ================= RESPONSIVE ADJUSTMENTS ================= */
-@media (max-width: 380px) {
-    .mode-card, .btn {
-        padding: 10px 14px;
-        font-size: 14px;
-        min-height: 44px;
-        margin-bottom: 4px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>English with Fred</title>
     
-    .title {
-        font-size: 18px;
-    }
-    
-    .score-card {
-        padding: 8px 14px;
-        min-height: 65px;
-        margin-bottom: 8px;
-    }
-    
-    .star {
-        font-size: 16px;
-    }
-    
-    .stars-box {
-        width: 90%;
-    }
-    
-    .score-value {
-        font-size: 18px;
-    }
-    
-    .score-text {
-        font-size: 9px;
-    }
-    
-    .modes {
-        gap: 4px;
-        margin-bottom: 8px;
-    }
-    
-    .notification {
-        right: 10px;
-        left: 10px;
-        top: 10px;
-        padding: 10px 14px;
-        font-size: 14px;
-    }
-}
+    <style>
+        /* ================= RESET & OPTIMIZATIONS ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
 
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-</style>
+        html {
+            height: 100%;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+            padding-bottom: max(16px, env(safe-area-inset-bottom));
+            padding-top: env(safe-area-inset-top);
+            overscroll-behavior: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ================= THEME VARIABLES ================= */
+        :root {
+            /* Light theme - Soft pastel */
+            --bg: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+            --card: rgba(255, 255, 255, 0.97);
+            --card-shadow: 0 10px 30px rgba(33, 150, 243, 0.08);
+            --text: #2c3e50;
+            --text-secondary: #6c7b95;
+            --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
+            --secondary: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            --danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            --muted: #8e9aaf;
+            --border: rgba(0, 0, 0, 0.08);
+            --star-outline: #e0e6ff;
+            --star-filled: #ffd93d;
+            --glow: 0 0 30px rgba(102, 126, 234, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark {
+            /* Dark theme */
+            --bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card: rgba(30, 41, 59, 0.97);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --primary-gradient: linear-gradient(90deg, #2196f3, #4caf50);
+            --secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --muted: #64748b;
+            --border: rgba(255, 255, 255, 0.1);
+            --star-outline: #334155;
+            --star-filled: #fbbf24;
+            --glow: 0 0 40px rgba(139, 92, 246, 0.25);
+        }
+
+        /* ================= APP CONTAINER ================= */
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ================= TOP BAR ================= */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 16px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .top-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: var(--transition);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            user-select: none;
+            outline: none;
+        }
+
+        .top-btn:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+
+        .dark .top-btn {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .title {
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 20px;
+            padding: 3px 10px;
+            border-radius: 10px;
+            user-select: none;
+            letter-spacing: -0.3px;
+        }
+
+        /* ================= SCORE CARD ================= */
+        .score-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 10px 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: var(--transition);
+            width: 100%;
+            min-height: 75px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stars-box {
+            width: 85%;
+            margin: 0 auto 4px;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .star {
+            font-size: 18px;
+            color: var(--star-outline);
+            transition: var(--transition);
+            margin: 0 0.3px;
+        }
+
+        .star.filled {
+            color: var(--star-filled);
+        }
+
+        .score-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 10px;
+            margin-bottom: 0;
+        }
+
+        .score-value {
+            display: block;
+            font-size: 20px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-top: 1px;
+        }
+
+        /* ================= MODE CARDS ================= */
+        .mode-card, .btn {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            margin-bottom: 5px;
+            min-height: 48px;
+            flex-shrink: 0;
+            text-decoration: none;
+            outline: none;
+        }
+
+        .mode-card {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn.green { 
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+
+        .btn.red { 
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn.light { 
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .mode-card:active, .btn:active {
+            transform: scale(0.98);
+        }
+
+        .mode-icon {
+            font-size: 16px;
+            margin-right: 4px;
+        }
+
+        /* ================= MAIN CONTENT ================= */
+        .main-content {
+            flex: 1;
+            padding-bottom: 8px;
+        }
+
+        /* ================= MODES CONTAINER ================= */
+        .modes {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* ================= NOTIFICATION ================= */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            left: 20px;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+            z-index: 1000;
+            text-align: center;
+            font-weight: 600;
+            transform: translateY(-100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 380px) {
+            .mode-card, .btn {
+                padding: 10px 14px;
+                font-size: 14px;
+                min-height: 44px;
+                margin-bottom: 4px;
+            }
+            
+            .title {
+                font-size: 18px;
+            }
+            
+            .score-card {
+                padding: 8px 14px;
+                min-height: 65px;
+                margin-bottom: 8px;
+            }
+            
+            .star {
+                font-size: 16px;
+            }
+            
+            .score-value {
+                font-size: 18px;
+            }
+            
+            .notification {
+                right: 10px;
+                left: 10px;
+                top: 10px;
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-<div class="app">
+    <div class="app">
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <button class="top-btn" id="muteBtn">🔊</button>
+            <div class="title" id="titleClick">English with Fred</div>
+            <button class="top-btn" id="themeBtn">🌙</button>
+        </div>
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
-        <div class="top-btn" id="muteBtn">🔊</div>
-        <div class="title" id="titleClick">English with Fred</div>
-        <div class="top-btn" id="themeBtn">🌙</div>
-    </div>
-
-    <!-- HOME VIEW -->
-    <div id="home" class="view active">
+        <!-- HOME VIEW -->
         <div class="main-content">
             <!-- SCORE CARD -->
             <div class="score-card">
@@ -543,22 +369,22 @@ body.dark {
 
             <!-- MODE CARDS -->
             <div class="modes">
-                <div class="mode-card" data-mode="english-persian">
+                <button class="mode-card" data-mode="english-persian">
                     <span>English → Persian</span>
                     <span class="mode-icon">🇺🇸→🇮🇷</span>
-                </div>
-                <div class="mode-card" data-mode="persian-english">
+                </button>
+                <button class="mode-card" data-mode="persian-english">
                     <span>Persian → English</span>
                     <span class="mode-icon">🇮🇷→🇺🇸</span>
-                </div>
-                <div class="mode-card" data-mode="word-definition">
+                </button>
+                <button class="mode-card" data-mode="word-definition">
                     <span>Word → Definition</span>
                     <span class="mode-icon">🔤</span>
-                </div>
-                <div class="mode-card" data-mode="definition-word">
+                </button>
+                <button class="mode-card" data-mode="definition-word">
                     <span>Definition → Word</span>
                     <span class="mode-icon">📚</span>
-                </div>
+                </button>
             </div>
 
             <!-- ACTION BUTTONS -->
@@ -570,7 +396,8 @@ body.dark {
                 <span>📊</span>
                 <span>گزارش پیشرفت</span>
             </button>
-            <a href="https://wa.me/989017708544?text=سلام%20استاد%20Fred%20میخواهم%20در%20کلاس%20انگلیسی%20ثبت%20نام%20کنم" class="btn green" target="_blank">
+            <a href="https://wa.me/989017708544?text=سلام%20استاد%20Fred%20میخواهم%20در%20کلاس%20انگلیسی%20ثبت%20نام%20کنم" 
+               class="btn green" target="_blank">
                 <span>💬</span>
                 <span>ثبت‌نام در واتساپ</span>
             </a>
@@ -579,77 +406,132 @@ body.dark {
                 <span>خروج</span>
             </button>
         </div>
+
+        <!-- NOTIFICATION -->
+        <div class="notification" id="notification"></div>
     </div>
 
-    <!-- NOTIFICATION -->
-    <div class="notification" id="notification"></div>
+    <script>
+        // ====== STATE MANAGEMENT ======
+        let appState = {
+            bestScore: 0,
+            isMuted: false,
+            isDark: false
+        };
 
-</div>
+        // ====== DOM ELEMENTS ======
+        const elements = {
+            muteBtn: document.getElementById('muteBtn'),
+            themeBtn: document.getElementById('themeBtn'),
+            titleClick: document.getElementById('titleClick'),
+            scoreValue: document.getElementById('scoreValue'),
+            stars: document.querySelectorAll('.star'),
+            notification: document.getElementById('notification'),
+            modeCards: document.querySelectorAll('.mode-card'),
+            reviewMistakesBtn: document.getElementById('reviewMistakesBtn'),
+            progressReportBtn: document.getElementById('progressReportBtn'),
+            exitBtn: document.getElementById('exitBtn')
+        };
 
-<script>
-/* ====== STATE ====== */
-let bestScore = 0;
-let isMuted = false;
-const stars = document.querySelectorAll('#starsContainer .star');
-const scoreEl = document.getElementById('scoreValue');
-const muteBtn = document.getElementById('muteBtn');
-const themeBtn = document.getElementById('themeBtn');
-const notification = document.getElementById('notification');
-
-/* ====== NOTIFICATION SYSTEM ====== */
-function showNotification(message, duration = 2000) {
-    notification.textContent = message;
-    notification.classList.add('show');
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, duration);
-}
-
-/* ====== UPDATE SCORE DISPLAY ====== */
-function updateScoreDisplay() {
-    scoreEl.textContent = bestScore + '%';
-    const filledCount = Math.floor(bestScore / 20);
-    
-    stars.forEach((star, i) => {
-        const wasFilled = star.classList.contains('filled');
-        const shouldFill = i < filledCount;
-        
-        if (shouldFill && !wasFilled) {
+        // ====== UTILITY FUNCTIONS ======
+        function showNotification(message, duration = 2000) {
+            const notification = elements.notification;
+            notification.textContent = message;
+            notification.classList.add('show');
+            
             setTimeout(() => {
-                star.classList.add('filled');
-            }, i * 100);
-        } else if (!shouldFill) {
-            star.classList.remove('filled');
+                notification.classList.remove('show');
+            }, duration);
         }
-    });
-}
 
-/* ====== INITIALIZE ====== */
-document.addEventListener('DOMContentLoaded', () => {
-    // Prevent iOS zoom
-    document.addEventListener('touchstart', (e) => {
-        if (e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-    
-    // Load saved states
-    loadTheme();
-    loadMuteState();
-    loadBestScore();
-    
-    // Initialize all button functionalities
-    initializeButtonFunctions();
-    
-    document.body.style.opacity = '1';
-});
+        // ====== THEME MANAGEMENT ======
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.body.classList.add('dark');
+                appState.isDark = true;
+                elements.themeBtn.textContent = '☀️';
+            }
+        }
 
-/* ====== BUTTON FUNCTIONS ====== */
-function initializeButtonFunctions() {
-    console.log('🔧 Initializing buttons...');
-    
-    // 1. چهار کارد حالت (Mode Cards)
-    document.querySelectorAll('.mode-card').forEach((modeCard) => {
-        modeCard.addEventListener('click', function() {
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            appState.isDark = document.body.classList.contains('dark');
+            localStorage.setItem('theme', appState.isDark ? 'dark' : 'light');
+            
+            elements.themeBtn.textContent = appState.isDark ? '☀️' : '🌙';
+            showNotification(appState.isDark ? 'تم تاریک فعال شد 🌙' : 'تم روشن فعال شد ☀️');
+        }
+
+        // ====== MUTE MANAGEMENT ======
+        function loadMuteState() {
+            const savedMute = localStorage.getItem('muted');
+            appState.isMuted = savedMute === 'true';
+            updateMuteButton();
+        }
+
+        function toggleMute() {
+            appState.isMuted = !appState.isMuted;
+            localStorage.setItem('muted', appState.isMuted);
+            updateMuteButton();
+            showNotification(appState.isMuted ? 'صدا خاموش شد 🔇' : 'صدا روشن شد 🔊');
+        }
+
+        function updateMuteButton() {
+            elements.muteBtn.textContent = appState.isMuted ? '🔇' : '🔊';
+            elements.muteBtn.style.animation = 'none';
+            setTimeout(() => {
+                elements.muteBtn.style.animation = 'fadeIn 0.5s ease';
+            }, 10);
+        }
+
+        // ====== SCORE MANAGEMENT ======
+        function loadBestScore() {
+            const saved = localStorage.getItem('bestScore');
+            if (saved !== null) {
+                appState.bestScore = parseInt(saved, 10) || 0;
+            }
+            updateScoreDisplay();
+        }
+
+        function setBestScore(newScore) {
+            newScore = Math.min(100, Math.max(0, newScore));
+            
+            if (newScore > appState.bestScore) {
+                appState.bestScore = newScore;
+                localStorage.setItem('bestScore', appState.bestScore.toString());
+                updateScoreDisplay();
+                
+                // Celebration for high score
+                if (newScore >= 80) {
+                    showNotification('🎉 تبریک! شما رکورد جدیدی ثبت کردید!');
+                    elements.stars.forEach(star => {
+                        star.style.animation = 'fadeIn 0.8s ease infinite';
+                        setTimeout(() => {
+                            star.style.animation = '';
+                        }, 2000);
+                    });
+                }
+            }
+        }
+
+        function updateScoreDisplay() {
+            elements.scoreValue.textContent = appState.bestScore + '%';
+            const filledCount = Math.floor(appState.bestScore / 20);
+            
+            elements.stars.forEach((star, index) => {
+                if (index < filledCount) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        // ====== BUTTON HANDLERS ======
+        function handleModeCardClick() {
             const mode = this.getAttribute('data-mode');
             let modeName = '';
             
@@ -670,219 +552,149 @@ function initializeButtonFunctions() {
             
             showNotification(`حالت "${modeName}" فعال شد. شروع آزمون...`);
             
-            // Ripple effect
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = rect.width / 2;
-            const y = rect.height / 2;
-            
-            ripple.style.cssText = `
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(255,255,255,0.5);
-                transform: scale(0);
-                animation: ripple 0.6s linear;
-                width: ${size}px;
-                height: ${size}px;
-                top: ${y - size/2}px;
-                right: ${x - size/2}px;
-            `;
-            
-            this.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 600);
+            // Visual feedback
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
             
             // Haptic feedback
             if (window.navigator.vibrate) {
                 window.navigator.vibrate(30);
             }
             
-            // افزایش امتیاز برای تست
+            // Increase score for demo
             setTimeout(() => {
-                const newScore = Math.min(100, bestScore + Math.floor(Math.random() * 10) + 5);
+                const newScore = Math.min(100, appState.bestScore + Math.floor(Math.random() * 10) + 5);
                 setBestScore(newScore);
             }, 500);
-        });
-    });
-    
-    // 2. دکمه مرور اشتباهات هوشمند
-    document.getElementById('reviewMistakesBtn').addEventListener('click', function() {
-        showNotification('سیستم مرور اشتباهات در حال بارگذاری...');
-        
-        // شبیه‌سازی بارگذاری
-        setTimeout(() => {
-            showNotification('۱۰ سوال برای مرور اشتباهات آماده شد!');
+        }
+
+        function handleReviewMistakes() {
+            showNotification('سیستم مرور اشتباهات در حال بارگذاری...');
+            setTimeout(() => {
+                showNotification('۱۰ سوال برای مرور اشتباهات آماده شد!');
+                const newScore = Math.min(100, appState.bestScore + Math.floor(Math.random() * 8) + 3);
+                setBestScore(newScore);
+            }, 1500);
+        }
+
+        function handleProgressReport() {
+            showNotification('گزارش پیشرفت شما در حال تولید است...');
+            setTimeout(() => {
+                const progressDetails = `🎯 پیشرفت کلی: ${appState.bestScore}%\n📊 تعداد تمرینات: ${Math.floor(appState.bestScore/5)}\n⭐️ مهارت کسب شده: ${Math.floor(appState.bestScore/20)} ستاره\n📈 روند یادگیری: صعودی`;
+                showNotification(progressDetails, 3000);
+            }, 1000);
+        }
+
+        function handleExit() {
+            showNotification('آیا مطمئن هستید که می‌خواهید خارج شوید؟', 2500);
+            setTimeout(() => {
+                showNotification('با موفقیت از برنامه خارج شدید. امتیاز شما ذخیره شد.', 2000);
+                // Visual exit effect
+                document.body.style.opacity = '0.7';
+                setTimeout(() => {
+                    document.body.style.opacity = '1';
+                }, 500);
+            }, 2500);
+        }
+
+        function handleTitleClick() {
+            const newScore = appState.bestScore + 20;
+            if (newScore <= 100) {
+                setBestScore(newScore);
+                showNotification(`امتیاز شما ${newScore}% شد!`);
+            } else {
+                showNotification('امتیاز شما در حداکثر ممکن است (۱۰۰%)');
+            }
+        }
+
+        // ====== EVENT LISTENERS SETUP ======
+        function setupEventListeners() {
+            console.log('🔧 Setting up event listeners...');
             
-            // افزایش امتیاز
-            const newScore = Math.min(100, bestScore + Math.floor(Math.random() * 8) + 3);
-            setBestScore(newScore);
-        }, 1500);
-    });
-    
-    // 3. دکمه گزارش پیشرفت
-    document.getElementById('progressReportBtn').addEventListener('click', function() {
-        showNotification('گزارش پیشرفت شما در حال تولید است...');
-        
-        // شبیه‌سازی تولید گزارش
-        setTimeout(() => {
-            const progressDetails = `🎯 پیشرفت کلی: ${bestScore}%\n📊 تعداد تمرینات: ${Math.floor(bestScore/5)}\n⭐️ مهارت کسب شده: ${Math.floor(bestScore/20)} ستاره\n📈 روند یادگیری: صعودی`;
-            showNotification(progressDetails, 3000);
-        }, 1000);
-    });
-    
-    // 4. دکمه خروج
-    document.getElementById('exitBtn').addEventListener('click', function() {
-        showNotification('آیا مطمئن هستید که می‌خواهید خارج شوید؟', 2500);
-        
-        // تأیید خروج
-        setTimeout(() => {
-            showNotification('با موفقیت از برنامه خارج شدید. امتیاز شما ذخیره شد.', 2000);
+            // Theme button
+            elements.themeBtn.addEventListener('click', toggleTheme);
             
-            // افکت خروج
-            document.body.style.opacity = '0.7';
+            // Mute button
+            elements.muteBtn.addEventListener('click', toggleMute);
+            
+            // Title click
+            elements.titleClick.addEventListener('click', handleTitleClick);
+            
+            // Mode cards
+            elements.modeCards.forEach(card => {
+                card.addEventListener('click', handleModeCardClick);
+            });
+            
+            // Action buttons
+            elements.reviewMistakesBtn.addEventListener('click', handleReviewMistakes);
+            elements.progressReportBtn.addEventListener('click', handleProgressReport);
+            elements.exitBtn.addEventListener('click', handleExit);
+            
+            console.log('✅ All event listeners set up');
+        }
+
+        // ====== INITIALIZATION ======
+        function initApp() {
+            console.log('🚀 Initializing English with Fred...');
+            
+            // Load saved states
+            loadTheme();
+            loadMuteState();
+            loadBestScore();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Prevent iOS zoom
+            document.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 1) e.preventDefault();
+            }, { passive: false });
+            
+            // Fade in
             setTimeout(() => {
                 document.body.style.opacity = '1';
-            }, 500);
-        }, 2500);
-    });
-}
-
-/* ====== THEME SYSTEM ====== */
-function loadTheme() {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const savedTheme = localStorage.getItem('theme');
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-        document.body.classList.add('dark');
-    }
-    
-    updateThemeIcon();
-}
-
-function toggleTheme() {
-    document.body.classList.toggle('dark');
-    const isDark = document.body.classList.contains('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    
-    // Add transition effect
-    document.body.style.transition = 'background 0.5s ease';
-    setTimeout(() => {
-        document.body.style.transition = '';
-    }, 500);
-    
-    updateThemeIcon();
-    showNotification(isDark ? 'تم تاریک فعال شد 🌙' : 'تم روشن فعال شد ☀️');
-}
-
-function updateThemeIcon() {
-    themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
-    themeBtn.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-        themeBtn.style.transform = 'scale(1)';
-    }, 150);
-}
-
-themeBtn.onclick = toggleTheme;
-
-/* ====== ENHANCED MUTE SYSTEM ====== */
-function loadMuteState() {
-    isMuted = localStorage.getItem('muted') === 'true';
-    updateMuteButton();
-}
-
-function toggleMute() {
-    isMuted = !isMuted;
-    localStorage.setItem('muted', isMuted);
-    
-    // Visual feedback
-    muteBtn.style.transform = 'scale(0.9)';
-    setTimeout(() => {
-        muteBtn.style.transform = 'scale(1)';
-    }, 150);
-    
-    updateMuteButton();
-    
-    // Sound feedback if not muted
-    if (!isMuted) {
-        playToggleSound();
-    }
-    
-    showNotification(isMuted ? 'صدا خاموش شد 🔇' : 'صدا روشن شد 🔊');
-}
-
-function updateMuteButton() {
-    muteBtn.textContent = isMuted ? '🔇' : '🔊';
-    muteBtn.classList.toggle('mute-on', isMuted);
-    muteBtn.classList.toggle('mute-off', !isMuted);
-    
-    // Add pulse animation when state changes
-    muteBtn.style.animation = 'none';
-    setTimeout(() => {
-        muteBtn.style.animation = 'starPulse 0.5s ease-out';
-    }, 10);
-}
-
-function playToggleSound() {
-    // This is a silent audio for haptic-like feedback
-    console.log('Toggle sound played');
-}
-
-muteBtn.onclick = toggleMute;
-
-/* ====== BEST SCORE MANAGEMENT ====== */
-function loadBestScore() {
-    const saved = localStorage.getItem('bestScore');
-    if (saved !== null) {
-        bestScore = parseInt(saved, 10) || 0;
-    }
-    updateScoreDisplay();
-}
-
-function setBestScore(newScore) {
-    newScore = Math.min(100, Math.max(0, newScore));
-    
-    if (newScore > bestScore) {
-        bestScore = newScore;
-        localStorage.setItem('bestScore', bestScore);
-        updateScoreDisplay();
-        
-        // Celebration effect for new high score
-        if (newScore >= 80) {
-            showNotification('🎉 تبریک! شما رکورد جدیدی ثبت کردید!');
-            document.querySelectorAll('.star').forEach(star => {
-                star.style.animation = 'starPulse 0.8s ease-out infinite';
-                setTimeout(() => {
-                    star.style.animation = '';
-                }, 2000);
-            });
+            }, 100);
+            
+            console.log('✅ App initialized successfully');
         }
-    }
-}
 
-// Demo: Click title to increase score
-document.getElementById('titleClick').onclick = () => {
-    const newScore = bestScore + 20;
-    if (newScore <= 100) {
-        setBestScore(newScore);
-        showNotification(`امتیاز شما ${newScore}% شد!`);
-    } else {
-        showNotification('امتیاز شما در حداکثر ممکن است (۱۰۰%)');
-    }
-};
+        // ====== START APP ======
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
 
-/* ====== SAFE AREA SUPPORT ====== */
-function updateSafeArea() {
-    document.body.style.setProperty('--safe-top', env('safe-area-inset-top') + 'px');
-    document.body.style.setProperty('--safe-bottom', env('safe-area-inset-bottom') + 'px');
-}
+        // ====== DEBUG HELPERS ======
+        window.debugApp = function() {
+            console.log('🔍 Debugging app...');
+            console.log('App State:', appState);
+            console.log('Elements found:', {
+                modeCards: elements.modeCards.length,
+                buttons: {
+                    muteBtn: !!elements.muteBtn,
+                    themeBtn: !!elements.themeBtn,
+                    reviewMistakesBtn: !!elements.reviewMistakesBtn,
+                    progressReportBtn: !!elements.progressReportBtn,
+                    exitBtn: !!elements.exitBtn
+                }
+            });
+            
+            // Test click on first mode card
+            if (elements.modeCards.length > 0) {
+                console.log('Testing first mode card...');
+                elements.modeCards[0].click();
+            }
+        };
 
-window.addEventListener('resize', updateSafeArea);
-updateSafeArea();
-
-/* ====== CONSOLE LOG FOR DEBUGGING ====== */
-console.log('✅ English with Fred loaded successfully');
-console.log('✨ All buttons should be working now');
-console.log('🔍 If buttons still don\'t work, check browser console for errors');
-</script>
+        // Run debug after 2 seconds
+        setTimeout(() => {
+            console.log('English with Fred is ready!');
+            console.log('Type debugApp() in console to test');
+        }, 2000);
+    </script>
 </body>
 </html>
