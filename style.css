@@ -1,524 +1,133 @@
-/* ====== متغیرهای رنگ - آیفونی ====== */
-:root {
-    --primary: #007AFF; /* آبی آیفون */
-    --secondary: #34C759; /* سبز آیفون */
-    --accent: #FF9500; /* نارنجی آیفون */
-    --danger: #FF3B30; /* قرمز آیفون */
-    --light-bg: #F2F2F7; /* خاکستری روشن آیفون */
-    --card-bg: #FFFFFF;
-    --text: #000000;
-    --text-light: #8E8E93;
-    --border-radius: 14px;
-    --shadow: 0 4px 12px rgba(0,0,0,0.08);
-    --shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+<script>
+/* =========================
+   SINGLE, CLEAN APP SCRIPT
+   بدون تداخل، بدون تکرار
+========================= */
+
+/* ---------- STATE ---------- */
+const App = {
+    view: 'home',
+    mode: null,
+    muted: localStorage.getItem('muted') === 'true',
+    theme: localStorage.getItem('theme') || 'light',
+    bestScore: Number(localStorage.getItem('bestScore') || 0)
+};
+
+/* ---------- ELEMENTS ---------- */
+const $ = id => document.getElementById(id);
+
+const views = document.querySelectorAll('.view');
+const stars = document.querySelectorAll('#starsContainer .star');
+
+/* ---------- VIEW CONTROL ---------- */
+function switchView(id) {
+    views.forEach(v => v.classList.remove('active'));
+    const target = $(id);
+    if (target) target.classList.add('active');
+    App.view = id;
 }
 
-body.dark {
-    --primary: #0A84FF; /* آبی آیفون (تاریک) */
-    --secondary: #30D158; /* سبز آیفون (تاریک) */
-    --accent: #FF9F0A; /* نارنجی آیفون (تاریک) */
-    --danger: #FF453A; /* قرمز آیفون (تاریک) */
-    --light-bg: #000000; /* سیاه */
-    --card-bg: #1C1C1E; /* خاکستری تیره آیفون */
-    --text: #FFFFFF;
-    --text-light: #98989D;
-    --shadow: 0 4px 12px rgba(0,0,0,0.3);
-    --shadow-hover: 0 8px 24px rgba(0,0,0,0.4);
+/* ---------- NOTIFICATION ---------- */
+function showNotification(msg, time = 2000) {
+    const box = $('notification');
+    if (!box) return;
+    box.textContent = msg;
+    box.classList.add('show');
+    setTimeout(() => box.classList.remove('show'), time);
 }
 
-/* ====== بدنه اصلی - بهینه برای آیفون ====== */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+/* ---------- THEME ---------- */
+function applyTheme() {
+    document.body.classList.toggle('dark', App.theme === 'dark');
+    $('themeBtn').textContent = App.theme === 'dark' ? '☀️' : '🌙';
 }
 
-body {
-    margin: 0;
-    padding: 16px;
-    background: var(--light-bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Vazir', 'Segoe UI', system-ui, sans-serif;
-    transition: all 0.3s ease;
-    min-height: 100vh;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+function toggleTheme() {
+    App.theme = App.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', App.theme);
+    applyTheme();
 }
 
-.app-container {
-    max-width: 430px; /* کمی کمتر برای آیفون */
-    margin: 0 auto;
-    padding: 0;
+/* ---------- MUTE ---------- */
+function applyMute() {
+    $('muteBtn').textContent = App.muted ? '🔇' : '🔊';
 }
 
-/* ====== هدر - استایل آیفونی ====== */
-.app-header {
-    text-align: center;
-    margin-bottom: 20px;
-    padding: 20px 16px;
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    color: var(--text);
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-    border: none;
+function toggleMute() {
+    App.muted = !App.muted;
+    localStorage.setItem('muted', App.muted);
+    applyMute();
+    showNotification(App.muted ? 'صدا خاموش شد' : 'صدا روشن شد');
 }
 
-.app-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--primary), var(--secondary));
-    border-radius: var(--border-radius) var(--border-radius) 0 0;
+/* ---------- SCORE ---------- */
+function renderScore() {
+    $('scoreValue').textContent = App.bestScore + '%';
+    const filled = Math.floor(App.bestScore / 20);
+    stars.forEach((s, i) => {
+        s.classList.toggle('filled', i < filled);
+    });
 }
 
-.app-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
-}
-
-body.dark .app-header::after {
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-}
-
-/* بخش بالای هدر */
-.header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 15px;
-    position: relative;
-}
-
-/* اسم برنامه */
-.app-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text);
-    text-align: center;
-    margin: 0 0 8px 0;
-    flex: 1;
-    letter-spacing: -0.5px;
-    line-height: 1.2;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* دکمه Mute */
-.mute-toggle {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px; /* گوشه‌های گردتر */
-    background: var(--card-bg);
-    border: none;
-    color: var(--text);
-    font-size: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow);
-    flex-shrink: 0;
-    position: absolute;
-    right: 0;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-.mute-toggle:hover {
-    transform: scale(1.08);
-    background: rgba(0, 122, 255, 0.1);
-}
-
-.mute-toggle.active {
-    color: var(--danger);
-    background: rgba(255, 59, 48, 0.1);
-}
-
-/* ستاره‌ها - خالی در ابتدا */
-.stars-container {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    margin: 12px auto;
-    max-width: 180px;
-}
-
-.star {
-    font-size: 22px;
-    color: var(--text-light); /* خاکستری در حالت عادی */
-    opacity: 0.7;
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    filter: grayscale(1);
-}
-
-.star.filled {
-    color: #FFD700; /* زرد طلایی */
-    opacity: 1;
-    filter: grayscale(0);
-    transform: scale(1.1);
-    text-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
-}
-
-/* امتیاز */
-.score-display {
-    font-size: 16px;
-    background: var(--light-bg);
-    padding: 8px 20px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-top: 10px;
-    color: var(--text);
-    border: 1.5px solid var(--primary);
-    font-weight: 600;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-.score-display:hover {
-    background: rgba(0, 122, 255, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-/* ====== دکمه تغییر تم - آیفونی ====== */
-.theme-toggle {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px; /* گوشه‌های گردتر */
-    background: var(--card-bg);
-    border: none;
-    color: var(--text);
-    font-size: 20px;
-    cursor: pointer;
-    z-index: 1000;
-    box-shadow: var(--shadow);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-
-.theme-toggle:hover {
-    transform: scale(1.08);
-    box-shadow: var(--shadow-hover);
-}
-
-/* ====== بقیه استایل‌ها - آیفونی ====== */
-.quiz-modes {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin: 20px 0;
-    padding: 20px;
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-body.dark .quiz-modes {
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.mode-button {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 18px 20px;
-    border: none;
-    border-radius: 14px;
-    background: var(--card-bg);
-    color: var(--text);
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    text-align: right;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-body.dark .mode-button {
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.mode-button:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-hover);
-}
-
-.mode-button::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: -1;
-}
-
-.mode-button:hover::after {
-    opacity: 0.1;
-}
-
-.mode-icon {
-    font-size: 22px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    padding: 10px;
-    border-radius: 10px;
-    min-width: 48px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-}
-
-.mode-text {
-    flex: 1;
-    text-align: center;
-    font-size: 16px;
-    letter-spacing: -0.5px;
-}
-
-/* ====== کوییز کانتینر - آیفونی ====== */
-.quiz-container {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    padding: 24px;
-    margin: 20px 0;
-    box-shadow: var(--shadow);
-    display: none;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-body.dark .quiz-container {
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-#questionText {
-    font-size: 18px;
-    margin-bottom: 24px;
-    text-align: center;
-    line-height: 1.7;
-    color: var(--text);
-    padding: 20px;
-    background: var(--light-bg);
-    border-radius: var(--border-radius);
-    font-weight: 600;
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-body.dark #questionText {
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.options-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 24px 0;
-}
-
-.option-button {
-    padding: 18px 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.1);
-    background: var(--light-bg);
-    color: var(--text);
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    position: relative;
-}
-
-body.dark .option-button {
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.option-button:hover {
-    background: rgba(0, 122, 255, 0.1);
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.option-button.correct {
-    border-color: var(--secondary);
-    background: rgba(52, 199, 89, 0.12);
-    color: var(--secondary);
-    font-weight: bold;
-}
-
-.option-button.wrong {
-    border-color: var(--danger);
-    background: rgba(255, 59, 48, 0.12);
-    color: var(--danger);
-}
-
-/* ====== کنترل‌ها - آیفونی ====== */
-.controls-container {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin: 24px 0;
-    flex-wrap: wrap;
-}
-
-.control-button {
-    padding: 16px 24px;
-    border-radius: 12px;
-    border: none;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-width: 120px;
-    color: white;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.control-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-}
-
-#hintBtn { background: var(--accent); }
-#nextBtn { background: var(--primary); }
-#endQuizBtn { background: var(--danger); }
-
-/* ====== استایل برای پیام‌های سیستم ====== */
-#hintDisplay,
-#progressDisplay,
-#loadingDisplay,
-#reportDisplay {
-    background: var(--light-bg);
-    border-radius: var(--border-radius);
-    padding: 15px;
-    margin: 15px 0;
-    text-align: center;
-    border-right: 3px solid var(--accent);
-    font-weight: 500;
-    color: var(--text);
-    display: none;
-}
-
-#loadingDisplay {
-    border-color: var(--primary);
-}
-
-#reportDisplay {
-    border-color: var(--secondary);
-}
-
-/* ====== برای آیفون ====== */
-@media (max-width: 428px) { /* سایز آیفون */
-    body {
-        padding: 12px;
-    }
-    
-    .app-container {
-        max-width: 100%;
-    }
-    
-    .app-header {
-        padding: 16px;
-    }
-    
-    .app-title {
-        font-size: 28px;
-    }
-    
-    .theme-toggle,
-    .mute-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-    
-    .mode-button {
-        padding: 16px;
-        font-size: 16px;
-    }
-    
-    .mode-icon {
-        font-size: 20px;
-        min-width: 44px;
-        padding: 8px;
-    }
-    
-    .control-button {
-        padding: 14px 20px;
-        min-width: 110px;
-        font-size: 15px;
-    }
-    
-    .star {
-        font-size: 20px;
-    }
-    
-    #hintDisplay,
-    #progressDisplay,
-    #loadingDisplay,
-    #reportDisplay {
-        padding: 12px;
-        font-size: 14px;
+function addScore(amount) {
+    const newScore = Math.min(100, App.bestScore + amount);
+    if (newScore > App.bestScore) {
+        App.bestScore = newScore;
+        localStorage.setItem('bestScore', App.bestScore);
+        renderScore();
     }
 }
 
-/* انیمیشن‌های ظریف */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* ---------- QUIZ ---------- */
+function startQuiz(mode) {
+    App.mode = mode;
+    switchView('quiz');
+    showNotification('آزمون شروع شد');
 }
 
-.app-header,
-.quiz-modes,
-.quiz-container {
-    animation: fadeIn 0.5s ease-out;
+function backHome() {
+    switchView('home');
+    App.mode = null;
 }
 
-/* افکت‌های لمسی آیفون */
-@media (hover: hover) {
-    .mode-button:hover,
-    .control-button:hover,
-    .option-button:hover {
-        transition: all 0.2s ease;
-    }
-}
+/* ---------- INIT ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+
+    applyTheme();
+    applyMute();
+    renderScore();
+
+    /* theme & mute */
+    $('themeBtn')?.addEventListener('click', toggleTheme);
+    $('muteBtn')?.addEventListener('click', toggleMute);
+
+    /* mode cards */
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const mode = card.dataset.mode;
+            if (!mode) return;
+            startQuiz(mode);
+            addScore(5); // فقط برای تست عملکرد
+        });
+    });
+
+    /* buttons */
+    $('reviewMistakesBtn')?.addEventListener('click', () => {
+        showNotification('مرور اشتباهات');
+        addScore(3);
+    });
+
+    $('progressReportBtn')?.addEventListener('click', () => {
+        showNotification(`پیشرفت: ${App.bestScore}%`, 3000);
+    });
+
+    $('exitBtn')?.addEventListener('click', () => {
+        showNotification('خروج از برنامه');
+    });
+
+    /* optional back button */
+    $('backToHomeBtn')?.addEventListener('click', backHome);
+
+    console.log('✅ App loaded cleanly');
+});
+</script>
