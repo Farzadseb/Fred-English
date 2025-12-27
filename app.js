@@ -1,382 +1,174 @@
-// app.js - English With Fred
-// ====== مدیریت تم ======
-let currentTheme = 'light';
+// =======================
+// app.js – English with Fred
+// نسخه تمیز و هماهنگ
+// =======================
+
+/* ---------- STATE ---------- */
+let bestScore = 0;
+let isMuted = false;
+
+/* ---------- DOM ---------- */
+const muteBtn = document.getElementById('muteBtn');
+const themeBtn = document.getElementById('themeBtn');
+const scoreEl = document.getElementById('scoreValue');
+const stars = document.querySelectorAll('#starsContainer .star');
+const notification = document.getElementById('notification');
+
+/* ---------- NOTIFICATION ---------- */
+function showNotification(text, duration = 2000) {
+    if (!notification) return;
+
+    notification.textContent = text;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, duration);
+}
+
+/* ---------- THEME ---------- */
+function loadTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+        document.body.classList.add('dark');
+    }
+    updateThemeIcon();
+}
 
 function toggleTheme() {
-    const body = document.body;
-    body.classList.toggle('dark');
-    
-    currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
-    localStorage.setItem('theme', currentTheme);
-    
-    // آپدیت آیکون
-    const themeBtn = document.querySelector('.theme-toggle');
-    if (themeBtn) {
-        themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-        themeBtn.title = currentTheme === 'dark' ? 'تم روشن' : 'تم تاریک';
-    }
-    
-    console.log(`🎨 تم تغییر کرد به: ${currentTheme}`);
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    updateThemeIcon();
+    showNotification(isDark ? 'تم شب فعال شد 🌙' : 'تم روز فعال شد ☀️');
 }
 
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    const body = document.body;
-    
-    if (savedTheme === 'dark') {
-        body.classList.add('dark');
-        currentTheme = 'dark';
-    } else {
-        body.classList.remove('dark');
-        currentTheme = 'light';
-    }
-    
-    // آیکون دکمه
-    const themeBtn = document.querySelector('.theme-toggle');
-    if (themeBtn) {
-        themeBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-        themeBtn.title = currentTheme === 'dark' ? 'تم روشن' : 'تم تاریک';
-    }
+function updateThemeIcon() {
+    if (!themeBtn) return;
+    themeBtn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
 }
 
-// ====== مدیریت Mute ======
-let isMuted = false;
+/* ---------- MUTE ---------- */
+function loadMute() {
+    isMuted = localStorage.getItem('muted') === 'true';
+    updateMuteIcon();
+}
 
 function toggleMute() {
     isMuted = !isMuted;
-    
-    const muteBtn = document.getElementById('muteBtn');
-    const muteIcon = document.getElementById('muteIcon');
-    
-    if (muteBtn && muteIcon) {
-        if (isMuted) {
-            muteIcon.textContent = '🔇';
-            muteBtn.classList.add('active');
-            muteBtn.title = 'میکروفون خاموش';
-            console.log('🔇 حالت Mute فعال شد');
-            
-            // متوقف کردن همه صداها
-            if (typeof window.stopSpeaking === 'function') {
-                window.stopSpeaking();
-            } else if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
-            }
-            
-            showToast('میکروفون خاموش شد', 'info');
-        } else {
-            muteIcon.textContent = '🎤';
-            muteBtn.classList.remove('active');
-            muteBtn.title = 'میکروفون روشن';
-            console.log('🎤 حالت Mute غیرفعال شد');
-            
-            showToast('میکروفون روشن شد', 'success');
-        }
-    }
-    
-    localStorage.setItem('isMuted', isMuted);
-}
+    localStorage.setItem('muted', isMuted);
+    updateMuteIcon();
+    showNotification(isMuted ? 'صدا خاموش شد 🔇' : 'صدا روشن شد 🔊');
 
-function loadMuteState() {
-    const savedMute = localStorage.getItem('isMuted');
-    if (savedMute === 'true') {
-        isMuted = true;
-        // آپدیت آیکون بعد از لود صفحه
-        setTimeout(() => {
-            const muteIcon = document.getElementById('muteIcon');
-            const muteBtn = document.getElementById('muteBtn');
-            if (muteIcon) muteIcon.textContent = '🔇';
-            if (muteBtn) muteBtn.classList.add('active');
-        }, 100);
+    if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
     }
 }
 
-// ====== نمایش پیغام ======
-function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = 'toast-message';
-    toast.textContent = message;
-    
-    const colors = {
-        info: '#2196F3',
-        success: '#4CAF50',
-        error: '#F44336',
-        warning: '#FF9800'
-    };
-    
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: ${colors[type] || colors.info};
-        color: white;
-        padding: 12px 24px;
-        border-radius: 10px;
-        font-size: 14px;
-        font-weight: 500;
-        z-index: 10000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        animation: slideUp 0.3s ease, fadeOut 0.3s ease 2.7s;
-        white-space: nowrap;
-    `;
-    
-    document.body.appendChild(toast);
-    
-    // حذف بعد از 3 ثانیه
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.parentNode.removeChild(toast);
-        }
-    }, 3000);
-    
-    // اضافه کردن استایل انیمیشن
-    if (!document.querySelector('#toast-styles')) {
-        const style = document.createElement('style');
-        style.id = 'toast-styles';
-        style.textContent = `
-            @keyframes slideUp {
-                from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-                to { opacity: 1; transform: translateX(-50%) translateY(0); }
-            }
-            @keyframes fadeOut {
-                from { opacity: 1; }
-                to { opacity: 0; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
+function updateMuteIcon() {
+    if (!muteBtn) return;
+    muteBtn.textContent = isMuted ? '🔇' : '🔊';
 }
 
-// صادر کردن تابع showToast
-window.showToast = showToast;
-
-// ====== بقیه توابع بدون تغییر ======
-function showProgressReport() {
-    const quizContainer = document.getElementById('quizContainer');
-    const progressReport = document.getElementById('progressReport');
-    
-    if (quizContainer) quizContainer.style.display = 'none';
-    if (progressReport) {
-        progressReport.style.display = 'block';
-        loadProgressData();
-    }
+/* ---------- SCORE ---------- */
+function loadBestScore() {
+    const saved = localStorage.getItem('bestScore');
+    bestScore = saved ? parseInt(saved, 10) : 0;
+    updateScoreUI();
 }
 
-function hideProgressReport() {
-    const progressReport = document.getElementById('progressReport');
-    if (progressReport) progressReport.style.display = 'none';
+function setBestScore(score) {
+    if (score <= bestScore) return;
+
+    bestScore = Math.min(100, score);
+    localStorage.setItem('bestScore', bestScore);
+    updateScoreUI();
+    showNotification('🎉 رکورد جدید!');
 }
 
-function loadProgressData() {
-    const content = document.getElementById('progressContent');
-    if (!content) return;
-    
-    if (typeof ProgressTracker !== 'undefined' && ProgressTracker.getStats) {
-        try {
-            const stats = ProgressTracker.getStats();
-            const report = ProgressTracker.getProgressReport ? ProgressTracker.getProgressReport() : null;
-            
-            content.innerHTML = `
-                <div class="progress-stats">
-                    <div class="stat-item">
-                        <h4>کل سوالات</h4>
-                        <p>${stats.totalQuestions || 0}</p>
-                    </div>
-                    <div class="stat-item">
-                        <h4>پاسخ درست</h4>
-                        <p>${stats.correctAnswers || 0}</p>
-                    </div>
-                    <div class="stat-item">
-                        <h4>پاسخ غلط</h4>
-                        <p>${stats.wrongAnswers || 0}</p>
-                    </div>
-                    <div class="stat-item">
-                        <h4>دقت کلی</h4>
-                        <p>${stats.accuracy || 0}%</p>
-                    </div>
-                </div>
-                <div style="margin-top: 20px; padding: 18px; background: var(--light-bg); border-radius: 12px;">
-                    <h4 style="margin-bottom: 12px; color: var(--primary); display: flex; align-items: center; gap: 8px;">📈 آخرین فعالیت‌ها</h4>
-                    <div style="font-size: 14px; color: var(--text);">
-                        ${report && report.recentSessions && report.recentSessions.length > 0 ? 
-                            report.recentSessions.slice(0, 5).map(s => 
-                                `<div style="margin-bottom: 10px; padding: 10px; background: var(--card-bg); border-radius: 8px; border-right: 3px solid var(--accent);">
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span style="font-weight: bold;">${s.mode}</span>
-                                        <span style="color: ${s.score >= 70 ? 'var(--secondary)' : s.score >= 50 ? 'var(--accent)' : 'var(--danger)'};">${s.score}%</span>
-                                    </div>
-                                    <div style="font-size: 12px; color: var(--text-light); margin-top: 4px;">${s.date}</div>
-                                </div>`
-                            ).join('') : 
-                            '<p style="text-align: center; padding: 15px; color: var(--text-light); font-size: 14px;">هنوز آزمونی انجام نداده‌اید.</p>'
-                        }
-                    </div>
-                </div>
-            `;
-        } catch (error) {
-            content.innerHTML = '<p style="color: var(--danger); text-align: center; padding: 20px; font-size: 14px;">خطا در بارگذاری گزارش</p>';
-        }
-    } else {
-        content.innerHTML = `
-            <div style="text-align: center; padding: 30px 20px;">
-                <div style="font-size: 40px; margin-bottom: 12px; color: var(--primary);">📊</div>
-                <p style="font-size: 16px; margin-bottom: 8px; color: var(--primary);">سیستم گزارش‌گیری</p>
-                <p style="font-size: 13px; color: var(--text-light); margin-bottom: 15px;">هنوز فعال نشده است.</p>
-                <p style="font-size: 12px; color: var(--text-light);">برای فعال‌سازی، چند آزمون بدهید.</p>
-            </div>
-        `;
-    }
-}
+function updateScoreUI() {
+    if (scoreEl) scoreEl.textContent = bestScore + '%';
 
-function registerWhatsApp() {
-    const phone = "+989123456789";
-    const message = "سلام! می‌خواهم در برنامه English With Fred ثبت‌نام کنم.";
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-    showToast('واتساپ در حال باز شدن...', 'info');
-}
-
-function exitApp() {
-    if (confirm("آیا می‌خواهید از برنامه خارج شوید؟")) {
-        if (window.navigator.standalone) {
-            window.close();
-        } else {
-            window.location.href = "about:blank";
-        }
-    }
-}
-
-function reviewSmartMistakes() {
-    if (typeof ProgressTracker !== 'undefined' && ProgressTracker.reviewMistakes) {
-        const mistakes = ProgressTracker.getProgressReport ? ProgressTracker.getProgressReport().mistakes : null;
-        if (mistakes && mistakes.active > 0) {
-            ProgressTracker.reviewMistakes();
-        } else {
-            showToast('🎉 هیچ اشتباهی برای مرور ندارید!', 'success');
-        }
-    } else {
-        showToast('ابتدا چند آزمون بدهید', 'info');
-    }
-}
-
-function checkAndFixWords() {
-    if (typeof words === 'undefined' || !Array.isArray(words) || words.length === 0) {
-        console.warn('⚠️ لغات بارگذاری نشدند، استفاده از لغات پیش‌فرض...');
-        
-        window.words = [
-            {english: "hello", persian: "سلام", definition: "greeting word"},
-            {english: "book", persian: "کتاب", definition: "something to read"},
-            {english: "teacher", persian: "معلم", definition: "person who teaches"},
-            {english: "student", persian: "دانش‌آموز", definition: "person who learns"},
-            {english: "school", persian: "مدرسه", definition: "place of learning"}
-        ];
-        
-        console.log(`✅ ${window.words.length} لغت پیش‌فرض بارگذاری شد`);
-    } else {
-        console.log(`✅ ${words.length} لغت بارگذاری شد`);
-    }
-}
-
-function fixQuizModes() {
-    const quizModes = document.querySelector('.quiz-modes');
-    if (!quizModes) return;
-    
-    const modeButtons = document.querySelectorAll('.mode-button');
-    if (modeButtons.length < 4) {
-        quizModes.innerHTML = `
-            <button class="mode-button" onclick="startQuiz('en-fa')">
-                <span class="mode-icon">🇺🇸→🇮🇷</span>
-                <span class="mode-text">English → Persian</span>
-            </button>
-            <button class="mode-button" onclick="startQuiz('fa-en')">
-                <span class="mode-icon">🇮🇷→🇺🇸</span>
-                <span class="mode-text">Persian → English</span>
-            </button>
-            <button class="mode-button" onclick="startQuiz('word-def')">
-                <span class="mode-icon">📝</span>
-                <span class="mode-text">Word → Definition</span>
-            </button>
-            <button class="mode-button" onclick="startQuiz('def-word')">
-                <span class="mode-icon">💭</span>
-                <span class="mode-text">Definition → Word</span>
-            </button>
-        `;
-        console.log('✅ حالت‌های آزمون ترمیم شدند');
-    }
-}
-
-function updateStars(score) {
-    const stars = document.querySelectorAll('.star');
-    const scoreNum = parseInt(score) || 0;
-    const filledStars = Math.min(5, Math.floor(scoreNum / 20));
-    
-    stars.forEach((star, index) => {
-        if (index < filledStars) {
-            star.classList.add('filled');
-        } else {
-            star.classList.remove('filled');
-        }
+    const filled = Math.floor(bestScore / 20);
+    stars.forEach((star, i) => {
+        star.classList.toggle('filled', i < filled);
     });
 }
 
-// ====== مقداردهی اولیه ======
-function initApp() {
-    console.log('🚀 راه‌اندازی English With Fred...');
-    
-    loadTheme();
-    loadMuteState();
-    checkAndFixWords();
-    setTimeout(fixQuizModes, 100);
-    
-    console.log('🔍 بررسی فایل‌ها:');
-    console.log('- words.js:', typeof words !== 'undefined' ? '✅' : '❌');
-    console.log('- دکمه‌های آزمون:', document.querySelectorAll('.mode-button').length, '/ 4');
-    
-    setTimeout(() => {
-        if (typeof ProgressTracker !== 'undefined') {
-            ProgressTracker.init();
-            console.log('✅ Progress Tracker فعال شد');
-        }
-    }, 1000);
-    
-    const bestScore = localStorage.getItem('bestScore') || '0';
-    const bestScoreElement = document.getElementById('bestScore');
-    if (bestScoreElement) {
-        bestScoreElement.textContent = bestScore;
-        updateStars(bestScore);
-    }
-    
-    console.log('✅ برنامه با موفقیت راه‌اندازی شد');
+/* ---------- MODES ---------- */
+function initModeCards() {
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const mode = card.dataset.mode;
+            handleModeClick(mode);
+        });
+    });
 }
 
-// ====== رویدادهای صفحه ======
-document.addEventListener('DOMContentLoaded', initApp);
+function handleModeClick(mode) {
+    const modeNames = {
+        'english-persian': 'English → Persian',
+        'persian-english': 'Persian → English',
+        'word-definition': 'Word → Definition',
+        'definition-word': 'Definition → Word'
+    };
 
-window.addEventListener('resize', function() {
-    const container = document.querySelector('.app-container');
-    if (container && window.innerWidth < 480) {
-        container.style.padding = '0 5px';
-    } else if (container) {
-        container.style.padding = '0';
+    showNotification(`شروع آزمون: ${modeNames[mode] || mode}`);
+
+    // اگر quiz.js وجود داشت
+    if (typeof window.startQuiz === 'function') {
+        startQuiz(mode);
+    } else {
+        // حالت دمو
+        const fakeScore = bestScore + Math.floor(Math.random() * 10) + 5;
+        setTimeout(() => setBestScore(fakeScore), 600);
     }
+}
+
+/* ---------- ACTION BUTTONS ---------- */
+function initActionButtons() {
+    const reviewBtn = document.getElementById('reviewMistakesBtn');
+    const progressBtn = document.getElementById('progressReportBtn');
+    const exitBtn = document.getElementById('exitBtn');
+
+    if (reviewBtn) {
+        reviewBtn.onclick = () => {
+            showNotification('مرور اشتباهات (دمو)');
+            setBestScore(bestScore + 3);
+        };
+    }
+
+    if (progressBtn) {
+        progressBtn.onclick = () => {
+            showNotification(`پیشرفت فعلی: ${bestScore}%`);
+        };
+    }
+
+    if (exitBtn) {
+        exitBtn.onclick = () => {
+            if (confirm('می‌خواهی خارج شوی؟')) {
+                showNotification('خروج از برنامه');
+            }
+        };
+    }
+}
+
+/* ---------- INIT ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+    loadTheme();
+    loadMute();
+    loadBestScore();
+
+    initModeCards();
+    initActionButtons();
+
+    if (themeBtn) themeBtn.onclick = toggleTheme;
+    if (muteBtn) muteBtn.onclick = toggleMute;
+
+    console.log('✅ app.js loaded successfully');
 });
 
-window.updateBestScore = function(score) {
-    const currentBest = parseInt(localStorage.getItem('bestScore') || '0');
-    if (score > currentBest) {
-        localStorage.setItem('bestScore', score.toString());
-        const bestScoreElement = document.getElementById('bestScore');
-        if (bestScoreElement) {
-            bestScoreElement.textContent = score;
-            updateStars(score);
-            showToast(`🎉 رکورد جدید: ${score}%`, 'success');
-        }
-    }
-};
-
-// صادر کردن تابع Mute برای استفاده در quiz.js و speech.js
-window.isMuted = function() {
-    return isMuted;
-};
-
+/* ---------- EXPORTS ---------- */
+window.toggleTheme = toggleTheme;
 window.toggleMute = toggleMute;
+window.isMuted = () => isMuted;
