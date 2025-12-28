@@ -10,8 +10,6 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2ecc71">
 
-    <!-- CSS (لود اتوماتیک واقعی از loader.js انجام می‌شود)
-         این لینک فقط برای fallback است -->
     <noscript>
         <link rel="stylesheet" href="style.css">
     </noscript>
@@ -21,7 +19,6 @@
 
 <div class="app">
 
-    <!-- TOP BAR -->
     <div class="top-bar">
         <div class="top-btn" id="themeBtn">🌙</div>
         <div class="title">English with Fred</div>
@@ -31,15 +28,8 @@
     <!-- HOME -->
     <div id="home" class="view active">
         <div class="score-card">
-            <div class="stars-box">
-                <span class="star">☆</span><span class="star">☆</span>
-                <span class="star">☆</span><span class="star">☆</span>
-                <span class="star">☆</span>
-            </div>
-            <div class="score-text">
-                بهترین امتیاز
-                <strong class="score-value" id="bestScore">0%</strong>
-            </div>
+            بهترین امتیاز:
+            <strong id="bestScore">0%</strong>
         </div>
 
         <div class="modes">
@@ -49,19 +39,21 @@
             <div class="mode-card" data-mode="def-word">Definition → Word</div>
         </div>
 
-        <button class="btn green" id="whatsappBtn">💬 ثبت‌نام در واتساپ</button>
+        <button class="btn green" id="installBtn" style="display:none">
+            📲 نصب برنامه
+        </button>
+
         <button class="btn red" id="exitBtn">🚪 خروج</button>
     </div>
 
     <!-- QUIZ -->
     <div id="quiz" class="view">
         <div class="score-card">
-            سوال <span id="qIndex">1</span> از 10
-            <strong class="score-value">امتیاز: <span id="score">0</span></strong>
+            سوال <span id="qIndex">1</span> از 10 —
+            امتیاز: <span id="score">0</span>
         </div>
 
         <div class="score-card" id="question">—</div>
-
         <div id="options"></div>
 
         <button class="btn red" id="backBtn">🏠 بازگشت</button>
@@ -69,16 +61,15 @@
 
 </div>
 
-<!-- 🔥 AUTO CACHE-BUSTING LOADER -->
+<!-- Auto cache-busting -->
 <script src="loader.js"></script>
 
-<!-- 🔌 SERVICE WORKER REGISTER -->
+<!-- Service Worker -->
 <script>
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .then(() => console.log('✅ Service Worker registered'))
-            .catch(err => console.warn('SW error:', err));
+    navigator.serviceWorker.register('service-worker.js');
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        location.reload();
     });
 }
 </script>
