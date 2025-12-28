@@ -1,5 +1,5 @@
-function speak(t){
-    if(window.isMuted()) return;
+function speak(t) {
+    if (window.isMuted && window.isMuted()) return;
     const u = new SpeechSynthesisUtterance(t);
     u.lang = 'en-US';
     u.rate = 0.5;
