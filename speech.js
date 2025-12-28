@@ -1,8 +1,12 @@
-function speak(t) {
-    if (window.isMuted && window.isMuted()) return;
-    const u = new SpeechSynthesisUtterance(t);
-    u.lang = 'en-US';
-    u.rate = 0.5;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+let soundEnabled = true;
+
+function speak(text) {
+    if (!soundEnabled) return;
+    if (!('speechSynthesis' in window)) return;
+
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = 0.9;
+    window.speechSynthesis.speak(utter);
 }
