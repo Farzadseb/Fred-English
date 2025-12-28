@@ -1,40 +1,35 @@
-const CACHE_NAME = 'fred-a1-v2'; // ⬅️ هر تغییر = عدد جدید
-
-const urlsToCache = [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/app.js',
-    '/quiz.js',
-    '/speech.js',
-    '/words.js'
+const CACHE_NAME = 'fred-cache-v2';
+const FILES = [
+  './',
+  './index.html',
+  './loader.js',
+  './style.css',
+  './words.js',
+  './quiz.js',
+  './app.js',
+  './speech.js'
 ];
 
-self.addEventListener('install', event => {
-    self.skipWaiting();
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(cache =>
-            cache.addAll(urlsToCache)
-        )
-    );
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES))
+  );
 });
 
-self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(keys =>
-            Promise.all(
-                keys
-                    .filter(k => k !== CACHE_NAME)
-                    .map(k => caches.delete(k))
-            )
-        )
-    );
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+      )
+    )
+  );
+  self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        fetch(event.request).catch(() =>
-            caches.match(event.request)
-        )
-    );
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    caches.match(e.request).then(res => res || fetch(e.request))
+  );
 });
