@@ -1,124 +1,112 @@
-// =======================
-// QUIZ ENGINE (FINAL TEST MODE)
-// =======================
+// quiz.js — FINAL (MCQ version)
 
-let quiz = {
+let quizState = {
     mode: null,
     index: 0,
     score: 0,
-    questions: [],
-    correctAnswer: ''
+    questions: []
 };
 
-function shuffle(arr) {
-    return [...arr].sort(() => Math.random() - 0.5);
+const quizOptionsContainerId = 'quizOptions';
+
+// ساخت کانتینر گزینه‌ها اگر نبود
+function ensureOptionsContainer() {
+    if (!document.getElementById(quizOptionsContainerId)) {
+        const box = document.createElement('div');
+        box.id = quizOptionsContainerId;
+        box.style.display = 'flex';
+        box.style.flexDirection = 'column';
+        box.style.gap = '10px';
+        document.querySelector('#quiz .main-content')
+            .insertBefore(box, document.getElementById('backHome'));
+    }
 }
 
 function startQuiz(mode) {
-    if (!window.words || !words.length) {
-        alert('لغات لود نشده‌اند');
-        return;
-    }
+    quizState = {
+        mode,
+        index: 0,
+        score: 0,
+        questions: [...words].sort(() => 0.5 - Math.random()).slice(0, 10)
+    };
 
-    quiz.mode = mode;
-    quiz.index = 0;
-    quiz.score = 0;
-    quiz.questions = shuffle(words).slice(0, 10);
-
-    renderQuestion();
+    ensureOptionsContainer();
+    showQuestion();
 }
 
-function renderQuestion() {
-    if (quiz.index >= quiz.questions.length) {
-        finishQuiz();
-        return;
-    }
+function showQuestion() {
+    const q = quizState.questions[quizState.index];
+    if (!q) return finishQuiz();
 
-    const w = quiz.questions[quiz.index];
-
-    let question = '';
+    let questionText = '';
     let correct = '';
+    let options = [];
 
-    if (quiz.mode === 'english-persian') {
-        question = w.english;
-        correct = w.persian;
-        speak(w.english);
+    switch (quizState.mode) {
+        case 'english-persian':
+            questionText = q.english;
+            correct = q.persian;
+            options = makeOptions(q.persian, 'persian');
+            speak(q.english);
+            break;
+
+        case 'persian-english':
+            questionText = q.persian;
+            correct = q.english;
+            options = makeOptions(q.english, 'english');
+            break;
+
+        case 'word-definition':
+            questionText = q.english;
+            correct = q.definition;
+            options = makeOptions(q.definition, 'definition');
+            speak(q.english);
+            break;
+
+        case 'definition-word':
+            questionText = q.definition;
+            correct = q.english;
+            options = makeOptions(q.english, 'english');
+            break;
     }
 
-    if (quiz.mode === 'persian-english') {
-        question = w.persian;
-        correct = w.english;
-    }
+    document.getElementById('questionText').textContent = questionText;
+    document.getElementById('currentQuestion').textContent = quizState.index + 1;
+    document.getElementById('quizScore').textContent = quizState.score;
 
-    if (quiz.mode === 'word-definition') {
-        question = w.english;
-        correct = w.definition;
-        speak(w.english);
-    }
-
-    if (quiz.mode === 'definition-word') {
-        question = w.definition;
-        correct = w.english;
-    }
-
-    quiz.correctAnswer = correct;
-
-    document.getElementById('questionText').textContent = question;
-    document.getElementById('currentQuestion').textContent = quiz.index + 1;
-    document.getElementById('quizScore').textContent = quiz.score;
-
-    renderOptions(correct);
+    renderOptions(options, correct);
 }
 
-function renderOptions(correct) {
-    const box = document.getElementById('options');
+function makeOptions(correct, key) {
+    const pool = words
+        .map(w => w[key])
+        .filter(v => v && v !== correct);
+
+    const shuffled = pool.sort(() => 0.5 - Math.random()).slice(0, 3);
+    return [...shuffled, correct].sort(() => 0.5 - Math.random());
+}
+
+function renderOptions(options, correct) {
+    const box = document.getElementById(quizOptionsContainerId);
     box.innerHTML = '';
-
-    let pool;
-
-    if (quiz.mode.includes('persian')) {
-        pool = words.map(w => w.persian);
-    } else if (quiz.mode.includes('definition')) {
-        pool = words.map(w => w.definition);
-    } else {
-        pool = words.map(w => w.english);
-    }
-
-    let options = shuffle(pool).filter(o => o !== correct).slice(0, 3);
-    options.push(correct);
-    options = shuffle(options);
 
     options.forEach(opt => {
         const btn = document.createElement('button');
-        btn.className = 'btn light';
+        btn.className = 'btn green';
         btn.textContent = opt;
-
-        btn.onclick = () => checkAnswer(opt);
-
+        btn.onclick = () => checkAnswer(opt === correct);
         box.appendChild(btn);
     });
 }
 
-function checkAnswer(answer) {
-    if (answer === quiz.correctAnswer) {
-        quiz.score++;
-        showNotification('✅ درست');
-    } else {
-        showNotification('❌ غلط');
-    }
+function checkAnswer(isCorrect) {
+    if (isCorrect) quizState.score++;
 
-    quiz.index++;
-    setTimeout(renderQuestion, 500);
+    quizState.index++;
+    setTimeout(showQuestion, 300);
 }
 
 function finishQuiz() {
-    const percent = Math.round((quiz.score / quiz.questions.length) * 100);
-
-    const best = Number(localStorage.getItem('bestScore') || 0);
-    if (percent > best) {
-        localStorage.setItem('bestScore', percent);
-    }
-
-    showNotification(`🎉 پایان آزمون — امتیاز ${percent}%`, 3000);
-    switchView('home');
+    const percent = Math.round((quizState.score / quizState.questions.length) * 100);
+    showNotification(`پایان آزمون — امتیاز: ${percent}%`, 3000);
 }
