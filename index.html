@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
     <title>English with Fred</title>
-    <link rel="stylesheet" href="style.css">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2ecc71">
+
+    <!-- CSS (لود اتوماتیک واقعی از loader.js انجام می‌شود)
+         این لینک فقط برای fallback است -->
+    <noscript>
+        <link rel="stylesheet" href="style.css">
+    </noscript>
 </head>
+
 <body>
 
 <div class="app">
 
+    <!-- TOP BAR -->
     <div class="top-bar">
         <div class="top-btn" id="themeBtn">🌙</div>
         <div class="title">English with Fred</div>
@@ -44,11 +56,11 @@
     <!-- QUIZ -->
     <div id="quiz" class="view">
         <div class="score-card">
-            سوال <span id="qIndex">1</span> از 10  
+            سوال <span id="qIndex">1</span> از 10
             <strong class="score-value">امتیاز: <span id="score">0</span></strong>
         </div>
 
-        <div class="score-card" id="question"></div>
+        <div class="score-card" id="question">—</div>
 
         <div id="options"></div>
 
@@ -57,10 +69,19 @@
 
 </div>
 
-<script src="words.js"></script>
-<script src="speech.js"></script>
-<script src="quiz.js"></script>
-<script src="app.js"></script>
+<!-- 🔥 AUTO CACHE-BUSTING LOADER -->
+<script src="loader.js"></script>
+
+<!-- 🔌 SERVICE WORKER REGISTER -->
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(() => console.log('✅ Service Worker registered'))
+            .catch(err => console.warn('SW error:', err));
+    });
+}
+</script>
 
 </body>
 </html>
