@@ -1,170 +1,64 @@
-/* =======================
-   QUIZ ENGINE
-   سازگار با:
-   index.html
-   app.js
-   words.js
-   progress.js
-   speech.js
-======================= */
+let quiz = { index:0, score:0, mode:null, questions:[] };
 
-let Quiz = {
-    mode: null,
-    questions: [],
-    index: 0,
-    score: 0,
-    total: 10,
-    correctAnswer: ''
-};
-
-/* =======================
-   START QUIZ
-======================= */
-function startQuiz(mode) {
-    if (!window.words || !words.length) {
-        showNotification('لغات بارگذاری نشدند');
-        return;
-    }
-
-    Quiz.mode = mode;
-    Quiz.index = 0;
-    Quiz.score = 0;
-
-    // shuffle words
-    Quiz.questions = [...words]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, Quiz.total);
-
-    updateQuizHeader();
-    showNextQuestion();
+function startQuiz(mode){
+    quiz = {
+        index:0,
+        score:0,
+        mode,
+        questions:[...words].sort(()=>0.5-Math.random()).slice(0,10)
+    };
+    switchView('quiz');
+    nextQuestion();
 }
 
-/* =======================
-   NEXT QUESTION
-======================= */
-function showNextQuestion() {
-    if (Quiz.index >= Quiz.total) {
-        finishQuiz();
-        return;
-    }
-
-    const w = Quiz.questions[Quiz.index];
-    let question = '';
-    let answer = '';
-
-    switch (Quiz.mode) {
-        case 'english-persian':
-            question = w.english;
-            answer = w.persian;
-            speakText(w.english);
-            break;
-
-        case 'persian-english':
-            question = w.persian;
-            answer = w.english;
-            break;
-
-        case 'word-definition':
-            question = w.english;
-            answer = w.definition;
-            speakText(w.english);
-            break;
-
-        case 'definition-word':
-            question = w.definition;
-            answer = w.english;
-            break;
-    }
-
-    Quiz.correctAnswer = answer.trim().toLowerCase();
-
-    document.getElementById('questionText').textContent = question;
-    document.getElementById('answerInput').value = '';
-    document.getElementById('feedback').textContent = '';
-    document.getElementById('answerInput').focus();
-
-    updateQuizHeader();
-}
-
-/* =======================
-   CHECK ANSWER
-======================= */
-function checkAnswer() {
-    const input = document.getElementById('answerInput');
-    const user = input.value.trim().toLowerCase();
-
-    if (!user) return;
-
-    const ok =
-        user === Quiz.correctAnswer ||
-        (user.length > 3 &&
-            (Quiz.correctAnswer.includes(user) ||
-             user.includes(Quiz.correctAnswer)));
-
-    const feedback = document.getElementById('feedback');
-
-    if (ok) {
-        Quiz.score++;
-        feedback.textContent = '✅ درست';
-        ProgressTracker.recordQuestion(Quiz.mode, true, Quiz.questions[Quiz.index]);
-    } else {
-        feedback.textContent = `❌ پاسخ صحیح: ${Quiz.correctAnswer}`;
-        ProgressTracker.recordQuestion(Quiz.mode, false, Quiz.questions[Quiz.index]);
-    }
-
-    Quiz.index++;
-    updateQuizHeader();
-
-    setTimeout(showNextQuestion, 1200);
-}
-
-/* =======================
-   FINISH QUIZ
-======================= */
-function finishQuiz() {
-    const percent = Math.round((Quiz.score / Quiz.total) * 100);
-
-    // best score
-    if (percent > App.bestScore) {
-        App.bestScore = percent;
-        localStorage.setItem('bestScore', percent);
-        renderScore();
-        showNotification(`🎉 رکورد جدید: ${percent}%`, 3000);
-    } else {
-        showNotification(`امتیاز: ${percent}%`, 3000);
-    }
-
-    ProgressTracker.recordSession(Quiz.mode, percent, Quiz.total);
-
-    setTimeout(() => {
-        switchView('home');
-    }, 800);
-}
-
-/* =======================
-   HEADER UPDATE
-======================= */
-function updateQuizHeader() {
-    document.getElementById('currentQuestion').textContent = Quiz.index + 1;
-    document.getElementById('quizScore').textContent = Quiz.score;
-}
-
-/* =======================
-   EVENTS
-======================= */
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('submitAnswer')
-        ?.addEventListener('click', checkAnswer);
-
-    document.getElementById('answerInput')
-        ?.addEventListener('keydown', e => {
-            if (e.key === 'Enter') checkAnswer();
-        });
-
-    document.getElementById('backHome')
-        ?.addEventListener('click', () => {
-            switchView('home');
-        });
-
-    console.log('✅ quiz.js loaded');
+document.querySelectorAll('.mode-card').forEach(c=>{
+    c.onclick=()=>startQuiz(c.dataset.mode);
 });
+
+function nextQuestion(){
+    if(quiz.index>=10) return finishQuiz();
+    const w = quiz.questions[quiz.index];
+    let q='',correct='';
+    if(quiz.mode==='en-fa'){ q=w.en; correct=w.fa; speak(w.en); }
+    if(quiz.mode==='fa-en'){ q=w.fa; correct=w.en; }
+    if(quiz.mode==='word-def'){ q=w.en; correct=w.def; speak(w.en); }
+    if(quiz.mode==='def-word'){ q=w.def; correct=w.en; }
+
+    $('questionText').textContent=q;
+    $('qIndex').textContent=quiz.index+1;
+    $('qScore').textContent=quiz.score;
+
+    const options = shuffle([
+        correct,
+        ...shuffle(words).slice(0,3).map(x=>quiz.mode.includes('fa')?x.en:x.fa||x.def)
+    ]);
+
+    $('choices').innerHTML='';
+    options.forEach(o=>{
+        const b=document.createElement('button');
+        b.className='btn light';
+        b.textContent=o;
+        b.onclick=()=>check(o,correct);
+        $('choices').appendChild(b);
+    });
+}
+
+function check(a,c){
+    if(a===c){ quiz.score++; $('feedback').textContent='✅ درست'; }
+    else $('feedback').textContent='❌ غلط';
+    quiz.index++;
+    setTimeout(nextQuestion,800);
+}
+
+function finishQuiz(){
+    const p=Math.round((quiz.score/10)*100);
+    if(p>App.bestScore){
+        App.bestScore=p;
+        localStorage.setItem('bestScore',p);
+        $('scoreValue').textContent=p+'%';
+    }
+    switchView('home');
+    showNotification(`امتیاز: ${p}%`);
+}
+
+function shuffle(a){ return a.sort(()=>0.5-Math.random()); }
