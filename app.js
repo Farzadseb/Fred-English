@@ -1,44 +1,56 @@
-const App = {
-    muted: false,
-    theme: 'light'
-};
+// =======================
+// APP CONTROLLER
+// =======================
 
-function switchView(id) {
+// ---------- VIEW SWITCH ----------
+function switchView(viewId) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    const el = document.getElementById(viewId);
+    if (el) el.classList.add('active');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// ---------- BEST SCORE ----------
+function loadBestScore() {
+    const best = localStorage.getItem('bestScore') || '0';
+    const el = document.getElementById('bestScore');
+    if (el) el.textContent = best + '%';
+}
 
-    document.querySelectorAll('.mode-card').forEach(card => {
-        card.onclick = () => {
-            switchView('quiz');
-            startQuiz(card.dataset.mode);
-        };
+// ---------- INSTALL PWA ----------
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const btn = document.getElementById('installBtn');
+    if (btn) btn.style.display = 'block';
+});
+
+document.getElementById('installBtn')?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+});
+
+// ---------- HOME BUTTONS ----------
+document.getElementById('exitBtn')?.addEventListener('click', () => {
+    window.close();
+});
+
+document.getElementById('backBtn')?.addEventListener('click', () => {
+    switchView('home');
+});
+
+// ---------- MODE SELECT ----------
+document.querySelectorAll('.mode-card').forEach(card => {
+    card.addEventListener('click', () => {
+        startQuiz(card.dataset.mode);
     });
+});
 
-    document.getElementById('backBtn').onclick = () => switchView('home');
-
-    document.getElementById('muteBtn').onclick = () => {
-        App.muted = !App.muted;
-        document.getElementById('muteBtn').textContent = App.muted ? '🔇' : '🔊';
-    };
-
-    window.isMuted = () => App.muted;
-
-    document.getElementById('themeBtn').onclick = () => {
-        document.body.classList.toggle('dark');
-    };
-
-    document.getElementById('whatsappBtn').onclick = () => {
-        window.open(
-            'https://wa.me/989017708544?text=' +
-            encodeURIComponent('سلام، برای ثبت‌نام در English with Fred پیام می‌دم'),
-            '_blank'
-        );
-    };
-
-    document.getElementById('exitBtn').onclick = () => {
-        if (confirm('خروج؟')) window.location.href = 'about:blank';
-    };
+// ---------- INIT ----------
+document.addEventListener('DOMContentLoaded', () => {
+    loadBestScore();
 });
