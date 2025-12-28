@@ -1,82 +1,196 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>English with Fred</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4CAF50">
+    <title>English with Fred - یادگیری انگلیسی</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body>
-<div class="app">
+    <div class="app-container">
+        <!-- نوار بالایی -->
+        <div class="top-bar">
+            <button id="muteBtn" class="top-btn" title="صدا">
+                <span id="muteIcon">🎤</span>
+            </button>
+            <div class="title">English with Fred</div>
+            <button id="themeBtn" class="top-btn" title="تغییر تم">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
-        <div class="top-btn" id="muteBtn">🔊</div>
-        <div class="title">English with Fred</div>
-        <div class="top-btn" id="themeBtn">🌙</div>
-    </div>
+        <!-- نوتیفیکیشن -->
+        <div id="notification" class="notification"></div>
 
-    <!-- HOME -->
-    <div id="home" class="view active">
-        <div class="main-content">
-
-            <div class="score-card">
-                <div class="stars-box" id="starsContainer">
-                    <span class="star">☆</span><span class="star">☆</span>
-                    <span class="star">☆</span><span class="star">☆</span>
-                    <span class="star">☆</span>
+        <!-- صفحه اصلی -->
+        <div id="home" class="view active">
+            <div class="main-content">
+                <!-- کارت امتیاز -->
+                <div class="score-card">
+                    <div class="stars-box" id="starsContainer">
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                        <span class="star">☆</span>
+                    </div>
+                    <div class="score-text">
+                        بهترین امتیاز
+                        <strong class="score-value" id="scoreValue">0%</strong>
+                    </div>
                 </div>
-                <div class="score-text">
-                    بهترین امتیاز
-                    <strong class="score-value" id="scoreValue">0%</strong>
+
+                <!-- حالت‌های آزمون -->
+                <div class="modes">
+                    <div class="mode-card" data-mode="english-persian">
+                        <div class="mode-icon">🇺🇸 → 🇮🇷</div>
+                        <div class="mode-title">English → Persian</div>
+                        <div class="mode-desc">لغت انگلیسی به فارسی</div>
+                    </div>
+                    
+                    <div class="mode-card" data-mode="persian-english">
+                        <div class="mode-icon">🇮🇷 → 🇺🇸</div>
+                        <div class="mode-title">Persian → English</div>
+                        <div class="mode-desc">لغت فارسی به انگلیسی</div>
+                    </div>
+                    
+                    <div class="mode-card" data-mode="word-definition">
+                        <div class="mode-icon">📝 → 💭</div>
+                        <div class="mode-title">Word → Definition</div>
+                        <div class="mode-desc">کلمه به تعریف</div>
+                    </div>
+                    
+                    <div class="mode-card" data-mode="definition-word">
+                        <div class="mode-icon">💭 → 📝</div>
+                        <div class="mode-title">Definition → Word</div>
+                        <div class="mode-desc">تعریف به کلمه</div>
+                    </div>
+                </div>
+
+                <!-- دکمه‌های عملیاتی -->
+                <button class="btn green" id="reviewMistakesBtn">
+                    <span>🎯</span> مرور اشتباهات
+                </button>
+                
+                <button class="btn blue" id="progressReportBtn">
+                    <span>📊</span> گزارش پیشرفت
+                </button>
+                
+                <button class="btn orange" id="whatsappBtn">
+                    <span>💬</span> ارتباط با پشتیبانی
+                </button>
+                
+                <button class="btn red" id="exitBtn">
+                    <span>🚪</span> خروج
+                </button>
+
+                <!-- اطلاعات نسخه -->
+                <div class="version-info">
+                    v1.0.0 • English Learning App
                 </div>
             </div>
+        </div>
 
-            <div class="modes">
-                <div class="mode-card" data-mode="english-persian">English → Persian</div>
-                <div class="mode-card" data-mode="persian-english">Persian → English</div>
-                <div class="mode-card" data-mode="word-definition">Word → Definition</div>
-                <div class="mode-card" data-mode="definition-word">Definition → Word</div>
+        <!-- صفحه آزمون -->
+        <div id="quiz" class="view">
+            <div class="main-content">
+                <!-- هدر آزمون -->
+                <div class="quiz-header">
+                    <div class="quiz-progress">
+                        <div class="progress-text">
+                            سوال <span id="currentQuestion">1</span> از 10
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                    <div class="quiz-score">
+                        <span>🏆</span>
+                        امتیاز: <span id="quizScore">0</span>
+                    </div>
+                </div>
+
+                <!-- سوال -->
+                <div class="question-card">
+                    <div class="question-label">سوال:</div>
+                    <div class="question-text" id="questionText"></div>
+                    <button class="speak-btn" id="speakQuestion" title="تکرار صدا">
+                        🔊
+                    </button>
+                </div>
+
+                <!-- جواب -->
+                <div class="answer-section">
+                    <input 
+                        type="text" 
+                        id="answerInput" 
+                        class="answer-input"
+                        placeholder="پاسخ خود را وارد کنید..."
+                        autocomplete="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                    >
+                    <div class="input-hint">
+                        دکمه Enter را بزنید یا دکمه بررسی را فشار دهید
+                    </div>
+                </div>
+
+                <!-- دکمه‌های آزمون -->
+                <div class="quiz-buttons">
+                    <button class="btn green large" id="submitAnswer">
+                        <span>✅</span> بررسی پاسخ
+                    </button>
+                    <button class="btn red" id="backHome">
+                        <span>🏠</span> بازگشت به خانه
+                    </button>
+                </div>
+
+                <!-- بازخورد -->
+                <div class="feedback-box" id="feedback">
+                    پاسخ خود را وارد کنید...
+                </div>
             </div>
+        </div>
 
-            <button class="btn green" id="reviewMistakesBtn">🎯 مرور اشتباهات</button>
-            <button class="btn light" id="progressReportBtn">📊 گزارش پیشرفت</button>
-            <button class="btn red" id="exitBtn">🚪 خروج</button>
+        <!-- گزارش پیشرفت -->
+        <div id="progressReport" class="view">
+            <div class="main-content">
+                <div class="report-header">
+                    <h2>📊 گزارش پیشرفت</h2>
+                    <button class="back-btn" id="backFromReport">
+                        ← بازگشت
+                    </button>
+                </div>
 
+                <div class="report-content" id="progressContent">
+                    <!-- محتوای گزارش -->
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- QUIZ -->
-    <div id="quiz" class="view">
-        <div class="main-content">
+    <!-- Modal Container -->
+    <div id="modalContainer"></div>
 
-            <div class="score-card">
-                <div class="score-text">
-                    سوال <span id="currentQuestion">1</span> از 10
-                    <strong class="score-value">امتیاز: <span id="quizScore">0</span></strong>
-                </div>
-            </div>
-
-            <div class="score-card">
-                <div id="questionText" style="text-align:center;font-size:18px;"></div>
-            </div>
-
-            <input id="answerInput" type="text" placeholder="پاسخت رو بنویس…">
-            <button class="btn green" id="submitAnswer">✔ بررسی</button>
-            <div id="feedback" style="text-align:center;"></div>
-            <button class="btn red" id="backHome">🏠 بازگشت</button>
-
-        </div>
-    </div>
-
-    <div class="notification" id="notification"></div>
-
-</div>
-
-<script src="words.js"></script>
-<script src="progress.js"></script>
-<script src="speech.js"></script>
-<script src="app.js"></script>
+    <!-- اسکریپت‌ها -->
+    <script src="words.js"></script>
+    <script src="modal.js"></script>
+    <script src="progress.js"></script>
+    <script src="speech.js"></script>
+    <script src="screen-controller.js"></script>
+    <script src="app.js"></script>
+    
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('✅ Service Worker ثبت شد:', reg))
+                .catch(err => console.log('❌ Service Worker خطا:', err));
+        }
+    </script>
 </body>
 </html>
