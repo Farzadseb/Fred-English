@@ -1,169 +1,66 @@
-// =======================
-// QUIZ ENGINE
-// =======================
+let quiz={};
 
-let quiz = {
-    mode: null,
-    questions: [],
-    index: 0,
-    score: 0,
-    correct: '',
-    locked: false
+const MODES={
+  'en-fa':['english','persian',true],
+  'fa-en':['persian','english',false],
+  'word-def':['english','definition',true],
+  'def-word':['definition','english',false]
 };
 
-// ---------- MODE MAP ----------
-const MODE_MAP = {
-    'en-fa': { q: 'english', a: 'persian', speak: true },
-    'fa-en': { q: 'persian', a: 'english', speak: false },
-    'word-def': { q: 'english', a: 'definition', speak: true },
-    'def-word': { q: 'definition', a: 'english', speak: false }
-};
-
-// ---------- VALID WORDS ----------
-function getValidWords(mode) {
-    const cfg = MODE_MAP[mode];
-    if (!cfg) return [];
-    return words.filter(w =>
-        typeof w[cfg.q] === 'string' && w[cfg.q].trim() &&
-        typeof w[cfg.a] === 'string' && w[cfg.a].trim()
-    );
+function startQuiz(mode){
+  const c=MODES[mode];
+  const list=words.filter(w=>w[c[0]]&&w[c[1]]);
+  quiz={mode,c,list:list.sort(()=>.5-Math.random()).slice(0,10),i:0,score:0};
+  switchView('quiz');
+  showQ();
 }
 
-// ---------- OPTIONS ----------
-function makeOptions(correct, key) {
-    if (!correct) return null;
+function showQ(){
+  if(quiz.i>=quiz.list.length){finishQuiz();return;}
+  const w=quiz.list[quiz.i];
+  quiz.correct=w[quiz.c[1]];
+  document.getElementById('question').textContent=w[quiz.c[0]];
+  document.getElementById('qIndex').textContent=quiz.i+1;
+  document.getElementById('score').textContent=quiz.score;
 
-    let pool = words
-        .map(w => w[key])
-        .filter(v => typeof v === 'string' && v.trim() && v !== correct);
+  const opts=words.map(x=>x[quiz.c[1]]).filter(v=>v&&v!==quiz.correct)
+    .sort(()=>.5-Math.random()).slice(0,3);
+  opts.push(quiz.correct);
+  opts.sort(()=>.5-Math.random());
 
-    if (pool.length < 3) {
-        const extra = words
-            .map(w => w.english)
-            .filter(v => v && v !== correct && !pool.includes(v));
-        pool = [...pool, ...extra];
-    }
+  const box=document.getElementById('options');
+  box.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='btn option';
+    b.textContent=o;
+    b.onclick=()=>check(o);
+    box.appendChild(b);
+  });
 
-    if (pool.length < 3) return null;
-
-    const wrong = pool.sort(() => 0.5 - Math.random()).slice(0, 3);
-    return [...wrong, correct].sort(() => 0.5 - Math.random());
+  if(quiz.c[2]) speak(w[quiz.c[0]]);
 }
 
-// ---------- PROGRESS ----------
-function saveProgress(word, isCorrect) {
-    const p = JSON.parse(localStorage.getItem('progress') || '{}');
-    if (!p[word.english]) p[word.english] = { correct: 0, wrong: 0 };
-    isCorrect ? p[word.english].correct++ : p[word.english].wrong++;
-    localStorage.setItem('progress', JSON.stringify(p));
+function check(a){
+  if(a===quiz.correct) quiz.score++;
+  quiz.i++;
+  showQ();
 }
 
-// ---------- START ----------
-function startQuiz(mode) {
-    const valid = getValidWords(mode);
-    if (valid.length < 5) {
-        alert('لغات کافی موجود نیست');
-        return;
-    }
+function finishQuiz(){
+  const percent=Math.round((quiz.score/quiz.list.length)*100);
+  const best=Math.max(percent, localStorage.getItem('bestScore')||0);
+  localStorage.setItem('bestScore', best);
+  document.getElementById('bestScore').textContent=best+'%';
 
-    const progress = JSON.parse(localStorage.getItem('progress') || '{}');
+  const student = localStorage.getItem('studentName') || 'نامشخص';
 
-    quiz = {
-        mode,
-        questions: valid
-            .sort((a, b) =>
-                (progress[b.english]?.wrong || 0) -
-                (progress[a.english]?.wrong || 0)
-            )
-            .slice(0, 10),
-        index: 0,
-        score: 0,
-        correct: '',
-        locked: false
-    };
+  sendTelegram(
+`📘 Fred – گزارش تمرین
+👤 زبان‌آموز: ${student}
+🎯 امتیاز: ${percent}%
+📊 ${quiz.score}/${quiz.list.length}`
+  );
 
-    switchView('quiz');
-    showQuestion();
-}
-
-// ---------- SHOW QUESTION ----------
-function showQuestion() {
-    quiz.locked = false;
-
-    if (quiz.index >= quiz.questions.length) {
-        finishQuiz();
-        return;
-    }
-
-    const cfg = MODE_MAP[quiz.mode];
-    const word = quiz.questions[quiz.index];
-
-    const qText = word[cfg.q];
-    const correct = word[cfg.a];
-
-    const options = makeOptions(correct, cfg.a);
-    if (!qText || !correct || !options) {
-        quiz.index++;
-        showQuestion();
-        return;
-    }
-
-    quiz.correct = correct;
-
-    document.getElementById('question').textContent = qText;
-    document.getElementById('qIndex').textContent = quiz.index + 1;
-    document.getElementById('score').textContent = quiz.score;
-
-    const box = document.getElementById('options');
-    box.innerHTML = '';
-
-    options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'btn option';
-        btn.textContent = opt;
-        btn.onclick = () => checkAnswer(btn, opt, word);
-        box.appendChild(btn);
-    });
-
-    if (cfg.speak && window.speak) speak(qText);
-}
-
-// ---------- CHECK ----------
-function checkAnswer(btn, selected, word) {
-    if (quiz.locked) return;
-    quiz.locked = true;
-
-    const buttons = document.querySelectorAll('.option');
-    buttons.forEach(b => {
-        b.disabled = true;
-        if (b.textContent === quiz.correct) b.classList.add('correct');
-    });
-
-    const correct = selected === quiz.correct;
-    if (correct) {
-        quiz.score++;
-        btn.classList.add('correct');
-    } else {
-        btn.classList.add('wrong');
-    }
-
-    saveProgress(word, correct);
-
-    setTimeout(() => {
-        quiz.index++;
-        showQuestion();
-    }, 1200);
-}
-
-// ---------- FINISH ----------
-function finishQuiz() {
-    const percent = Math.round((quiz.score / quiz.questions.length) * 100);
-    const best = parseInt(localStorage.getItem('bestScore') || '0');
-
-    if (percent > best) {
-        localStorage.setItem('bestScore', percent);
-    }
-
-    document.getElementById('bestScore').textContent = percent + '%';
-    switchView('home');
+  switchView('home');
 }
