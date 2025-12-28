@@ -17,17 +17,14 @@
         <div class="top-btn" id="themeBtn">🌙</div>
     </div>
 
-    <!-- HOME VIEW -->
+    <!-- HOME -->
     <div id="home" class="view active">
         <div class="main-content">
 
-            <!-- SCORE -->
             <div class="score-card">
-                <div class="stars-box" id="starsContainer">
-                    <span class="star">☆</span>
-                    <span class="star">☆</span>
-                    <span class="star">☆</span>
-                    <span class="star">☆</span>
+                <div class="stars-box">
+                    <span class="star">☆</span><span class="star">☆</span>
+                    <span class="star">☆</span><span class="star">☆</span>
                     <span class="star">☆</span>
                 </div>
                 <div class="score-text">
@@ -36,68 +33,44 @@
                 </div>
             </div>
 
-            <!-- MODES -->
             <div class="modes">
-                <div class="mode-card" data-mode="english-persian">English → Persian</div>
-                <div class="mode-card" data-mode="persian-english">Persian → English</div>
-                <div class="mode-card" data-mode="word-definition">Word → Definition</div>
-                <div class="mode-card" data-mode="definition-word">Definition → Word</div>
+                <div class="mode-card" data-mode="en-fa">English → Persian</div>
+                <div class="mode-card" data-mode="fa-en">Persian → English</div>
+                <div class="mode-card" data-mode="word-def">Word → Definition</div>
+                <div class="mode-card" data-mode="def-word">Definition → Word</div>
             </div>
 
-            <!-- ACTION BUTTONS -->
-            <button class="btn green" id="reviewMistakesBtn">🎯 مرور اشتباهات</button>
-            <button class="btn light" id="progressReportBtn">📊 گزارش پیشرفت</button>
             <button class="btn green" id="registerBtn">💬 ثبت‌نام در واتساپ</button>
             <button class="btn red" id="exitBtn">🚪 خروج</button>
-
         </div>
     </div>
 
-    <!-- QUIZ VIEW (همان صفحه، بدون تغییر ظاهر کلی) -->
+    <!-- QUIZ -->
     <div id="quiz" class="view">
         <div class="main-content">
 
             <div class="score-card">
-                <div class="score-text">
-                    سوال <span id="currentQuestion">1</span> از 10
-                    <strong class="score-value">
-                        امتیاز: <span id="quizScore">0</span>
-                    </strong>
-                </div>
+                سوال <span id="qIndex">1</span> از 10
+                <strong class="score-value">امتیاز: <span id="qScore">0</span></strong>
             </div>
 
-            <div class="score-card">
-                <div id="questionText" style="text-align:center;font-size:18px;"></div>
-            </div>
+            <div class="score-card" id="questionText"></div>
 
-            <input
-                id="answerInput"
-                type="text"
-                placeholder="پاسخت رو بنویس…"
-                autocomplete="off"
-            />
+            <div id="choices"></div>
 
-            <button class="btn green" id="submitAnswer">✔ بررسی</button>
-
-            <div id="feedback" style="text-align:center;"></div>
+            <div id="feedback"></div>
 
             <button class="btn red" id="backHome">🏠 بازگشت</button>
-
         </div>
     </div>
 
-    <!-- NOTIFICATION -->
     <div class="notification" id="notification"></div>
 
 </div>
 
-<!-- SCRIPTS (ترتیب مهم است) -->
 <script src="words.js"></script>
-<script src="progress.js"></script>
 <script src="speech.js"></script>
-<script src="screen-controller.js"></script>
 <script src="quiz.js"></script>
 <script src="app.js"></script>
-
 </body>
 </html>
