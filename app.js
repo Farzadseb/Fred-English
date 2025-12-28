@@ -1,56 +1,65 @@
-// =======================
-// APP CONTROLLER
-// =======================
-
-// ---------- VIEW SWITCH ----------
-function switchView(viewId) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    const el = document.getElementById(viewId);
-    if (el) el.classList.add('active');
+function switchView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
-// ---------- BEST SCORE ----------
-function loadBestScore() {
-    const best = localStorage.getItem('bestScore') || '0';
-    const el = document.getElementById('bestScore');
-    if (el) el.textContent = best + '%';
+document.querySelectorAll('.mode-card').forEach(b=>{
+  b.onclick=()=>startQuiz(b.dataset.mode);
+});
+
+document.getElementById('backBtn').onclick=()=>switchView('home');
+
+/* ---------- student ---------- */
+const nameInput = document.getElementById('studentName');
+const saveBtn = document.getElementById('saveStudentBtn');
+
+if (localStorage.getItem('studentName')) {
+  nameInput.value = localStorage.getItem('studentName');
 }
 
-// ---------- INSTALL PWA ----------
-let deferredPrompt = null;
+saveBtn.onclick = () => {
+  if (nameInput.value.trim()) {
+    localStorage.setItem('studentName', nameInput.value.trim());
+    alert('ذخیره شد');
+  }
+};
 
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const btn = document.getElementById('installBtn');
-    if (btn) btn.style.display = 'block';
-});
+/* ---------- mute ---------- */
+const muteBtn = document.getElementById('muteBtn');
+muteBtn.textContent = soundEnabled ? '🔊' : '🔇';
+muteBtn.onclick = () => {
+  soundEnabled = !soundEnabled;
+  localStorage.setItem('sound', soundEnabled?'on':'off');
+  muteBtn.textContent = soundEnabled?'🔊':'🔇';
+};
 
-document.getElementById('installBtn')?.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    document.getElementById('installBtn').style.display = 'none';
-});
+/* ---------- theme ---------- */
+const themeBtn = document.getElementById('themeBtn');
+if (localStorage.getItem('theme')==='dark') {
+  document.body.classList.add('dark');
+  themeBtn.textContent='☀️';
+}
+themeBtn.onclick=()=>{
+  document.body.classList.toggle('dark');
+  const d=document.body.classList.contains('dark');
+  localStorage.setItem('theme', d?'dark':'light');
+  themeBtn.textContent=d?'☀️':'🌙';
+};
 
-// ---------- HOME BUTTONS ----------
-document.getElementById('exitBtn')?.addEventListener('click', () => {
-    window.close();
-});
+/* ---------- WhatsApp ---------- */
+document.getElementById('whatsappBtn').onclick = () => {
+  const phone = '989XXXXXXXXX'; // شماره خودت با کد کشور
+  const msg = encodeURIComponent('سلام، من از برنامه English with Fred پیام می‌دهم.');
+  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+};
 
-document.getElementById('backBtn')?.addEventListener('click', () => {
-    switchView('home');
+/* ---------- install ---------- */
+let installPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  installPrompt=e;
+  document.getElementById('installBtn').style.display='block';
 });
-
-// ---------- MODE SELECT ----------
-document.querySelectorAll('.mode-card').forEach(card => {
-    card.addEventListener('click', () => {
-        startQuiz(card.dataset.mode);
-    });
-});
-
-// ---------- INIT ----------
-document.addEventListener('DOMContentLoaded', () => {
-    loadBestScore();
-});
+document.getElementById('installBtn').onclick=()=>{
+  if(installPrompt) installPrompt.prompt();
+};
