@@ -1,52 +1,44 @@
 const App = {
-    theme: localStorage.getItem('theme') || 'light',
-    muted: localStorage.getItem('muted') === 'true',
-    bestScore: Number(localStorage.getItem('bestScore') || 0)
+    muted: false,
+    theme: 'light'
 };
-
-const $ = id => document.getElementById(id);
 
 function switchView(id) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    $(id).classList.add('active');
+    document.getElementById(id).classList.add('active');
 }
 
-function showNotification(t) {
-    const n = $('notification');
-    n.textContent = t;
-    n.classList.add('show');
-    setTimeout(()=>n.classList.remove('show'),2000);
-}
+document.addEventListener('DOMContentLoaded', () => {
 
-function applyTheme(){
-    document.body.classList.toggle('dark',App.theme==='dark');
-    $('themeBtn').textContent = App.theme==='dark'?'☀️':'🌙';
-}
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.onclick = () => {
+            switchView('quiz');
+            startQuiz(card.dataset.mode);
+        };
+    });
 
-$('themeBtn').onclick=()=>{
-    App.theme=App.theme==='dark'?'light':'dark';
-    localStorage.setItem('theme',App.theme);
-    applyTheme();
-};
+    document.getElementById('backBtn').onclick = () => switchView('home');
 
-$('muteBtn').onclick=()=>{
-    App.muted=!App.muted;
-    localStorage.setItem('muted',App.muted);
-    $('muteBtn').textContent=App.muted?'🔇':'🔊';
-};
+    document.getElementById('muteBtn').onclick = () => {
+        App.muted = !App.muted;
+        document.getElementById('muteBtn').textContent = App.muted ? '🔇' : '🔊';
+    };
 
-window.isMuted=()=>App.muted;
+    window.isMuted = () => App.muted;
 
-$('registerBtn').onclick=()=>{
-    const phone='989017708544';
-    const msg='سلام، می‌خواهم در کلاس English with Fred ثبت‌نام کنم.';
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
-};
+    document.getElementById('themeBtn').onclick = () => {
+        document.body.classList.toggle('dark');
+    };
 
-$('backHome').onclick=()=>switchView('home');
-$('exitBtn').onclick=()=>location.href='about:blank';
+    document.getElementById('whatsappBtn').onclick = () => {
+        window.open(
+            'https://wa.me/989017708544?text=' +
+            encodeURIComponent('سلام، برای ثبت‌نام در English with Fred پیام می‌دم'),
+            '_blank'
+        );
+    };
 
-document.addEventListener('DOMContentLoaded',()=>{
-    applyTheme();
-    $('scoreValue').textContent=App.bestScore+'%';
+    document.getElementById('exitBtn').onclick = () => {
+        if (confirm('خروج؟')) window.location.href = 'about:blank';
+    };
 });
