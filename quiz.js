@@ -1,5 +1,5 @@
 // =======================
-// QUIZ ENGINE (TEST MODE)
+// QUIZ ENGINE (FINAL TEST MODE)
 // =======================
 
 let quiz = {
@@ -7,11 +7,11 @@ let quiz = {
     index: 0,
     score: 0,
     questions: [],
-    current: null
+    correctAnswer: ''
 };
 
 function shuffle(arr) {
-    return arr.sort(() => Math.random() - 0.5);
+    return [...arr].sort(() => Math.random() - 0.5);
 }
 
 function startQuiz(mode) {
@@ -23,8 +23,7 @@ function startQuiz(mode) {
     quiz.mode = mode;
     quiz.index = 0;
     quiz.score = 0;
-
-    quiz.questions = shuffle([...words]).slice(0, 10);
+    quiz.questions = shuffle(words).slice(0, 10);
 
     renderQuestion();
 }
@@ -36,7 +35,6 @@ function renderQuestion() {
     }
 
     const w = quiz.questions[quiz.index];
-    quiz.current = w;
 
     let question = '';
     let correct = '';
@@ -69,29 +67,24 @@ function renderQuestion() {
     document.getElementById('currentQuestion').textContent = quiz.index + 1;
     document.getElementById('quizScore').textContent = quiz.score;
 
-    renderOptions(correct, w);
+    renderOptions(correct);
 }
 
-function renderOptions(correct, word) {
-    const container = document.getElementById('feedback');
-    container.innerHTML = '';
+function renderOptions(correct) {
+    const box = document.getElementById('options');
+    box.innerHTML = '';
 
-    let options = [];
+    let pool;
 
-    if (quiz.mode.includes('definition')) {
-        options = shuffle(
-            words.map(w => w.definition)
-        ).slice(0, 3);
-    } else if (quiz.mode.includes('persian')) {
-        options = shuffle(
-            words.map(w => w.persian)
-        ).slice(0, 3);
+    if (quiz.mode.includes('persian')) {
+        pool = words.map(w => w.persian);
+    } else if (quiz.mode.includes('definition')) {
+        pool = words.map(w => w.definition);
     } else {
-        options = shuffle(
-            words.map(w => w.english)
-        ).slice(0, 3);
+        pool = words.map(w => w.english);
     }
 
+    let options = shuffle(pool).filter(o => o !== correct).slice(0, 3);
     options.push(correct);
     options = shuffle(options);
 
@@ -102,20 +95,20 @@ function renderOptions(correct, word) {
 
         btn.onclick = () => checkAnswer(opt);
 
-        container.appendChild(btn);
+        box.appendChild(btn);
     });
 }
 
 function checkAnswer(answer) {
     if (answer === quiz.correctAnswer) {
         quiz.score++;
-        showNotification('درست ✅');
+        showNotification('✅ درست');
     } else {
-        showNotification('غلط ❌');
+        showNotification('❌ غلط');
     }
 
     quiz.index++;
-    setTimeout(renderQuestion, 600);
+    setTimeout(renderQuestion, 500);
 }
 
 function finishQuiz() {
@@ -126,6 +119,6 @@ function finishQuiz() {
         localStorage.setItem('bestScore', percent);
     }
 
-    showNotification(`پایان آزمون 🎉 امتیاز: ${percent}%`, 3000);
+    showNotification(`🎉 پایان آزمون — امتیاز ${percent}%`, 3000);
     switchView('home');
 }
