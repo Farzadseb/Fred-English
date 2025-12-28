@@ -1,19 +1,17 @@
-// ==========================
-// QUIZ ENGINE (FAIL-SAFE)
-// ==========================
+// =======================
+// QUIZ ENGINE
+// =======================
 
 let quiz = {
     mode: null,
     questions: [],
     index: 0,
     score: 0,
-    correct: null,
+    correct: '',
     locked: false
 };
 
-// --------------------------
-// MODE MAP (UI → ENGINE)
-// --------------------------
+// ---------- MODE MAP ----------
 const MODE_MAP = {
     'en-fa': { q: 'english', a: 'persian', speak: true },
     'fa-en': { q: 'persian', a: 'english', speak: false },
@@ -21,34 +19,28 @@ const MODE_MAP = {
     'def-word': { q: 'definition', a: 'english', speak: false }
 };
 
-// --------------------------
-// VALID WORDS FOR MODE
-// --------------------------
-function getValidWords(modeKey) {
-    const cfg = MODE_MAP[modeKey];
+// ---------- VALID WORDS ----------
+function getValidWords(mode) {
+    const cfg = MODE_MAP[mode];
     if (!cfg) return [];
-
     return words.filter(w =>
         typeof w[cfg.q] === 'string' && w[cfg.q].trim() &&
         typeof w[cfg.a] === 'string' && w[cfg.a].trim()
     );
 }
 
-// --------------------------
-// SAFE OPTIONS GENERATOR
-// --------------------------
-function makeOptionsSafe(correct, answerKey) {
-    if (!correct || typeof correct !== 'string') return null;
+// ---------- OPTIONS ----------
+function makeOptions(correct, key) {
+    if (!correct) return null;
 
     let pool = words
-        .map(w => w[answerKey])
+        .map(w => w[key])
         .filter(v => typeof v === 'string' && v.trim() && v !== correct);
 
-    // fallback مرحله‌ای
     if (pool.length < 3) {
         const extra = words
             .map(w => w.english)
-            .filter(v => typeof v === 'string' && v.trim() && v !== correct && !pool.includes(v));
+            .filter(v => v && v !== correct && !pool.includes(v));
         pool = [...pool, ...extra];
     }
 
@@ -58,23 +50,35 @@ function makeOptionsSafe(correct, answerKey) {
     return [...wrong, correct].sort(() => 0.5 - Math.random());
 }
 
-// --------------------------
-// START QUIZ
-// --------------------------
-function startQuiz(modeKey) {
-    const validWords = getValidWords(modeKey);
+// ---------- PROGRESS ----------
+function saveProgress(word, isCorrect) {
+    const p = JSON.parse(localStorage.getItem('progress') || '{}');
+    if (!p[word.english]) p[word.english] = { correct: 0, wrong: 0 };
+    isCorrect ? p[word.english].correct++ : p[word.english].wrong++;
+    localStorage.setItem('progress', JSON.stringify(p));
+}
 
-    if (validWords.length < 5) {
-        alert('❌ لغات کافی برای این آزمون وجود ندارد');
+// ---------- START ----------
+function startQuiz(mode) {
+    const valid = getValidWords(mode);
+    if (valid.length < 5) {
+        alert('لغات کافی موجود نیست');
         return;
     }
 
+    const progress = JSON.parse(localStorage.getItem('progress') || '{}');
+
     quiz = {
-        mode: modeKey,
-        questions: validWords.sort(() => 0.5 - Math.random()).slice(0, 10),
+        mode,
+        questions: valid
+            .sort((a, b) =>
+                (progress[b.english]?.wrong || 0) -
+                (progress[a.english]?.wrong || 0)
+            )
+            .slice(0, 10),
         index: 0,
         score: 0,
-        correct: null,
+        correct: '',
         locked: false
     };
 
@@ -82,9 +86,7 @@ function startQuiz(modeKey) {
     showQuestion();
 }
 
-// --------------------------
-// SHOW QUESTION (SELF-HEALING)
-// --------------------------
+// ---------- SHOW QUESTION ----------
 function showQuestion() {
     quiz.locked = false;
 
@@ -96,18 +98,11 @@ function showQuestion() {
     const cfg = MODE_MAP[quiz.mode];
     const word = quiz.questions[quiz.index];
 
-    const questionText = word[cfg.q];
+    const qText = word[cfg.q];
     const correct = word[cfg.a];
 
-    // اگر دیتا ناگهان خراب بود → skip
-    if (!questionText || !correct) {
-        quiz.index++;
-        showQuestion();
-        return;
-    }
-
-    const options = makeOptionsSafe(correct, cfg.a);
-    if (!options) {
+    const options = makeOptions(correct, cfg.a);
+    if (!qText || !correct || !options) {
         quiz.index++;
         showQuestion();
         return;
@@ -115,49 +110,44 @@ function showQuestion() {
 
     quiz.correct = correct;
 
-    // UI
-    document.getElementById('question').textContent = questionText;
+    document.getElementById('question').textContent = qText;
     document.getElementById('qIndex').textContent = quiz.index + 1;
     document.getElementById('score').textContent = quiz.score;
 
-    const optionsBox = document.getElementById('options');
-    optionsBox.innerHTML = '';
+    const box = document.getElementById('options');
+    box.innerHTML = '';
 
     options.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'btn option';
         btn.textContent = opt;
-        btn.onclick = () => checkAnswer(btn, opt);
-        optionsBox.appendChild(btn);
+        btn.onclick = () => checkAnswer(btn, opt, word);
+        box.appendChild(btn);
     });
 
-    if (cfg.speak && window.speak) {
-        speak(questionText);
-    }
+    if (cfg.speak && window.speak) speak(qText);
 }
 
-// --------------------------
-// CHECK ANSWER
-// --------------------------
-function checkAnswer(button, selected) {
+// ---------- CHECK ----------
+function checkAnswer(btn, selected, word) {
     if (quiz.locked) return;
     quiz.locked = true;
 
     const buttons = document.querySelectorAll('.option');
-
-    buttons.forEach(btn => {
-        btn.disabled = true;
-        if (btn.textContent === quiz.correct) {
-            btn.classList.add('correct');
-        }
+    buttons.forEach(b => {
+        b.disabled = true;
+        if (b.textContent === quiz.correct) b.classList.add('correct');
     });
 
-    if (selected === quiz.correct) {
+    const correct = selected === quiz.correct;
+    if (correct) {
         quiz.score++;
-        button.classList.add('correct');
+        btn.classList.add('correct');
     } else {
-        button.classList.add('wrong');
+        btn.classList.add('wrong');
     }
+
+    saveProgress(word, correct);
 
     setTimeout(() => {
         quiz.index++;
@@ -165,13 +155,11 @@ function checkAnswer(button, selected) {
     }, 1200);
 }
 
-// --------------------------
-// FINISH QUIZ
-// --------------------------
+// ---------- FINISH ----------
 function finishQuiz() {
     const percent = Math.round((quiz.score / quiz.questions.length) * 100);
-
     const best = parseInt(localStorage.getItem('bestScore') || '0');
+
     if (percent > best) {
         localStorage.setItem('bestScore', percent);
     }
@@ -179,16 +167,3 @@ function finishQuiz() {
     document.getElementById('bestScore').textContent = percent + '%';
     switchView('home');
 }
-
-// --------------------------
-// UI HOOKS
-// --------------------------
-document.querySelectorAll('.mode-card').forEach(card => {
-    card.addEventListener('click', () => {
-        startQuiz(card.dataset.mode);
-    });
-});
-
-document.getElementById('backBtn').onclick = () => {
-    switchView('home');
-};
