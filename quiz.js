@@ -1,64 +1,177 @@
-let quiz = { index:0, score:0, mode:null, questions:[] };
+/* =========================
+   QUIZ ENGINE (TEST MODE)
+   4 MODES – MULTIPLE CHOICE
+========================= */
 
-function startQuiz(mode){
-    quiz = {
-        index:0,
-        score:0,
-        mode,
-        questions:[...words].sort(()=>0.5-Math.random()).slice(0,10)
-    };
-    switchView('quiz');
-    nextQuestion();
+let quiz = {
+    mode: null,
+    questions: [],
+    index: 0,
+    score: 0,
+    total: 10
+};
+
+const $ = id => document.getElementById(id);
+
+/* =========================
+   START QUIZ
+========================= */
+function startQuiz(mode) {
+    quiz.mode = mode;
+    quiz.index = 0;
+    quiz.score = 0;
+
+    // اطمینان از وجود لغات
+    if (!window.words || !words.length) {
+        window.words = [
+            { english: 'hello', persian: 'سلام', definition: 'greeting' }
+        ];
+    }
+
+    quiz.questions = [...words]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, quiz.total);
+
+    showQuestion();
 }
 
-document.querySelectorAll('.mode-card').forEach(c=>{
-    c.onclick=()=>startQuiz(c.dataset.mode);
-});
+/* =========================
+   SHOW QUESTION
+========================= */
+function showQuestion() {
+    if (quiz.index >= quiz.total) {
+        finishQuiz();
+        return;
+    }
 
-function nextQuestion(){
-    if(quiz.index>=10) return finishQuiz();
     const w = quiz.questions[quiz.index];
-    let q='',correct='';
-    if(quiz.mode==='en-fa'){ q=w.en; correct=w.fa; speak(w.en); }
-    if(quiz.mode==='fa-en'){ q=w.fa; correct=w.en; }
-    if(quiz.mode==='word-def'){ q=w.en; correct=w.def; speak(w.en); }
-    if(quiz.mode==='def-word'){ q=w.def; correct=w.en; }
 
-    $('questionText').textContent=q;
-    $('qIndex').textContent=quiz.index+1;
-    $('qScore').textContent=quiz.score;
+    let question = '';
+    let correct = '';
+    let wrongPool = [];
 
-    const options = shuffle([
-        correct,
-        ...shuffle(words).slice(0,3).map(x=>quiz.mode.includes('fa')?x.en:x.fa||x.def)
-    ]);
+    switch (quiz.mode) {
+        case 'english-persian':
+            question = w.english;
+            correct = w.persian;
+            wrongPool = words.map(x => x.persian);
+            speak(w.english);
+            break;
 
-    $('choices').innerHTML='';
-    options.forEach(o=>{
-        const b=document.createElement('button');
-        b.className='btn light';
-        b.textContent=o;
-        b.onclick=()=>check(o,correct);
-        $('choices').appendChild(b);
+        case 'persian-english':
+            question = w.persian;
+            correct = w.english;
+            wrongPool = words.map(x => x.english);
+            break;
+
+        case 'word-definition':
+            question = w.english;
+            correct = w.definition;
+            wrongPool = words.map(x => x.definition);
+            speak(w.english);
+            break;
+
+        case 'definition-word':
+            question = w.definition;
+            correct = w.english;
+            wrongPool = words.map(x => x.english);
+            break;
+    }
+
+    // UI
+    $('currentQuestion').textContent = quiz.index + 1;
+    $('quizScore').textContent = quiz.score;
+    $('questionText').textContent = question;
+
+    // ساخت گزینه‌ها
+    const options = buildOptions(correct, wrongPool);
+    renderOptions(options, correct);
+}
+
+/* =========================
+   BUILD OPTIONS
+========================= */
+function buildOptions(correct, pool) {
+    const opts = [correct];
+
+    while (opts.length < 4) {
+        const r = pool[Math.floor(Math.random() * pool.length)];
+        if (r && !opts.includes(r)) opts.push(r);
+    }
+
+    return opts.sort(() => Math.random() - 0.5);
+}
+
+/* =========================
+   RENDER OPTIONS
+========================= */
+function renderOptions(options, correct) {
+    let box = $('optionsBox');
+
+    // اگر اولین بار است، بساز
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'optionsBox';
+        box.style.display = 'flex';
+        box.style.flexDirection = 'column';
+        box.style.gap = '10px';
+        $('feedback').before(box);
+    }
+
+    box.innerHTML = '';
+
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn light';
+        btn.textContent = opt;
+
+        btn.onclick = () => checkAnswer(opt, correct);
+        box.appendChild(btn);
     });
 }
 
-function check(a,c){
-    if(a===c){ quiz.score++; $('feedback').textContent='✅ درست'; }
-    else $('feedback').textContent='❌ غلط';
-    quiz.index++;
-    setTimeout(nextQuestion,800);
-}
+/* =========================
+   CHECK ANSWER
+========================= */
+function checkAnswer(selected, correct) {
+    const feedback = $('feedback');
 
-function finishQuiz(){
-    const p=Math.round((quiz.score/10)*100);
-    if(p>App.bestScore){
-        App.bestScore=p;
-        localStorage.setItem('bestScore',p);
-        $('scoreValue').textContent=p+'%';
+    if (selected === correct) {
+        quiz.score++;
+        feedback.textContent = '✅ درست';
+        feedback.style.color = '#16a34a';
+
+        ProgressTracker?.recordQuestion?.(quiz.mode, true, quiz.questions[quiz.index]);
+    } else {
+        feedback.textContent = `❌ جواب درست: ${correct}`;
+        feedback.style.color = '#dc2626';
+
+        ProgressTracker?.recordQuestion?.(quiz.mode, false, quiz.questions[quiz.index]);
     }
-    switchView('home');
-    showNotification(`امتیاز: ${p}%`);
+
+    quiz.index++;
+    setTimeout(showQuestion, 900);
 }
 
-function shuffle(a){ return a.sort(()=>0.5-Math.random()); }
+/* =========================
+   FINISH QUIZ
+========================= */
+function finishQuiz() {
+    const percent = Math.round((quiz.score / quiz.total) * 100);
+
+    if (percent > App.bestScore) {
+        App.bestScore = percent;
+        localStorage.setItem('bestScore', percent);
+        renderScore();
+    }
+
+    ProgressTracker?.recordSession?.(quiz.mode, percent, quiz.total);
+
+    showNotification(`پایان آزمون 🎉 امتیاز: ${percent}%`, 3500);
+    switchView('home');
+}
+
+/* =========================
+   EXPORT
+========================= */
+window.startQuiz = startQuiz;
