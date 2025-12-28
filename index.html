@@ -1,78 +1,63 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English with Fred</title>
 
-    <title>English with Fred</title>
-
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2ecc71">
-
-    <!-- Fallback CSS if JS disabled -->
-    <noscript>
-        <link rel="stylesheet" href="style.css">
-    </noscript>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2ecc71">
 </head>
 
 <body>
 
 <div class="app">
 
-    <!-- TOP BAR -->
-    <div class="top-bar">
-        <div class="top-btn" id="themeBtn">🌙</div>
-        <div class="title">English with Fred</div>
-        <div class="top-btn" id="muteBtn">🔊</div>
+  <div class="top-bar">
+    <div class="top-btn" id="themeBtn">🌙</div>
+    <div class="title">English with Fred</div>
+    <div class="top-btn" id="muteBtn">🔊</div>
+  </div>
+
+  <!-- HOME -->
+  <div id="home" class="view active">
+
+    <input id="studentName" placeholder="نام یا کد زبان‌آموز" />
+    <button class="btn" id="saveStudentBtn">💾 ذخیره</button>
+
+    <div class="score-card">
+      بهترین امتیاز: <strong id="bestScore">0%</strong>
     </div>
 
-    <!-- HOME -->
-    <div id="home" class="view active">
-        <div class="score-card">
-            بهترین امتیاز:
-            <strong id="bestScore">0%</strong>
-        </div>
-
-        <div class="modes">
-            <div class="mode-card" data-mode="en-fa">English → Persian</div>
-            <div class="mode-card" data-mode="fa-en">Persian → English</div>
-            <div class="mode-card" data-mode="word-def">Word → Definition</div>
-            <div class="mode-card" data-mode="def-word">Definition → Word</div>
-        </div>
-
-        <button class="btn green" id="installBtn" style="display:none">
-            📲 نصب برنامه
-        </button>
-
-        <button class="btn red" id="exitBtn">🚪 خروج</button>
+    <div class="modes">
+      <div class="mode-card" data-mode="en-fa">English → Persian</div>
+      <div class="mode-card" data-mode="fa-en">Persian → English</div>
+      <div class="mode-card" data-mode="word-def">Word → Definition</div>
+      <div class="mode-card" data-mode="def-word">Definition → Word</div>
     </div>
 
-    <!-- QUIZ -->
-    <div id="quiz" class="view">
-        <div class="score-card">
-            سوال <span id="qIndex">1</span> از 10 —
-            امتیاز: <span id="score">0</span>
-        </div>
+    <button class="btn green" id="whatsappBtn">💬 تماس در واتساپ</button>
+    <button class="btn green" id="installBtn" style="display:none">📲 نصب برنامه</button>
 
-        <div class="score-card" id="question">—</div>
-        <div id="options"></div>
+  </div>
 
-        <button class="btn red" id="backBtn">🏠 بازگشت</button>
+  <!-- QUIZ -->
+  <div id="quiz" class="view">
+    <div class="score-card">
+      سوال <span id="qIndex">1</span> از 10 — امتیاز: <span id="score">0</span>
     </div>
+    <div class="score-card" id="question">—</div>
+    <div id="options"></div>
+    <button class="btn red" id="backBtn">🏠 بازگشت</button>
+  </div>
 
 </div>
 
-<!-- Auto cache-busting loader -->
 <script src="loader.js"></script>
 
-<!-- Service Worker (sw.js) -->
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        location.reload();
-    });
+  navigator.serviceWorker.register('sw.js');
 }
 </script>
 
