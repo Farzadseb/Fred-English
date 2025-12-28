@@ -10,6 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2ecc71">
 
+    <!-- Fallback CSS if JS disabled -->
     <noscript>
         <link rel="stylesheet" href="style.css">
     </noscript>
@@ -19,6 +20,7 @@
 
 <div class="app">
 
+    <!-- TOP BAR -->
     <div class="top-bar">
         <div class="top-btn" id="themeBtn">🌙</div>
         <div class="title">English with Fred</div>
@@ -61,13 +63,13 @@
 
 </div>
 
-<!-- Auto cache-busting -->
+<!-- Auto cache-busting loader -->
 <script src="loader.js"></script>
 
-<!-- Service Worker -->
+<!-- Service Worker (sw.js) -->
 <script>
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
+    navigator.serviceWorker.register('sw.js');
     navigator.serviceWorker.addEventListener('controllerchange', () => {
         location.reload();
     });
