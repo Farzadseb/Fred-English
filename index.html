@@ -1,65 +1,28 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>English with Fred</title>
-
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2ecc71">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>English with Fred</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#eef3f8}
+.app{padding:16px}
+.btn{padding:16px;margin:10px 0;border-radius:14px;text-align:center;
+background:linear-gradient(135deg,#38bdf8,#22c55e);color:#fff;font-size:18px}
+#q{background:#fff;padding:20px;border-radius:16px;margin:20px 0}
+.opt{background:#fff;padding:14px;border-radius:12px;margin:8px 0}
+</style>
 </head>
-
 <body>
 
 <div class="app">
+  <div class="btn" onclick="start('en-fa')">English → Persian</div>
+  <div class="btn" onclick="start('fa-en')">Persian → English</div>
 
-  <div class="top-bar">
-    <div class="top-btn" id="themeBtn">🌙</div>
-    <div class="title">English with Fred</div>
-    <div class="top-btn" id="muteBtn">🔊</div>
-  </div>
-
-  <!-- HOME -->
-  <div id="home" class="view active">
-
-    <input id="studentName" placeholder="نام یا کد زبان‌آموز" />
-    <button class="btn" id="saveStudentBtn">💾 ذخیره</button>
-
-    <div class="score-card">
-      بهترین امتیاز: <strong id="bestScore">0%</strong>
-    </div>
-
-    <div class="modes">
-      <div class="mode-card" data-mode="en-fa">English → Persian</div>
-      <div class="mode-card" data-mode="fa-en">Persian → English</div>
-      <div class="mode-card" data-mode="word-def">Word → Definition</div>
-      <div class="mode-card" data-mode="def-word">Definition → Word</div>
-    </div>
-
-    <button class="btn green" id="whatsappBtn">💬 تماس در واتساپ</button>
-    <button class="btn green" id="installBtn" style="display:none">📲 نصب برنامه</button>
-
-  </div>
-
-  <!-- QUIZ -->
-  <div id="quiz" class="view">
-    <div class="score-card">
-      سوال <span id="qIndex">1</span> از 10 — امتیاز: <span id="score">0</span>
-    </div>
-    <div class="score-card" id="question">—</div>
-    <div id="options"></div>
-    <button class="btn red" id="backBtn">🏠 بازگشت</button>
-  </div>
-
+  <div id="q"></div>
+  <div id="opts"></div>
 </div>
 
-<script src="loader.js"></script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
