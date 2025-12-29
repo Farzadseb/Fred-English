@@ -6,14 +6,15 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PWA Configuration -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8B5CF6">
-    
-    <!-- تنظیمات نصب PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="EnglishFred">
     <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
 <body class="dark-theme">
     <!-- صفحه اصلی -->
@@ -140,7 +141,7 @@
             </div>
 
             <div class="quiz-actions">
-                <button class="btn back-btn" onclick="showMotivationalMessage()">
+                <button class="btn back-btn" onclick="confirmExitQuiz()">
                     <i class="fas fa-arrow-right"></i> بازگشت
                 </button>
             </div>
@@ -257,40 +258,47 @@
     
     <!-- PWA Service Worker -->
     <script>
+        // ثبت Service Worker برای PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('service-worker.js')
-                    .then(reg => console.log('Service Worker ثبت شد'))
-                    .catch(err => console.log('خطا:', err));
+                    .then(function(registration) {
+                        console.log('✅ Service Worker ثبت شد با اسکوپ: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('❌ ثبت Service Worker با خطا مواجه شد: ', error);
+                    });
             });
         }
+        
+        // مدیریت پیشنهاد نصب PWA
+        let deferredPrompt;
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // بعد از 3 ثانیه پیشنهاد نصب را نمایش بده
+            setTimeout(() => {
+                if (deferredPrompt && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    if (confirm('📱 آیا می‌خواهید English with Fred را روی صفحه اصلی نصب کنید؟\n\nبا نصب برنامه:\n• سرعت اجرا بیشتر می‌شود\n• آفلاین کار می‌کند\n• مانند اپلیکیشن واقعی است')) {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('✅ کاربر نصب را پذیرفت');
+                            }
+                            deferredPrompt = null;
+                        });
+                    }
+                }
+            }, 3000);
+        });
         
         // راه‌اندازی اولیه
         document.addEventListener('DOMContentLoaded', function() {
             const bestScore = localStorage.getItem('bestScore') || '0';
             document.getElementById('bestScore').textContent = `${bestScore}%`;
-            
-            // نمایش دکمه نصب در موبایل
-            let deferredPrompt;
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                
-                if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    setTimeout(() => {
-                        if (confirm('آیا می‌خواهید English with Fred را روی صفحه اصلی نصب کنید؟')) {
-                            deferredPrompt.prompt();
-                            deferredPrompt.userChoice.then(choiceResult => {
-                                if (choiceResult.outcome === 'accepted') {
-                                    console.log('برنامه نصب شد');
-                                }
-                                deferredPrompt = null;
-                            });
-                        }
-                    }, 3000);
-                }
-            });
         });
     </script>
 </body>
-                               </html>
+                        </html>
