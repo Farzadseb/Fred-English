@@ -17,7 +17,7 @@ body {
 /* تم شب (پیش‌فرض) */
 :root {
     --primary-color: #4F46E5;
-    --secondary-color: #10B981;  /* رنگ سبز اصلی */
+    --secondary-color: #8B5CF6;  /* بنفش اصلی */
     --bg-color: #0F172A;         /* پس‌زمینه تاریک */
     --card-bg: #1E293B;
     --text-color: #F1F5F9;
@@ -25,18 +25,19 @@ body {
     --border-color: #334155;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
-    --success-color: #10B981;
+    --success-color: #8B5CF6;    /* بنفش */
     --error-color: #EF4444;
     --warning-color: #F59E0B;
     --whatsapp-color: #25D366;
     --telegram-color: #0088CC;
-    --green-border: #10B981;     /* رنگ سبز برای کادرها */
+    --green-border: #8B5CF6;     /* رنگ بنفش برای کادرها */
+    --star-color: #FFD700;
 }
 
 /* تم روشن (اختیاری) */
 body.light-theme {
     --primary-color: #4F46E5;
-    --secondary-color: #10B981;
+    --secondary-color: #7C3AED;
     --bg-color: #F8FAFC;
     --card-bg: #FFFFFF;
     --text-color: #1E293B;
@@ -44,32 +45,25 @@ body.light-theme {
     --border-color: #E2E8F0;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
-    --green-border: #10B981;
+    --green-border: #7C3AED;
 }
 
-/* نوار بالایی - حذف دکمه‌های تم و اسپیکر */
+/* ==================== */
+/* نوار بالایی - صفحه اصلی */
+/* ==================== */
 .top-bar {
     display: flex;
-    justify-content: flex-end; /* فقط دکمه‌های سمت راست باقی می‌مانند */
+    justify-content: flex-end;
     align-items: center;
     margin-bottom: 10px;
     position: relative;
     height: 50px;
 }
 
-/* حذف دکمه‌های تم و اسپیکر از صفحه دوم */
-#quizView .top-bar,
-#quizView .theme-btn,
-#quizView .sound-btn,
-#quizView .mute-btn,
-#quizView .small-speaker-btn {
-    display: none !important;
-}
-
-/* دکمه Mute گرد (فقط در صفحات غیرآزمون) */
+/* دکمه Mute گرد با دایره */
 .mute-btn {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
+    border: 2px solid var(--secondary-color);
     border-radius: 50%;
     width: 45px;
     height: 45px;
@@ -81,9 +75,21 @@ body.light-theme {
     justify-content: center;
     box-shadow: var(--shadow);
     transition: all 0.3s;
+    position: relative;
+}
+
+/* دایره انیمیشن دور بلندگو */
+.mute-btn::after {
+    content: '';
     position: absolute;
-    right: 60px;
-    top: 0;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: pulse-circle 2s infinite;
 }
 
 .mute-btn:hover {
@@ -97,10 +103,10 @@ body.light-theme {
     border-color: var(--secondary-color);
 }
 
-/* دکمه تغییر تم (فقط در صفحات غیرآزمون) */
+/* دکمه تغییر تم */
 .theme-btn {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
+    border: 2px solid var(--secondary-color);
     border-radius: 50%;
     width: 45px;
     height: 45px;
@@ -121,7 +127,18 @@ body.light-theme {
     transform: scale(1.1);
 }
 
+/* حذف دکمه‌های تم و اسپیکر از صفحه دوم */
+#quizView .top-bar,
+#quizView .theme-btn,
+#quizView .sound-btn,
+#quizView .mute-btn,
+#quizView .small-speaker-btn {
+    display: none !important;
+}
+
+/* ==================== */
 /* صفحه‌بندی */
+/* ==================== */
 .view {
     display: none;
     animation: fadeIn 0.3s ease;
@@ -136,15 +153,32 @@ body.light-theme {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* هدر برنامه - ارتفاع نصف شده */
+@keyframes pulse-circle {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    70% {
+        transform: scale(1.1);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+}
+
+/* ==================== */
+/* صفحه اصلی */
+/* ==================== */
 .app-header {
     background: var(--card-bg);
-    border-radius: 15px;
-    padding: 15px 20px;
-    margin: 20px 0 20px 0;
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin: 16px 0;
     box-shadow: var(--shadow);
     text-align: center;
-    border: 2px solid var(--green-border);
+    border: 2px solid var(--secondary-color);
     min-height: 120px;
     display: flex;
     flex-direction: column;
@@ -161,29 +195,41 @@ body.light-theme {
     gap: 10px;
 }
 
-/* کارت امتیاز با کادر سبز - ارتفاع نصف شده */
+/* کارت امتیاز */
 .score-card {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
+    border: 2px solid var(--secondary-color);
     border-radius: 12px;
-    padding: 15px;
+    padding: 12px;
     color: var(--text-color);
-    max-width: 350px;
+    max-width: 280px;
     margin: 0 auto;
-    min-height: 90px;
+    min-height: 72px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
+/* ستاره‌های پویا */
 .stars {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    color: #FFD700;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
 }
 
-.stars .far {
-    color: rgba(255, 255, 255, 0.3);
+.stars .fa-star {
+    transition: all 0.3s ease;
+}
+
+.stars .fas.fa-star {
+    color: var(--star-color);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.stars .far.fa-star {
+    color: var(--text-secondary);
 }
 
 .best-score {
@@ -203,7 +249,9 @@ body.light-theme {
     margin-right: 8px;
 }
 
-/* منوی اصلی - ارتفاع نصف شده */
+/* ==================== */
+/* منوی اصلی */
+/* ==================== */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -214,9 +262,9 @@ body.light-theme {
 
 .menu-btn {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
-    border-radius: 15px;
-    padding: 20px 15px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 16px;
+    padding: 16px 12px;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: var(--shadow);
@@ -226,7 +274,7 @@ body.light-theme {
     align-items: center;
     justify-content: center;
     gap: 15px;
-    min-height: 90px; /* نصف ارتفاع قبلی */
+    min-height: 72px;
     position: relative;
     overflow: hidden;
 }
@@ -238,7 +286,7 @@ body.light-theme {
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--green-border);
+    background: var(--secondary-color);
     opacity: 0.5;
 }
 
@@ -249,25 +297,98 @@ body.light-theme {
 }
 
 .menu-btn i {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     color: var(--secondary-color);
 }
 
 .menu-btn span {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--text-color);
 }
 
-/* صفحه آزمون - طراحی جدید */
+/* گرادیانت‌ها */
+.gradient-blue {
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+}
+
+.gradient-green {
+    background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+}
+
+.gradient-orange {
+    background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+}
+
+.gradient-purple {
+    background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+}
+
+.gradient-whatsapp {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+}
+
+.gradient-telegram {
+    background: linear-gradient(135deg, #0088CC 0%, #34AADF 100%);
+}
+
+.gradient-exit {
+    background: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
+}
+
+/* ==================== */
+/* صفحه آزمون */
+/* ==================== */
+/* نوار بالایی مخصوص آزمون */
+.quiz-top-bar {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+
+/* دکمه اسپیکر کوچک در سمت چپ */
+.small-speaker-btn {
+    background: transparent;
+    border: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    color: var(--secondary-color);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.small-speaker-btn::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: pulse-circle 2s infinite;
+}
+
+.small-speaker-btn:hover {
+    background: var(--secondary-color);
+    color: white;
+}
+
 .quiz-header {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
-    border-radius: 15px;
-    padding: 15px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 16px;
+    padding: 12px;
     margin-bottom: 20px;
     box-shadow: var(--shadow);
-    min-height: 80px;
+    min-height: 64px;
 }
 
 .quiz-info {
@@ -308,7 +429,9 @@ body.light-theme {
     color: var(--secondary-color);
 }
 
-/* محتوای آزمون - سوال در وسط با ارتفاع نصف شده */
+/* ==================== */
+/* محتوای آزمون */
+/* ==================== */
 .quiz-content {
     max-width: 800px;
     margin: 0 auto;
@@ -317,13 +440,13 @@ body.light-theme {
 
 .question-card {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
-    border-radius: 15px;
-    padding: 30px 25px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 16px;
+    padding: 24px 20px;
     margin-bottom: 25px;
     box-shadow: var(--shadow);
     text-align: center;
-    min-height: 150px; /* نصف ارتفاع قبلی */
+    min-height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -335,9 +458,9 @@ body.light-theme {
     position: relative;
 }
 
-/* متن سوال در وسط - ۴۰٪ بزرگتر */
+/* متن سوال در وسط - بزرگ */
 #questionText {
-    font-size: 3.08rem; /* ۴۰٪ بزرگتر از 2.2rem */
+    font-size: 2.5rem;
     color: var(--text-color);
     line-height: 1.5;
     text-align: center;
@@ -345,28 +468,56 @@ body.light-theme {
     padding: 15px;
     max-width: 95%;
     font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s;
 }
 
-/* دکمه اسپیکر بزرگتر با دایره دور آن */
+#questionText:hover {
+    background-color: rgba(139, 92, 246, 0.1);
+}
+
+#questionText::before {
+    content: '🔊';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
+/* دکمه اسپیکر بزرگ با دایره دور آن */
 .question-speak-btn {
     position: absolute;
     left: 20px;
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
-    border: 2px solid var(--green-border);
+    border: 2px solid var(--secondary-color);
     border-radius: 50%;
-    width: 70px; /* بزرگتر */
-    height: 70px; /* بزرگتر */
+    width: 60px;
+    height: 60px;
     cursor: pointer;
     color: var(--secondary-color);
-    font-size: 1.8rem; /* بزرگتر */
+    font-size: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s;
     z-index: 10;
-    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.2); /* هاله سبز دور دایره */
+}
+
+.question-speak-btn::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 2px solid rgba(139, 92, 246, 0.3);
+    border-radius: 50%;
+    animation: pulse-circle 2s infinite;
 }
 
 .question-speak-btn:hover {
@@ -374,38 +525,11 @@ body.light-theme {
     background: var(--secondary-color);
     color: white;
     border-color: var(--secondary-color);
-    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.3);
 }
 
-/* دایره دور بلندگو (مثل تم شب) */
-.question-speak-btn::after {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border: 2px solid rgba(16, 185, 129, 0.3);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.7;
-    }
-    70% {
-        transform: scale(1.1);
-        opacity: 0.3;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 0.7;
-    }
-}
-
-/* گزینه‌های آزمون با کادر سبز */
+/* ==================== */
+/* گزینه‌های آزمون */
+/* ==================== */
 .options-container {
     display: flex;
     flex-direction: column;
@@ -415,27 +539,27 @@ body.light-theme {
 
 .option-btn {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
+    border: 2px solid var(--secondary-color);
     border-radius: 12px;
-    padding: 20px 15px;
+    padding: 16px 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1.3rem;
+    font-size: 1.04rem;
     color: var(--text-color);
-    text-align: right;
+    text-align: center;
     position: relative;
     overflow: hidden;
-    min-height: 70px;
+    min-height: 56px;
 }
 
 .option-btn:hover {
     border-color: var(--secondary-color);
     transform: translateX(-5px);
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(139, 92, 246, 0.1);
 }
 
 .option-btn.correct {
-    background: linear-gradient(135deg, var(--success-color), #34D399);
+    background: linear-gradient(135deg, var(--success-color), #A78BFA);
     color: white;
     border-color: var(--success-color);
     animation: pulse 0.5s;
@@ -447,7 +571,15 @@ body.light-theme {
     border-color: var(--error-color);
 }
 
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ==================== */
 /* دکمه‌های اقدام */
+/* ==================== */
 .quiz-actions {
     display: flex;
     justify-content: center;
@@ -478,29 +610,31 @@ body.light-theme {
     box-shadow: var(--shadow);
 }
 
-/* دکمه بازگشت با رنگ تغییر یافته */
+/* دکمه بازگشت با رنگ بنفش */
 .back-btn {
-    background: var(--secondary-color) !important;  /* رنگ سبز */
+    background: var(--secondary-color) !important;
     border: 2px solid var(--secondary-color);
 }
 
 .back-btn:hover {
-    background: #0DA673 !important;
-    border-color: #0DA673;
+    background: #7C3AED !important;
+    border-color: #7C3AED;
 }
 
+/* ==================== */
 /* صفحه نتایج */
+/* ==================== */
 .results-header {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
-    border-radius: 15px;
-    padding: 15px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 16px;
+    padding: 12px;
     margin-bottom: 25px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow);
-    min-height: 80px;
+    min-height: 64px;
 }
 
 .results-header h2 {
@@ -518,18 +652,18 @@ body.light-theme {
 
 .result-card {
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
-    border-radius: 15px;
-    padding: 30px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 16px;
+    padding: 24px;
     margin-bottom: 25px;
     box-shadow: var(--shadow);
     text-align: center;
-    min-height: 150px;
+    min-height: 120px;
 }
 
 .result-icon {
     font-size: 4rem;
-    color: #FFD700;
+    color: var(--star-color);
     margin-bottom: 15px;
 }
 
@@ -556,8 +690,8 @@ body.light-theme {
     gap: 15px;
     margin: 20px 0;
     padding: 20px 0;
-    border-top: 2px solid var(--green-border);
-    border-bottom: 2px solid var(--green-border);
+    border-top: 2px solid var(--secondary-color);
+    border-bottom: 2px solid var(--secondary-color);
 }
 
 .stat-item {
@@ -581,7 +715,7 @@ body.light-theme {
 .telegram-report {
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 2px solid var(--green-border);
+    border-top: 2px solid var(--secondary-color);
 }
 
 .results-actions {
@@ -598,13 +732,15 @@ body.light-theme {
     background: var(--warning-color);
 }
 
+/* ==================== */
 /* اعلان‌ها */
+/* ==================== */
 .notification {
     position: fixed;
     top: 20px;
     right: 20px;
     background: var(--card-bg);
-    border: 2px solid var(--green-border);
+    border: 2px solid var(--secondary-color);
     border-radius: 12px;
     padding: 15px 20px;
     box-shadow: var(--shadow-lg);
@@ -636,27 +772,45 @@ body.light-theme {
     border-right-color: var(--secondary-color);
 }
 
-/* استایل برای جملات انگلیسی (قابل کلیک برای خواندن) */
-.english-text {
-    cursor: pointer;
-    position: relative;
-    padding: 5px 10px;
-    border-radius: 8px;
-    transition: background-color 0.3s;
+/* ==================== */
+/* صفحه مرور اشتباهات */
+/* ==================== */
+.mistakes-list {
+    max-width: 800px;
+    margin: 20px auto;
 }
 
-.english-text:hover {
-    background-color: rgba(16, 185, 129, 0.2);
+.mistake-item {
+    background: var(--card-bg);
+    border: 2px solid var(--error-color);
+    border-radius: 15px;
+    margin: 15px 0;
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
 }
 
-.english-text::after {
-    content: '🔊';
-    font-size: 0.8em;
-    margin-right: 8px;
-    opacity: 0.7;
+.mistake-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
 }
 
+.mistake-content {
+    margin-bottom: 15px;
+}
+
+.mistake-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* ==================== */
 /* ریسپانسیو */
+/* ==================== */
 @media (max-width: 768px) {
     .menu-grid {
         grid-template-columns: 1fr;
@@ -680,28 +834,20 @@ body.light-theme {
     }
     
     #questionText {
-        font-size: 2.1rem; /* ۴۰٪ بزرگتر از 1.5rem */
+        font-size: 1.8rem;
         padding: 10px;
     }
     
     .question-card {
         padding: 25px 15px;
-        min-height: 125px;
+        min-height: 100px;
     }
     
     .question-speak-btn {
-        width: 55px;
-        height: 55px;
-        font-size: 1.4rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
         left: 10px;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-    }
-    
-    .question-speak-btn::after {
-        top: -3px;
-        left: -3px;
-        right: -3px;
-        bottom: -3px;
     }
     
     .result-score span {
@@ -717,10 +863,7 @@ body.light-theme {
         font-size: 1.6rem;
     }
     
-    .results-actions {
-        flex-direction: column;
-    }
-    
+    .results-actions,
     .quiz-actions {
         flex-direction: column;
         align-items: center;
@@ -757,8 +900,8 @@ body.light-theme {
     }
     
     .score-card {
-        padding: 12px;
-        min-height: 80px;
+        padding: 10px;
+        min-height: 60px;
         border-radius: 10px;
     }
     
@@ -768,13 +911,13 @@ body.light-theme {
     }
     
     #questionText {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
     
     .question-speak-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
         left: 8px;
     }
 }
@@ -795,5 +938,5 @@ body.light-theme {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #0DA673;
-        }
+    background: #7C3AED;
+    }
