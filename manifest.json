@@ -1,13 +1,13 @@
 {
   "name": "English with Fred",
   "short_name": "EnglishFred",
-  "description": "برنامه آموزش لغات انگلیسی",
+  "description": "برنامه آموزش لغات انگلیسی با آزمون‌های تعاملی",
   "start_url": "/Fred-English/",
   "scope": "/Fred-English/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#8B5CF6",
-  "theme_color": "#8B5CF6",
+  "background_color": "#6a0dad",
+  "theme_color": "#6a0dad",
   "icons": [
     {
       "src": "icon-192x192.png",
