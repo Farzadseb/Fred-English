@@ -1,240 +1,308 @@
 // =======================
-// QUIZ ENGINE (ساده و کارآمد)
+// QUIZ ENGINE - نسخه نهایی
 // =======================
 
-let quizState = {
+// وضعیت آزمون
+let currentQuiz = {
     mode: null,
-    index: 0,
-    score: 0,
     questions: [],
-    correctAnswer: '',
-    options: []
+    currentQuestionIndex: 0,
+    score: 0,
+    totalQuestions: 10,
+    isActive: false,
+    startTime: null
 };
 
 // شروع آزمون
 function startQuiz(mode) {
-    // بررسی وجود لغات
-    if (!window.words || !words.length) {
-        showNotification('❌ لغات لود نشده‌اند', 'error');
+    if (!window.words || words.length === 0) {
+        showNotification('⚠️ لغات بارگذاری نشده‌اند', 'error');
         return;
     }
     
-    // انتخاب 10 سوال تصادفی
-    const allWords = [...words];
-    const shuffledWords = allWords.sort(() => 0.5 - Math.random()).slice(0, 10);
-    
-    // ریست حالت آزمون
-    quizState = {
+    currentQuiz = {
         mode: mode,
-        index: 0,
+        questions: [],
+        currentQuestionIndex: 0,
         score: 0,
-        questions: shuffledWords,
-        correctAnswer: '',
-        options: []
+        totalQuestions: 10,
+        isActive: true,
+        startTime: Date.now()
     };
     
-    // تغییر به صفحه آزمون
+    // تولید سوالات
+    generateQuestions(mode);
+    
+    // نمایش صفحه آزمون
     switchView('quiz');
     
     // نمایش اولین سوال
-    setTimeout(showQuestion, 100);
+    displayCurrentQuestion();
+    
+    // به‌روزرسانی اطلاعات
+    updateQuizInfo();
+    
+    showNotification(`🎯 آزمون ${getModeName(mode)} شروع شد!`, 'success');
 }
 
-// نمایش سوال
-function showQuestion() {
-    // اگر آزمون تمام شده
-    if (quizState.index >= quizState.questions.length) {
-        finishQuiz();
+// تولید سوالات
+function generateQuestions(mode) {
+    currentQuiz.questions = [];
+    
+    // انتخاب تصادفی لغات
+    const shuffledWords = [...words].sort(() => Math.random() - 0.5);
+    const selectedWords = shuffledWords.slice(0, currentQuiz.totalQuestions);
+    
+    selectedWords.forEach(word => {
+        let question = {};
+        
+        switch(mode) {
+            case 'english-persian':
+                question = {
+                    text: word.english,
+                    correctAnswer: word.persian,
+                    options: generateOptions(word.persian, words.map(w => w.persian)),
+                    mode: mode
+                };
+                break;
+                
+            case 'persian-english':
+                question = {
+                    text: word.persian,
+                    correctAnswer: word.english,
+                    options: generateOptions(word.english, words.map(w => w.english)),
+                    mode: mode
+                };
+                break;
+                
+            case 'word-definition':
+                question = {
+                    text: word.english,
+                    correctAnswer: word.definition || word.persian,
+                    options: generateOptions(word.definition || word.persian, 
+                                          words.map(w => w.definition || w.persian)),
+                    mode: mode
+                };
+                break;
+                
+            case 'definition-word':
+                question = {
+                    text: word.definition || word.persian,
+                    correctAnswer: word.english,
+                    options: generateOptions(word.english, words.map(w => w.english)),
+                    mode: mode
+                };
+                break;
+                
+            case 'practice-mode':
+                // حالت تمرین اشتباهات
+                const mistakes = MistakeStorage.getAll();
+                if (mistakes.length > 0) {
+                    const randomMistakes = [...mistakes]
+                        .sort(() => Math.random() - 0.5)
+                        .slice(0, Math.min(10, mistakes.length));
+                    
+                    currentQuiz.questions = randomMistakes.map(mistake => ({
+                        text: mistake.question,
+                        correctAnswer: mistake.correctAnswer,
+                        options: generateOptions(mistake.correctAnswer, 
+                                              [mistake.correctAnswer, mistake.userAnswer, 
+                                               getRandomOption(), getRandomOption()]),
+                        mode: mistake.mode
+                    }));
+                    return;
+                }
+                break;
+        }
+        
+        currentQuiz.questions.push(question);
+    });
+}
+
+// تولید گزینه‌ها
+function generateOptions(correctAnswer, allAnswers) {
+    const options = [correctAnswer];
+    
+    // حذف پاسخ صحیح از لیست
+    const otherAnswers = allAnswers.filter(answer => answer !== correctAnswer);
+    
+    // انتخاب 3 گزینه تصادفی
+    const shuffled = [...otherAnswers].sort(() => Math.random() - 0.5);
+    const randomOptions = shuffled.slice(0, 3);
+    
+    options.push(...randomOptions);
+    
+    // مخلوط کردن گزینه‌ها
+    return options.sort(() => Math.random() - 0.5);
+}
+
+// گزینه تصادفی
+function getRandomOption() {
+    const randomWord = words[Math.floor(Math.random() * words.length)];
+    return randomWord.english;
+}
+
+// نمایش سوال فعلی
+function displayCurrentQuestion() {
+    if (!currentQuiz.isActive || currentQuiz.currentQuestionIndex >= currentQuiz.questions.length) {
         return;
     }
     
-    const currentWord = quizState.questions[quizState.index];
-    let questionText = '';
-    let correctAnswer = '';
+    const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('quizOptions');
     
-    // تعیین سوال و پاسخ صحیح بر اساس مود
-    switch(quizState.mode) {
-        case 'english-persian':
-            questionText = currentWord.english;
-            correctAnswer = currentWord.persian;
-            break;
-            
-        case 'persian-english':
-            questionText = currentWord.persian;
-            correctAnswer = currentWord.english;
-            break;
-            
-        case 'word-definition':
-            questionText = currentWord.english;
-            correctAnswer = currentWord.definition;
-            break;
-            
-        case 'definition-word':
-            questionText = currentWord.definition;
-            correctAnswer = currentWord.english;
-            break;
-    }
+    if (!questionText || !optionsContainer) return;
     
-    // ذخیره پاسخ صحیح
-    quizState.correctAnswer = correctAnswer;
+    // نمایش سوال
+    questionText.textContent = question.text;
     
-    // ساخت گزینه‌ها (3 گزینه غلط + پاسخ صحیح)
-    const options = createOptions(correctAnswer, quizState.mode);
-    quizState.options = options;
+    // فعال کردن کلیک برای خواندن
+    questionText.onclick = () => speakCurrentQuestion();
     
-    // آپدیت UI
-    document.getElementById('questionText').textContent = questionText || 'سوال نامعلوم';
-    document.getElementById('currentQuestion').textContent = quizState.index + 1;
-    document.getElementById('quizScore').textContent = quizState.score;
-    document.getElementById('totalQuestions').textContent = quizState.questions.length;
+    // پاک کردن گزینه‌های قبلی
+    optionsContainer.innerHTML = '';
     
-    // آپدیت progress bar
-    const progressPercent = ((quizState.index) / quizState.questions.length) * 100;
-    document.getElementById('progressFill').style.width = `${progressPercent}%`;
-    
-    // رندر گزینه‌ها
-    renderOptions();
-    
-    // تلفظ خودکار اگر سوال انگلیسی باشد
-    if (quizState.mode === 'english-persian' || quizState.mode === 'word-definition') {
-        setTimeout(() => speak(questionText), 500);
-    }
-}
-
-// ساخت گزینه‌ها
-function createOptions(correct, mode) {
-    let allOptions = [];
-    
-    // جمع‌آوری تمام گزینه‌های ممکن
-    words.forEach(word => {
-        switch(mode) {
-            case 'english-persian':
-                if (word.persian && word.persian !== correct) {
-                    allOptions.push(word.persian);
-                }
-                break;
-            case 'persian-english':
-                if (word.english && word.english !== correct) {
-                    allOptions.push(word.english);
-                }
-                break;
-            case 'word-definition':
-                if (word.definition && word.definition !== correct) {
-                    allOptions.push(word.definition);
-                }
-                break;
-            case 'definition-word':
-                if (word.english && word.english !== correct) {
-                    allOptions.push(word.english);
-                }
-                break;
-        }
+    // نمایش گزینه‌ها بدون شماره
+    question.options.forEach((option, index) => {
+        const optionBtn = document.createElement('button');
+        optionBtn.className = 'option-btn';
+        optionBtn.textContent = option; // فقط متن گزینه
+        optionBtn.onclick = () => checkAnswer(index);
+        
+        optionsContainer.appendChild(optionBtn);
     });
     
-    // انتخاب 3 گزینه تصادفی
-    const wrongOptions = shuffleArray(allOptions).slice(0, 3);
-    
-    // ترکیب با پاسخ صحیح و shuffle نهایی
-    const finalOptions = shuffleArray([...wrongOptions, correct]);
-    
-    return finalOptions;
-}
-
-// رندر گزینه‌ها
-function renderOptions() {
-    const container = document.getElementById('quizOptions');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    quizState.options.forEach((option, index) => {
-        const button = document.createElement('button');
-        button.className = 'option-btn';
-        button.textContent = `${option} (${index + 1})`;
-        button.dataset.index = index;
-        
-        button.onclick = () => checkAnswer(option);
-        
-        container.appendChild(button);
-    });
+    // به‌روزرسانی پیشرفت
+    updateProgress();
 }
 
 // بررسی پاسخ
-function checkAnswer(selected) {
-    const isCorrect = selected === quizState.correctAnswer;
+function checkAnswer(selectedIndex) {
+    if (!currentQuiz.isActive) return;
     
-    // هایلایت کردن گزینه‌ها
-    const buttons = document.querySelectorAll('.option-btn');
-    buttons.forEach(btn => {
-        btn.disabled = true;
-        if (btn.textContent.includes(quizState.correctAnswer)) {
+    const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
+    const selectedOption = question.options[selectedIndex];
+    const isCorrect = selectedOption === question.correctAnswer;
+    const optionButtons = document.querySelectorAll('.option-btn');
+    
+    // غیرفعال کردن کلیک روی گزینه‌ها
+    optionButtons.forEach(btn => {
+        btn.style.pointerEvents = 'none';
+    });
+    
+    // نمایش پاسخ صحیح/غلط
+    optionButtons.forEach((btn, index) => {
+        if (question.options[index] === question.correctAnswer) {
             btn.classList.add('correct');
-        } else if (btn.textContent.includes(selected) && !isCorrect) {
+        } else if (index === selectedIndex && !isCorrect) {
             btn.classList.add('wrong');
+            
+            // ذخیره اشتباه
+            const mistake = {
+                question: question.text,
+                correctAnswer: question.correctAnswer,
+                userAnswer: selectedOption,
+                mode: currentQuiz.mode,
+                explanation: ''
+            };
+            MistakeStorage.addMistake(mistake);
         }
     });
     
-    // آپدیت امتیاز
+    // به‌روزرسانی امتیاز
     if (isCorrect) {
-        quizState.score++;
-        showNotification('✅ پاسخ درست!', 'success');
+        currentQuiz.score++;
+        showNotification('✅ پاسخ صحیح!', 'success');
     } else {
-        showNotification(`❌ پاسخ صحیح: ${quizState.correctAnswer}`, 'error');
+        showNotification('❌ پاسخ اشتباه', 'error');
     }
     
-    // رفتن به سوال بعدی
+    // به‌روزرسانی امتیاز نمایشی
+    document.getElementById('quizScore').textContent = currentQuiz.score;
+    
+    // رفتن به سوال بعدی بعد از تاخیر
     setTimeout(() => {
-        quizState.index++;
-        showQuestion();
+        currentQuiz.currentQuestionIndex++;
+        
+        if (currentQuiz.currentQuestionIndex < currentQuiz.questions.length) {
+            displayCurrentQuestion();
+        } else {
+            finishQuiz();
+        }
     }, 1500);
+}
+
+// به‌روزرسانی اطلاعات آزمون
+function updateQuizInfo() {
+    document.getElementById('currentQuestion').textContent = currentQuiz.currentQuestionIndex + 1;
+    document.getElementById('totalQuestions').textContent = currentQuiz.totalQuestions;
+    document.getElementById('quizScore').textContent = currentQuiz.score;
+}
+
+// به‌روزرسانی نوار پیشرفت
+function updateProgress() {
+    const progress = ((currentQuiz.currentQuestionIndex) / currentQuiz.totalQuestions) * 100;
+    document.getElementById('progressFill').style.width = `${progress}%`;
 }
 
 // پایان آزمون
 function finishQuiz() {
-    const percentage = Math.round((quizState.score / quizState.questions.length) * 100);
+    currentQuiz.isActive = false;
     
-    // ذخیره بهترین امتیاز
-    const bestScore = parseInt(localStorage.getItem('bestScore') || '0');
-    if (percentage > bestScore) {
-        localStorage.setItem('bestScore', percentage.toString());
-        showNotification(`🎉 رکورد جدید! امتیاز: ${percentage}%`, 'success');
-    }
+    const finalScore = Math.round((currentQuiz.score / currentQuiz.totalQuestions) * 100);
+    const duration = Math.round((Date.now() - currentQuiz.startTime) / 1000);
     
     // ذخیره تاریخچه آزمون
     const testHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
-    testHistory.unshift({
-        date: new Date().toISOString(),
-        mode: quizState.mode,
-        score: percentage,
-        correct: quizState.score,
-        total: quizState.questions.length
+    testHistory.push({
+        mode: currentQuiz.mode,
+        score: finalScore,
+        correct: currentQuiz.score,
+        total: currentQuiz.totalQuestions,
+        duration: duration,
+        date: new Date().toISOString()
     });
-    
-    // فقط 20 آزمون آخر را نگه دار
-    if (testHistory.length > 20) {
-        testHistory.pop();
-    }
-    
     localStorage.setItem('testHistory', JSON.stringify(testHistory));
     
+    // به‌روزرسانی بهترین امتیاز
+    const bestScore = parseInt(localStorage.getItem('bestScore') || '0');
+    if (finalScore > bestScore) {
+        localStorage.setItem('bestScore', finalScore.toString());
+        showNotification(`🎉 رکورد جدید! ${finalScore}%`, 'success');
+    }
+    
     // نمایش نتایج
-    document.getElementById('finalScore').textContent = percentage + '%';
-    document.getElementById('correctCount').textContent = quizState.score;
-    document.getElementById('totalCount').textContent = quizState.questions.length;
-    document.getElementById('bestResult').textContent = Math.max(bestScore, percentage) + '%';
+    displayResults(finalScore, currentQuiz.score, currentQuiz.totalQuestions, bestScore);
+    
+    // به‌روزرسانی ستاره‌ها
+    updateStars();
     
     // رفتن به صفحه نتایج
-    setTimeout(() => {
-        switchView('results');
-    }, 1500);
+    switchView('results');
 }
 
-// تابع کمکی برای shuffle
-function shuffleArray(array) {
-    const newArray = [...array];
-    for (let i = newArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-    return newArray;
+// نمایش نتایج
+function displayResults(score, correct, total, bestScore) {
+    document.getElementById('finalScore').textContent = `${score}%`;
+    document.getElementById('correctCount').textContent = correct;
+    document.getElementById('totalCount').textContent = total;
+    document.getElementById('bestResult').textContent = `${bestScore}%`;
 }
+
+// نام حالت آزمون
+function getModeName(mode) {
+    const modes = {
+        'english-persian': 'انگلیسی → فارسی',
+        'persian-english': 'فارسی → انگلیسی',
+        'word-definition': 'کلمه → تعریف',
+        'definition-word': 'تعریف → کلمه',
+        'practice-mode': 'تمرین اشتباهات'
+    };
+    return modes[mode] || mode;
+}
+
+// =======================
+// توابع عمومی
+// =======================
+window.startQuiz = startQuiz;
