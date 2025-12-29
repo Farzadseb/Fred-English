@@ -53,5 +53,14 @@
       "sizes": "512x512",
       "type": "image/png"
     }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "شروع آزمون جدید",
+      "short_name": "آزمون",
+      "description": "شروع یک آزمون انگلیسی جدید",
+      "url": "/?start=quiz"
+    }
   ]
 }
