@@ -1,5 +1,5 @@
 // =======================
-// QUIZ ENGINE - نسخه نهایی
+// QUIZ ENGINE
 // =======================
 
 // وضعیت آزمون
@@ -38,9 +38,6 @@ function startQuiz(mode) {
     
     // نمایش اولین سوال
     displayCurrentQuestion();
-    
-    // به‌روزرسانی اطلاعات
-    updateQuizInfo();
     
     showNotification(`🎯 آزمون ${getModeName(mode)} شروع شد!`, 'success');
 }
@@ -110,6 +107,7 @@ function generateQuestions(mode) {
                                                getRandomOption(), getRandomOption()]),
                         mode: mistake.mode
                     }));
+                    currentQuiz.totalQuestions = currentQuiz.questions.length;
                     return;
                 }
                 break;
@@ -123,16 +121,11 @@ function generateQuestions(mode) {
 function generateOptions(correctAnswer, allAnswers) {
     const options = [correctAnswer];
     
-    // حذف پاسخ صحیح از لیست
     const otherAnswers = allAnswers.filter(answer => answer !== correctAnswer);
-    
-    // انتخاب 3 گزینه تصادفی
     const shuffled = [...otherAnswers].sort(() => Math.random() - 0.5);
     const randomOptions = shuffled.slice(0, 3);
     
     options.push(...randomOptions);
-    
-    // مخلوط کردن گزینه‌ها
     return options.sort(() => Math.random() - 0.5);
 }
 
@@ -157,24 +150,31 @@ function displayCurrentQuestion() {
     // نمایش سوال
     questionText.textContent = question.text;
     
-    // فعال کردن کلیک برای خواندن
-    questionText.onclick = () => speakCurrentQuestion();
+    // به‌روزرسانی اعداد سوال
+    updateQuizInfo();
+    
+    // به‌روزرسانی پیشرفت
+    updateProgress();
     
     // پاک کردن گزینه‌های قبلی
     optionsContainer.innerHTML = '';
     
-    // نمایش گزینه‌ها بدون شماره
+    // نمایش گزینه‌ها
     question.options.forEach((option, index) => {
         const optionBtn = document.createElement('button');
         optionBtn.className = 'option-btn';
-        optionBtn.textContent = option; // فقط متن گزینه
+        optionBtn.textContent = option;
         optionBtn.onclick = () => checkAnswer(index);
         
         optionsContainer.appendChild(optionBtn);
     });
     
-    // به‌روزرسانی پیشرفت
-    updateProgress();
+    // خواندن خودکار سوال با تأخیر 500ms
+    setTimeout(() => {
+        if (window.appState && window.appState.soundEnabled) {
+            speakCurrentQuestion();
+        }
+    }, 500);
 }
 
 // بررسی پاسخ
@@ -221,7 +221,7 @@ function checkAnswer(selectedIndex) {
     // به‌روزرسانی امتیاز نمایشی
     document.getElementById('quizScore').textContent = currentQuiz.score;
     
-    // رفتن به سوال بعدی بعد از تاخیر
+    // رفتن به سوال بعدی بعد از 1 ثانیه
     setTimeout(() => {
         currentQuiz.currentQuestionIndex++;
         
@@ -230,7 +230,7 @@ function checkAnswer(selectedIndex) {
         } else {
             finishQuiz();
         }
-    }, 1500);
+    }, 1000);
 }
 
 // به‌روزرسانی اطلاعات آزمون
@@ -306,3 +306,4 @@ function getModeName(mode) {
 // توابع عمومی
 // =======================
 window.startQuiz = startQuiz;
+window.currentQuiz = currentQuiz;
