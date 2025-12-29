@@ -1,231 +1,277 @@
-// words.js — English with Fred (A1)
-// 200 items + simple A1-friendly definitions
+// =======================
+// DATABASE - WORDS (50 لغت اول برای شروع)
+// =======================
 
 window.words = [
-  { english: "be", persian: "بودن", definition: "to exist", level: "A1" },
-  { english: "am", persian: "هستم", definition: "I am", level: "A1" },
-  { english: "is", persian: "هست", definition: "he/she/it is", level: "A1" },
-  { english: "are", persian: "هستید / هستند", definition: "you/we/they are", level: "A1" },
-  { english: "have", persian: "داشتن", definition: "to own something", level: "A1" },
-  { english: "has", persian: "دارد", definition: "he/she/it has", level: "A1" },
-  { english: "do", persian: "انجام دادن", definition: "to do an action", level: "A1" },
-  { english: "does", persian: "انجام می‌دهد", definition: "he/she/it does", level: "A1" },
-  { english: "work", persian: "کار کردن", definition: "to do a job", level: "A1" },
-  { english: "go", persian: "رفتن", definition: "to move to a place", level: "A1" },
-
-  { english: "come", persian: "آمدن", definition: "to move here", level: "A1" },
-  { english: "get", persian: "گرفتن / شدن", definition: "to receive something", level: "A1" },
-  { english: "make", persian: "ساختن", definition: "to create something", level: "A1" },
-  { english: "use", persian: "استفاده کردن", definition: "to do with something", level: "A1" },
-  { english: "need", persian: "نیاز داشتن", definition: "to want something important", level: "A1" },
-  { english: "want", persian: "خواستن", definition: "to wish to have", level: "A1" },
-  { english: "like", persian: "دوست داشتن", definition: "to enjoy something", level: "A1" },
-  { english: "love", persian: "دوست داشتن", definition: "to like a lot", level: "A1" },
-  { english: "help", persian: "کمک کردن", definition: "to give help", level: "A1" },
-  { english: "try", persian: "تلاش کردن", definition: "to attempt to do", level: "A1" },
-
-  { english: "start", persian: "شروع کردن", definition: "to begin", level: "A1" },
-  { english: "stop", persian: "متوقف کردن", definition: "to not do anymore", level: "A1" },
-  { english: "say", persian: "گفتن", definition: "to speak words", level: "A1" },
-  { english: "tell", persian: "گفتن (به کسی)", definition: "to say to someone", level: "A1" },
-  { english: "ask", persian: "پرسیدن", definition: "to say a question", level: "A1" },
-  { english: "answer", persian: "جواب دادن", definition: "to give a reply", level: "A1" },
-  { english: "talk", persian: "صحبت کردن", definition: "to speak with someone", level: "A1" },
-  { english: "speak", persian: "صحبت کردن", definition: "to say words", level: "A1" },
-  { english: "see", persian: "دیدن", definition: "to look with eyes", level: "A1" },
-  { english: "look", persian: "نگاه کردن", definition: "to use your eyes", level: "A1" },
-
-  { english: "hear", persian: "شنیدن", definition: "to get sound", level: "A1" },
-  { english: "listen", persian: "گوش دادن", definition: "to try to hear", level: "A1" },
-  { english: "feel", persian: "احساس داشتن", definition: "to have a feeling", level: "A1" },
-  { english: "think", persian: "فکر کردن", definition: "to use your mind", level: "A1" },
-  { english: "know", persian: "دانستن", definition: "to have information", level: "A1" },
-  { english: "live", persian: "زندگی کردن", definition: "to have a life", level: "A1" },
-  { english: "stay", persian: "ماندن", definition: "to not leave", level: "A1" },
-  { english: "leave", persian: "ترک کردن", definition: "to go away", level: "A1" },
-  { english: "move", persian: "حرکت کردن", definition: "to change place", level: "A1" },
-  { english: "happen", persian: "اتفاق افتادن", definition: "to take place", level: "A1" },
-
-  { english: "people", persian: "مردم", definition: "many persons", level: "A1" },
-  { english: "person", persian: "شخص", definition: "one human", level: "A1" },
-  { english: "man", persian: "مرد", definition: "an adult male", level: "A1" },
-  { english: "woman", persian: "زن", definition: "an adult female", level: "A1" },
-  { english: "friend", persian: "دوست", definition: "a person you like", level: "A1" },
-  { english: "family", persian: "خانواده", definition: "parents and children", level: "A1" },
-  { english: "job", persian: "شغل", definition: "work you do", level: "A1" },
-  { english: "work (noun)", persian: "کار", definition: "a job or task", level: "A1" },
-  { english: "money", persian: "پول", definition: "what you pay with", level: "A1" },
-  { english: "time", persian: "زمان", definition: "minutes and hours", level: "A1" },
-
-  { english: "day", persian: "روز", definition: "24 hours", level: "A1" },
-  { english: "week", persian: "هفته", definition: "7 days", level: "A1" },
-  { english: "year", persian: "سال", definition: "12 months", level: "A1" },
-  { english: "today", persian: "امروز", definition: "this day", level: "A1" },
-  { english: "tomorrow", persian: "فردا", definition: "the next day", level: "A1" },
-  { english: "yesterday", persian: "دیروز", definition: "the day before", level: "A1" },
-  { english: "now", persian: "الان", definition: "at this time", level: "A1" },
-  { english: "later", persian: "بعداً", definition: "after now", level: "A1" },
-  { english: "early", persian: "زود", definition: "before the usual time", level: "A1" },
-  { english: "late", persian: "دیر", definition: "after the usual time", level: "A1" },
-
-  { english: "here", persian: "اینجا", definition: "in this place", level: "A1" },
-  { english: "there", persian: "آنجا", definition: "in that place", level: "A1" },
-  { english: "home", persian: "خانه", definition: "where you live", level: "A1" },
-  { english: "place", persian: "مکان", definition: "a location", level: "A1" },
-  { english: "city", persian: "شهر", definition: "a big town", level: "A1" },
-  { english: "country", persian: "کشور", definition: "a nation", level: "A1" },
-  { english: "school", persian: "مدرسه", definition: "a place to learn", level: "A1" },
-  { english: "office", persian: "اداره", definition: "a place to work", level: "A1" },
-  { english: "shop", persian: "مغازه", definition: "a place to buy", level: "A1" },
-  { english: "street", persian: "خیابان", definition: "a road in a city", level: "A1" },
-
-  { english: "good", persian: "خوب", definition: "not bad", level: "A1" },
-  { english: "bad", persian: "بد", definition: "not good", level: "A1" },
-  { english: "easy", persian: "آسان", definition: "not hard", level: "A1" },
-  { english: "hard", persian: "سخت", definition: "not easy", level: "A1" },
-  { english: "big", persian: "بزرگ", definition: "not small", level: "A1" },
-  { english: "small", persian: "کوچک", definition: "not big", level: "A1" },
-  { english: "new", persian: "جدید", definition: "not old", level: "A1" },
-  { english: "old", persian: "قدیمی", definition: "not new", level: "A1" },
-  { english: "same", persian: "یکسان", definition: "not different", level: "A1" },
-  { english: "different", persian: "متفاوت", definition: "not the same", level: "A1" },
-
-  { english: "busy", persian: "مشغول", definition: "having a lot to do", level: "A1" },
-  { english: "free", persian: "آزاد", definition: "not busy", level: "A1" },
-  { english: "tired", persian: "خسته", definition: "needing rest", level: "A1" },
-  { english: "happy", persian: "خوشحال", definition: "feeling good", level: "A1" },
-  { english: "sad", persian: "ناراحت", definition: "not happy", level: "A1" },
-  { english: "right", persian: "درست", definition: "correct", level: "A1" },
-  { english: "wrong", persian: "غلط", definition: "not correct", level: "A1" },
-  { english: "important", persian: "مهم", definition: "very needed", level: "A1" },
-  { english: "possible", persian: "ممکن", definition: "can happen", level: "A1" },
-  { english: "ready", persian: "آماده", definition: "prepared", level: "A1" },
-
-  { english: "and", persian: "و", definition: "plus", level: "A1" },
-  { english: "but", persian: "اما", definition: "a different idea", level: "A1" },
-  { english: "because", persian: "چون", definition: "for this reason", level: "A1" },
-  { english: "so", persian: "پس", definition: "for this reason", level: "A1" },
-  { english: "if", persian: "اگر", definition: "in this case", level: "A1" },
-  { english: "when", persian: "وقتی که", definition: "at the time that", level: "A1" },
-  { english: "before", persian: "قبل از", definition: "earlier than", level: "A1" },
-  { english: "after", persian: "بعد از", definition: "later than", level: "A1" },
-  { english: "about", persian: "درباره", definition: "on this topic", level: "A1" },
-  { english: "with", persian: "با", definition: "together", level: "A1" },
-
-  { english: "without", persian: "بدون", definition: "not with", level: "A1" },
-  { english: "for", persian: "برای", definition: "to help or give", level: "A1" },
-  { english: "from", persian: "از", definition: "starting in", level: "A1" },
-  { english: "to", persian: "به", definition: "going toward", level: "A1" },
-  { english: "in", persian: "در", definition: "inside", level: "A1" },
-  { english: "on", persian: "روی", definition: "on top of", level: "A1" },
-  { english: "at", persian: "در", definition: "in a place or time", level: "A1" },
-  { english: "of", persian: "ِ", definition: "shows belonging", level: "A1" },
-  { english: "this", persian: "این", definition: "near", level: "A1" },
-  { english: "that", persian: "آن", definition: "far", level: "A1" },
-
-  { english: "these", persian: "این‌ها", definition: "many near", level: "A1" },
-  { english: "those", persian: "آن‌ها", definition: "many far", level: "A1" },
-  { english: "something", persian: "چیزی", definition: "a thing", level: "A1" },
-  { english: "someone", persian: "کسی", definition: "a person", level: "A1" },
-  { english: "nothing", persian: "هیچ‌چیز", definition: "not anything", level: "A1" },
-  { english: "everything", persian: "همه‌چیز", definition: "all things", level: "A1" },
-  { english: "one", persian: "یک", definition: "number 1", level: "A1" },
-  { english: "two", persian: "دو", definition: "number 2", level: "A1" },
-  { english: "many", persian: "زیاد", definition: "a lot", level: "A1" },
-  { english: "few", persian: "کم", definition: "not many", level: "A1" },
-
-  { english: "a lot", persian: "خیلی", definition: "many or much", level: "A1" },
-  { english: "more", persian: "بیشتر", definition: "a bigger amount", level: "A1" },
-  { english: "less", persian: "کمتر", definition: "a smaller amount", level: "A1" },
-  { english: "all", persian: "همه", definition: "every one", level: "A1" },
-  { english: "some", persian: "بعضی", definition: "not all", level: "A1" },
-  { english: "any", persian: "هیچ / هر", definition: "one or more", level: "A1" },
-  { english: "same", persian: "یکسان", definition: "not different", level: "A1" },
-  { english: "other", persian: "دیگر", definition: "not this one", level: "A1" },
-  { english: "another", persian: "یکی دیگر", definition: "one more", level: "A1" },
-  { english: "kind", persian: "نوع", definition: "a type", level: "A1" },
-
-  { english: "morning", persian: "صبح", definition: "early day time", level: "A1" },
-  { english: "afternoon", persian: "بعدازظهر", definition: "after 12:00", level: "A1" },
-  { english: "evening", persian: "عصر", definition: "late day time", level: "A1" },
-  { english: "night", persian: "شب", definition: "dark time", level: "A1" },
-  { english: "today", persian: "امروز", definition: "this day", level: "A1" },
-  { english: "now", persian: "الان", definition: "at this time", level: "A1" },
-  { english: "again", persian: "دوباره", definition: "one more time", level: "A1" },
-  { english: "always", persian: "همیشه", definition: "all the time", level: "A1" },
-  { english: "usually", persian: "معمولاً", definition: "most times", level: "A1" },
-  { english: "sometimes", persian: "گاهی", definition: "not always", level: "A1" },
-
-  { english: "often", persian: "اغلب", definition: "many times", level: "A1" },
-  { english: "never", persian: "هرگز", definition: "not ever", level: "A1" },
-  { english: "fast", persian: "سریع", definition: "not slow", level: "A1" },
-  { english: "slow", persian: "آهسته", definition: "not fast", level: "A1" },
-  { english: "very", persian: "خیلی", definition: "a lot", level: "A1" },
-  { english: "really", persian: "واقعاً", definition: "truly", level: "A1" },
-  { english: "just", persian: "فقط", definition: "only", level: "A1" },
-  { english: "also", persian: "همچنین", definition: "too", level: "A1" },
-  { english: "maybe", persian: "شاید", definition: "not sure", level: "A1" },
-  { english: "sure", persian: "مطمئن", definition: "certain", level: "A1" },
-
-  { english: "yes", persian: "بله", definition: "a positive answer", level: "A1" },
-  { english: "no", persian: "نه", definition: "a negative answer", level: "A1" },
-  { english: "okay", persian: "باشه", definition: "it is fine", level: "A1" },
-  { english: "please", persian: "لطفاً", definition: "a polite word", level: "A1" },
-  { english: "thanks", persian: "ممنون", definition: "a polite thank you", level: "A1" },
-  { english: "sorry", persian: "ببخشید", definition: "a polite apology", level: "A1" },
-  { english: "hello", persian: "سلام", definition: "a greeting", level: "A1" },
-  { english: "hi", persian: "سلام", definition: "a greeting", level: "A1" },
-  { english: "bye", persian: "خداحافظ", definition: "a goodbye", level: "A1" },
-  { english: "welcome", persian: "خوش آمدید", definition: "a friendly hello", level: "A1" },
-
-  { english: "question", persian: "سؤال", definition: "something you ask", level: "A1" },
-  { english: "answer", persian: "جواب", definition: "a reply", level: "A1" },
-  { english: "problem", persian: "مشکل", definition: "something not good", level: "A1" },
-  { english: "reason", persian: "دلیل", definition: "why something happens", level: "A1" },
-  { english: "idea", persian: "ایده", definition: "a plan or thought", level: "A1" },
-  { english: "thing", persian: "چیز", definition: "an object", level: "A1" },
-  { english: "way", persian: "راه", definition: "a method", level: "A1" },
-  { english: "part", persian: "بخش", definition: "one piece", level: "A1" },
-  { english: "life", persian: "زندگی", definition: "living", level: "A1" },
-  { english: "world", persian: "دنیا", definition: "the earth", level: "A1" },
-
-  { english: "workday", persian: "روز کاری", definition: "a day you work", level: "A1" },
-  { english: "weekend", persian: "آخر هفته", definition: "Saturday and Sunday", level: "A1" },
-  { english: "break", persian: "استراحت", definition: "a short rest", level: "A1" },
-  { english: "rest", persian: "استراحت", definition: "time to relax", level: "A1" },
-  { english: "plan", persian: "برنامه", definition: "a thing you want to do", level: "A1" },
-  { english: "change", persian: "تغییر", definition: "to make different", level: "A1" },
-  { english: "result", persian: "نتیجه", definition: "what you get", level: "A1" },
-  { english: "example", persian: "مثال", definition: "one case", level: "A1" },
-  { english: "point", persian: "نکته", definition: "an important idea", level: "A1" },
-  { english: "level", persian: "سطح", definition: "a stage or degree", level: "A1" },
-
-  { english: "begin", persian: "شروع کردن", definition: "to start", level: "A1" },
-  { english: "finish", persian: "تمام کردن", definition: "to end", level: "A1" },
-  { english: "wait", persian: "صبر کردن", definition: "to stay and not go", level: "A1" },
-  { english: "meet", persian: "ملاقات کردن", definition: "to see someone", level: "A1" },
-  { english: "call", persian: "تماس گرفتن", definition: "to phone someone", level: "A1" },
-  { english: "open", persian: "باز کردن", definition: "to make not closed", level: "A1" },
-  { english: "close", persian: "بستن", definition: "to make not open", level: "A1" },
-  { english: "buy", persian: "خریدن", definition: "to pay for something", level: "A1" },
-  { english: "pay", persian: "پرداخت کردن", definition: "to give money", level: "A1" },
-  { english: "bring", persian: "آوردن", definition: "to take to a place", level: "A1" },
-
-  { english: "take", persian: "برداشتن", definition: "to get and carry", level: "A1" },
-  { english: "find", persian: "پیدا کردن", definition: "to discover", level: "A1" },
-  { english: "keep", persian: "نگه داشتن", definition: "to not lose", level: "A1" },
-  { english: "give", persian: "دادن", definition: "to offer", level: "A1" },
-  { english: "receive", persian: "دریافت کردن", definition: "to get something", level: "A1" },
-  { english: "learn", persian: "یاد گرفتن", definition: "to get knowledge", level: "A1" },
-  { english: "teach", persian: "درس دادن", definition: "to help someone learn", level: "A1" },
-  { english: "practice", persian: "تمرین کردن", definition: "to do again to learn", level: "A1" },
-  { english: "understand", persian: "فهمیدن", definition: "to know the meaning", level: "A1" },
-  { english: "remember", persian: "به خاطر سپردن", definition: "to not forget", level: "A1" }
+    // گروه 1: افعال پایه
+    {
+        english: "be",
+        persian: "بودن",
+        definition: "To exist or live"
+    },
+    {
+        english: "have",
+        persian: "داشتن",
+        definition: "To possess or own"
+    },
+    {
+        english: "do",
+        persian: "انجام دادن",
+        definition: "To perform an action"
+    },
+    {
+        english: "say",
+        persian: "گفتن",
+        definition: "To express in words"
+    },
+    {
+        english: "go",
+        persian: "رفتن",
+        definition: "To move from one place to another"
+    },
+    
+    // گروه 2: افعال مهم
+    {
+        english: "get",
+        persian: "گرفتن",
+        definition: "To receive or obtain"
+    },
+    {
+        english: "make",
+        persian: "ساختن",
+        definition: "To create or produce"
+    },
+    {
+        english: "know",
+        persian: "دانستن",
+        definition: "To have information about"
+    },
+    {
+        english: "think",
+        persian: "فکر کردن",
+        definition: "To use your mind to consider something"
+    },
+    {
+        english: "take",
+        persian: "برداشتن",
+        definition: "To get hold of something"
+    },
+    
+    // گروه 3: افعال ارتباطی
+    {
+        english: "see",
+        persian: "دیدن",
+        definition: "To notice with your eyes"
+    },
+    {
+        english: "come",
+        persian: "آمدن",
+        definition: "To move toward someone or something"
+    },
+    {
+        english: "want",
+        persian: "خواستن",
+        definition: "To desire something"
+    },
+    {
+        english: "look",
+        persian: "نگاه کردن",
+        definition: "To direct your eyes toward something"
+    },
+    {
+        english: "use",
+        persian: "استفاده کردن",
+        definition: "To employ for a purpose"
+    },
+    
+    // گروه 4: افعال کمکی
+    {
+        english: "find",
+        persian: "پیدا کردن",
+        definition: "To discover something"
+    },
+    {
+        english: "give",
+        persian: "دادن",
+        definition: "To present something to someone"
+    },
+    {
+        english: "tell",
+        persian: "تعریف کردن",
+        definition: "To give information to someone"
+    },
+    {
+        english: "work",
+        persian: "کار کردن",
+        definition: "To do a job"
+    },
+    {
+        english: "call",
+        persian: "تماس گرفتن",
+        definition: "To telephone someone"
+    },
+    
+    // گروه 5: افعال احساسی
+    {
+        english: "try",
+        persian: "سعی کردن",
+        definition: "To attempt to do something"
+    },
+    {
+        english: "ask",
+        persian: "پرسیدن",
+        definition: "To say something to get an answer"
+    },
+    {
+        english: "need",
+        persian: "نیاز داشتن",
+        definition: "To require something"
+    },
+    {
+        english: "feel",
+        persian: "احساس کردن",
+        definition: "To experience an emotion"
+    },
+    {
+        english: "become",
+        persian: "شدن",
+        definition: "To begin to be"
+    },
+    
+    // گروه 6: افعال حرکتی
+    {
+        english: "leave",
+        persian: "ترک کردن",
+        definition: "To go away from a place"
+    },
+    {
+        english: "put",
+        persian: "گذاشتن",
+        definition: "To place something somewhere"
+    },
+    {
+        english: "mean",
+        persian: "معنی دادن",
+        definition: "To intend to say something"
+    },
+    {
+        english: "keep",
+        persian: "نگه داشتن",
+        definition: "To continue to have something"
+    },
+    {
+        english: "let",
+        persian: "اجازه دادن",
+        definition: "To allow something to happen"
+    },
+    
+    // گروه 7: افعال اجتماعی
+    {
+        english: "begin",
+        persian: "شروع کردن",
+        definition: "To start doing something"
+    },
+    {
+        english: "seem",
+        persian: "به نظر رسیدن",
+        definition: "To appear to be something"
+    },
+    {
+        english: "help",
+        persian: "کمک کردن",
+        definition: "To make it easier for someone"
+    },
+    {
+        english: "talk",
+        persian: "صحبت کردن",
+        definition: "To speak to someone"
+    },
+    {
+        english: "turn",
+        persian: "چرخاندن",
+        definition: "To change direction"
+    },
+    
+    // گروه 8: افعال تحصیلی
+    {
+        english: "start",
+        persian: "شروع کردن",
+        definition: "To begin something"
+    },
+    {
+        english: "show",
+        persian: "نشان دادن",
+        definition: "To let someone see something"
+    },
+    {
+        english: "hear",
+        persian: "شنیدن",
+        definition: "To perceive sound"
+    },
+    {
+        english: "play",
+        persian: "بازی کردن",
+        definition: "To engage in activity for enjoyment"
+    },
+    {
+        english: "run",
+        persian: "دویدن",
+        definition: "To move quickly on foot"
+    },
+    
+    // گروه 9: افعال حیاتی
+    {
+        english: "move",
+        persian: "حرکت دادن",
+        definition: "To change position"
+    },
+    {
+        english: "like",
+        persian: "دوست داشتن",
+        definition: "To find pleasant or enjoyable"
+    },
+    {
+        english: "live",
+        persian: "زندگی کردن",
+        definition: "To be alive"
+    },
+    {
+        english: "believe",
+        persian: "باور کردن",
+        definition: "To accept something as true"
+    },
+    {
+        english: "hold",
+        persian: "نگه داشتن",
+        definition: "To have in your hand"
+    },
+    
+    // گروه 10: افعال متفرقه
+    {
+        english: "bring",
+        persian: "آوردن",
+        definition: "To take something with you"
+    },
+    {
+        english: "happen",
+        persian: "اتفاق افتادن",
+        definition: "To take place"
+    },
+    {
+        english: "write",
+        persian: "نوشتن",
+        definition: "To mark letters or words"
+    },
+    {
+        english: "provide",
+        persian: "فراهم کردن",
+        definition: "To make something available"
+    },
+    {
+        english: "sit",
+        persian: "نشستن",
+        definition: "To rest on a chair"
+    }
 ];
 
-// safety fallback
-if (!Array.isArray(window.words) || window.words.length === 0) {
-  window.words = [{ english: "hello", persian: "سلام", definition: "a greeting", level: "A1" }];
-}
-
-console.log(`📘 words loaded: ${window.words.length}`);
+console.log(`✅ ${words.length} لغت لود شد`);
