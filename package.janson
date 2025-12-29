@@ -1,7 +1,7 @@
 {
   "name": "english-with-fred",
   "version": "1.0.0",
-  "description": "برنامه آموزش زبان انگلیسی با آزمون‌های تعاملی",
+  "description": "برنامه آموزش زبان انگلیسی با آزمون‌های تعاملی و سیستم لایتنر",
   "main": "index.html",
   "scripts": {
     "start": "npx serve .",
@@ -11,7 +11,11 @@
     "deploy": "echo 'Deploying to server...'",
     "pwa": "npx pwa-asset-generator ./icon.png ./icons",
     "lint": "npx eslint *.js",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "outdated": "npm outdated",
+    "update": "npm update"
   },
   "keywords": [
     "english",
@@ -19,18 +23,27 @@
     "quiz",
     "pwa",
     "javascript",
-    "education"
+    "education",
+    "language-learning",
+    "vocabulary",
+    "leitner-system"
   ],
-  "author": "English with Fred <09017708544>",
+  "author": {
+    "name": "English with Fred",
+    "email": "",
+    "url": "",
+    "phone": "09017708544",
+    "whatsapp": "09017708544"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/english-with-fred.git"
+    "url": "https://github.com/english-with-fred/english-with-fred.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/english-with-fred/issues"
+    "url": "https://github.com/english-with-fred/english-with-fred/issues"
   },
-  "homepage": "https://github.com/yourusername/english-with-fred#readme",
+  "homepage": "https://github.com/english-with-fred/english-with-fred#readme",
   "devDependencies": {
     "serve": "^14.0.0",
     "live-server": "^1.2.2",
@@ -38,7 +51,7 @@
     "prettier": "^2.0.0"
   },
   "engines": {
-    "Node": ">=14.0.0",
+    "node": ">=14.0.0",
     "npm": ">=6.0.0"
   },
   "pwa": {
@@ -51,5 +64,17 @@
     "last 2 versions",
     "not dead",
     "not IE 11"
-  ]
+  ],
+  "private": true,
+  "contributors": [
+    {
+      "name": "English with Fred",
+      "email": "",
+      "url": ""
+    }
+  ],
+  "funding": {
+    "type": "individual",
+    "url": "https://wa.me/989017708544"
+  }
 }
