@@ -1,28 +1,211 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>English with Fred</title>
-<style>
-body{margin:0;font-family:sans-serif;background:#eef3f8}
-.app{padding:16px}
-.btn{padding:16px;margin:10px 0;border-radius:14px;text-align:center;
-background:linear-gradient(135deg,#38bdf8,#22c55e);color:#fff;font-size:18px}
-#q{background:#fff;padding:20px;border-radius:16px;margin:20px 0}
-.opt{background:#fff;padding:14px;border-radius:12px;margin:8px 0}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English with Fred</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="light-theme">
+    <!-- نوار بالایی -->
+    <div class="top-bar">
+        <div class="theme-toggle">
+            <button id="themeToggle" class="theme-btn">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+        
+        <div class="sound-toggle">
+            <button id="soundToggle" class="sound-btn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+        </div>
+    </div>
 
-<div class="app">
-  <div class="btn" onclick="start('en-fa')">English → Persian</div>
-  <div class="btn" onclick="start('fa-en')">Persian → English</div>
+    <!-- صفحه اصلی -->
+    <div id="home" class="view active">
+        <header class="app-header">
+            <h1><i class="fas fa-graduation-cap"></i> English with Fred</h1>
+            <div class="score-card">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+                <div class="best-score">
+                    <i class="fas fa-trophy"></i>
+                    <span>بهترین امتیاز</span>
+                    <strong id="bestScore">0%</strong>
+                </div>
+            </div>
+        </header>
 
-  <div id="q"></div>
-  <div id="opts"></div>
-</div>
+        <main class="main-content">
+            <div class="menu-grid">
+                <!-- 4 مود آزمون -->
+                <button class="menu-btn gradient-blue" onclick="startQuiz('english-persian')">
+                    <i class="fas fa-language"></i>
+                    <span>English → Persian</span>
+                </button>
+                
+                <button class="menu-btn gradient-blue" onclick="startQuiz('persian-english')">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Persian → English</span>
+                </button>
+                
+                <button class="menu-btn gradient-green" onclick="startQuiz('word-definition')">
+                    <i class="fas fa-book"></i>
+                    <span>Word → Definition</span>
+                </button>
+                
+                <button class="menu-btn gradient-green" onclick="startQuiz('definition-word')">
+                    <i class="fas fa-search"></i>
+                    <span>Definition → Word</span>
+                </button>
+                
+                <!-- سایر دکمه‌ها -->
+                <button class="menu-btn gradient-orange" onclick="reviewMistakesPage()">
+                    <i class="fas fa-redo"></i>
+                    <span>مرور اشتباهات</span>
+                </button>
+                
+                <button class="menu-btn gradient-purple" onclick="showProgressReport()">
+                    <i class="fas fa-chart-line"></i>
+                    <span>گزارش پیشرفت</span>
+                </button>
+                
+                <!-- واتساپ شما -->
+                <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>ثبت نام در واتساپ</span>
+                </button>
+                
+                <!-- تلگرام شما -->
+                <button class="menu-btn gradient-telegram" onclick="sendTelegramReport()">
+                    <i class="fab fa-telegram"></i>
+                    <span>ارسال گزارش به تلگرام</span>
+                </button>
+                
+                <button class="menu-btn gradient-exit" onclick="exitApp()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>خروج</span>
+                </button>
+            </div>
+        </main>
+    </div>
 
-<script src="app.js"></script>
+    <!-- صفحه آزمون -->
+    <div id="quiz" class="view">
+        <header class="quiz-header">
+            <div class="quiz-info">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="quiz-stats">
+                        <span class="stat">
+                            <i class="fas fa-question-circle"></i>
+                            <span id="currentQuestion">1</span>/<span id="totalQuestions">10</span>
+                        </span>
+                        <span class="stat">
+                            <i class="fas fa-star"></i>
+                            <span id="quizScore">0</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div class="question-card">
+                <div class="question-header">
+                    <h2 id="questionText">سوال اینجا نمایش داده می‌شود</h2>
+                    <button id="speakBtn" class="speak-btn" onclick="speakQuestion()">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="options-container" id="quizOptions">
+                <!-- گزینه‌ها توسط جاوااسکریپت ساخته می‌شوند -->
+            </div>
+
+            <div class="quiz-actions">
+                <button class="btn back-btn" onclick="switchView('home')">
+                    <i class="fas fa-arrow-right"></i> بازگشت
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- صفحه نتایج -->
+    <div id="results" class="view">
+        <header class="results-header">
+            <h2><i class="fas fa-flag-checkered"></i> پایان آزمون</h2>
+        </header>
+
+        <main class="results-content">
+            <div class="result-card">
+                <div class="result-icon">
+                    <i class="fas fa-medal"></i>
+                </div>
+                <div class="result-score">
+                    <span id="finalScore">85%</span>
+                    <small>امتیاز شما</small>
+                </div>
+                
+                <div class="result-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">پاسخ صحیح</span>
+                        <span class="stat-value" id="correctCount">8</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">کل سوالات</span>
+                        <span class="stat-value" id="totalCount">10</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">بهترین امتیاز</span>
+                        <span class="stat-value" id="bestResult">90%</span>
+                    </div>
+                </div>
+
+                <!-- دکمه ارسال گزارش به تلگرام -->
+                <div class="telegram-report">
+                    <button class="btn telegram-btn" onclick="sendTelegramReport()">
+                        <i class="fab fa-telegram"></i> ارسال گزارش به تلگرام
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <button class="btn restart-btn" onclick="switchView('home')">
+                    <i class="fas fa-home"></i> صفحه اصلی
+                </button>
+                <button class="btn review-btn" onclick="showMistakesReview()">
+                    <i class="fas fa-eye"></i> مرور پاسخ‌ها
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- اعلان‌ها -->
+    <div id="notification" class="notification"></div>
+
+    <!-- اسکریپت‌ها -->
+    <script src="words.js"></script>
+    <script src="quiz-engine.js"></script>
+    <script src="app.js"></script>
+    
+    <!-- PWA Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('✅ Service Worker ثبت شد'))
+                .catch(err => console.log('❌ Service Worker خطا:', err));
+        }
+    </script>
 </body>
-</html>
+              </html>
