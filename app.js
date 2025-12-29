@@ -577,3 +577,235 @@ window.loadMistakes = loadMistakes;
 window.deleteMistake = deleteMistake;
 window.clearAllMistakes = clearAllMistakes;
 window.practiceMistakes = practiceMistakes;
+// مدیریت نصب PWA
+let deferredPrompt;
+let installButton = null;
+let installBanner = null;
+
+// ایجاد بنر نصب
+function createInstallBanner() {
+  const banner = document.createElement('div');
+  banner.id = 'installBanner';
+  banner.className = 'install-banner';
+  banner.innerHTML = `
+    <div class="banner-content">
+      <i class="fas fa-download"></i>
+      <div class="banner-text">
+        <strong>نصب English with Fred</strong>
+        <small>برای دسترسی سریع‌تر و آفلاین</small>
+      </div>
+      <button id="installBtn" class="install-btn">
+        نصب برنامه
+      </button>
+      <button id="closeBanner" class="close-banner">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `;
+  
+  document.body.appendChild(banner);
+  
+  // استایل‌ها
+  const style = document.createElement('style');
+  style.textContent = `
+    .install-banner {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+      z-index: 9999;
+      animation: slideUp 0.5s ease;
+      font-family: inherit;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .banner-content {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .banner-content i {
+      font-size: 28px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 12px;
+      border-radius: 10px;
+    }
+    
+    .banner-text {
+      flex: 1;
+    }
+    
+    .banner-text strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 3px;
+    }
+    
+    .banner-text small {
+      opacity: 0.9;
+      font-size: 13px;
+    }
+    
+    .install-btn {
+      background: white;
+      color: #8B5CF6;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .install-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .close-banner {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    @media (max-width: 768px) {
+      .install-banner {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+      }
+      
+      .banner-content {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .install-btn {
+        order: 3;
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+  `;
+  
+  document.head.appendChild(style);
+  
+  return banner;
+}
+
+// رویدادهای نصب
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // نمایش بنر پس از 10 ثانیه یا پس از اولین تعامل موفق
+  setTimeout(() => {
+    if (deferredPrompt && !localStorage.getItem('pwaDismissed')) {
+      showInstallBanner();
+    }
+  }, 10000);
+});
+
+// نمایش بنر
+function showInstallBanner() {
+  if (!installBanner) {
+    installBanner = createInstallBanner();
+    installButton = document.getElementById('installBtn');
+    const closeButton = document.getElementById('closeBanner');
+    
+    installButton.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.log('✅ کاربر برنامه را نصب کرد');
+        hideInstallBanner();
+        showNotification('🎉 برنامه با موفقیت نصب شد!', 'success');
+        
+        // رهگیری نصب
+        trackInstall();
+      }
+      
+      deferredPrompt = null;
+    });
+    
+    closeButton.addEventListener('click', () => {
+      localStorage.setItem('pwaDismissed', 'true');
+      hideInstallBanner();
+    });
+  }
+  
+  installBanner.style.display = 'block';
+}
+
+// مخفی کردن بنر
+function hideInstallBanner() {
+  if (installBanner) {
+    installBanner.style.display = 'none';
+  }
+}
+
+// رهگیری نصب
+function trackInstall() {
+  const installs = parseInt(localStorage.getItem('pwaInstalls') || '0');
+  localStorage.setItem('pwaInstalls', (installs + 1).toString());
+  localStorage.setItem('lastInstallDate', new Date().toISOString());
+}
+
+// چک کردن وضعیت نصب
+function checkInstallStatus() {
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    console.log('📱 برنامه به صورت نصب‌شده اجرا می‌شود');
+    localStorage.setItem('runningAsPWA', 'true');
+    return true;
+  }
+  return false;
+}
+
+// پیشنهاد نصب پس از تعامل مثبت
+function suggestInstallAfterSuccess(score) {
+  if (score > 70 && deferredPrompt && !localStorage.getItem('pwaDismissed')) {
+    setTimeout(() => {
+      if (confirm(`🎉 عالی! شما ${score}% گرفتید!\n\nمی‌خواهید برنامه را نصب کنید تا:\n• آفلاین کار کند\n• سرعت بیشتر شود\n• مانند اپلیکیشن واقعی باشد`)) {
+        deferredPrompt.prompt();
+      }
+    }, 2000);
+  }
+}
+
+// فعال کردن در app.js اصلی
+document.addEventListener('DOMContentLoaded', function() {
+  checkInstallStatus();
+  
+  // اگر PWA نیست، پیشنهاد نصب بده
+  if (!checkInstallStatus() && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker ثبت شد'));
+  }
+});
+
+// اکسپورت توابع
+window.showInstallBanner = showInstallBanner;
+window.hideInstallBanner = hideInstallBanner;
+window.suggestInstallAfterSuccess = suggestInstallAfterSuccess;
+window.checkInstallStatus = checkInstallStatus;
