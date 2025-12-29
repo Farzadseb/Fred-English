@@ -1,8 +1,7 @@
 // =======================
-// APP CORE FUNCTIONS - نسخه نهایی
+// APP CORE FUNCTIONS
 // =======================
 
-// 📞 اطلاعات مدرس
 const TeacherInfo = {
     name: 'English with Fred',
     phone: '09017708544',
@@ -10,7 +9,6 @@ const TeacherInfo = {
     telegramBot: 'EnglishWithFredBot'
 };
 
-// وضعیت برنامه
 const appState = {
     soundEnabled: true,
     currentTheme: 'dark',
@@ -22,6 +20,21 @@ const appState = {
 // مدیریت صفحات
 // =======================
 function switchView(viewName) {
+    if (document.getElementById('quiz').classList.contains('active') && 
+        viewName !== 'quiz' && 
+        window.currentQuiz && 
+        window.currentQuiz.isActive) {
+        
+        showMotivationalMessage(() => {
+            performViewSwitch(viewName);
+        });
+        return;
+    }
+    
+    performViewSwitch(viewName);
+}
+
+function performViewSwitch(viewName) {
     document.querySelectorAll('.view').forEach(view => {
         view.classList.remove('active');
     });
@@ -34,6 +47,25 @@ function switchView(viewName) {
     if (viewName === 'home') {
         updateBestScore();
         updateStars();
+    }
+}
+
+// =======================
+// پیام انگیزشی برای خروج
+// =======================
+function showMotivationalMessage(callback) {
+    const messages = [
+        "عزیزم، تو تا اینجا خیلی عالی پیش اومدی! 💪\nفقط چند سوال دیگه مونده... مطمئنی می‌خوای الان آزمون رو رها کنی؟",
+        "همین جا که رسیدی، یعنی می‌تونی ادامه بدی! ✨\nپیشنهاد می‌کنم آزمون رو کامل کنی.",
+        "آفرین به پشتکارت! 🏆\nاین چند سوال آخر می‌تونه تفاوت بزرگی ایجاد کنه."
+    ];
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    
+    if (confirm(randomMessage + "\n\n'بله' = خروج\n'خیر' = ادامه آزمون")) {
+        if (callback) callback();
+    } else {
+        showNotification('آفرین! ادامه می‌دم... 💪', 'success');
     }
 }
 
@@ -115,9 +147,6 @@ function updateStars() {
     });
 }
 
-// =======================
-// به‌روزرسانی امتیاز
-// =======================
 function updateBestScore() {
     const bestScore = localStorage.getItem('bestScore') || '0';
     const bestScoreElement = document.getElementById('bestScore');
@@ -165,56 +194,6 @@ function showNotification(message, type = 'info', duration = 3000) {
 }
 
 // =======================
-// واتساپ
-// =======================
-function joinWhatsApp() {
-    const message = "سلام! می‌خواهم در دوره English with Fred ثبت نام کنم.";
-    const url = `https://wa.me/${TeacherInfo.whatsapp}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
-}
-
-// =======================
-// مرور اشتباهات
-// =======================
-function reviewMistakesPage() {
-    switchView('mistakes');
-    loadMistakes();
-}
-
-// =======================
-// گزارش پیشرفت
-// =======================
-function showProgressReport() {
-    const bestScore = localStorage.getItem('bestScore') || '0';
-    const totalTests = JSON.parse(localStorage.getItem('testHistory') || '[]').length;
-    
-    const report = `
-📊 گزارش پیشرفت English with Fred
-
-⭐ بهترین امتیاز: ${bestScore}%
-📊 تعداد آزمون‌ها: ${totalTests}
-📅 تاریخ: ${new Date().toLocaleDateString('fa-IR')}
-
-👨‍🏫 مدرس: ${TeacherInfo.name}
-📱 تماس: ${TeacherInfo.phone}
-    `.trim();
-    
-    alert(report);
-}
-
-// =======================
-// خروج از برنامه
-// =======================
-function exitApp() {
-    if (confirm('آیا مطمئن هستید که می‌خواهید از برنامه خارج شوید؟')) {
-        showNotification('👋 از همراهی شما متشکریم! دوباره برگردید.', 'info');
-        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-            window.close();
-        }
-    }
-}
-
-// =======================
 // سیستم صدا و تلفظ
 // =======================
 function speak(text) {
@@ -225,7 +204,7 @@ function speak(text) {
         
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-US';
-        utterance.rate = 0.8;
+        utterance.rate = 0.5; // سرعت 0.5
         utterance.pitch = 1;
         utterance.volume = 1;
         
@@ -245,16 +224,9 @@ function speak(text) {
         }
         
         speechSynthesis.speak(utterance);
-        
-        utterance.onerror = (event) => {
-            console.error('❌ خطا در تلفظ:', event.error);
-        };
-    } else {
-        console.warn('❌ Text-to-Speech پشتیبانی نمی‌شود');
     }
 }
 
-// تلفظ سوال فعلی
 function speakCurrentQuestion() {
     if (!appState.soundEnabled) {
         showNotification('🔇 صدا خاموش است', 'warning');
@@ -264,176 +236,51 @@ function speakCurrentQuestion() {
     const questionText = document.getElementById('questionText');
     if (questionText) {
         const text = questionText.textContent || questionText.innerText;
-        
         if (text && text.trim().length > 0) {
             speak(text);
-        } else {
-            showNotification('⚠️ متنی برای تلفظ پیدا نشد', 'info');
         }
     }
 }
 
 // =======================
-// مدیریت اشتباهات
+// توابع دیگر
 // =======================
-const MistakeStorage = {
-    key: 'english_with_fred_mistakes',
-    
-    addMistake(mistake) {
-        const mistakes = this.getAll();
-        mistakes.push({
-            ...mistake,
-            id: Date.now(),
-            date: new Date().toISOString()
-        });
-        localStorage.setItem(this.key, JSON.stringify(mistakes));
-        return mistakes;
-    },
-    
-    getAll() {
-        return JSON.parse(localStorage.getItem(this.key) || '[]');
-    },
-    
-    getByMode(mode) {
-        const all = this.getAll();
-        return all.filter(m => m.mode === mode);
-    },
-    
-    removeMistake(id) {
-        const mistakes = this.getAll();
-        const filtered = mistakes.filter(m => m.id !== id);
-        localStorage.setItem(this.key, JSON.stringify(filtered));
-        return filtered;
-    },
-    
-    clearAll() {
-        localStorage.removeItem(this.key);
-        return [];
-    },
-    
-    count() {
-        return this.getAll().length;
-    }
-};
-
-function loadMistakes(filterMode = 'all') {
-    const mistakesList = document.getElementById('mistakesList');
-    const mistakesCount = document.getElementById('mistakesCount');
-    
-    if (!mistakesList) return;
-    
-    let mistakes = MistakeStorage.getAll();
-    
-    if (filterMode !== 'all') {
-        mistakes = mistakes.filter(m => m.mode === filterMode);
-    }
-    
-    if (mistakesCount) {
-        mistakesCount.textContent = mistakes.length;
-    }
-    
-    if (mistakes.length === 0) {
-        mistakesList.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-check-circle"></i>
-                <h3>آفرین! 🤩</h3>
-                <p>شما هیچ اشتباهی نداشته‌اید!</p>
-                <small>به همین روش ادامه دهید...</small>
-            </div>
-        `;
-        return;
-    }
-    
-    let html = '';
-    mistakes.forEach((mistake, index) => {
-        const modeNames = {
-            'english-persian': 'انگلیسی → فارسی',
-            'persian-english': 'فارسی → انگلیسی',
-            'word-definition': 'کلمه → تعریف',
-            'definition-word': 'تعریف → کلمه'
-        };
-        
-        const date = new Date(mistake.date || Date.now());
-        const persianDate = date.toLocaleDateString('fa-IR');
-        
-        html += `
-            <div class="mistake-item">
-                <div class="mistake-header">
-                    <span class="mistake-number">${index + 1}</span>
-                    <span class="mistake-mode">${modeNames[mistake.mode] || mistake.mode}</span>
-                    <span class="mistake-date">${persianDate}</span>
-                    <button class="delete-mistake" onclick="deleteMistake(${mistake.id})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="mistake-content">
-                    <div class="question-section">
-                        <label>سوال:</label>
-                        <div class="question-text" onclick="speakText(this)">
-                            ${mistake.question || 'سوال'}
-                        </div>
-                    </div>
-                    
-                    <div class="answers-section">
-                        <div class="answer wrong-answer">
-                            <label>پاسخ شما:</label>
-                            <span>${mistake.userAnswer || 'پاسخ شما'}</span>
-                        </div>
-                        
-                        <div class="answer correct-answer">
-                            <label>پاسخ صحیح:</label>
-                            <span>${mistake.correctAnswer || 'پاسخ صحیح'}</span>
-                        </div>
-                    </div>
-                    
-                    ${mistake.explanation ? `
-                        <div class="explanation-section">
-                            <label>توضیح:</label>
-                            <p>${mistake.explanation}</p>
-                        </div>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-    });
-    
-    mistakesList.innerHTML = html;
+function joinWhatsApp() {
+    const message = "سلام! می‌خواهم در دوره English with Fred ثبت نام کنم.";
+    const url = `https://wa.me/${TeacherInfo.whatsapp}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
 }
 
-function deleteMistake(id) {
-    if (confirm('آیا مطمئن هستید که می‌خواهید این اشتباه را حذف کنید؟')) {
-        MistakeStorage.removeMistake(id);
-        loadMistakes();
-        showNotification('✅ اشتباه حذف شد', 'success');
-    }
+function reviewMistakesPage() {
+    switchView('mistakes');
+    loadMistakes();
 }
 
-function clearAllMistakes() {
-    if (MistakeStorage.count() === 0) {
-        showNotification('⚠️ هیچ اشتباهی برای پاک کردن وجود ندارد', 'info');
-        return;
-    }
+function showProgressReport() {
+    const bestScore = localStorage.getItem('bestScore') || '0';
+    const totalTests = JSON.parse(localStorage.getItem('testHistory') || '[]').length;
     
-    if (confirm(`آیا مطمئن هستید که می‌خواهید ${MistakeStorage.count()} اشتباه را پاک کنید؟`)) {
-        MistakeStorage.clearAll();
-        loadMistakes();
-        showNotification('🧹 همه اشتباهات پاک شدند', 'success');
-    }
+    const report = `
+📊 گزارش پیشرفت English with Fred
+
+⭐ بهترین امتیاز: ${bestScore}%
+📊 تعداد آزمون‌ها: ${totalTests}
+📅 تاریخ: ${new Date().toLocaleDateString('fa-IR')}
+
+👨‍🏫 مدرس: ${TeacherInfo.name}
+📱 تماس: ${TeacherInfo.phone}
+    `.trim();
+    
+    alert(report);
 }
 
-function practiceMistakes() {
-    const mistakes = MistakeStorage.getAll();
-    
-    if (mistakes.length === 0) {
-        showNotification('⚠️ هیچ اشتباهی برای تمرین وجود ندارد', 'info');
-        return;
+function exitApp() {
+    if (confirm('آیا مطمئن هستید که می‌خواهید از برنامه خارج شوید؟')) {
+        showNotification('👋 از همراهی شما متشکریم! دوباره برگردید.', 'info');
+        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+            window.close();
+        }
     }
-    
-    showNotification('🎯 تمرین اشتباهات شروع شد!', 'success');
-    setTimeout(() => {
-        startQuiz('practice-mode');
-    }, 1000);
 }
 
 // =======================
@@ -442,11 +289,9 @@ function practiceMistakes() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 English with Fred در حال راه‌اندازی...');
     
-    // بارگذاری تنظیمات
     const savedTheme = localStorage.getItem('theme') || 'dark';
     const savedSound = localStorage.getItem('soundEnabled') !== 'false';
     
-    // اعمال تم
     const body = document.body;
     const themeBtn = document.getElementById('themeToggle');
     
@@ -462,7 +307,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
     }
     
-    // اعمال تنظیمات صدا
     appState.soundEnabled = savedSound;
     const muteBtn = document.querySelector('.mute-btn');
     
@@ -473,18 +317,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!appState.soundEnabled) muteBtn.classList.add('active');
     }
     
-    // ایجاد ID کاربر
     if (!localStorage.getItem('userId')) {
         const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
         localStorage.setItem('userId', userId);
     }
     appState.userId = localStorage.getItem('userId');
     
-    // آپدیت اطلاعات
     updateBestScore();
     updateStars();
     
-    // اتصال رویدادها
     if (themeBtn) {
         themeBtn.addEventListener('click', toggleTheme);
     }
@@ -509,38 +350,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('questionText').addEventListener('click', speakCurrentQuestion);
     }
     
-    // رویدادهای صفحه‌کلید
-    document.addEventListener('keydown', function(e) {
-        if (e.key >= '1' && e.key <= '4' && document.getElementById('quiz').classList.contains('active')) {
-            const options = document.querySelectorAll('.option-btn');
-            const index = parseInt(e.key) - 1;
-            if (options[index]) {
-                options[index].click();
-            }
-        }
-        
-        if (e.code === 'Space' && document.getElementById('quiz').classList.contains('active')) {
-            e.preventDefault();
-            speakCurrentQuestion();
-        }
-        
-        if (e.code === 'Escape') {
-            switchView('home');
-        }
-        
-        if (e.ctrlKey && e.key === 't') {
-            e.preventDefault();
-            toggleTheme();
-        }
-        
-        if (e.ctrlKey && e.key === 'm') {
-            e.preventDefault();
-            toggleGlobalMute();
-        }
-    });
-    
-    console.log('✅ برنامه آماده است!');
-    
     setTimeout(() => {
         showNotification('🎉 به English with Fred خوش آمدید!', 'success', 2000);
     }, 1000);
@@ -556,9 +365,5 @@ window.speakCurrentQuestion = speakCurrentQuestion;
 window.toggleGlobalMute = toggleGlobalMute;
 window.sendTelegramReport = sendTelegramReport;
 window.reviewMistakesPage = reviewMistakesPage;
+window.showMotivationalMessage = showMotivationalMessage;
 window.TeacherInfo = TeacherInfo;
-window.MistakeStorage = MistakeStorage;
-window.loadMistakes = loadMistakes;
-window.deleteMistake = deleteMistake;
-window.clearAllMistakes = clearAllMistakes;
-window.practiceMistakes = practiceMistakes;
