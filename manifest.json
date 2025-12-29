@@ -1,13 +1,98 @@
 {
   "name": "English with Fred",
-  "short_name": "Fred",
-  "start_url": "/Fred-English/",
-  "scope": "/Fred-English/",
+  "short_name": "EnglishFred",
+  "description": "برنامه آموزش زبان انگلیسی با آزمون‌های تعاملی و سیستم لایتنر",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#2ecc71",
+  "orientation": "portrait",
+  "theme_color": "#4F46E5",
+  "background_color": "#F8FAFC",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
+    {
+      "src": "https://img.icons8.com/color/96/000000/english.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://img.icons8.com/color/144/000000/english.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "https://img.icons8.com/color/192/000000/english.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/000000/english.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["education", "lifestyle", "productivity"],
+  "shortcuts": [
+    {
+      "name": "آزمون انگلیسی به فارسی",
+      "short_name": "En→Fa",
+      "description": "شروع آزمون انگلیسی به فارسی",
+      "url": "/?mode=english-persian",
+      "icons": [{ "src": "https://img.icons8.com/color/96/000000/translate.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "آزمون فارسی به انگلیسی",
+      "short_name": "Fa→En",
+      "description": "شروع آزمون فارسی به انگلیسی",
+      "url": "/?mode=persian-english",
+      "icons": [{ "src": "https://img.icons8.com/color/96/000000/translate.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "مرور اشتباهات",
+      "short_name": "اشتباهات",
+      "description": "مرور اشتباهات قبلی",
+      "url": "/?view=mistakes",
+      "icons": [{ "src": "https://img.icons8.com/color/96/000000/recurring-appointment.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://via.placeholder.com/540x720/4F46E5/FFFFFF?text=English+with+Fred",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "صفحه اصلی برنامه"
+    },
+    {
+      "src": "https://via.placeholder.com/720x540/4F46E5/FFFFFF?text=Quiz+Mode",
+      "sizes": "720x540",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "حالت آزمون"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.englishwithfred.app",
+      "id": "com.englishwithfred.app"
+    }
+  ],
+  "prefer_related_applications": false,
+  "protocol_handlers": [
+    {
+      "protocol": "web+englishfred",
+      "url": "/?mode=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "نام",
+      "text": "متن",
+      "url": "لینک"
+    }
+  }
 }
