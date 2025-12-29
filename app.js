@@ -20,21 +20,6 @@ const appState = {
 // مدیریت صفحات
 // =======================
 function switchView(viewName) {
-    if (document.getElementById('quiz').classList.contains('active') && 
-        viewName !== 'quiz' && 
-        window.currentQuiz && 
-        window.currentQuiz.isActive) {
-        
-        showMotivationalMessage(() => {
-            performViewSwitch(viewName);
-        });
-        return;
-    }
-    
-    performViewSwitch(viewName);
-}
-
-function performViewSwitch(viewName) {
     document.querySelectorAll('.view').forEach(view => {
         view.classList.remove('active');
     });
@@ -51,19 +36,19 @@ function performViewSwitch(viewName) {
 }
 
 // =======================
-// پیام انگیزشی برای خروج
+// تأیید خروج از آزمون
 // =======================
-function showMotivationalMessage(callback) {
+function confirmExitQuiz() {
     const messages = [
-        "عزیزم، تو تا اینجا خیلی عالی پیش اومدی! 💪\nفقط چند سوال دیگه مونده... مطمئنی می‌خوای الان آزمون رو رها کنی؟",
-        "همین جا که رسیدی، یعنی می‌تونی ادامه بدی! ✨\nپیشنهاد می‌کنم آزمون رو کامل کنی.",
-        "آفرین به پشتکارت! 🏆\nاین چند سوال آخر می‌تونه تفاوت بزرگی ایجاد کنه."
+        "آفرین به پشتکارت! 🏆\nفقط چند سوال دیگه مونده. مطمئنی می‌خوای آزمون رو رها کنی؟",
+        "همین جا که رسیدی یعنی می‌تونی ادامه بدی! ✨\nپیشنهاد می‌کنم آزمون رو کامل کنی.",
+        "عزیزم، تو تا اینجا خیلی عالی پیش اومدی! 💪\nمطمئنم می‌تونی تا آخر ادامه بدی."
     ];
     
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     
     if (confirm(randomMessage + "\n\n'بله' = خروج\n'خیر' = ادامه آزمون")) {
-        if (callback) callback();
+        switchView('home');
     } else {
         showNotification('آفرین! ادامه می‌دم... 💪', 'success');
     }
@@ -204,7 +189,7 @@ function speak(text) {
         
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = 'en-US';
-        utterance.rate = 0.5; // سرعت 0.5
+        utterance.rate = 0.5;
         utterance.pitch = 1;
         utterance.volume = 1;
         
@@ -229,7 +214,6 @@ function speak(text) {
 
 function speakCurrentQuestion() {
     if (!appState.soundEnabled) {
-        showNotification('🔇 صدا خاموش است', 'warning');
         return;
     }
     
@@ -274,13 +258,195 @@ function showProgressReport() {
     alert(report);
 }
 
+// =======================
+// خروج از برنامه (اصلاح شده)
+// =======================
 function exitApp() {
-    if (confirm('آیا مطمئن هستید که می‌خواهید از برنامه خارج شوید؟')) {
-        showNotification('👋 از همراهی شما متشکریم! دوباره برگردید.', 'info');
-        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
-            window.close();
-        }
+    if (confirm('آیا مطمئن هستید که می‌خواهید از برنامه خارج شوید؟\n\nبا تشکر از همراهی شما! 🙏')) {
+        showNotification('👋 از همراهی شما متشکریم! دوباره برگردید.', 'info', 2000);
+        
+        setTimeout(() => {
+            // برای PWA
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true) {
+                // بازگشت به صفحه اصلی دستگاه
+                window.location.href = 'about:blank';
+            } else {
+                // سعی در بستن پنجره
+                window.close();
+                
+                // اگر پنجره بسته نشد، به صفحه قبل برو
+                setTimeout(() => {
+                    if (!window.closed) {
+                        window.history.back();
+                    }
+                }, 100);
+            }
+        }, 1500);
     }
+}
+
+// =======================
+// مدیریت اشتباهات
+// =======================
+const MistakeStorage = {
+    key: 'english_with_fred_mistakes',
+    
+    addMistake(mistake) {
+        const mistakes = this.getAll();
+        mistakes.push({
+            ...mistake,
+            id: Date.now(),
+            date: new Date().toISOString()
+        });
+        localStorage.setItem(this.key, JSON.stringify(mistakes));
+        return mistakes;
+    },
+    
+    getAll() {
+        return JSON.parse(localStorage.getItem(this.key) || '[]');
+    },
+    
+    getByMode(mode) {
+        const all = this.getAll();
+        return all.filter(m => m.mode === mode);
+    },
+    
+    removeMistake(id) {
+        const mistakes = this.getAll();
+        const filtered = mistakes.filter(m => m.id !== id);
+        localStorage.setItem(this.key, JSON.stringify(filtered));
+        return filtered;
+    },
+    
+    clearAll() {
+        localStorage.removeItem(this.key);
+        return [];
+    },
+    
+    count() {
+        return this.getAll().length;
+    }
+};
+
+function loadMistakes(filterMode = 'all') {
+    const mistakesList = document.getElementById('mistakesList');
+    const mistakesCount = document.getElementById('mistakesCount');
+    
+    if (!mistakesList) return;
+    
+    let mistakes = MistakeStorage.getAll();
+    
+    if (filterMode !== 'all') {
+        mistakes = mistakes.filter(m => m.mode === filterMode);
+    }
+    
+    if (mistakesCount) {
+        mistakesCount.textContent = mistakes.length;
+    }
+    
+    if (mistakes.length === 0) {
+        mistakesList.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-check-circle"></i>
+                <h3>آفرین! 🤩</h3>
+                <p>شما هیچ اشتباهی نداشته‌اید!</p>
+                <small>به همین روش ادامه دهید...</small>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    mistakes.forEach((mistake, index) => {
+        const modeNames = {
+            'english-persian': 'انگلیسی → فارسی',
+            'persian-english': 'فارسی → انگلیسی',
+            'word-definition': 'کلمه → تعریف',
+            'definition-word': 'تعریف → کلمه'
+        };
+        
+        const date = new Date(mistake.date || Date.now());
+        const persianDate = date.toLocaleDateString('fa-IR');
+        
+        html += `
+            <div class="mistake-item">
+                <div class="mistake-header">
+                    <span class="mistake-number">${index + 1}</span>
+                    <span class="mistake-mode">${modeNames[mistake.mode] || mistake.mode}</span>
+                    <span class="mistake-date">${persianDate}</span>
+                    <button class="delete-mistake" onclick="deleteMistake(${mistake.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="mistake-content">
+                    <div class="question-section">
+                        <label>سوال:</label>
+                        <div class="question-text" onclick="speakText(this)">
+                            ${mistake.question || 'سوال'}
+                        </div>
+                    </div>
+                    
+                    <div class="answers-section">
+                        <div class="answer wrong-answer">
+                            <label>پاسخ شما:</label>
+                            <span>${mistake.userAnswer || 'پاسخ شما'}</span>
+                        </div>
+                        
+                        <div class="answer correct-answer">
+                            <label>پاسخ صحیح:</label>
+                            <span>${mistake.correctAnswer || 'پاسخ صحیح'}</span>
+                        </div>
+                    </div>
+                    
+                    ${mistake.explanation ? `
+                        <div class="explanation-section">
+                            <label>توضیح:</label>
+                            <p>${mistake.explanation}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    });
+    
+    mistakesList.innerHTML = html;
+}
+
+function deleteMistake(id) {
+    if (confirm('آیا مطمئن هستید که می‌خواهید این اشتباه را حذف کنید؟')) {
+        MistakeStorage.removeMistake(id);
+        loadMistakes();
+        showNotification('✅ اشتباه حذف شد', 'success');
+    }
+}
+
+function clearAllMistakes() {
+    if (MistakeStorage.count() === 0) {
+        showNotification('⚠️ هیچ اشتباهی برای پاک کردن وجود ندارد', 'info');
+        return;
+    }
+    
+    if (confirm(`آیا مطمئن هستید که می‌خواهید ${MistakeStorage.count()} اشتباه را پاک کنید؟`)) {
+        MistakeStorage.clearAll();
+        loadMistakes();
+        showNotification('🧹 همه اشتباهات پاک شدند', 'success');
+    }
+}
+
+function practiceMistakes() {
+    const mistakes = MistakeStorage.getAll();
+    
+    if (mistakes.length === 0) {
+        showNotification('⚠️ هیچ اشتباهی برای تمرین وجود ندارد', 'info');
+        return;
+    }
+    
+    showNotification('🎯 تمرین اشتباهات شروع شد!', 'success');
+    setTimeout(() => {
+        startQuiz('practice-mode');
+    }, 1000);
 }
 
 // =======================
@@ -326,6 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateBestScore();
     updateStars();
     
+    // اتصال رویدادها
     if (themeBtn) {
         themeBtn.addEventListener('click', toggleTheme);
     }
@@ -350,6 +517,42 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('questionText').addEventListener('click', speakCurrentQuestion);
     }
     
+    // رویدادهای صفحه‌کلید
+    document.addEventListener('keydown', function(e) {
+        if (e.key >= '1' && e.key <= '4' && document.getElementById('quiz').classList.contains('active')) {
+            const options = document.querySelectorAll('.option-btn');
+            const index = parseInt(e.key) - 1;
+            if (options[index]) {
+                options[index].click();
+            }
+        }
+        
+        if (e.code === 'Space' && document.getElementById('quiz').classList.contains('active')) {
+            e.preventDefault();
+            speakCurrentQuestion();
+        }
+        
+        if (e.code === 'Escape') {
+            if (document.getElementById('quiz').classList.contains('active')) {
+                confirmExitQuiz();
+            } else {
+                switchView('home');
+            }
+        }
+        
+        if (e.ctrlKey && e.key === 't') {
+            e.preventDefault();
+            toggleTheme();
+        }
+        
+        if (e.ctrlKey && e.key === 'm') {
+            e.preventDefault();
+            toggleGlobalMute();
+        }
+    });
+    
+    console.log('✅ برنامه آماده است!');
+    
     setTimeout(() => {
         showNotification('🎉 به English with Fred خوش آمدید!', 'success', 2000);
     }, 1000);
@@ -360,10 +563,17 @@ document.addEventListener('DOMContentLoaded', function() {
 // =======================
 window.appState = appState;
 window.switchView = switchView;
+window.confirmExitQuiz = confirmExitQuiz;
 window.showNotification = showNotification;
 window.speakCurrentQuestion = speakCurrentQuestion;
 window.toggleGlobalMute = toggleGlobalMute;
 window.sendTelegramReport = sendTelegramReport;
 window.reviewMistakesPage = reviewMistakesPage;
-window.showMotivationalMessage = showMotivationalMessage;
+window.showProgressReport = showProgressReport;
+window.exitApp = exitApp;
 window.TeacherInfo = TeacherInfo;
+window.MistakeStorage = MistakeStorage;
+window.loadMistakes = loadMistakes;
+window.deleteMistake = deleteMistake;
+window.clearAllMistakes = clearAllMistakes;
+window.practiceMistakes = practiceMistakes;
