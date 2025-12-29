@@ -434,6 +434,13 @@ function finishQuiz() {
         updateStars();
     }
     
+    // پیشنهاد نصب PWA پس از موفقیت
+    if (finalScore > 70 && window.suggestInstallAfterSuccess) {
+        setTimeout(() => {
+            window.suggestInstallAfterSuccess(finalScore);
+        }, 1000);
+    }
+    
     // رفتن به صفحه نتایج
     switchView('results');
 }
@@ -451,18 +458,6 @@ function displayResults(score, correct, total, bestScore) {
     if (bestResultElement) bestResultElement.textContent = `${Math.max(score, bestScore)}%`;
     
     console.log(`📊 نتایج: ${correct}/${total} (${score}%) - بهترین: ${bestScore}%`);
-}
-
-// نام حالت آزمون
-function getModeName(mode) {
-    const modes = {
-        'english-persian': 'انگلیسی → فارسی',
-        'persian-english': 'فارسی → انگلیسی',
-        'word-definition': 'کلمه → تعریف',
-        'definition-word': 'تعریف → کلمه',
-        'practice-mode': 'تمرین اشتباهات'
-    };
-    return modes[mode] || mode;
 }
 
 // توابع اضافی
@@ -515,74 +510,10 @@ function clearAllMistakes() {
     }
 }
 
-// تابع سوئیچ بین صفحات
-function switchView(viewId) {
-    const views = document.querySelectorAll('.view');
-    views.forEach(view => {
-        view.classList.remove('active');
-    });
-    
-    const activeView = document.getElementById(viewId);
-    if (activeView) {
-        activeView.classList.add('active');
-        console.log(`🔄 تغییر به صفحه: ${viewId}`);
-    }
-}
-
-// تابع نمایش اعلان
-function showNotification(message, type = 'info') {
-    const notification = document.getElementById('notification');
-    if (notification) {
-        notification.textContent = message;
-        notification.className = `notification ${type}`;
-        notification.style.display = 'block';
-        
-        setTimeout(() => {
-            notification.style.display = 'none';
-        }, 3000);
-    }
-    console.log(`🔔 اعلان: ${message}`);
-}
-
-// توابع عمومی
+// اکسپورت توابع
 window.startQuiz = startQuiz;
 window.currentQuiz = currentQuiz;
 window.reviewMistakesPage = reviewMistakesPage;
 window.practiceMistakes = practiceMistakes;
 window.clearAllMistakes = clearAllMistakes;
-window.switchView = switchView;
-window.showNotification = showNotification;
 window.MistakeStorage = MistakeStorage;
-
-// بارگذاری اولیه
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("🎮 Quiz Engine بارگذاری شد");
-    
-    // تنظیم بهترین امتیاز
-    const bestScore = localStorage.getItem('bestScore') || '0';
-    const bestScoreElement = document.getElementById('bestScore');
-    if (bestScoreElement) {
-        bestScoreElement.textContent = `${bestScore}%`;
-    }
-    
-    // تنظیم تعداد اشتباهات
-    MistakeStorage.updateMistakesCount();
-    
-    // تست وجود لغات
-    setTimeout(() => {
-        let wordCount = 0;
-        if (window.EnglishWords && EnglishWords.words) {
-            wordCount = EnglishWords.words.length;
-        } else if (window.words) {
-            wordCount = words.length;
-        }
-        
-        console.log(`🔍 بررسی لغات: ${wordCount} لغت پیدا شد`);
-        
-        if (wordCount > 0) {
-            showNotification(`✅ بانک لغات با ${wordCount} کلمه بارگذاری شد`, 'success');
-        } else {
-            showNotification('⚠️ لغات هنوز بارگذاری نشده‌اند', 'warning');
-        }
-    }, 1000);
-});
