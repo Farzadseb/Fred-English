@@ -1,387 +1,415 @@
-// =======================
-// TELEGRAM INTEGRATION - نسخه بهبود یافته
-// =======================
-
-// 🔐 تنظیمات تلگرام
-const telegramConfig = {
-    botUsername: 'EnglishWithFredBot',
-    botToken: '8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw',
-    chatId: '96991859',
-    apiUrl: 'https://api.telegram.org/bot',
-    
-    teacherInfo: {
-        name: 'English with Fred',
-        phone: '09017708544',
-        whatsapp: 'https://wa.me/989017708544'
-    }
-};
-
-// تشخیص محیط تلگرام
-let isTelegramWebApp = false;
-let telegramUser = null;
-
-// 🔍 تشخیص و راه‌اندازی اولیه تلگرام
-function initializeTelegram() {
-    console.log('🔍 در حال بررسی محیط تلگرام...');
-    
-    // بررسی وجود Telegram WebApp SDK
-    if (window.Telegram && Telegram.WebApp) {
-        console.log('✅ Telegram WebApp SDK یافت شد');
-        isTelegramWebApp = true;
-        
-        const tg = Telegram.WebApp;
-        
-        // راه‌اندازی WebApp
-        tg.expand();
-        tg.enableClosingConfirmation();
-        
-        // دریافت اطلاعات کاربر
-        telegramUser = tg.initDataUnsafe?.user;
-        
-        if (telegramUser) {
-            console.log('✅ کاربر تلگرام شناسایی شد:', telegramUser);
-            
-            // ذخیره اطلاعات کاربر
-            localStorage.setItem('telegram_user_id', telegramUser.id);
-            if (telegramUser.username) {
-                localStorage.setItem('telegram_username', telegramUser.username);
-            }
-            if (telegramUser.first_name) {
-                localStorage.setItem('telegram_first_name', telegramUser.first_name);
-            }
-            
-            // نمایش اطلاعات کاربر در UI
-            displayTelegramUserInfo(telegramUser);
-            
-            return telegramUser;
-        } else {
-            console.log('⚠️ کاربر تلگرام پیدا نشد. ممکن است کاربر لاگین نکرده باشد.');
-            telegramUser = createFallbackUser('telegram_no_user');
-            return telegramUser;
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تست تلگرام - English with Fred</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
         }
-    } else {
-        console.log('ℹ️ محیط تلگرام شناسایی نشد. اجرا در مرورگر.');
-        telegramUser = createFallbackUser('browser_user');
-        return telegramUser;
-    }
-}
-
-// ایجاد کاربر جایگزین
-function createFallbackUser(type) {
-    const userId = type + '_' + Math.random().toString(36).substr(2, 8);
-    return {
-        id: userId,
-        username: userId,
-        first_name: 'کاربر مهمان',
-        isFallback: true
-    };
-}
-
-// نمایش اطلاعات کاربر تلگرام
-function displayTelegramUserInfo(user) {
-    const userInfoElement = document.getElementById('userInfo');
-    
-    if (!userInfoElement) {
-        // اگر المنت وجود ندارد، ایجاد کن
-        const header = document.querySelector('.app-header');
-        if (header) {
-            const infoDiv = document.createElement('div');
-            infoDiv.id = 'userInfo';
-            infoDiv.className = 'telegram-user-info';
-            infoDiv.innerHTML = `
-                <div class="user-info-content">
-                    <i class="fab fa-telegram"></i>
-                    <span>${user.first_name || 'کاربر'} ${user.last_name || ''}</span>
-                    ${user.username ? `<small>@${user.username}</small>` : ''}
-                </div>
-            `;
-            header.appendChild(infoDiv);
+        
+        body {
+            background: #0F172A;
+            color: #F1F5F9;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
         }
-    } else {
-        userInfoElement.innerHTML = `
-            <div class="user-info-content">
-                <i class="fab fa-telegram"></i>
-                <span>${user.first_name || 'کاربر'} ${user.last_name || ''}</span>
-                ${user.username ? `<small>@${user.username}</small>` : ''}
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: #1E293B;
+            border: 2px solid #10B981;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #10B981;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        h2 {
+            color: #818CF8;
+            margin: 20px 0;
+        }
+        
+        .test-section {
+            background: #1E293B;
+            border: 2px solid #334155;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: right;
+        }
+        
+        button {
+            background: #10B981;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        button:hover {
+            background: #0DA673;
+            transform: translateY(-2px);
+        }
+        
+        .btn-telegram {
+            background: #0088CC;
+        }
+        
+        .btn-whatsapp {
+            background: #25D366;
+        }
+        
+        .btn-copy {
+            background: #8B5CF6;
+        }
+        
+        .result-box {
+            background: #1E293B;
+            border: 2px solid;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: right;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .success { border-color: #10B981; color: #10B981; }
+        .error { border-color: #EF4444; color: #EF4444; }
+        .warning { border-color: #F59E0B; color: #F59E0B; }
+        .info { border-color: #818CF8; color: #818CF8; }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .status.good { background: rgba(16, 185, 129, 0.2); }
+        .status.bad { background: rgba(239, 68, 68, 0.2); }
+        .status.info { background: rgba(129, 140, 248, 0.2); }
+        
+        code {
+            background: #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        pre {
+            background: #334155;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            text-align: left;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-bug"></i> تست سیستم تلگرام - English with Fred</h1>
+            <p>این صفحه برای عیب‌یابی سیستم گزارش‌دهی تلگرام طراحی شده است</p>
+        </header>
+        
+        <!-- بخش تست اتصال -->
+        <div class="test-section">
+            <h2><i class="fas fa-wifi"></i> تست اتصال اینترنت و API</h2>
+            <button onclick="testInternet()">
+                <i class="fas fa-globe"></i> تست اتصال اینترنت
+            </button>
+            <button onclick="testTelegramAPI()">
+                <i class="fab fa-telegram"></i> تست API تلگرام
+            </button>
+            
+            <div id="internetResult" class="result-box"></div>
+        </div>
+        
+        <!-- بخش تست گزارش‌دهی -->
+        <div class="test-section">
+            <h2><i class="fas fa-paper-plane"></i> تست ارسال گزارش</h2>
+            <button class="btn-telegram" onclick="testTelegramReport()">
+                <i class="fab fa-telegram"></i> تست ارسال به تلگرام
+            </button>
+            <button class="btn-whatsapp" onclick="testWhatsApp()">
+                <i class="fab fa-whatsapp"></i> تست ارسال به واتساپ
+            </button>
+            <button class="btn-copy" onclick="testCopyToClipboard()">
+                <i class="fas fa-copy"></i> تست کپی به کلیپ‌بورد
+            </button>
+            
+            <div id="reportResult" class="result-box"></div>
+        </div>
+        
+        <!-- بخش اطلاعات سیستم -->
+        <div class="test-section">
+            <h2><i class="fas fa-info-circle"></i> اطلاعات سیستم</h2>
+            <button onclick="showSystemInfo()">
+                <i class="fas fa-laptop"></i> نمایش اطلاعات مرورگر
+            </button>
+            <button onclick="showLocalStorage()">
+                <i class="fas fa-database"></i> نمایش LocalStorage
+            </button>
+            
+            <div id="systemInfo" class="result-box"></div>
+        </div>
+        
+        <!-- بخش کد تست -->
+        <div class="test-section">
+            <h2><i class="fas fa-code"></i> تست کد JavaScript</h2>
+            <p>این کد را در کنسول مرورگر (F12) اجرا کنید:</p>
+            <pre><code>// تست تابع اصلی
+testTelegramSystem();
+
+// یا مستقیماً این کد را اجرا کنید:
+const report = createProgressReport();
+console.log('📊 گزارش:', report.fullReport);
+console.log('🔗 لینک تلگرام:', `https://t.me/EnglishWithFredBot?text=${encodeURIComponent(report.shortReport)}`);</code></pre>
+        </div>
+        
+        <!-- راهنمای رفع مشکل -->
+        <div class="test-section">
+            <h2><i class="fas fa-question-circle"></i> راهنمای رفع مشکل</h2>
+            <div class="status info">
+                <p>✅ اگر تست‌ها موفق بودند: سیستم شما سالم است</p>
+                <p>❌ اگر خطا داشتید:</p>
+                <ul style="text-align: right; padding-right: 20px; margin-top: 10px;">
+                    <li>اینترنت خود را بررسی کنید</li>
+                    <li>از مرورگر Chrome یا Firefox استفاده کنید</li>
+                    <li>پاپ‌آپ‌بلاکر را غیرفعال کنید</li>
+                    <li>تلگرام را روی دستگاه خود نصب داشته باشید</li>
+                </ul>
             </div>
-        `;
-    }
-}
-
-// تولید گزارش پیشرفت - نسخه بهبود یافته
-function generateProgressReport() {
-    const user = telegramUser || {};
-    const userId = user.id || localStorage.getItem('userId') || 'user_' + Math.random().toString(36).substr(2, 6);
-    const bestScore = localStorage.getItem('bestScore') || '0';
-    const testHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
-    const totalTests = testHistory.length;
+        </div>
+    </div>
     
-    // محاسبه آمار
-    let avgScore = 0;
-    if (totalTests > 0) {
-        const total = testHistory.reduce((sum, test) => sum + test.score, 0);
-        avgScore = Math.round(total / totalTests);
-    }
+    <script>
+    // آیکون‌های FontAwesome
+    const faScript = document.createElement('script');
+    faScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js';
+    document.head.appendChild(faScript);
     
-    const today = new Date().toLocaleDateString('fa-IR');
-    const time = new Date().toLocaleTimeString('fa-IR');
+    // توابع تست
     
-    // شناسه کاربر تلگرام
-    const telegramId = user.id ? `\n🆔 شناسه تلگرام: ${user.id}` : '';
-    const usernameInfo = user.username ? `\n📱 نام کاربری: @${user.username}` : '';
-    const fullName = user.first_name ? `${user.first_name} ${user.last_name || ''}` : 'کاربر مهمان';
-    
-    return {
-        userId: userId,
-        date: today,
-        time: time,
-        bestScore: `${bestScore}%`,
-        averageScore: `${avgScore}%`,
-        totalTests: totalTests,
-        teacherName: telegramConfig.teacherInfo.name,
-        teacherPhone: telegramConfig.teacherInfo.phone,
-        telegramUser: user,
+    function testInternet() {
+        const resultBox = document.getElementById('internetResult');
+        resultBox.innerHTML = '🔄 در حال تست اتصال اینترنت...';
+        resultBox.className = 'result-box info';
         
-        // متن گزارش بهبود یافته
-        message: `
-📊 **گزارش پیشرفت English with Fred**
-👤 **نام کاربر:** ${fullName}
-${telegramId}${usernameInfo}
-📅 **تاریخ:** ${today} - ${time}
-⭐ **بهترین امتیاز:** ${bestScore}%
-📈 **میانگین امتیاز:** ${avgScore}%
-📊 **تعداد آزمون‌ها:** ${totalTests}
-
-👨‍🏫 **مدرس:** ${telegramConfig.teacherInfo.name}
-📱 **تماس:** ${telegramConfig.teacherInfo.phone}
-📲 **واتساپ:** ${telegramConfig.teacherInfo.whatsapp}
-
-📌 این گزارش به صورت خودکار ارسال شده است.
-        `.trim()
-    };
-}
-
-// ارسال گزارش به تلگرام - نسخه بهبود یافته
-async function sendTelegramReport() {
-    // ابتدا تلگرام را راه‌اندازی کن
-    if (!telegramUser) {
-        initializeTelegram();
+        fetch('https://api.telegram.org/')
+            .then(response => {
+                resultBox.innerHTML = '✅ اتصال اینترنت سالم است';
+                resultBox.className = 'result-box success';
+            })
+            .catch(error => {
+                resultBox.innerHTML = `❌ مشکل اتصال اینترنت:\n${error.message}`;
+                resultBox.className = 'result-box error';
+            });
     }
     
-    // ایجاد گزارش
-    const report = generateProgressReport();
-    
-    // نشان دادن وضعیت ارسال
-    showNotification('📤 در حال ارسال گزارش به تلگرام...', 'info');
-    
-    // اگر در محیط WebApp تلگرام هستیم
-    if (isTelegramWebApp && window.Telegram?.WebApp) {
-        return await sendViaTelegramWebApp(report);
-    } 
-    // اگر توکن ربات را داریم
-    else if (telegramConfig.botToken && telegramConfig.botToken.length > 20) {
-        return await sendViaTelegramAPI(report);
-    } 
-    // در غیر این صورت از لینک استفاده کن
-    else {
-        return sendViaTelegramLink(report);
-    }
-}
-
-// ارسال از طریق Telegram WebApp
-async function sendViaTelegramWebApp(report) {
-    try {
-        const tg = Telegram.WebApp;
+    function testTelegramAPI() {
+        const resultBox = document.getElementById('internetResult');
+        resultBox.innerHTML = '🔄 در حال تست API تلگرام...';
+        resultBox.className = 'result-box info';
         
-        // می‌توانیم از sendData استفاده کنیم یا مستقیماً با API کار کنیم
-        // در اینجا از API استفاده می‌کنیم چون توکن داریم
-        if (telegramConfig.botToken) {
-            return await sendViaTelegramAPI(report);
-        } else {
-            // اگر توکن نداریم، از لینک استفاده می‌کنیم
-            return sendViaTelegramLink(report);
-        }
-        
-    } catch (error) {
-        console.error('❌ خطا در WebApp:', error);
-        showNotification('❌ خطا در ارسال از طریق WebApp', 'error');
-        return sendViaTelegramLink(report);
-    }
-}
-
-// ارسال از طریق API تلگرام (بدون تغییر)
-async function sendViaTelegramAPI(report) {
-    try {
-        const response = await fetch(
-            `${telegramConfig.apiUrl}${telegramConfig.botToken}/sendMessage`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    chat_id: telegramConfig.chatId,
-                    text: report.message,
-                    parse_mode: 'Markdown',
-                    disable_web_page_preview: true
-                })
-            }
-        );
-        
-        const data = await response.json();
-        
-        if (data.ok) {
-            showNotification('✅ گزارش با موفقیت به تلگرام ارسال شد', 'success');
-            console.log('📤 گزارش تلگرام ارسال شد:', data.result.message_id);
-            
-            // اگر در WebApp هستیم، دکمه بسته شدن را فعال کنیم
-            if (isTelegramWebApp) {
-                setTimeout(() => {
-                    showNotification('👨‍🏫 مدرس به زودی با شما تماس خواهد گرفت', 'info');
-                }, 1500);
-            }
-            
-            return true;
-        } else {
-            console.error('❌ خطای تلگرام:', data);
-            showNotification('⚠️ خطا در ارسال. از روش لینک استفاده کنید.', 'warning');
-            
-            // تلاش مجدد با لینک
-            setTimeout(() => sendViaTelegramLink(report), 1000);
-            return false;
-        }
-    } catch (error) {
-        console.error('❌ خطای شبکه تلگرام:', error);
-        showNotification('❌ اتصال اینترنت را بررسی کنید', 'error');
-        
-        // تلاش مجدد با لینک
-        setTimeout(() => sendViaTelegramLink(report), 1000);
-        return false;
-    }
-}
-
-// ارسال از طریق لینک تلگرام (بدون تغییر)
-function sendViaTelegramLink(report) {
-    // کوتاه کردن پیام برای لینک
-    const shortMessage = `
-📊 گزارش English with Fred
-👤 ${report.telegramUser?.first_name || report.userId}
-⭐ بهترین: ${report.bestScore}
-📊 آزمون‌ها: ${report.totalTests}
-📅 ${report.date}
-    `.trim();
-    
-    const encodedMessage = encodeURIComponent(shortMessage);
-    const telegramLink = `https://t.me/${telegramConfig.botUsername}?text=${encodedMessage}`;
-    
-    // باز کردن تلگرام در تب جدید
-    window.open(telegramLink, '_blank');
-    
-    showNotification('📤 لینک تلگرام باز شد. پیام را ارسال کنید.', 'info');
-    return true;
-}
-
-// 🔧 تابع برای نمایش وضعیت تلگرام در کنسول
-function debugTelegramStatus() {
-    console.log('🔧 وضعیت تلگرام:');
-    console.log('- isTelegramWebApp:', isTelegramWebApp);
-    console.log('- telegramUser:', telegramUser);
-    console.log('- WebApp available:', !!window.Telegram?.WebApp);
-    console.log('- Bot token configured:', telegramConfig.botToken && telegramConfig.botToken.length > 20);
-    console.log('- LocalStorage userId:', localStorage.getItem('userId'));
-    console.log('- LocalStorage telegram_user_id:', localStorage.getItem('telegram_user_id'));
-}
-
-// 🎯 تابع برای تست اتصال تلگرام
-async function testTelegramConnection() {
-    debugTelegramStatus();
-    
-    if (isTelegramWebApp) {
-        showNotification('✅ در محیط تلگرام اجرا می‌شوید', 'success');
-        
-        if (telegramUser) {
-            showNotification(`👤 کاربر: ${telegramUser.first_name} ${telegramUser.last_name || ''}`, 'success');
-        } else {
-            showNotification('⚠️ کاربر تلگرام پیدا نشد. ممکن است نیاز به لاگین داشته باشید.', 'warning');
-        }
-    } else {
-        showNotification('🌐 در مرورگر عادی اجرا می‌شوید', 'info');
-    }
-    
-    // تست API ربات
-    if (telegramConfig.botToken && telegramConfig.botToken.length > 20) {
-        try {
-            const response = await fetch(
-                `${telegramConfig.apiUrl}${telegramConfig.botToken}/getMe`
-            );
-            
-            if (response.ok) {
-                const data = await response.json();
+        fetch('https://api.telegram.org/bot8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw/getMe')
+            .then(response => response.json())
+            .then(data => {
                 if (data.ok) {
-                    showNotification(`🤖 ربات متصل: @${data.result.username}`, 'success');
+                    resultBox.innerHTML = `✅ API تلگرام فعال است\n\nربات: ${data.result.first_name}\nیوزرنیم: @${data.result.username}\nID: ${data.result.id}`;
+                    resultBox.className = 'result-box success';
+                } else {
+                    resultBox.innerHTML = `❌ مشکل در API تلگرام:\n${data.description}`;
+                    resultBox.className = 'result-box error';
                 }
-            }
-        } catch (error) {
-            console.error('❌ خطای تست API:', error);
-        }
+            })
+            .catch(error => {
+                resultBox.innerHTML = `❌ خطا در ارتباط با API:\n${error.message}`;
+                resultBox.className = 'result-box error';
+            });
     }
-}
-
-// 🚀 راه‌اندازی اولیه
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 سیستم تلگرام در حال راه‌اندازی...');
     
-    // راه‌اندازی تلگرام
-    const user = initializeTelegram();
-    
-    console.log('✅ سیستم تلگرام راه‌اندازی شد');
-    console.log('👤 کاربر:', user);
-    console.log('📱 مدرس:', telegramConfig.teacherInfo.name);
-    
-    // اضافه کردن دکمه تست (کلیک راست روی دکمه تلگرام)
-    const telegramBtn = document.querySelector('.gradient-telegram');
-    if (telegramBtn) {
-        telegramBtn.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-            testTelegramConnection();
-        });
+    function createProgressReport() {
+        const userId = localStorage.getItem('userId') || 'user_' + Date.now();
+        const bestScore = localStorage.getItem('bestScore') || '0';
+        const totalTests = JSON.parse(localStorage.getItem('testHistory') || '[]').length;
         
-        telegramBtn.title = 'کلیک راست: تست اتصال تلگرام';
+        return {
+            fullReport: `
+📊 گزارش تست - English with Fred
+
+👤 کاربر تستی: ${userId}
+⭐ بهترین امتیاز: ${bestScore}%
+📊 تعداد آزمون‌ها: ${totalTests}
+📅 تاریخ تست: ${new Date().toLocaleDateString('fa-IR')}
+⏰ زمان تست: ${new Date().toLocaleTimeString('fa-IR')}
+
+👨‍🏫 مدرس: English with Fred
+📱 تماس: 09017708544
+
+این یک گزارش تستی است.
+            `.trim(),
+            shortReport: `تست سیستم - English with Fred - بهترین امتیاز: ${bestScore}%`
+        };
     }
     
-    // نمایش پیام راهنما اگر کاربر تلگرام پیدا نشد
-    if (!user || user.isFallback) {
-        setTimeout(() => {
-            if (!document.querySelector('.telegram-help-message')) {
-                const helpMsg = document.createElement('div');
-                helpMsg.className = 'telegram-help-message';
-                helpMsg.innerHTML = `
-                    <div class="help-content">
-                        <i class="fab fa-telegram"></i>
-                        <span>برای دسترسی کامل، از طریق ربات تلگرام وارد شوید</span>
-                        <button onclick="window.open('https://t.me/${telegramConfig.botUsername}', '_blank')">
-                            <i class="fab fa-telegram"></i> باز کردن تلگرام
-                        </button>
-                    </div>
-                `;
-                document.body.appendChild(helpMsg);
-                
-                setTimeout(() => {
-                    helpMsg.classList.add('show');
-                }, 1000);
-            }
-        }, 3000);
-    }
-});
-
-// 📊 تابع برای گرفتن وضعیت تلگرام
-function getTelegramStatus() {
-    return {
-        isTelegramWebApp: isTelegramWebApp,
-        telegramUser: telegramUser,
-        botConfigured: telegramConfig.botToken && telegramConfig.botToken.length > 20,
-        chatIdConfigured: telegramConfig.chatId && telegramConfig.chatId.length > 0,
-        autoReport: localStorage.getItem('autoTelegramReport') === 'true',
-        teacher: telegramConfig.teacherInfo
-    };
+    function testTelegramReport() {
+        const resultBox = document.getElementById('reportResult');
+        resultBox.innerHTML = '🔄 در حال تست ارسال به تلگرام...';
+        resultBox.className = 'result-box info';
+        
+        const report = createProgressReport();
+        const encodedMessage = encodeURIComponent(report.shortReport);
+        const telegramLink = `https://t.me/EnglishWithFredBot?text=${encodedMessage}`;
+        
+        // باز کردن تلگرام
+        const newWindow = window.open(telegramLink, '_blank');
+        
+        if (newWindow) {
+            resultBox.innerHTML = '✅ پنجره تلگرام باز شد\n\nلطفاً:\n1. دکمه SEND را بزنید\n2. به پنجره اصلی برگردید\n3. تست بعدی را انجام دهید';
+            resultBox.className = 'result-box success';
+        } else {
+            resultBox.innerHTML = '⚠️ پنجره باز نشد. ممکن است popup-blocker فعال باشد.\n\nراه حل:\n1. popup-blocker را غیرفعال کنید\n2. دوباره تست کنید\n3. یا از دکمه "تست کپی" استفاده کنید';
+            resultBox.className = 'result-box warning';
         }
+    }
+    
+    function testWhatsApp() {
+        const resultBox = document.getElementById('reportResult');
+        const report = createProgressReport();
+        const encodedMessage = encodeURIComponent(report.shortReport);
+        const whatsappLink = `https://wa.me/989017708544?text=${encodedMessage}`;
+        
+        window.open(whatsappLink, '_blank');
+        resultBox.innerHTML = '✅ واتساپ باز شد\n\nلطفاً دکمه SEND را بزنید';
+        resultBox.className = 'result-box success';
+    }
+    
+    function testCopyToClipboard() {
+        const resultBox = document.getElementById('reportResult');
+        const report = createProgressReport();
+        
+        navigator.clipboard.writeText(report.fullReport)
+            .then(() => {
+                resultBox.innerHTML = '✅ گزارش در حافظه کپی شد!\n\nحالا می‌توانید:\n1. در تلگرام Paste کنید (Ctrl+V)\n2. در واتساپ Paste کنید\n3. در هر برنامه دیگری Paste کنید';
+                resultBox.className = 'result-box success';
+            })
+            .catch(err => {
+                resultBox.innerHTML = `❌ خطا در کپی:\n${err.message}\n\nمتن گزارش:\n${report.fullReport}`;
+                resultBox.className = 'result-box error';
+            });
+    }
+    
+    function showSystemInfo() {
+        const resultBox = document.getElementById('systemInfo');
+        resultBox.innerHTML = `
+🌐 اطلاعات مرورگر:
+- نام: ${navigator.userAgent.split(') ')[0].split('(')[1]}
+- زبان: ${navigator.language}
+- آنلاین: ${navigator.onLine ? '✅ بله' : '❌ خیر'}
+- پلتفرم: ${navigator.platform}
+- کوکی‌ها: ${navigator.cookieEnabled ? '✅ فعال' : '❌ غیرفعال'}
+
+📱 صفحه‌نمایش:
+- عرض: ${window.innerWidth}px
+- ارتفاع: ${window.innerHeight}px
+- نسبت پیکسل: ${window.devicePixelRatio}
+
+⚡ حافظه:
+- کل: ${navigator.deviceMemory || 'نامشخص'} GB
+- هسته: ${navigator.hardwareConcurrency || 'نامشخص'}
+        `.trim();
+        resultBox.className = 'result-box info';
+    }
+    
+    function showLocalStorage() {
+        const resultBox = document.getElementById('systemInfo');
+        let content = '🗃️ LocalStorage:\n\n';
+        
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            const value = localStorage.getItem(key);
+            content += `${key}: ${value}\n`;
+        }
+        
+        if (localStorage.length === 0) {
+            content += 'خالی است';
+        }
+        
+        resultBox.innerHTML = content;
+        resultBox.className = 'result-box info';
+    }
+    
+    // تابع اصلی تست سیستم
+    window.testTelegramSystem = function() {
+        console.log('🚀 شروع تست سیستم تلگرام...');
+        
+        // تست 1: اینترنت
+        console.log('1. 🔍 تست اتصال اینترنت...');
+        fetch('https://api.telegram.org/')
+            .then(() => console.log('   ✅ اینترنت متصل است'))
+            .catch(() => console.log('   ❌ مشکل اینترنت'));
+        
+        // تست 2: LocalStorage
+        console.log('2. 💾 تست LocalStorage...');
+        console.log('   - حجم:', localStorage.length, 'آیتم');
+        console.log('   - بهترین امتیاز:', localStorage.getItem('bestScore') || 'ندارد');
+        console.log('   - شناسه کاربر:', localStorage.getItem('userId') || 'ندارد');
+        
+        // تست 3: ایجاد گزارش
+        console.log('3. 📊 تست ایجاد گزارش...');
+        const report = createProgressReport();
+        console.log('   ✅ گزارش ایجاد شد');
+        console.log('   متن کوتاه:', report.shortReport);
+        
+        // تست 4: کلیپ‌بورد
+        console.log('4. 📋 تست کلیپ‌بورد...');
+        if (navigator.clipboard) {
+            console.log('   ✅ کلیپ‌بورد پشتیبانی می‌شود');
+        } else {
+            console.log('   ⚠️ کلیپ‌بورد پشتیبانی نمی‌شود');
+        }
+        
+        console.log('🎉 تست کامل شد!');
+        
+        alert('✅ تست کامل شد! نتیجه در کنسول مرورگر نمایش داده شد (F12 را بزنید)');
+    };
+    
+    // راه‌اندازی اولیه
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🔧 صفحه تست تلگرام آماده است');
+        console.log('برای اجرای تست کامل، تایپ کنید: testTelegramSystem()');
+        
+        // نمایش وضعیت اولیه
+        showSystemInfo();
+    });
+    </script>
+</body>
+</html>
