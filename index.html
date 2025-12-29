@@ -6,34 +6,31 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8B5CF6">
 </head>
-<body class="light-theme">
-    <!-- نوار بالایی -->
-    <div class="top-bar">
-        <div class="theme-toggle">
-            <button id="themeToggle" class="theme-btn">
-                <i class="fas fa-moon"></i>
-            </button>
-        </div>
-        
-        <div class="sound-toggle">
-            <button id="soundToggle" class="sound-btn">
-                <i class="fas fa-volume-up"></i>
-            </button>
-        </div>
-    </div>
-
+<body class="dark-theme">
     <!-- صفحه اصلی -->
     <div id="home" class="view active">
+        <!-- نوار بالایی فقط برای صفحه اصلی -->
+        <div class="top-bar">
+            <button class="mute-btn" id="globalMuteBtn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="theme-btn" id="themeToggle">
+                <i class="fas fa-sun"></i>
+            </button>
+        </div>
+
         <header class="app-header">
             <h1><i class="fas fa-graduation-cap"></i> English with Fred</h1>
             <div class="score-card">
-                <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="far fa-star"></i>
-                    <i class="far fa-star"></i>
+                <div class="stars" id="starsContainer">
+                    <i class="far fa-star" data-star="1"></i>
+                    <i class="far fa-star" data-star="2"></i>
+                    <i class="far fa-star" data-star="3"></i>
+                    <i class="far fa-star" data-star="4"></i>
+                    <i class="far fa-star" data-star="5"></i>
                 </div>
                 <div class="best-score">
                     <i class="fas fa-trophy"></i>
@@ -77,13 +74,13 @@
                     <span>گزارش پیشرفت</span>
                 </button>
                 
-                <!-- واتساپ شما -->
+                <!-- واتساپ -->
                 <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">
                     <i class="fab fa-whatsapp"></i>
                     <span>ثبت نام در واتساپ</span>
                 </button>
                 
-                <!-- تلگرام شما -->
+                <!-- تلگرام -->
                 <button class="menu-btn gradient-telegram" onclick="sendTelegramReport()">
                     <i class="fab fa-telegram"></i>
                     <span>ارسال گزارش به تلگرام</span>
@@ -99,6 +96,13 @@
 
     <!-- صفحه آزمون -->
     <div id="quiz" class="view">
+        <!-- نوار بالایی مخصوص آزمون -->
+        <div class="quiz-top-bar">
+            <button class="small-speaker-btn" id="quizSpeakerBtn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+        </div>
+
         <header class="quiz-header">
             <div class="quiz-info">
                 <div class="quiz-progress">
@@ -120,12 +124,15 @@
         </header>
 
         <main class="quiz-content">
+            <!-- کارت سوال با دکمه اسپیکر داخلی -->
             <div class="question-card">
+                <button class="question-speak-btn" id="questionSpeakBtn">
+                    <i class="fas fa-volume-up"></i>
+                </button>
                 <div class="question-header">
-                    <h2 id="questionText">سوال اینجا نمایش داده می‌شود</h2>
-                    <button id="speakBtn" class="speak-btn" onclick="speakQuestion()">
-                        <i class="fas fa-volume-up"></i>
-                    </button>
+                    <div id="questionText" class="question-text">
+                        سوال اینجا نمایش داده می‌شود
+                    </div>
                 </div>
             </div>
 
@@ -143,6 +150,16 @@
 
     <!-- صفحه نتایج -->
     <div id="results" class="view">
+        <!-- نوار بالایی برای نتایج -->
+        <div class="top-bar">
+            <button class="mute-btn" id="resultsMuteBtn">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="theme-btn" id="resultsThemeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+
         <header class="results-header">
             <h2><i class="fas fa-flag-checkered"></i> پایان آزمون</h2>
         </header>
@@ -184,8 +201,49 @@
                 <button class="btn restart-btn" onclick="switchView('home')">
                     <i class="fas fa-home"></i> صفحه اصلی
                 </button>
-                <button class="btn review-btn" onclick="showMistakesReview()">
-                    <i class="fas fa-eye"></i> مرور پاسخ‌ها
+                <button class="btn review-btn" onclick="reviewMistakesPage()">
+                    <i class="fas fa-eye"></i> مرور اشتباهات
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- صفحه مرور اشتباهات -->
+    <div id="mistakes" class="view">
+        <div class="top-bar">
+            <button class="mute-btn" onclick="toggleGlobalMute()">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="theme-btn" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+
+        <header class="app-header">
+            <h1><i class="fas fa-redo"></i> مرور اشتباهات</h1>
+            <div class="score-card">
+                <div class="best-score">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>تعداد اشتباهات</span>
+                    <strong id="mistakesCount">0</strong>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="mistakes-list" id="mistakesList">
+                <!-- اشتباهات اینجا نمایش داده می‌شوند -->
+            </div>
+
+            <div class="mistakes-actions">
+                <button class="btn gradient-green" onclick="practiceMistakes()">
+                    <i class="fas fa-play"></i> تمرین اشتباهات
+                </button>
+                <button class="btn gradient-orange" onclick="clearAllMistakes()">
+                    <i class="fas fa-trash"></i> پاک کردن همه
+                </button>
+                <button class="btn back-btn" onclick="switchView('home')">
+                    <i class="fas fa-arrow-right"></i> بازگشت
                 </button>
             </div>
         </main>
@@ -197,6 +255,8 @@
     <!-- اسکریپت‌ها -->
     <script src="words.js"></script>
     <script src="quiz-engine.js"></script>
+    <script src="speech.js"></script>
+    <script src="telegram-integration.js"></script>
     <script src="app.js"></script>
     
     <!-- PWA Service Worker -->
@@ -206,6 +266,13 @@
                 .then(reg => console.log('✅ Service Worker ثبت شد'))
                 .catch(err => console.log('❌ Service Worker خطا:', err));
         }
+        
+        // راه‌اندازی اولیه
+        document.addEventListener('DOMContentLoaded', function() {
+            // بارگذاری بهترین امتیاز
+            const bestScore = localStorage.getItem('bestScore') || '0';
+            document.getElementById('bestScore').textContent = `${bestScore}%`;
+        });
     </script>
 </body>
-              </html>
+    </html>
