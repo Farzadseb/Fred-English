@@ -2,17 +2,22 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8B5CF6">
+    
+    <!-- تنظیمات نصب PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="EnglishFred">
+    <meta name="mobile-web-app-capable" content="yes">
 </head>
 <body class="dark-theme">
     <!-- صفحه اصلی -->
     <div id="home" class="view active">
-        <!-- نوار بالایی فقط برای صفحه اصلی -->
         <div class="top-bar">
             <button class="mute-btn" id="globalMuteBtn">
                 <i class="fas fa-volume-up"></i>
@@ -42,7 +47,6 @@
 
         <main class="main-content">
             <div class="menu-grid">
-                <!-- 4 مود آزمون -->
                 <button class="menu-btn gradient-blue" onclick="startQuiz('english-persian')">
                     <i class="fas fa-language"></i>
                     <span>English → Persian</span>
@@ -63,7 +67,6 @@
                     <span>Definition → Word</span>
                 </button>
                 
-                <!-- سایر دکمه‌ها -->
                 <button class="menu-btn gradient-orange" onclick="reviewMistakesPage()">
                     <i class="fas fa-redo"></i>
                     <span>مرور اشتباهات</span>
@@ -74,13 +77,11 @@
                     <span>گزارش پیشرفت</span>
                 </button>
                 
-                <!-- واتساپ -->
                 <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">
                     <i class="fab fa-whatsapp"></i>
                     <span>ثبت نام در واتساپ</span>
                 </button>
                 
-                <!-- تلگرام -->
                 <button class="menu-btn gradient-telegram" onclick="sendTelegramReport()">
                     <i class="fab fa-telegram"></i>
                     <span>ارسال گزارش به تلگرام</span>
@@ -96,7 +97,6 @@
 
     <!-- صفحه آزمون -->
     <div id="quiz" class="view">
-        <!-- نوار بالایی مخصوص آزمون -->
         <div class="quiz-top-bar">
             <button class="small-speaker-btn" id="quizSpeakerBtn">
                 <i class="fas fa-volume-up"></i>
@@ -124,7 +124,6 @@
         </header>
 
         <main class="quiz-content">
-            <!-- کارت سوال با دکمه اسپیکر داخلی -->
             <div class="question-card">
                 <button class="question-speak-btn" id="questionSpeakBtn">
                     <i class="fas fa-volume-up"></i>
@@ -141,7 +140,7 @@
             </div>
 
             <div class="quiz-actions">
-                <button class="btn back-btn" onclick="switchView('home')">
+                <button class="btn back-btn" onclick="showMotivationalMessage()">
                     <i class="fas fa-arrow-right"></i> بازگشت
                 </button>
             </div>
@@ -150,7 +149,6 @@
 
     <!-- صفحه نتایج -->
     <div id="results" class="view">
-        <!-- نوار بالایی برای نتایج -->
         <div class="top-bar">
             <button class="mute-btn" id="resultsMuteBtn">
                 <i class="fas fa-volume-up"></i>
@@ -189,7 +187,6 @@
                     </div>
                 </div>
 
-                <!-- دکمه ارسال گزارش به تلگرام -->
                 <div class="telegram-report">
                     <button class="btn telegram-btn" onclick="sendTelegramReport()">
                         <i class="fab fa-telegram"></i> ارسال گزارش به تلگرام
@@ -255,24 +252,45 @@
     <!-- اسکریپت‌ها -->
     <script src="words.js"></script>
     <script src="quiz-engine.js"></script>
-    <script src="speech.js"></script>
     <script src="telegram-integration.js"></script>
     <script src="app.js"></script>
     
     <!-- PWA Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('✅ Service Worker ثبت شد'))
-                .catch(err => console.log('❌ Service Worker خطا:', err));
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker ثبت شد'))
+                    .catch(err => console.log('خطا:', err));
+            });
         }
         
         // راه‌اندازی اولیه
         document.addEventListener('DOMContentLoaded', function() {
-            // بارگذاری بهترین امتیاز
             const bestScore = localStorage.getItem('bestScore') || '0';
             document.getElementById('bestScore').textContent = `${bestScore}%`;
+            
+            // نمایش دکمه نصب در موبایل
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    setTimeout(() => {
+                        if (confirm('آیا می‌خواهید English with Fred را روی صفحه اصلی نصب کنید؟')) {
+                            deferredPrompt.prompt();
+                            deferredPrompt.userChoice.then(choiceResult => {
+                                if (choiceResult.outcome === 'accepted') {
+                                    console.log('برنامه نصب شد');
+                                }
+                                deferredPrompt = null;
+                            });
+                        }
+                    }, 3000);
+                }
+            });
         });
     </script>
 </body>
-    </html>
+                               </html>
