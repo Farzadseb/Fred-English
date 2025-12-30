@@ -1,26 +1,27 @@
 {
   "name": "English with Fred",
   "short_name": "EnglishFred",
-  "description": "برنامه آموزش لغات انگلیسی با آزمون‌های تعاملی",
-  "start_url": "/Fred-English/",
-  "scope": "/Fred-English/",
+  "description": "یادگیری زبان انگلیسی با سیستم هوشمند",
+  "start_url": "/",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#6a0dad",
-  "theme_color": "#6a0dad",
+  "background_color": "#3b82f6",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "categories": ["education"],
+  "categories": ["education", "productivity"],
   "lang": "fa",
   "dir": "rtl"
 }
