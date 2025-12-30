@@ -1,44 +1,45 @@
 /* ======================= */
-/* VARIABLES - رنگ بنفش ارغوانی */
+/* VARIABLES - رنگ آبی جدید */
 /* ======================= */
 :root {
-    /* رنگ‌های اصلی */
-    --primary-color: #6a0dad;
-    --primary-dark: #4a0072;
-    --primary-light: #9d4edd;
-    --secondary-color: #38b2ac;
+    /* رنگ‌های اصلی - تغییر از بنفش به آبی */
+    --primary-color: #3b82f6;
+    --primary-dark: #1d4ed8;
+    --primary-light: #60a5fa;
+    --secondary-color: #0ea5e9;
     --accent-color: #f59e0b;
     
-    /* گرادینت‌ها */
-    --gradient-purple: linear-gradient(135deg, #6a0dad 0%, #4a0072 100%);
-    --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    /* گرادینت‌های آبی جدید */
+    --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
     --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-orange: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     --gradient-whatsapp: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
     --gradient-telegram: linear-gradient(135deg, #0088cc 0%, #005999 100%);
     --gradient-exit: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    --gradient-back: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); /* قرمز آیفون‌پند */
     
-    /* رنگ‌های نرم */
+    /* رنگ‌های نرم آبی */
+    --soft-blue: rgba(59, 130, 246, 0.9);
     --soft-green: rgba(46, 204, 113, 0.9);
-    --soft-blue: rgba(52, 152, 219, 0.9);
     --soft-gradient: linear-gradient(135deg, var(--soft-blue) 0%, var(--soft-green) 100%);
     
     /* رنگ‌های زمینه */
     --bg-light: #f8fafc;
-    --bg-dark: #1e293b;
+    --bg-dark: #1a202c; /* روشن‌تر شده */
     --card-light: #ffffff;
-    --card-dark: #334155;
+    --card-dark: #2d3748; /* روشن‌تر شده */
     
     /* رنگ‌های متن */
     --text-light: #1e293b;
-    --text-dark: #f1f5f9;
-    --text-muted: #64748b;
+    --text-dark: #e2e8f0; /* روشن‌تر شده */
+    --text-muted: #94a3b8;
     
     /* سایه‌ها */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-    --shadow-purple: 0 4px 20px rgba(106, 13, 173, 0.3);
+    --shadow-primary: 0 4px 20px rgba(59, 130, 246, 0.3);
     --shadow-ios: 0 10px 20px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.35);
     
     /* گوشه‌ها */
@@ -66,6 +67,8 @@
 
 html {
     scroll-behavior: smooth;
+    height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -75,8 +78,10 @@ body {
     background: var(--bg-light);
     color: var(--text-light);
     transition: background-color 0.3s, color 0.3s;
-    overscroll-behavior-y: smooth;
+    overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
+    height: 100%;
+    overflow: hidden;
 }
 
 body.dark-theme {
@@ -85,63 +90,51 @@ body.dark-theme {
 }
 
 /* ======================= */
-/* LOGIN PAGE */
+/* تغییرات اندازه‌ها (20% کوچکتر) */
 /* ======================= */
 .login-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 2rem;
+    max-width: 320px; /* 20% کوچکتر */
+    margin: -40px auto 0; /* 20% بالاتر */
+    padding: 1.5rem;
     height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.login-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
 .login-header h1 {
-    color: var(--primary-color);
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 1.6rem; /* 20% کوچکتر */
+    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
 }
 
 .login-header p {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    font-size: 0.88rem; /* 20% کوچکتر */
 }
 
 .input-group {
     position: relative;
     display: flex;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .input-group i {
     position: absolute;
-    right: 1rem;
+    right: 0.8rem;
     color: var(--primary-color);
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .input-group input {
     width: 100%;
-    padding: 1rem 3rem 1rem 1rem;
+    padding: 0.8rem 2.4rem 0.8rem 0.8rem; /* 20% کوچکتر */
     border: 2px solid #e2e8f0;
-    border-radius: var(--radius-lg);
-    font-size: 1.1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
     font-family: inherit;
     transition: all 0.3s;
     background: white;
@@ -149,57 +142,57 @@ body.dark-theme {
 
 .dark-theme .input-group input {
     background: var(--card-dark);
-    border-color: #475569;
+    border-color: #4a5568;
     color: var(--text-dark);
 }
 
 .input-group input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .login-btn {
     background: var(--soft-gradient);
     border: none;
-    border-radius: 14px;
-    box-shadow: var(--shadow-ios);
+    border-radius: var(--radius-lg);
     color: white;
-    padding: 1.2rem;
-    font-size: 1.2rem;
+    padding: 0.96rem; /* 20% کوچکتر */
+    font-size: 0.96rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
     margin-top: 1rem;
+    box-shadow: var(--shadow-md);
 }
 
 .login-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(46, 204, 113, 0.3);
+    box-shadow: var(--shadow-lg);
 }
 
 .login-info {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: rgba(106, 13, 173, 0.05);
+    margin-top: 1.6rem;
+    padding: 0.8rem;
+    background: rgba(59, 130, 246, 0.05);
     border-radius: var(--radius-md);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
 .dark-theme .login-info {
-    background: rgba(106, 13, 173, 0.1);
+    background: rgba(59, 130, 246, 0.1);
 }
 
 .login-info p {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    gap: 0.4rem;
+    margin-bottom: 0.4rem;
 }
 
 /* ======================= */
@@ -208,9 +201,11 @@ body.dark-theme {
 .view {
     display: none;
     min-height: 100vh;
-    padding: 1rem;
+    padding: 0.8rem;
     max-width: 800px;
     margin: 0 auto;
+    overflow-y: auto;
+    height: 100vh;
 }
 
 .view.active {
@@ -221,31 +216,36 @@ body.dark-theme {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
-    margin-bottom: 1rem;
+    padding: 0.8rem 0;
+    margin-bottom: 0.8rem;
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     color: var(--primary-color);
     font-weight: 600;
-    padding: 0.5rem 1rem;
-    background: rgba(106, 13, 173, 0.1);
+    padding: 0.4rem 0.8rem;
+    background: rgba(59, 130, 246, 0.1);
     border-radius: var(--radius-md);
+    font-size: 0.88rem;
 }
 
 .dark-theme .user-info {
-    background: rgba(106, 13, 173, 0.2);
+    background: rgba(59, 130, 246, 0.2);
 }
 
 .quiz-user {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     color: var(--primary-color);
     font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
 }
 
 /* ======================= */
@@ -264,39 +264,40 @@ button:active {
     transition: transform 0.1s;
 }
 
+/* دکمه‌های بلندگو و تم 20% کوچکتر */
 .mute-btn, .theme-btn, .question-speak-btn {
-    width: 48px;
-    height: 48px;
+    width: 38.4px;
+    height: 38.4px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(106, 13, 173, 0.1);
+    background: rgba(59, 130, 246, 0.1);
     color: var(--primary-color);
-    font-size: 1.2rem;
-    border: 2px solid rgba(106, 13, 173, 0.2);
+    font-size: 0.96rem;
+    border: 2px solid rgba(59, 130, 246, 0.2);
 }
 
 .mute-btn:hover, .theme-btn:hover, .question-speak-btn:hover {
-    background: rgba(106, 13, 173, 0.2);
+    background: rgba(59, 130, 246, 0.2);
     transform: translateY(-2px);
 }
 
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.6rem; /* 20% کمتر */
 }
 
 .menu-btn {
-    padding: 1.5rem 1rem;
+    padding: 1.2rem 0.8rem; /* 20% کوچکتر */
     border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
     color: white;
     font-weight: 600;
     text-align: center;
@@ -304,10 +305,11 @@ button:active {
     border: none;
     background: var(--soft-gradient);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    font-size: 0.8rem; /* فونت 20% کوچکتر */
 }
 
 .menu-btn i {
-    font-size: 2rem;
+    font-size: 1.6rem; /* 20% کوچکتر */
 }
 
 .menu-btn:hover {
@@ -352,21 +354,22 @@ button:active {
 }
 
 .btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.6rem 1.2rem;
     border-radius: var(--radius-md);
     font-weight: 600;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
     border: none;
     transition: all 0.3s;
     background: var(--soft-gradient);
     color: white;
     box-shadow: var(--shadow-ios);
+    font-size: 0.88rem;
 }
 
 .back-btn {
-    background: #64748b;
+    background: var(--gradient-back);
 }
 
 .telegram-btn {
@@ -390,54 +393,59 @@ button:active {
 /* HEADERS & CARDS */
 /* ======================= */
 .app-header {
-    background: var(--gradient-purple);
+    background: var(--gradient-primary);
     color: white;
-    padding: 1.5rem;
-    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
-    box-shadow: var(--shadow-purple);
-    margin-bottom: 2rem;
+    padding: 1.2rem; /* 20% کوچکتر */
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    box-shadow: var(--shadow-primary);
+    margin-bottom: 1.6rem;
     text-align: center;
-    min-height: 180px;
+    min-height: 144px; /* 20% کوچکتر */
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .app-header h1 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
+    font-size: 1.44rem; /* 20% کوچکتر */
+    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
 }
 
+/* ستاره‌ها 20% کوچکتر و در بالا */
 .score-card {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    padding: 1rem; /* 20% کوچکتر */
     border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .stars {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+    justify-content: center;
 }
 
 .stars i {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* 20% کوچکتر */
     color: #fbbf24;
 }
 
+/* کاپ و بهترین امتیاز در پایین */
 .best-score {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
+    gap: 0.4rem;
+    font-size: 0.88rem; /* 20% کوچکتر */
+    justify-content: center;
 }
 
 .best-score i {
@@ -445,30 +453,30 @@ button:active {
 }
 
 .best-score strong {
-    font-size: 1.3rem;
-    margin-right: 0.5rem;
+    font-size: 1.04rem; /* 20% کوچکتر */
+    margin-right: 0.4rem;
 }
 
 /* ======================= */
 /* QUIZ STYLES */
 /* ======================= */
 .quiz-header {
-    margin-bottom: 2rem;
+    margin-bottom: 1.6rem;
 }
 
 .quiz-progress {
-    background: rgba(106, 13, 173, 0.1);
-    border-radius: var(--radius-lg);
-    padding: 1rem;
-    border: 1px solid rgba(106, 13, 173, 0.2);
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-md);
+    padding: 0.8rem; /* 20% کوچکتر */
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .progress-bar {
-    height: 8px;
-    background: rgba(106, 13, 173, 0.1);
-    border-radius: 4px;
+    height: 6px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 3px;
     overflow: hidden;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 .progress-fill {
@@ -476,7 +484,7 @@ button:active {
     background: var(--primary-color);
     width: 0%;
     transition: width 0.3s ease;
-    border-radius: 4px;
+    border-radius: 3px;
 }
 
 .quiz-stats {
@@ -484,62 +492,71 @@ button:active {
     justify-content: space-between;
     color: var(--primary-color);
     font-weight: 600;
+    font-size: 0.88rem;
 }
 
 .stat {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .question-card {
     background: white;
     border-radius: var(--radius-lg);
-    padding: 2rem;
-    margin-bottom: 2rem;
+    padding: 1.6rem; /* 20% کوچکتر */
+    margin-bottom: 1.6rem;
     box-shadow: var(--shadow-md);
     position: relative;
-    border: 2px solid rgba(106, 13, 173, 0.1);
+    border: 2px solid rgba(59, 130, 246, 0.1);
 }
 
 .dark-theme .question-card {
     background: var(--card-dark);
-    border-color: rgba(106, 13, 173, 0.3);
+    border-color: rgba(59, 130, 246, 0.3);
 }
 
 .question-speak-btn {
     position: absolute;
-    top: 1rem;
-    left: 1rem;
+    top: 0.8rem;
+    left: 0.8rem;
 }
 
 .question-text {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* 20% کوچکتر */
     font-weight: 600;
     text-align: center;
     color: var(--primary-color);
-    padding: 0 1rem;
+    padding: 0 0.8rem;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .options-container {
     display: grid;
-    gap: 1rem;
-    margin-bottom: 2rem;
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
 }
 
 .option-btn {
-    padding: 1.25rem;
+    padding: 1rem; /* 20% کوچکتر */
     background: white;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-md);
-    font-size: 1.1rem;
+    font-size: 0.88rem;
     text-align: right;
     transition: all 0.3s;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
 }
 
 .dark-theme .option-btn {
     background: var(--card-dark);
-    border-color: #475569;
+    border-color: #4a5568;
     color: var(--text-dark);
 }
 
@@ -563,7 +580,15 @@ button:active {
 .quiz-actions {
     display: flex;
     justify-content: center;
-    margin-top: 2rem;
+    margin-top: 1.6rem;
+}
+
+/* جلوگیری از اسکرول در صفحه آزمون */
+.quiz-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 180px);
 }
 
 /* ======================= */
@@ -571,45 +596,45 @@ button:active {
 /* ======================= */
 .results-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.6rem;
 }
 
 .results-header h2 {
     color: var(--primary-color);
-    font-size: 1.8rem;
+    font-size: 1.44rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
 }
 
 .result-card {
     background: white;
-    border-radius: var(--radius-xl);
-    padding: 2rem;
+    border-radius: var(--radius-lg);
+    padding: 1.6rem; /* 20% کوچکتر */
     text-align: center;
     box-shadow: var(--shadow-lg);
-    margin-bottom: 2rem;
-    border: 2px solid rgba(106, 13, 173, 0.1);
+    margin-bottom: 1.6rem;
+    border: 2px solid rgba(59, 130, 246, 0.1);
     position: relative;
 }
 
 .result-card::before {
     content: "📊";
-    font-size: 2.5rem;
+    font-size: 2rem;
     position: absolute;
-    top: -25px;
+    top: -20px;
     left: 50%;
     transform: translateX(-50%);
     background: white;
-    padding: 5px;
+    padding: 4px;
     border-radius: 50%;
     box-shadow: var(--shadow-ios);
 }
 
 .dark-theme .result-card {
     background: var(--card-dark);
-    border-color: rgba(106, 13, 173, 0.3);
+    border-color: rgba(59, 130, 246, 0.3);
 }
 
 .dark-theme .result-card::before {
@@ -617,17 +642,17 @@ button:active {
 }
 
 .result-icon {
-    font-size: 3rem;
+    font-size: 2.4rem; /* 20% کوچکتر */
     color: #fbbf24;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 .result-score {
-    margin-bottom: 2rem;
+    margin-bottom: 1.6rem;
 }
 
 .result-score span {
-    font-size: 3rem;
+    font-size: 2.4rem; /* 20% کوچکتر */
     font-weight: 800;
     color: var(--primary-color);
     display: block;
@@ -636,60 +661,60 @@ button:active {
 
 .result-score small {
     color: var(--text-muted);
-    font-size: 1rem;
+    font-size: 0.88rem;
 }
 
 .result-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-    padding: 1rem;
-    background: rgba(106, 13, 173, 0.05);
-    border-radius: var(--radius-lg);
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
+    padding: 0.8rem; /* 20% کوچکتر */
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: var(--radius-md);
 }
 
 .dark-theme .result-stats {
-    background: rgba(106, 13, 173, 0.1);
+    background: rgba(59, 130, 246, 0.1);
 }
 
 .stat-item {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .stat-label {
     color: var(--text-muted);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.2rem; /* 20% کوچکتر */
     font-weight: 700;
     color: var(--primary-color);
 }
 
 .result-time {
-    margin-top: 1rem;
-    padding: 0.5rem;
+    margin-top: 0.8rem;
+    padding: 0.4rem;
     background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    font-size: 0.9rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .telegram-report {
-    margin: 2rem 0;
+    margin: 1.6rem 0;
 }
 
 .results-actions {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.8rem;
     flex-wrap: wrap;
 }
 
@@ -697,25 +722,25 @@ button:active {
 /* MISTAKES PAGE */
 /* ======================= */
 .mistakes-list {
-    max-height: 400px;
+    max-height: 320px;
     overflow-y: auto;
-    margin-bottom: 2rem;
-    padding-right: 0.5rem;
+    margin-bottom: 1.6rem;
+    padding-right: 0.4rem;
 }
 
 /* استایل اسکرول بار زیبا */
 .mistakes-list::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 .mistakes-list::-webkit-scrollbar-track {
     background: rgba(46, 204, 113, 0.1);
-    border-radius: 10px;
+    border-radius: 8px;
 }
 
 .mistakes-list::-webkit-scrollbar-thumb {
     background: var(--soft-gradient);
-    border-radius: 10px;
+    border-radius: 8px;
     transition: background 0.3s;
 }
 
@@ -728,8 +753,8 @@ button:active {
 .mistake-item {
     background: white;
     border-radius: var(--radius-md);
-    padding: 1rem;
-    margin-bottom: 1rem;
+    padding: 0.8rem;
+    margin-bottom: 0.8rem;
     border-right: 4px solid #ef4444;
     box-shadow: var(--shadow-sm);
 }
@@ -741,21 +766,22 @@ button:active {
 .mistake-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
 .mistake-question {
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     color: var(--primary-color);
+    font-size: 0.88rem;
 }
 
 .mistake-answers {
     display: flex;
-    gap: 1rem;
-    font-size: 0.9rem;
+    gap: 0.8rem;
+    font-size: 0.8rem;
 }
 
 .correct-answer {
@@ -768,7 +794,7 @@ button:active {
 
 .mistakes-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     justify-content: center;
     flex-wrap: wrap;
 }
@@ -781,7 +807,7 @@ button:active {
     top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    padding: 1rem 1.5rem;
+    padding: 0.8rem 1.2rem;
     border-radius: var(--radius-md);
     background: white;
     box-shadow: var(--shadow-lg);
@@ -791,6 +817,7 @@ button:active {
     text-align: center;
     font-weight: 600;
     border: 2px solid transparent;
+    font-size: 0.88rem;
 }
 
 .dark-theme .notification {
@@ -826,20 +853,21 @@ button:active {
 /* ======================= */
 .install-banner {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    left: 20px;
-    background: var(--gradient-purple);
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    background: var(--gradient-primary);
     color: white;
-    padding: 15px;
+    padding: 12px;
     border-radius: var(--radius-lg);
-    box-shadow: 0 8px 32px rgba(106, 13, 173, 0.4);
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
     z-index: 9999;
     animation: slideUp 0.5s ease;
     font-family: inherit;
     max-width: 500px;
     margin: 0 auto;
     display: none;
+    font-size: 0.88rem;
 }
 
 @keyframes slideUp {
@@ -850,14 +878,14 @@ button:active {
 .banner-content {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
 .banner-content i {
-    font-size: 28px;
+    font-size: 1.4rem;
     background: rgba(255, 255, 255, 0.2);
-    padding: 12px;
-    border-radius: 10px;
+    padding: 8px;
+    border-radius: 8px;
 }
 
 .banner-text {
@@ -866,24 +894,25 @@ button:active {
 
 .banner-text strong {
     display: block;
-    font-size: 16px;
-    margin-bottom: 3px;
+    font-size: 0.88rem;
+    margin-bottom: 2px;
 }
 
 .banner-text small {
     opacity: 0.9;
-    font-size: 13px;
+    font-size: 0.7rem;
 }
 
 .install-btn {
     background: white;
     color: var(--primary-color);
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s;
+    font-size: 0.8rem;
 }
 
 .install-btn:hover {
@@ -894,13 +923,14 @@ button:active {
     background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.8rem;
 }
 
 /* ======================= */
@@ -909,14 +939,15 @@ button:active {
 @media (max-width: 768px) {
     .menu-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
     }
     
     .app-header h1 {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
     
     .question-text {
-        font-size: 1.3rem;
+        font-size: 1.04rem;
     }
     
     .result-stats {
@@ -924,20 +955,24 @@ button:active {
     }
     
     .install-banner {
-        left: 10px;
-        right: 10px;
-        bottom: 10px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
     }
     
     .banner-content {
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
     }
     
     .install-btn {
         order: 3;
         width: 100%;
-        margin-top: 10px;
+        margin-top: 8px;
+    }
+    
+    .view {
+        padding: 0.6rem;
     }
 }
 
@@ -947,12 +982,12 @@ button:active {
     }
     
     .app-header {
-        padding: 1rem;
-        min-height: 150px;
+        padding: 0.8rem;
+        min-height: 120px;
     }
     
     .question-card {
-        padding: 1.5rem;
+        padding: 1.2rem;
     }
     
     .results-actions, .mistakes-actions {
@@ -974,13 +1009,13 @@ button:active {
 /* ======================= */
 .empty-state {
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 2.4rem 0.8rem;
     color: var(--text-muted);
 }
 
 .empty-state i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    font-size: 2.4rem;
+    margin-bottom: 0.8rem;
     opacity: 0.5;
 }
 
@@ -992,12 +1027,12 @@ button:active {
     text-align: center;
 }
 
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
+.mt-1 { margin-top: 0.4rem; }
+.mt-2 { margin-top: 0.8rem; }
+.mt-3 { margin-top: 1.2rem; }
+.mt-4 { margin-top: 1.6rem; }
 
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
+.mb-1 { margin-bottom: 0.4rem; }
+.mb-2 { margin-bottom: 0.8rem; }
+.mb-3 { margin-bottom: 1.2rem; }
+.mb-4 { margin-bottom: 1.6rem; }
