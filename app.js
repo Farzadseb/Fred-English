@@ -54,10 +54,10 @@ document.addEventListener('DOMContentLoaded', function() {
 // ذخیره اطلاعات کاربر
 function saveUserInfo() {
     const usernameInput = document.getElementById('usernameInput');
-    const phoneInput = document.getElementById('phoneInput');
+    const studentCodeInput = document.getElementById('studentCode');
     
     const username = usernameInput.value.trim();
-    const phone = phoneInput.value.trim();
+    const studentCode = studentCodeInput.value.trim();
     
     if (!username) {
         showNotification('⚠️ لطفاً نام خود را وارد کنید', 'error');
@@ -66,13 +66,13 @@ function saveUserInfo() {
     }
     
     // ایجاد شناسه یکتا برای کاربر
-    const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    const userId = 'user' + Date.now() + Math.random().toString(36).substr(2, 9);
     
     // ذخیره اطلاعات کاربر
     appState.currentUser = {
         id: userId,
         username: username,
-        phone: phone || null,
+        studentCode: studentCode || null,
         joinedAt: new Date().toISOString(),
         deviceInfo: {
             userAgent: navigator.userAgent,
@@ -88,9 +88,10 @@ function saveUserInfo() {
     switchView('home');
     updateUserDisplay();
     
-    showNotification(`👋 سلام ${username}! خوش آمدید`, 'success');
+    // نمایش پیام خوش‌آمدگویی برای 5 ثانیه
+    showNotification(`👋 سلام ${username}! خوش آمدید`, 'success', 5000);
     
-    // نمایش پیام خوش‌آمدگویی با تأخیر ۲ ثانیه
+    // نمایش پیام انگیزشی با تأخیر ۲ ثانیه
     setTimeout(() => {
         showWelcomeMessage();
     }, 2000);
@@ -377,8 +378,8 @@ function speakText(text, rate = 0.5) {
     speechSynthesis.speak(utterance);
 }
 
-// تابع نمایش اعلان
-function showNotification(message, type = 'info') {
+// تابع نمایش اعلان با مدت زمان قابل تنظیم
+function showNotification(message, type = 'info', duration = 3000) {
     const notification = document.getElementById('notification');
     if (!notification) return;
     
@@ -386,10 +387,10 @@ function showNotification(message, type = 'info') {
     notification.className = `notification ${type}`;
     notification.style.display = 'block';
     
-    // مخفی کردن بعد از ۳ ثانیه
+    // مخفی کردن بعد از زمان مشخص
     setTimeout(() => {
         notification.style.display = 'none';
-    }, 3000);
+    }, duration);
     
     console.log(`🔔 ${message}`);
 }
