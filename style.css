@@ -15,9 +15,8 @@
     --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-orange: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     --gradient-whatsapp: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
-    --gradient-telegram: linear-gradient(135deg, #0088cc 0%, #005999 100%);
     --gradient-exit: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    --gradient-back: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); /* قرمز آیفون‌پند */
+    --gradient-back: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     
     /* رنگ‌های نرم آبی */
     --soft-blue: rgba(59, 130, 246, 0.9);
@@ -26,13 +25,13 @@
     
     /* رنگ‌های زمینه */
     --bg-light: #f8fafc;
-    --bg-dark: #1a202c; /* روشن‌تر شده */
+    --bg-dark: #1a202c;
     --card-light: #ffffff;
-    --card-dark: #2d3748; /* روشن‌تر شده */
+    --card-dark: #2d3748;
     
     /* رنگ‌های متن */
     --text-light: #1e293b;
-    --text-dark: #e2e8f0; /* روشن‌تر شده */
+    --text-dark: #e2e8f0;
     --text-muted: #94a3b8;
     
     /* سایه‌ها */
@@ -47,13 +46,6 @@
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 20px;
-    
-    /* فاصله‌ها */
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 1rem;
-    --spacing-md: 1.5rem;
-    --spacing-lg: 2rem;
-    --spacing-xl: 3rem;
 }
 
 /* ======================= */
@@ -89,22 +81,34 @@ body.dark-theme {
     color: var(--text-dark);
 }
 
+body.light-theme {
+    background: var(--bg-light);
+    color: var(--text-light);
+}
+
 /* ======================= */
-/* تغییرات اندازه‌ها (20% کوچکتر) */
+/* LOGIN PAGE - اصلاح شده */
 /* ======================= */
 .login-container {
-    max-width: 320px; /* 20% کوچکتر */
-    margin: -40px auto 0; /* 20% بالاتر */
+    max-width: 320px;
+    margin: -80px auto 0; /* 40% بالاتر رفت */
     padding: 1.5rem;
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* تغییر از center به flex-start */
+    padding-top: 40%; /* کادرها بالاتر می‌روند */
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem; /* کمتر شده تا کادرها نزدیکتر شوند */
 }
 
 .login-header h1 {
-    font-size: 1.6rem; /* 20% کوچکتر */
-    margin-bottom: 0.8rem;
+    color: var(--primary-color);
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem; /* کمتر شده */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,14 +116,22 @@ body.dark-theme {
 }
 
 .login-header p {
-    font-size: 0.88rem; /* 20% کوچکتر */
+    color: var(--text-muted);
+    font-size: 0.88rem;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem; /* 20% کمتر شده */
+    margin-top: 0.5rem;
 }
 
 .input-group {
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem; /* کمتر شده */
 }
 
 .input-group i {
@@ -131,13 +143,19 @@ body.dark-theme {
 
 .input-group input {
     width: 100%;
-    padding: 0.8rem 2.4rem 0.8rem 0.8rem; /* 20% کوچکتر */
+    padding: 0.8rem 2.4rem 0.8rem 0.8rem;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-md);
     font-size: 0.88rem;
     font-family: inherit;
     transition: all 0.3s;
     background: white;
+}
+
+.light-theme .input-group input {
+    background: white;
+    border-color: #e2e8f0;
+    color: var(--text-light);
 }
 
 .dark-theme .input-group input {
@@ -157,7 +175,7 @@ body.dark-theme {
     border: none;
     border-radius: var(--radius-lg);
     color: white;
-    padding: 0.96rem; /* 20% کوچکتر */
+    padding: 0.96rem;
     font-size: 0.96rem;
     font-weight: 600;
     cursor: pointer;
@@ -166,7 +184,7 @@ body.dark-theme {
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem; /* کمتر شده */
     box-shadow: var(--shadow-md);
 }
 
@@ -176,7 +194,7 @@ body.dark-theme {
 }
 
 .login-info {
-    margin-top: 1.6rem;
+    margin-top: 1.2rem; /* کمتر شده */
     padding: 0.8rem;
     background: rgba(59, 130, 246, 0.05);
     border-radius: var(--radius-md);
@@ -232,39 +250,17 @@ body.dark-theme {
     font-size: 0.88rem;
 }
 
+.light-theme .user-info {
+    background: rgba(59, 130, 246, 0.08);
+}
+
 .dark-theme .user-info {
     background: rgba(59, 130, 246, 0.2);
 }
 
-.quiz-user {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: var(--primary-color);
-    font-weight: 600;
-    padding: 0.4rem 0.8rem;
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: var(--radius-md);
-    font-size: 0.88rem;
-}
-
 /* ======================= */
-/* BUTTONS */
+/* دکمه‌های بلندگو و تم */
 /* ======================= */
-button {
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.3s ease;
-}
-
-button:active {
-    transform: scale(0.98);
-    transition: transform 0.1s;
-}
-
-/* دکمه‌های بلندگو و تم 20% کوچکتر */
 .mute-btn, .theme-btn, .question-speak-btn {
     width: 38.4px;
     height: 38.4px;
@@ -278,115 +274,70 @@ button:active {
     border: 2px solid rgba(59, 130, 246, 0.2);
 }
 
+.light-theme .mute-btn,
+.light-theme .theme-btn,
+.light-theme .question-speak-btn {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.15);
+}
+
 .mute-btn:hover, .theme-btn:hover, .question-speak-btn:hover {
     background: rgba(59, 130, 246, 0.2);
     transform: translateY(-2px);
 }
 
+/* ======================= */
+/* MENU - اصلاح شده برای نمایش دکمه خروج */
+/* ======================= */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.8rem;
-    margin-top: 1.6rem; /* 20% کمتر */
+    gap: 0.6rem; /* کمتر شده تا کادرها نزدیکتر شوند */
+    margin-top: 1.2rem; /* کمتر شده */
+    margin-bottom: 2rem; /* اضافه شد برای فاصله از پایین */
 }
 
 .menu-btn {
-    padding: 1.2rem 0.8rem; /* 20% کوچکتر */
+    padding: 1rem 0.6rem; /* کمتر شده */
     border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     color: white;
     font-weight: 600;
     text-align: center;
     box-shadow: var(--shadow-md);
     border: none;
-    background: var(--soft-gradient);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-    font-size: 0.8rem; /* فونت 20% کوچکتر */
+    transition: all 0.3s ease;
+    font-size: 0.8rem;
+    min-height: 90px;
 }
 
 .menu-btn i {
-    font-size: 1.6rem; /* 20% کوچکتر */
+    font-size: 1.6rem;
+    margin-bottom: 0.3rem;
 }
 
 .menu-btn:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.menu-grid > * {
-    animation: fadeInUp 0.6s ease-out backwards;
-}
-
-.menu-grid > *:nth-child(1) { animation-delay: 0.1s; }
-.menu-grid > *:nth-child(2) { animation-delay: 0.2s; }
-.menu-grid > *:nth-child(3) { animation-delay: 0.3s; }
-.menu-grid > *:nth-child(4) { animation-delay: 0.4s; }
-.menu-grid > *:nth-child(5) { animation-delay: 0.5s; }
-.menu-grid > *:nth-child(6) { animation-delay: 0.6s; }
-.menu-grid > *:nth-child(7) { animation-delay: 0.7s; }
-.menu-grid > *:nth-child(8) { animation-delay: 0.8s; }
-.menu-grid > *:nth-child(9) { animation-delay: 0.9s; }
-
+/* استایل‌های باقی‌مانده برای دکمه‌ها */
 .gradient-blue { background: var(--gradient-blue); }
 .gradient-green { background: var(--gradient-green); }
 .gradient-orange { background: var(--gradient-orange); }
-.gradient-purple { background: var(--gradient-purple); }
+.gradient-purple { 
+    background: var(--gradient-primary);
+    display: flex !important;
+}
 .gradient-whatsapp { background: var(--gradient-whatsapp); }
-.gradient-telegram { background: var(--gradient-telegram); }
 .gradient-exit { 
     background: var(--gradient-exit);
+    grid-column: span 2; /* دکمه خروج بزرگتر */
     height: 70px;
-}
-
-.btn {
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    border: none;
-    transition: all 0.3s;
-    background: var(--soft-gradient);
-    color: white;
-    box-shadow: var(--shadow-ios);
-    font-size: 0.88rem;
-}
-
-.back-btn {
-    background: var(--gradient-back);
-}
-
-.telegram-btn {
-    background: var(--primary-color);
-}
-
-.restart-btn {
-    background: var(--primary-color);
-}
-
-.review-btn {
-    background: var(--secondary-color);
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
 }
 
 /* ======================= */
@@ -395,19 +346,19 @@ button:active {
 .app-header {
     background: var(--gradient-primary);
     color: white;
-    padding: 1.2rem; /* 20% کوچکتر */
+    padding: 1.2rem;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     box-shadow: var(--shadow-primary);
     margin-bottom: 1.6rem;
     text-align: center;
-    min-height: 144px; /* 20% کوچکتر */
+    min-height: 144px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .app-header h1 {
-    font-size: 1.44rem; /* 20% کوچکتر */
+    font-size: 1.44rem;
     margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
@@ -415,12 +366,11 @@ button:active {
     gap: 0.6rem;
 }
 
-/* ستاره‌ها 20% کوچکتر و در بالا */
 .score-card {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     border-radius: var(--radius-md);
-    padding: 1rem; /* 20% کوچکتر */
+    padding: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
@@ -435,16 +385,15 @@ button:active {
 }
 
 .stars i {
-    font-size: 1.2rem; /* 20% کوچکتر */
+    font-size: 1.2rem;
     color: #fbbf24;
 }
 
-/* کاپ و بهترین امتیاز در پایین */
 .best-score {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.88rem; /* 20% کوچکتر */
+    font-size: 0.88rem;
     justify-content: center;
 }
 
@@ -453,85 +402,18 @@ button:active {
 }
 
 .best-score strong {
-    font-size: 1.04rem; /* 20% کوچکتر */
+    font-size: 1.04rem;
     margin-right: 0.4rem;
 }
 
 /* ======================= */
-/* QUIZ STYLES */
+/* QUIZ STYLES - اصلاح گزینه خالی */
 /* ======================= */
-.quiz-header {
-    margin-bottom: 1.6rem;
-}
-
-.quiz-progress {
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: var(--radius-md);
-    padding: 0.8rem; /* 20% کوچکتر */
-    border: 1px solid rgba(59, 130, 246, 0.2);
-}
-
-.progress-bar {
-    height: 6px;
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: 3px;
+.quiz-content {
     overflow: hidden;
-    margin-bottom: 0.8rem;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--primary-color);
-    width: 0%;
-    transition: width 0.3s ease;
-    border-radius: 3px;
-}
-
-.quiz-stats {
     display: flex;
-    justify-content: space-between;
-    color: var(--primary-color);
-    font-weight: 600;
-    font-size: 0.88rem;
-}
-
-.stat {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.question-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.6rem; /* 20% کوچکتر */
-    margin-bottom: 1.6rem;
-    box-shadow: var(--shadow-md);
-    position: relative;
-    border: 2px solid rgba(59, 130, 246, 0.1);
-}
-
-.dark-theme .question-card {
-    background: var(--card-dark);
-    border-color: rgba(59, 130, 246, 0.3);
-}
-
-.question-speak-btn {
-    position: absolute;
-    top: 0.8rem;
-    left: 0.8rem;
-}
-
-.question-text {
-    font-size: 1.2rem; /* 20% کوچکتر */
-    font-weight: 600;
-    text-align: center;
-    color: var(--primary-color);
-    padding: 0 0.8rem;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    height: calc(100vh - 180px);
 }
 
 .options-container {
@@ -541,7 +423,7 @@ button:active {
 }
 
 .option-btn {
-    padding: 1rem; /* 20% کوچکتر */
+    padding: 1rem;
     background: white;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-md);
@@ -552,6 +434,14 @@ button:active {
     display: flex;
     align-items: center;
     justify-content: right;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.light-theme .option-btn {
+    background: white;
+    border-color: #e2e8f0;
+    color: var(--text-light);
 }
 
 .dark-theme .option-btn {
@@ -577,41 +467,13 @@ button:active {
     border-color: #ef4444;
 }
 
-.quiz-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.6rem;
-}
-
-/* جلوگیری از اسکرول در صفحه آزمون */
-.quiz-content {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 180px);
-}
-
 /* ======================= */
 /* RESULTS PAGE */
 /* ======================= */
-.results-header {
-    text-align: center;
-    margin-bottom: 1.6rem;
-}
-
-.results-header h2 {
-    color: var(--primary-color);
-    font-size: 1.44rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-}
-
 .result-card {
     background: white;
     border-radius: var(--radius-lg);
-    padding: 1.6rem; /* 20% کوچکتر */
+    padding: 1.6rem;
     text-align: center;
     box-shadow: var(--shadow-lg);
     margin-bottom: 1.6rem;
@@ -619,184 +481,13 @@ button:active {
     position: relative;
 }
 
-.result-card::before {
-    content: "📊";
-    font-size: 2rem;
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
+.light-theme .result-card {
     background: white;
-    padding: 4px;
-    border-radius: 50%;
-    box-shadow: var(--shadow-ios);
 }
 
 .dark-theme .result-card {
     background: var(--card-dark);
     border-color: rgba(59, 130, 246, 0.3);
-}
-
-.dark-theme .result-card::before {
-    background: var(--card-dark);
-}
-
-.result-icon {
-    font-size: 2.4rem; /* 20% کوچکتر */
-    color: #fbbf24;
-    margin-bottom: 0.8rem;
-}
-
-.result-score {
-    margin-bottom: 1.6rem;
-}
-
-.result-score span {
-    font-size: 2.4rem; /* 20% کوچکتر */
-    font-weight: 800;
-    color: var(--primary-color);
-    display: block;
-    line-height: 1;
-}
-
-.result-score small {
-    color: var(--text-muted);
-    font-size: 0.88rem;
-}
-
-.result-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.8rem;
-    margin-bottom: 1.6rem;
-    padding: 0.8rem; /* 20% کوچکتر */
-    background: rgba(59, 130, 246, 0.05);
-    border-radius: var(--radius-md);
-}
-
-.dark-theme .result-stats {
-    background: rgba(59, 130, 246, 0.1);
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.stat-label {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-}
-
-.stat-value {
-    font-size: 1.2rem; /* 20% کوچکتر */
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.result-time {
-    margin-top: 0.8rem;
-    padding: 0.4rem;
-    background: rgba(255,255,255,0.1);
-    border-radius: 8px;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-}
-
-.telegram-report {
-    margin: 1.6rem 0;
-}
-
-.results-actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    flex-wrap: wrap;
-}
-
-/* ======================= */
-/* MISTAKES PAGE */
-/* ======================= */
-.mistakes-list {
-    max-height: 320px;
-    overflow-y: auto;
-    margin-bottom: 1.6rem;
-    padding-right: 0.4rem;
-}
-
-/* استایل اسکرول بار زیبا */
-.mistakes-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.mistakes-list::-webkit-scrollbar-track {
-    background: rgba(46, 204, 113, 0.1);
-    border-radius: 8px;
-}
-
-.mistakes-list::-webkit-scrollbar-thumb {
-    background: var(--soft-gradient);
-    border-radius: 8px;
-    transition: background 0.3s;
-}
-
-.mistakes-list::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, 
-        rgba(52, 152, 219, 1) 0%, 
-        rgba(46, 204, 113, 1) 100%);
-}
-
-.mistake-item {
-    background: white;
-    border-radius: var(--radius-md);
-    padding: 0.8rem;
-    margin-bottom: 0.8rem;
-    border-right: 4px solid #ef4444;
-    box-shadow: var(--shadow-sm);
-}
-
-.dark-theme .mistake-item {
-    background: var(--card-dark);
-}
-
-.mistake-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.4rem;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.mistake-question {
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-    color: var(--primary-color);
-    font-size: 0.88rem;
-}
-
-.mistake-answers {
-    display: flex;
-    gap: 0.8rem;
-    font-size: 0.8rem;
-}
-
-.correct-answer {
-    color: #10b981;
-}
-
-.user-answer {
-    color: #ef4444;
-}
-
-.mistakes-actions {
-    display: flex;
-    gap: 0.8rem;
-    justify-content: center;
-    flex-wrap: wrap;
 }
 
 /* ======================= */
@@ -820,8 +511,14 @@ button:active {
     font-size: 0.88rem;
 }
 
+.light-theme .notification {
+    background: white;
+    color: var(--text-light);
+}
+
 .dark-theme .notification {
     background: var(--card-dark);
+    color: var(--text-dark);
 }
 
 .notification.success {
@@ -849,130 +546,25 @@ button:active {
 }
 
 /* ======================= */
-/* INSTALL BANNER */
-/* ======================= */
-.install-banner {
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-    left: 16px;
-    background: var(--gradient-primary);
-    color: white;
-    padding: 12px;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
-    z-index: 9999;
-    animation: slideUp 0.5s ease;
-    font-family: inherit;
-    max-width: 500px;
-    margin: 0 auto;
-    display: none;
-    font-size: 0.88rem;
-}
-
-@keyframes slideUp {
-    from { transform: translateY(100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.banner-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.banner-content i {
-    font-size: 1.4rem;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px;
-    border-radius: 8px;
-}
-
-.banner-text {
-    flex: 1;
-}
-
-.banner-text strong {
-    display: block;
-    font-size: 0.88rem;
-    margin-bottom: 2px;
-}
-
-.banner-text small {
-    opacity: 0.9;
-    font-size: 0.7rem;
-}
-
-.install-btn {
-    background: white;
-    color: var(--primary-color);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s;
-    font-size: 0.8rem;
-}
-
-.install-btn:hover {
-    transform: translateY(-2px);
-}
-
-.close-banner {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-}
-
-/* ======================= */
 /* RESPONSIVE DESIGN */
 /* ======================= */
 @media (max-width: 768px) {
     .menu-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.6rem;
+        gap: 0.5rem;
     }
     
     .app-header h1 {
         font-size: 1.2rem;
     }
     
-    .question-text {
-        font-size: 1.04rem;
-    }
-    
-    .result-stats {
-        grid-template-columns: 1fr;
-    }
-    
-    .install-banner {
-        left: 8px;
-        right: 8px;
-        bottom: 8px;
-    }
-    
-    .banner-content {
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    
-    .install-btn {
-        order: 3;
-        width: 100%;
-        margin-top: 8px;
-    }
-    
     .view {
         padding: 0.6rem;
+    }
+    
+    .login-container {
+        margin-top: -60px;
+        padding-top: 30%;
     }
 }
 
@@ -1001,38 +593,11 @@ button:active {
     
     .login-container {
         padding: 1rem;
+        margin-top: -40px;
+        padding-top: 25%;
     }
-}
-
-/* ======================= */
-/* UTILITY CLASSES */
-/* ======================= */
-.empty-state {
-    text-align: center;
-    padding: 2.4rem 0.8rem;
-    color: var(--text-muted);
-}
-
-.empty-state i {
-    font-size: 2.4rem;
-    margin-bottom: 0.8rem;
-    opacity: 0.5;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.mt-1 { margin-top: 0.4rem; }
-.mt-2 { margin-top: 0.8rem; }
-.mt-3 { margin-top: 1.2rem; }
-.mt-4 { margin-top: 1.6rem; }
-
-.mb-1 { margin-bottom: 0.4rem; }
-.mb-2 { margin-bottom: 0.8rem; }
-.mb-3 { margin-bottom: 1.2rem; }
-.mb-4 { margin-bottom: 1.6rem; }
+    
+    .gradient-exit {
+        grid-column: span 1;
+    }
+                               }
