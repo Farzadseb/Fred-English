@@ -290,24 +290,77 @@ function showProgressReport() {
     report += `تاریخ: ${new Date(lastTest.date).toLocaleDateString('fa-IR')}\n`;
     report += `ساعت: ${lastTest.time || '--'}`;
     
-    alert(report);
+    // استفاده از alert با استایل بهتر
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: ${appState.theme === 'dark' ? '#2d3748' : 'white'};
+        color: ${appState.theme === 'dark' ? '#e2e8f0' : '#1e293b'};
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        z-index: 10000;
+        max-width: 90%;
+        width: 400px;
+        font-family: Vazirmatn, sans-serif;
+        border: 2px solid #3b82f6;
+    `;
+    
+    modal.innerHTML = `
+        <div style="text-align: center; margin-bottom: 15px;">
+            <h3 style="color: #3b82f6; margin: 0 0 10px 0;">📊 گزارش پیشرفت</h3>
+            <div style="font-size: 14px; color: ${appState.theme === 'dark' ? '#94a3b8' : '#64748b'};">
+                ${report.replace(/\n/g, '<br>')}
+            </div>
+        </div>
+        <button onclick="this.parentElement.remove()" 
+                style="background: #3b82f6; color: white; border: none; padding: 8px 20px; 
+                       border-radius: 8px; cursor: pointer; display: block; margin: 0 auto;">
+            بستن
+        </button>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // کلیک خارج از modal برای بستن
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
 }
 
-// ثبت نام در واتساپ
+// ثبت نام در واتساپ - بدون پرسیدن سوال
 function joinWhatsApp() {
     const phoneNumber = '09017708544';
     const username = appState.currentUser ? appState.currentUser.username : 'کاربر جدید';
     const message = `سلام! من ${username} هستم. می‌خواهم در English with Fred ثبت نام کنم.`;
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
-    if (confirm('آیا می‌خواهید به واتساپ منتقل شوید؟')) {
-        window.open(url, '_blank');
-    }
+    // مستقیماً باز کردن واتس‌اپ بدون پرسیدن سوال
+    window.open(url, '_blank');
+    
+    showNotification('📱 در حال انتقال به واتس‌اپ...', 'info');
 }
 
-// خروج / تغییر کاربر
+// خروج / تغییر کاربر - با ارسال خودکار به تلگرام
 function showExitOptions() {
+    const currentUser = window.appState?.currentUser;
+    
+    if (!currentUser) {
+        switchView('login');
+        return;
+    }
+    
     if (confirm('آیا می‌خواهید از حساب کاربری خارج شوید؟\n\nپس از خروج می‌توانید با نام دیگری وارد شوید.')) {
+        // ارسال خودکار گزارش به تلگرام قبل از خروج
+        if (window.sendExitTelegramReport) {
+            window.sendExitTelegramReport();
+        }
+        
         // پاک کردن اطلاعات کاربر جاری
         localStorage.removeItem('fredUser');
         appState.currentUser = null;
@@ -318,44 +371,63 @@ function showExitOptions() {
     }
 }
 
-// تایید خروج از آزمون
+// تایید خروج از آزمون - با پیام انگیزشی بامزه
 function confirmExitQuiz() {
     const motivationalMessages = [
-        "💪 ادامه بده! تو می‌تونی!",
-        "🔥 نیمه راه رها نکن!",
-        "🎯 فقط چند تا سوال مونده!",
-        "🚀 تقریباً رسیدی به آخر!"
+        "🎮 بازی رو نیمه‌کاره رها می‌کنی؟ ادامه بده!",
+        "🐱 تو که گربه نیستی که ۹ جان داشته باشی! ادامه بده!",
+        "🎯 فقط چند قدم مونده به خط پایان! ادامه بده!",
+        "🚀 تقریباً رسیدی! بذار تمومش کنیم!",
+        "🏆 مدال نزدیکه! رها نکن!"
     ];
     
     const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
     
     if (confirm(randomMessage + '\n\nآیا مطمئنید می‌خواهید آزمون را رها کنید؟')) {
         switchView('home');
+        showNotification('🏠 بازگشت به صفحه اصلی', 'info');
     }
 }
 
-// تلفظ متن با سرعت ۰.۵ و صدای زن
+// تلفظ متن با سرعت ۰.۵ و صدای زن آمریکایی - اصلاح شده
 function speakText(text, rate = 0.5) {
-    if (!appState.soundEnabled || !('speechSynthesis' in window)) return;
+    if (!appState.soundEnabled || !('speechSynthesis' in window)) {
+        console.log('🔇 صدا غیرفعال است یا پشتیبانی نمی‌شود');
+        return;
+    }
     
     // متوقف کردن تلفظ قبلی
     speechSynthesis.cancel();
     
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
-    utterance.rate = rate;
+    utterance.rate = rate; // سرعت 0.5
     utterance.volume = 1;
     utterance.pitch = 1;
     
     // پیدا کردن صدای زن آمریکایی
     const voices = speechSynthesis.getVoices();
-    let femaleVoice = voices.find(voice => 
-        voice.lang === 'en-US' && 
-        (voice.name.includes('Female') || 
-         voice.name.includes('Samantha') ||
-         voice.name.includes('Karen'))
-    );
+    let femaleVoice = null;
     
+    // اولویت‌بندی برای صداهای زن آمریکایی
+    const preferredVoices = [
+        'Samantha', // صدای زن پیش‌فرض iOS
+        'Karen',    // صدای زن مک
+        'Google US English Female',
+        'Microsoft Zira Desktop',
+        'English (America)'
+    ];
+    
+    for (const voiceName of preferredVoices) {
+        femaleVoice = voices.find(voice => 
+            voice.lang === 'en-US' && 
+            voice.name.includes(voiceName) &&
+            voice.gender === 'female'
+        );
+        if (femaleVoice) break;
+    }
+    
+    // اگر پیدا نشد، اولین صدای زن انگلیسی آمریکایی
     if (!femaleVoice) {
         femaleVoice = voices.find(voice => 
             voice.lang === 'en-US' && 
@@ -363,8 +435,14 @@ function speakText(text, rate = 0.5) {
         );
     }
     
+    // اگر باز هم پیدا نشد، هر صدای انگلیسی آمریکایی
+    if (!femaleVoice) {
+        femaleVoice = voices.find(voice => voice.lang === 'en-US');
+    }
+    
     if (femaleVoice) {
         utterance.voice = femaleVoice;
+        console.log(`🔊 استفاده از صدا: ${femaleVoice.name}`);
     }
     
     utterance.onstart = () => {
@@ -375,7 +453,14 @@ function speakText(text, rate = 0.5) {
         console.log('🔇 تلفظ پایان یافت');
     };
     
-    speechSynthesis.speak(utterance);
+    utterance.onerror = (event) => {
+        console.error('❌ خطا در تلفظ:', event.error);
+    };
+    
+    // تأخیر کوچک برای اطمینان از بارگذاری صداها
+    setTimeout(() => {
+        speechSynthesis.speak(utterance);
+    }, 100);
 }
 
 // تابع نمایش اعلان با مدت زمان قابل تنظیم
