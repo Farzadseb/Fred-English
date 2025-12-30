@@ -17,8 +17,39 @@
     <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
 <body class="dark-theme">
+    <!-- صفحه ورود نام کاربر -->
+    <div id="login" class="view active">
+        <div class="login-container">
+            <div class="login-header">
+                <h1><i class="fas fa-user-graduate"></i> English with Fred</h1>
+                <p>برای شروع، لطفاً نام خود را وارد کنید</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="usernameInput" placeholder="نام شما (مثلاً: علی)" maxlength="20">
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="phoneInput" placeholder="شماره موبایل (اختیاری)" maxlength="11">
+                </div>
+                
+                <button class="btn login-btn" onclick="saveUserInfo()">
+                    <i class="fas fa-play-circle"></i> شروع یادگیری
+                </button>
+                
+                <div class="login-info">
+                    <p><i class="fas fa-info-circle"></i> نام شما در گزارش‌ها ذخیره می‌شود</p>
+                    <p><i class="fas fa-shield-alt"></i> اطلاعات شما محرمانه می‌ماند</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- صفحه اصلی -->
-    <div id="home" class="view active">
+    <div id="home" class="view">
         <div class="top-bar">
             <button class="mute-btn" id="globalMuteBtn">
                 <i class="fas fa-volume-up"></i>
@@ -26,6 +57,10 @@
             <button class="theme-btn" id="themeToggle">
                 <i class="fas fa-sun"></i>
             </button>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="currentUsername">کاربر</span>
+            </div>
         </div>
 
         <header class="app-header">
@@ -88,9 +123,9 @@
                     <span>ارسال گزارش به تلگرام</span>
                 </button>
                 
-                <button class="menu-btn gradient-exit" onclick="exitApp()">
+                <button class="menu-btn gradient-exit" onclick="showExitOptions()">
                     <i class="fas fa-sign-out-alt"></i>
-                    <span>خروج</span>
+                    <span>خروج / تغییر کاربر</span>
                 </button>
             </div>
         </main>
@@ -99,9 +134,10 @@
     <!-- صفحه آزمون -->
     <div id="quiz" class="view">
         <div class="quiz-top-bar">
-            <button class="small-speaker-btn" id="quizSpeakerBtn">
-                <i class="fas fa-volume-up"></i>
-            </button>
+            <div class="quiz-user">
+                <i class="fas fa-user-circle"></i>
+                <span id="quizUsername">کاربر</span>
+            </div>
         </div>
 
         <header class="quiz-header">
@@ -126,7 +162,7 @@
 
         <main class="quiz-content">
             <div class="question-card">
-                <button class="question-speak-btn" id="questionSpeakBtn">
+                <button class="question-speak-btn" id="questionSpeakBtn" onclick="speakCurrentQuestion()">
                     <i class="fas fa-volume-up"></i>
                 </button>
                 <div class="question-header">
@@ -157,6 +193,10 @@
             <button class="theme-btn" id="resultsThemeToggle">
                 <i class="fas fa-moon"></i>
             </button>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="resultsUsername">کاربر</span>
+            </div>
         </div>
 
         <header class="results-header">
@@ -188,6 +228,11 @@
                     </div>
                 </div>
 
+                <div class="result-time">
+                    <i class="far fa-clock"></i>
+                    <span id="resultTimeText">--:--</span>
+                </div>
+
                 <div class="telegram-report">
                     <button class="btn telegram-btn" onclick="sendTelegramReport()">
                         <i class="fab fa-telegram"></i> ارسال گزارش به تلگرام
@@ -215,6 +260,10 @@
             <button class="theme-btn" onclick="toggleTheme()">
                 <i class="fas fa-moon"></i>
             </button>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="mistakesUsername">کاربر</span>
+            </div>
         </div>
 
         <header class="app-header">
@@ -271,35 +320,6 @@
                     });
             });
         }
-        
-        // مدیریت پیشنهاد نصب PWA
-        let deferredPrompt;
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            
-            // بعد از 3 ثانیه پیشنهاد نصب را نمایش بده
-            setTimeout(() => {
-                if (deferredPrompt && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    if (confirm('📱 آیا می‌خواهید English with Fred را روی صفحه اصلی نصب کنید؟\n\nبا نصب برنامه:\n• سرعت اجرا بیشتر می‌شود\n• آفلاین کار می‌کند\n• مانند اپلیکیشن واقعی است')) {
-                        deferredPrompt.prompt();
-                        deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('✅ کاربر نصب را پذیرفت');
-                            }
-                            deferredPrompt = null;
-                        });
-                    }
-                }
-            }, 3000);
-        });
-        
-        // راه‌اندازی اولیه
-        document.addEventListener('DOMContentLoaded', function() {
-            const bestScore = localStorage.getItem('bestScore') || '0';
-            document.getElementById('bestScore').textContent = `${bestScore}%`;
-        });
     </script>
 </body>
-</html>
+    </html>
