@@ -2,126 +2,110 @@
 // PWA INSTALL PROMOTION
 // =======================
 
-// مدیریت نصب PWA
 let deferredPrompt;
-let installButton = null;
-let installBanner = null;
+let installShown = false;
 
-// ایجاد بنر نصب
-function createInstallBanner() {
-  const banner = document.createElement('div');
-  banner.id = 'installBanner';
-  banner.className = 'install-banner';
-  banner.innerHTML = `
-    <div class="banner-content">
-      <i class="fas fa-download"></i>
-      <div class="banner-text">
-        <strong>نصب English with Fred</strong>
-        <small>برای دسترسی سریع‌تر و آفلاین</small>
-      </div>
-      <button id="installBtn" class="install-btn">
-        نصب برنامه
-      </button>
-      <button id="closeBanner" class="close-banner">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  `;
-  
-  document.body.appendChild(banner);
-  
-  return banner;
+// ذخیره تاریخ آخرین نمایش بنر
+function setInstallBannerShown() {
+    const today = new Date().toDateString();
+    localStorage.setItem('installBannerLastShown', today);
+    installShown = true;
 }
 
-// رویدادهای نصب
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  
-  // نمایش بنر پس از 10 ثانیه
-  setTimeout(() => {
-    if (deferredPrompt && !localStorage.getItem('pwaDismissed')) {
-      showInstallBanner();
-    }
-  }, 10000);
-});
+// بررسی آیا امروز بنر نشان داده شده
+function wasInstallBannerShownToday() {
+    const lastShown = localStorage.getItem('installBannerLastShown');
+    const today = new Date().toDateString();
+    return lastShown === today;
+}
 
-// نمایش بنر
+// نمایش بنر نصب
 function showInstallBanner() {
-  if (!installBanner) {
-    installBanner = createInstallBanner();
-    installButton = document.getElementById('installBtn');
-    const closeButton = document.getElementById('closeBanner');
+    if (installShown || wasInstallBannerShownToday()) return;
     
-    installButton.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      
-      if (outcome === 'accepted') {
-        console.log('✅ کاربر برنامه را نصب کرد');
-        hideInstallBanner();
-        showNotification('🎉 برنامه با موفقیت نصب شد!', 'success');
-        
-        // رهگیری نصب
-        trackInstall();
-      }
-      
-      deferredPrompt = null;
-    });
+    const banner = document.getElementById('installBanner');
+    if (!banner) return;
     
-    closeButton.addEventListener('click', () => {
-      localStorage.setItem('pwaDismissed', 'true');
-      hideInstallBanner();
-    });
-  }
-  
-  installBanner.style.display = 'block';
+    banner.style.display = 'block';
+    setInstallBannerShown();
+    
+    // مخفی کردن خودکار بعد از 15 ثانیه
+    setTimeout(() => {
+        banner.style.display = 'none';
+    }, 15000);
+}
+
+// پیشنهاد نصب پس از موفقیت در آزمون
+function suggestInstallAfterSuccess(score) {
+    if (score >= 70 && !installShown && !wasInstallBannerShownToday()) {
+        setTimeout(() => {
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                banner.innerHTML = `
+                    <div class="banner-content">
+                        <i class="fas fa-download"></i>
+                        <div class="banner-text">
+                            <strong>🎉 عالی! ${score}% امتیاز گرفتید!</strong>
+                            <small>برنامه را نصب کنید تا همیشه دسترسی داشته باشید</small>
+                        </div>
+                        <button class="install-btn" onclick="installPWA()">
+                            <i class="fas fa-download"></i> نصب
+                        </button>
+                        <button class="close-banner" onclick="hideInstallBanner()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                banner.style.display = 'block';
+                setInstallBannerShown();
+            }
+        }, 1000);
+    }
 }
 
 // مخفی کردن بنر
 function hideInstallBanner() {
-  if (installBanner) {
-    installBanner.style.display = 'none';
-  }
+    const banner = document.getElementById('installBanner');
+    if (banner) {
+        banner.style.display = 'none';
+    }
 }
 
-// رهگیری نصب
-function trackInstall() {
-  const installs = parseInt(localStorage.getItem('pwaInstalls') || '0');
-  localStorage.setItem('pwaInstalls', (installs + 1).toString());
-  localStorage.setItem('lastInstallDate', new Date().toISOString());
-}
-
-// چک کردن وضعیت نصب
-function checkInstallStatus() {
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    console.log('📱 برنامه به صورت نصب‌شده اجرا می‌شود');
-    localStorage.setItem('runningAsPWA', 'true');
-    return true;
-  }
-  return false;
-}
-
-// پیشنهاد نصب پس از تعامل مثبت
-function suggestInstallAfterSuccess(score) {
-  if (score > 70 && deferredPrompt && !localStorage.getItem('pwaDismissed')) {
-    setTimeout(() => {
-      if (confirm(`🎉 عالی! شما ${score}% گرفتید!\n\nمی‌خواهید برنامه را نصب کنید تا:\n• آفلاین کار کند\n• سرعت بیشتر شود\n• مانند اپلیکیشن واقعی باشد`)) {
+// نصب PWA
+async function installPWA() {
+    if (deferredPrompt) {
         deferredPrompt.prompt();
-      }
-    }, 2000);
-  }
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        if (outcome === 'accepted') {
+            console.log('✅ کاربر نصب را پذیرفت');
+            showNotification('✅ برنامه در حال نصب است...', 'success');
+            hideInstallBanner();
+        }
+        deferredPrompt = null;
+    }
 }
+
+// Event Listeners
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // نمایش بنر بعد از 3 ثانیه
+    setTimeout(() => {
+        showInstallBanner();
+    }, 3000);
+});
+
+window.addEventListener('appinstalled', () => {
+    console.log('✅ PWA نصب شد');
+    deferredPrompt = null;
+    hideInstallBanner();
+    showNotification('✅ برنامه با موفقیت نصب شد!', 'success');
+});
 
 // اکسپورت توابع
 window.showInstallBanner = showInstallBanner;
 window.hideInstallBanner = hideInstallBanner;
+window.installPWA = installPWA;
 window.suggestInstallAfterSuccess = suggestInstallAfterSuccess;
-window.checkInstallStatus = checkInstallStatus;
-
-// فعال کردن
-document.addEventListener('DOMContentLoaded', function() {
-  checkInstallStatus();
-});
