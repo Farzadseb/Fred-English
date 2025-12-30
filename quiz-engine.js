@@ -1,5 +1,5 @@
 // =======================
-// QUIZ ENGINE - نسخه کامل با پخش خودکار صوت
+// QUIZ ENGINE - نسخه کامل با پشتیبانی از چند کاربر
 // =======================
 
 // وضعیت آزمون
@@ -272,15 +272,17 @@ function generateQuestions(mode, wordList) {
     console.log(`✅ ${currentQuiz.questions.length} سوال تولید شد (از آسان به سخت)`);
 }
 
-// تولید گزینه‌ها (رفع مشکل گزینه خالی)
+// تولید گزینه‌ها - رفع مشکل گزینه خالی
 function generateOptions(correctAnswer, allAnswers) {
-    if (!correctAnswer) correctAnswer = "پاسخ صحیح";
+    if (!correctAnswer || correctAnswer.trim() === '') {
+        correctAnswer = "پاسخ صحیح";
+    }
     
     const options = [correctAnswer];
     
-    // فیلتر گزینه‌های معتبر
+    // فیلتر گزینه‌های معتبر - رفع مشکل مقادیر undefined
     const validAnswers = allAnswers
-        .filter(answer => answer && answer.toString().trim() !== '' && answer !== correctAnswer)
+        .filter(answer => answer && answer.toString && answer.toString().trim() !== '' && answer !== correctAnswer)
         .filter((value, index, self) => self.indexOf(value) === index);
     
     // اگر کافی نبود، از لغات دیگر استفاده کن
@@ -290,10 +292,11 @@ function generateOptions(correctAnswer, allAnswers) {
             .sort(() => Math.random() - 0.5)
             .slice(0, 10)
             .map(w => {
+                if (!w) return '';
                 if (currentQuiz.mode === 'english-persian' || currentQuiz.mode === 'word-definition') {
-                    return w.english;
+                    return w.english || '';
                 } else {
-                    return w.persian;
+                    return w.persian || '';
                 }
             })
             .filter(word => word && word.toString().trim() !== '' && word !== correctAnswer);
@@ -302,15 +305,18 @@ function generateOptions(correctAnswer, allAnswers) {
         validAnswers.push(...uniqueRandomWords);
     }
     
-    // انتخاب ۳ گزینه تصادفی
-    const shuffled = [...validAnswers].sort(() => Math.random() - 0.5);
+    // انتخاب ۳ گزینه تصادفی - حذف مقادیر undefined
+    const shuffled = [...validAnswers]
+        .filter(opt => opt && opt.toString && opt.toString().trim() !== '')
+        .sort(() => Math.random() - 0.5);
+    
     const selectedOptions = shuffled.slice(0, 3);
     
     options.push(...selectedOptions);
     
     // حذف تکراری‌ها و خالی‌ها
     const finalOptions = [...new Set(options)]
-        .filter(opt => opt && opt.toString().trim() !== '')
+        .filter(opt => opt && opt.toString && opt.toString().trim() !== '')
         .slice(0, 4);
     
     // اگر هنوز ۴ گزینه نداریم، گزینه عمومی اضافه کن
@@ -318,7 +324,10 @@ function generateOptions(correctAnswer, allAnswers) {
         finalOptions.push(`گزینه ${finalOptions.length + 1}`);
     }
     
-    return finalOptions.sort(() => Math.random() - 0.5);
+    // حذف نهایی مقادیر undefined
+    return finalOptions
+        .map(opt => opt || "بدون متن")
+        .sort(() => Math.random() - 0.5);
 }
 
 // گزینه تصادفی
@@ -331,7 +340,7 @@ function getRandomOption(wordList) {
     return randomWord.english || 'بدون متن';
 }
 
-// نمایش سوال فعلی
+// نمایش سوال فعلی - اصلاح پخش صوت
 function displayCurrentQuestion() {
     if (!currentQuiz.isActive || currentQuiz.currentQuestionIndex >= currentQuiz.questions.length) {
         console.error("❌ آزمون فعال نیست یا سوالی وجود ندارد");
@@ -358,8 +367,10 @@ function displayCurrentQuestion() {
     // پاک کردن گزینه‌های قبلی
     optionsContainer.innerHTML = '';
     
-    // نمایش گزینه‌ها
-    question.options.forEach((option, index) => {
+    // نمایش گزینه‌ها - حذف گزینه‌های خالی
+    const validOptions = question.options.filter(opt => opt && opt.toString().trim() !== '');
+    
+    validOptions.forEach((option, index) => {
         const optionBtn = document.createElement('button');
         optionBtn.className = 'option-btn';
         optionBtn.textContent = option || 'بدون متن';
@@ -368,16 +379,16 @@ function displayCurrentQuestion() {
         optionsContainer.appendChild(optionBtn);
     });
     
-    console.log(`✅ ${question.options.length} گزینه نمایش داده شد`);
+    console.log(`✅ ${validOptions.length} گزینه معتبر نمایش داده شد`);
     
     // پخش خودکار صوت فقط در دور اول هر سوال
     setTimeout(() => {
         if (window.appState?.soundEnabled && window.speakText && !currentQuiz.soundPlayed[currentQuiz.currentQuestionIndex]) {
             window.speakText(question.text, 0.5);
             currentQuiz.soundPlayed[currentQuiz.currentQuestionIndex] = true;
-            console.log(`🔊 پخش خودکار صوت سوال ${currentQuiz.currentQuestionIndex + 1}`);
+            console.log(`🔊 پخش خودکار صوت سوال ${currentQuiz.currentQuestionIndex + 1}: ${question.text}`);
         }
-    }, 800); // تأخیر 800 میلی‌ثانیه برای پخش خودکار
+    }, 800);
 }
 
 // تلفظ سوال فعلی (برای دکمه بلندگو)
@@ -402,7 +413,8 @@ function checkAnswer(selectedIndex) {
     if (!currentQuiz.isActive) return;
     
     const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
-    const selectedOption = question.options[selectedIndex];
+    const validOptions = question.options.filter(opt => opt && opt.toString().trim() !== '');
+    const selectedOption = validOptions[selectedIndex];
     const isCorrect = selectedOption === question.correctAnswer;
     const optionButtons = document.querySelectorAll('.option-btn');
     
@@ -413,7 +425,7 @@ function checkAnswer(selectedIndex) {
     
     // نمایش نتیجه
     optionButtons.forEach((btn, index) => {
-        if (question.options[index] === question.correctAnswer) {
+        if (validOptions[index] === question.correctAnswer) {
             btn.classList.add('correct');
         } else if (index === selectedIndex && !isCorrect) {
             btn.classList.add('wrong');
@@ -476,7 +488,7 @@ function updateProgress() {
     }
 }
 
-// پایان آزمون
+// پایان آزمون - ارسال خودکار به تلگرام
 function finishQuiz() {
     currentQuiz.isActive = false;
     
@@ -518,12 +530,18 @@ function finishQuiz() {
         window.updateStars();
     }
     
-    // پیشنهاد نصب PWA پس از موفقیت
-    if (finalScore > 70 && window.suggestInstallAfterSuccess) {
-        setTimeout(() => {
-            window.suggestInstallAfterSuccess(finalScore);
-        }, 1000);
-    }
+    // ارسال خودکار گزارش به تلگرام (فعال)
+    setTimeout(() => {
+        if (window.sendTelegramReportAuto) {
+            window.sendTelegramReportAuto(finalScore, currentQuiz.mode, duration);
+            console.log('📤 گزارش آزمون به تلگرام ارسال شد');
+        }
+    }, 1500);
+    
+    // نمایش پیام انگیزشی بامزه
+    setTimeout(() => {
+        showMotivationalMessage(finalScore);
+    }, 2000);
     
     // رفتن به صفحه نتایج
     switchView('results');
@@ -546,6 +564,56 @@ function displayResults(score, correct, total, bestScore, date) {
     }
     
     console.log(`📊 نتایج: ${correct}/${total} (${score}%) - بهترین: ${bestScore}%`);
+}
+
+// نمایش پیام انگیزشی بامزه
+function showMotivationalMessage(score) {
+    let message = '';
+    let type = 'info';
+    
+    if (score >= 90) {
+        const messages = [
+            "🎯 واااااو! تو یه نابغه‌ای!",
+            "👑 سلطان لغات! دست مریزاد!",
+            "🚀 با این سرعت داری به ماه می‌رسی!",
+            "💎 الماس خالص! بی‌نظیری!",
+            "🦸‍♂️ تو سوپرمن انگلیسی‌آموزی!"
+        ];
+        message = messages[Math.floor(Math.random() * messages.length)];
+        type = 'success';
+    } else if (score >= 70) {
+        const messages = [
+            "💪 عالی کار کردی! ادامه بده!",
+            "✨ درخشیدی! همینطور پیش برو!",
+            "🏆 مدالی! تو می‌تونی بهترین شی!",
+            "🌟 ستاره امروز تو هستی!",
+            "🎪 سیرک انگلیسی رو به راه کردی!"
+        ];
+        message = messages[Math.floor(Math.random() * messages.length)];
+        type = 'success';
+    } else if (score >= 50) {
+        const messages = [
+            "👍 خوبه! دفعه بعد بهتر می‌شی!",
+            "📈 روبه‌راهی! ناامید نشو!",
+            "🧗‍♂️ کوهنوردی یادت نره! قدم‌به‌قدم!",
+            "🐢 لاک‌پشت پیروز میشه! آهسته ولی پیوسته!",
+            "🎲 بازی هنوز تموم نشده!"
+        ];
+        message = messages[Math.floor(Math.random() * messages.length)];
+        type = 'info';
+    } else {
+        const messages = [
+            "🤔 نیاز به تمرین بیشتر داری!",
+            "📚 بیا دوباره لغات رو مرور کنیم!",
+            "🌱 هر درخت بلوطی روزی دونه‌ای بود!",
+            "🐣 جوجه رو آخر پاییز می‌شمرن!",
+            "🔄 دوباره شروع کن! اینبار قوی‌تر!"
+        ];
+        message = messages[Math.floor(Math.random() * messages.length)];
+        type = 'warning';
+    }
+    
+    showNotification(message, type, 4000);
 }
 
 // توابع اضافی
