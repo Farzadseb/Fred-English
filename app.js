@@ -7,23 +7,37 @@ const appState = {
     soundEnabled: true,
     theme: 'dark',
     notifications: true,
-    autoSpeak: true
+    autoSpeak: true,
+    currentUser: null
 };
 
 // راه‌اندازی اولیه
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🌟 English with Fred بارگذاری شد");
     
-    // راه‌اندازی اولیه
-    initializeApp();
+    // چک کردن آیا کاربر از قبل ثبت‌نام کرده
+    const savedUser = localStorage.getItem('fredUser');
     
-    // نمایش پیام خوش‌آمدگویی
-    setTimeout(() => {
-        if (!localStorage.getItem('welcomeShown')) {
-            showNotification('🌟 به English with Fred خوش آمدید!', 'success');
-            localStorage.setItem('welcomeShown', 'true');
+    if (savedUser) {
+        // کاربر از قبل ثبت‌نام کرده
+        try {
+            appState.currentUser = JSON.parse(savedUser);
+            initializeApp();
+            switchView('home');
+            updateUserDisplay();
+            
+            // نمایش پیام خوش‌آمدگویی با تأخیر ۲ ثانیه
+            setTimeout(() => {
+                showWelcomeMessage();
+            }, 2000);
+        } catch (e) {
+            console.error("❌ خطا در خواندن اطلاعات کاربر:", e);
+            switchView('login');
         }
-    }, 1500);
+    } else {
+        // کاربر جدید
+        switchView('login');
+    }
     
     // ثبت Service Worker برای PWA
     if ('serviceWorker' in navigator) {
@@ -36,6 +50,76 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 });
+
+// ذخیره اطلاعات کاربر
+function saveUserInfo() {
+    const usernameInput = document.getElementById('usernameInput');
+    const phoneInput = document.getElementById('phoneInput');
+    
+    const username = usernameInput.value.trim();
+    const phone = phoneInput.value.trim();
+    
+    if (!username) {
+        showNotification('⚠️ لطفاً نام خود را وارد کنید', 'error');
+        usernameInput.focus();
+        return;
+    }
+    
+    // ایجاد شناسه یکتا برای کاربر
+    const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    // ذخیره اطلاعات کاربر
+    appState.currentUser = {
+        id: userId,
+        username: username,
+        phone: phone || null,
+        joinedAt: new Date().toISOString(),
+        deviceInfo: {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language
+        }
+    };
+    
+    localStorage.setItem('fredUser', JSON.stringify(appState.currentUser));
+    
+    // شروع برنامه
+    initializeApp();
+    switchView('home');
+    updateUserDisplay();
+    
+    showNotification(`👋 سلام ${username}! خوش آمدید`, 'success');
+    
+    // نمایش پیام خوش‌آمدگویی با تأخیر ۲ ثانیه
+    setTimeout(() => {
+        showWelcomeMessage();
+    }, 2000);
+}
+
+// به‌روزرسانی نمایش نام کاربر
+function updateUserDisplay() {
+    if (!appState.currentUser) return;
+    
+    const usernameElements = document.querySelectorAll('#currentUsername, #quizUsername, #resultsUsername, #mistakesUsername');
+    usernameElements.forEach(element => {
+        if (element) {
+            element.textContent = appState.currentUser.username;
+        }
+    });
+}
+
+// نمایش پیام خوش‌آمدگویی
+function showWelcomeMessage() {
+    if (appState.currentUser) {
+        const welcomeMessages = [
+            `🌟 ${appState.currentUser.username} عزیز، به English with Fred خوش آمدید!`,
+            `🎯 ${appState.currentUser.username} جان، بیایید انگلیسی رو با هم یاد بگیریم!`,
+            `🚀 ${appState.currentUser.username} عزیز، آماده‌ای برای چالش لغات؟`
+        ];
+        const randomMsg = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+        showNotification(randomMsg, 'success');
+    }
+}
 
 // راه‌اندازی برنامه
 function initializeApp() {
@@ -57,7 +141,7 @@ function initializeApp() {
     // اضافه کردن event listeners
     setupEventListeners();
     
-    console.log("✅ برنامه راه‌اندازی شد");
+    console.log("✅ برنامه راه‌اندازی شد برای کاربر:", appState.currentUser?.username);
 }
 
 // تنظیم event listeners
@@ -138,7 +222,8 @@ function setTheme(theme) {
 
 // به‌روزرسانی بهترین امتیاز
 function updateBestScore() {
-    const bestScore = localStorage.getItem('bestScore') || '0';
+    const userKey = appState.currentUser ? `bestScore_${appState.currentUser.id}` : 'bestScore';
+    const bestScore = localStorage.getItem(userKey) || '0';
     const bestScoreElement = document.getElementById('bestScore');
     
     if (bestScoreElement) {
@@ -148,18 +233,24 @@ function updateBestScore() {
 
 // به‌روزرسانی ستاره‌ها
 function updateStars() {
-    const bestScore = parseInt(localStorage.getItem('bestScore') || '0');
+    const userKey = appState.currentUser ? `bestScore_${appState.currentUser.id}` : 'bestScore';
+    const bestScore = parseInt(localStorage.getItem(userKey) || '0');
     const stars = document.querySelectorAll('.stars i');
+    const bestScoreElement = document.getElementById('bestScore');
+    
+    if (bestScoreElement) {
+        bestScoreElement.textContent = `${bestScore}%`;
+    }
     
     if (stars.length === 0) return;
     
-    // محاسبه تعداد ستاره‌ها (از ۰ تا ۵)
+    // منطق پر کردن ستاره‌ها (هر 20% یک ستاره)
     const starCount = Math.floor(bestScore / 20);
     
     stars.forEach((star, index) => {
         if (index < starCount) {
             star.className = 'fas fa-star';
-            star.style.color = '#fbbf24';
+            star.style.color = '#FFD700'; // زرد طلایی
         } else {
             star.className = 'far fa-star';
             star.style.color = '#cbd5e1';
@@ -169,14 +260,18 @@ function updateStars() {
 
 // نمایش گزارش پیشرفت
 function showProgressReport() {
-    const history = JSON.parse(localStorage.getItem('testHistory') || '[]');
+    const userKey = appState.currentUser ? `testHistory_${appState.currentUser.id}` : 'testHistory';
+    const history = JSON.parse(localStorage.getItem(userKey) || '[]');
     
     if (history.length === 0) {
         showNotification('📊 هنوز آزمونی انجام نشده است', 'info');
         return;
     }
     
-    let report = `📈 گزارش پیشرفت:\n\n`;
+    const bestScoreKey = appState.currentUser ? `bestScore_${appState.currentUser.id}` : 'bestScore';
+    const bestScore = localStorage.getItem(bestScoreKey) || '0';
+    
+    let report = `📈 گزارش پیشرفت ${appState.currentUser ? appState.currentUser.username : 'کاربر'}:\n\n`;
     report += `تعداد آزمون‌ها: ${history.length}\n`;
     
     // محاسبه میانگین
@@ -184,14 +279,15 @@ function showProgressReport() {
     const averageScore = Math.round(totalScore / history.length);
     
     report += `میانگین امتیاز: ${averageScore}%\n`;
-    report += `بهترین امتیاز: ${localStorage.getItem('bestScore') || '0'}%\n`;
+    report += `بهترین امتیاز: ${bestScore}%\n`;
     
     // آخرین آزمون
     const lastTest = history[history.length - 1];
     report += `\nآخرین آزمون:\n`;
     report += `حالت: ${getModeName(lastTest.mode)}\n`;
     report += `امتیاز: ${lastTest.score}%\n`;
-    report += `تاریخ: ${new Date(lastTest.date).toLocaleDateString('fa-IR')}`;
+    report += `تاریخ: ${new Date(lastTest.date).toLocaleDateString('fa-IR')}\n`;
+    report += `ساعت: ${lastTest.time || '--'}`;
     
     alert(report);
 }
@@ -199,7 +295,8 @@ function showProgressReport() {
 // ثبت نام در واتساپ
 function joinWhatsApp() {
     const phoneNumber = '09017708544';
-    const message = 'سلام! می‌خواهم در English with Fred ثبت نام کنم.';
+    const username = appState.currentUser ? appState.currentUser.username : 'کاربر جدید';
+    const message = `سلام! من ${username} هستم. می‌خواهم در English with Fred ثبت نام کنم.`;
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
     if (confirm('آیا می‌خواهید به واتساپ منتقل شوید؟')) {
@@ -207,53 +304,77 @@ function joinWhatsApp() {
     }
 }
 
-// ارسال گزارش به تلگرام
-function sendTelegramReport() {
-    const history = JSON.parse(localStorage.getItem('testHistory') || '[]');
-    const bestScore = localStorage.getItem('bestScore') || '0';
-    const mistakes = JSON.parse(localStorage.getItem('fredMistakes') || '[]');
-    
-    let report = `📊 گزارش English with Fred\n\n`;
-    report += `🏆 بهترین امتیاز: ${bestScore}%\n`;
-    report += `📈 تعداد آزمون‌ها: ${history.length}\n`;
-    report += `❌ تعداد اشتباهات: ${mistakes.length}\n`;
-    
-    if (history.length > 0) {
-        const lastTest = history[history.length - 1];
-        report += `\nآخرین آزمون:\n`;
-        report += `• حالت: ${getModeName(lastTest.mode)}\n`;
-        report += `• امتیاز: ${lastTest.score}%\n`;
-        report += `• تاریخ: ${new Date(lastTest.date).toLocaleDateString('fa-IR')}`;
-    }
-    
-    // استفاده از تلگرام Web
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent('https://farzadseb.github.io/Fred-English/')}&text=${encodeURIComponent(report)}`;
-    
-    window.open(telegramUrl, '_blank', 'width=600,height=400');
-    
-    showNotification('📤 گزارش برای ارسال به تلگرام آماده شد', 'success');
-}
-
-// خروج از برنامه
-function exitApp() {
-    if (confirm('آیا می‌خواهید از برنامه خارج شوید؟')) {
-        // اگر PWA نصب شده، ببند
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            window.close();
-        } else {
-            showNotification('👋 امیدواریم باز هم برگردید!', 'info');
-            setTimeout(() => {
-                window.history.back();
-            }, 2000);
-        }
+// خروج / تغییر کاربر
+function showExitOptions() {
+    if (confirm('آیا می‌خواهید از حساب کاربری خارج شوید؟\n\nپس از خروج می‌توانید با نام دیگری وارد شوید.')) {
+        // پاک کردن اطلاعات کاربر جاری
+        localStorage.removeItem('fredUser');
+        appState.currentUser = null;
+        
+        // رفتن به صفحه ورود
+        switchView('login');
+        showNotification('👋 با موفقیت خارج شدید', 'info');
     }
 }
 
 // تایید خروج از آزمون
 function confirmExitQuiz() {
-    if (confirm('آیا می‌خواهید آزمون را رها کنید؟\n\nامتیاز شما ذخیره نخواهد شد.')) {
+    const motivationalMessages = [
+        "💪 ادامه بده! تو می‌تونی!",
+        "🔥 نیمه راه رها نکن!",
+        "🎯 فقط چند تا سوال مونده!",
+        "🚀 تقریباً رسیدی به آخر!"
+    ];
+    
+    const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+    
+    if (confirm(randomMessage + '\n\nآیا مطمئنید می‌خواهید آزمون را رها کنید؟')) {
         switchView('home');
     }
+}
+
+// تلفظ متن با سرعت ۰.۵ و صدای زن
+function speakText(text, rate = 0.5) {
+    if (!appState.soundEnabled || !('speechSynthesis' in window)) return;
+    
+    // متوقف کردن تلفظ قبلی
+    speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = rate;
+    utterance.volume = 1;
+    utterance.pitch = 1;
+    
+    // پیدا کردن صدای زن آمریکایی
+    const voices = speechSynthesis.getVoices();
+    let femaleVoice = voices.find(voice => 
+        voice.lang === 'en-US' && 
+        (voice.name.includes('Female') || 
+         voice.name.includes('Samantha') ||
+         voice.name.includes('Karen'))
+    );
+    
+    if (!femaleVoice) {
+        femaleVoice = voices.find(voice => 
+            voice.lang === 'en-US' && 
+            voice.gender === 'female'
+        );
+    }
+    
+    if (femaleVoice) {
+        utterance.voice = femaleVoice;
+    }
+    
+    utterance.onstart = () => {
+        console.log('🔊 تلفظ شروع شد:', text);
+    };
+    
+    utterance.onend = () => {
+        console.log('🔇 تلفظ پایان یافت');
+    };
+    
+    speechSynthesis.speak(utterance);
 }
 
 // تابع نمایش اعلان
@@ -304,10 +425,11 @@ window.toggleGlobalMute = toggleGlobalMute;
 window.toggleTheme = toggleTheme;
 window.showProgressReport = showProgressReport;
 window.joinWhatsApp = joinWhatsApp;
-window.sendTelegramReport = sendTelegramReport;
-window.exitApp = exitApp;
+window.showExitOptions = showExitOptions;
 window.confirmExitQuiz = confirmExitQuiz;
 window.showNotification = showNotification;
 window.switchView = switchView;
 window.getModeName = getModeName;
 window.updateStars = updateStars;
+window.speakText = speakText;
+window.saveUserInfo = saveUserInfo;
