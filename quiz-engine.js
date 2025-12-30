@@ -1,5 +1,5 @@
 // =======================
-// QUIZ ENGINE - نسخه کامل با پشتیبانی از چند کاربر
+// QUIZ ENGINE - نسخه کامل با پخش خودکار صوت
 // =======================
 
 // وضعیت آزمون
@@ -10,49 +10,43 @@ let currentQuiz = {
     score: 0,
     totalQuestions: 10,
     isActive: false,
-    startTime: null
+    startTime: null,
+    soundPlayed: {} // برای پیگیری اینکه کدام سوال‌ها صوت پخش شده
 };
 
-// اشتباهات کاربر
-const MistakeStorage = {
-    getAll: function() {
-        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
-        return JSON.parse(localStorage.getItem(userKey) || '[]');
-    },
+// سیستم سطح‌بندی لغات از آسان به سخت
+function getWordDifficulty(word) {
+    const english = word.english || '';
+    const persian = word.persian || '';
     
-    addMistake: function(mistake) {
-        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
-        const mistakes = this.getAll();
-        
-        // جلوگیری از ذخیره تکراری
-        const exists = mistakes.some(m => 
-            m.question === mistake.question && 
-            m.correctAnswer === mistake.correctAnswer
-        );
-        
-        if (!exists) {
-            mistakes.push(mistake);
-            localStorage.setItem(userKey, JSON.stringify(mistakes));
-            this.updateMistakesCount();
-        }
-    },
+    // محاسبه امتیاز سختی
+    let difficultyScore = 0;
     
-    clearAll: function() {
-        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
-        localStorage.removeItem(userKey);
-        this.updateMistakesCount();
-        return true;
-    },
+    // بر اساس طول کلمه انگلیسی
+    if (english.length <= 4) difficultyScore += 1;    // آسان
+    else if (english.length <= 6) difficultyScore += 2; // متوسط
+    else difficultyScore += 3;                         // سخت
     
-    updateMistakesCount: function() {
-        const count = this.getAll().length;
-        const countElement = document.getElementById('mistakesCount');
-        if (countElement) {
-            countElement.textContent = count;
-        }
-        return count;
-    }
-};
+    // بر اساس تعداد کلمات در تعریف
+    const definition = word.definition || '';
+    const definitionWords = definition.split(' ').length;
+    if (definitionWords > 5) difficultyScore += 1;
+    
+    // بر اساس طول ترجمه فارسی
+    if (persian.length > 15) difficultyScore += 1;
+    
+    // بر اساس وجود کاراکترهای خاص
+    if (english.includes(' ') || english.includes('-')) difficultyScore += 1;
+    
+    return difficultyScore;
+}
+
+// مرتب‌سازی لغات از آسان به سخت
+function sortWordsByDifficulty(words) {
+    return [...words].sort((a, b) => {
+        return getWordDifficulty(a) - getWordDifficulty(b);
+    });
+}
 
 // شروع آزمون
 function startQuiz(mode) {
@@ -112,6 +106,7 @@ function startQuiz(mode) {
         totalQuestions: 10,
         isActive: true,
         startTime: Date.now(),
+        soundPlayed: {}, // ریست کردن وضعیت صوت
         wordSource: availableWords,
         userId: window.appState?.currentUser?.id || 'anonymous'
     };
@@ -134,7 +129,7 @@ function startQuiz(mode) {
     showNotification(`🎯 آزمون ${getModeName(mode)} شروع شد!`, 'success');
 }
 
-// تولید سوالات
+// تولید سوالات با سطح‌بندی
 function generateQuestions(mode, wordList) {
     console.log(`🎯 تولید سوالات برای حالت: ${mode}`);
     currentQuiz.questions = [];
@@ -145,13 +140,39 @@ function generateQuestions(mode, wordList) {
         return;
     }
     
-    // انتخاب تصادفی لغات
-    const shuffledWords = [...wordList].sort(() => Math.random() - 0.5);
-    const selectedWords = shuffledWords.slice(0, Math.min(currentQuiz.totalQuestions, wordList.length));
+    // مرتب‌سازی لغات از آسان به سخت
+    const sortedWords = sortWordsByDifficulty(wordList);
     
-    console.log(`📝 انتخاب ${selectedWords.length} لغت از ${wordList.length} لغت موجود`);
+    // تقسیم لغات به سه سطح: آسان، متوسط، سخت
+    const easyWords = sortedWords.slice(0, Math.floor(sortedWords.length / 3));
+    const mediumWords = sortedWords.slice(
+        Math.floor(sortedWords.length / 3), 
+        Math.floor(2 * sortedWords.length / 3)
+    );
+    const hardWords = sortedWords.slice(Math.floor(2 * sortedWords.length / 3));
     
-    selectedWords.forEach((word, index) => {
+    // توزیع سوالات: 4 آسان، 3 متوسط، 3 سخت
+    const questions = [];
+    
+    // سوالات آسان
+    const selectedEasy = [...easyWords].sort(() => Math.random() - 0.5)
+        .slice(0, Math.min(4, easyWords.length));
+    
+    // سوالات متوسط
+    const selectedMedium = [...mediumWords].sort(() => Math.random() - 0.5)
+        .slice(0, Math.min(3, mediumWords.length));
+    
+    // سوالات سخت
+    const selectedHard = [...hardWords].sort(() => Math.random() - 0.5)
+        .slice(0, Math.min(3, hardWords.length));
+    
+    // ترکیب همه سوالات با حفظ ترتیب
+    const allSelectedWords = [...selectedEasy, ...selectedMedium, ...selectedHard];
+    
+    console.log(`📊 توزیع سوالات: ${selectedEasy.length} آسان, ${selectedMedium.length} متوسط, ${selectedHard.length} سخت`);
+    
+    // ایجاد سوالات
+    allSelectedWords.forEach((word, index) => {
         try {
             let question = null;
             const definition = word.definition || `ترجمه: ${word.persian}`;
@@ -166,7 +187,8 @@ function generateQuestions(mode, wordList) {
                             wordList.map(w => w.persian || 'بدون ترجمه')
                         ),
                         mode: mode,
-                        word: word
+                        word: word,
+                        difficulty: index < 4 ? 'آسان' : index < 7 ? 'متوسط' : 'سخت'
                     };
                     break;
                     
@@ -179,7 +201,8 @@ function generateQuestions(mode, wordList) {
                             wordList.map(w => w.english || 'بدون متن')
                         ),
                         mode: mode,
-                        word: word
+                        word: word,
+                        difficulty: index < 4 ? 'آسان' : index < 7 ? 'متوسط' : 'سخت'
                     };
                     break;
                     
@@ -192,7 +215,8 @@ function generateQuestions(mode, wordList) {
                             wordList.map(w => w.definition || `ترجمه: ${w.persian}`)
                         ),
                         mode: mode,
-                        word: word
+                        word: word,
+                        difficulty: index < 4 ? 'آسان' : index < 7 ? 'متوسط' : 'سخت'
                     };
                     break;
                     
@@ -205,7 +229,8 @@ function generateQuestions(mode, wordList) {
                             wordList.map(w => w.english || 'بدون متن')
                         ),
                         mode: mode,
-                        word: word
+                        word: word,
+                        difficulty: index < 4 ? 'آسان' : index < 7 ? 'متوسط' : 'سخت'
                     };
                     break;
                     
@@ -238,14 +263,13 @@ function generateQuestions(mode, wordList) {
             
             if (question) {
                 currentQuiz.questions.push(question);
-                console.log(`✅ سوال ${index + 1} ایجاد شد: ${question.text.substring(0, 30)}...`);
             }
         } catch (error) {
-            console.error(`❌ خطا در ایجاد سوال برای لغت ${index}:`, error);
+            console.error(`❌ خطا در ایجاد سوال:`, error);
         }
     });
     
-    console.log(`✅ ${currentQuiz.questions.length} سوال تولید شد`);
+    console.log(`✅ ${currentQuiz.questions.length} سوال تولید شد (از آسان به سخت)`);
 }
 
 // تولید گزینه‌ها (رفع مشکل گزینه خالی)
@@ -346,12 +370,31 @@ function displayCurrentQuestion() {
     
     console.log(`✅ ${question.options.length} گزینه نمایش داده شد`);
     
-    // تلفظ سوال با تأخیر ۰.۵ ثانیه
+    // پخش خودکار صوت فقط در دور اول هر سوال
     setTimeout(() => {
-        if (window.appState?.soundEnabled && window.speakText) {
+        if (window.appState?.soundEnabled && window.speakText && !currentQuiz.soundPlayed[currentQuiz.currentQuestionIndex]) {
             window.speakText(question.text, 0.5);
+            currentQuiz.soundPlayed[currentQuiz.currentQuestionIndex] = true;
+            console.log(`🔊 پخش خودکار صوت سوال ${currentQuiz.currentQuestionIndex + 1}`);
         }
-    }, 500);
+    }, 800); // تأخیر 800 میلی‌ثانیه برای پخش خودکار
+}
+
+// تلفظ سوال فعلی (برای دکمه بلندگو)
+function speakCurrentQuestion() {
+    if (!currentQuiz.isActive || currentQuiz.currentQuestionIndex >= currentQuiz.questions.length) {
+        return;
+    }
+    
+    const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
+    
+    if (window.appState?.soundEnabled && window.speakText) {
+        window.speakText(question.text, 0.5);
+        console.log(`🔊 تکرار صوت سوال ${currentQuiz.currentQuestionIndex + 1}`);
+        showNotification('🔊 تکرار صوت', 'info');
+    } else {
+        showNotification('🔇 لطفاً ابتدا صدا را فعال کنید', 'warning');
+    }
 }
 
 // بررسی پاسخ
@@ -381,6 +424,7 @@ function checkAnswer(selectedIndex) {
                 correctAnswer: question.correctAnswer,
                 userAnswer: selectedOption,
                 mode: currentQuiz.mode,
+                difficulty: question.difficulty,
                 explanation: '',
                 timestamp: new Date().toISOString()
             });
@@ -481,13 +525,6 @@ function finishQuiz() {
         }, 1000);
     }
     
-    // پیام انگیزشی با تأخیر ۲ ثانیه
-    setTimeout(() => {
-        if (window.showMotivationalTelegramMessage) {
-            window.showMotivationalTelegramMessage();
-        }
-    }, 2000);
-    
     // رفتن به صفحه نتایج
     switchView('results');
 }
@@ -528,6 +565,7 @@ function reviewMistakesPage() {
                     <div class="mistake-header">
                         <span class="mistake-number">${index + 1}</span>
                         <span class="mistake-mode">${getModeName(mistake.mode)}</span>
+                        <span class="mistake-difficulty">${mistake.difficulty || 'نامشخص'}</span>
                     </div>
                     <div class="mistake-question">${mistake.question}</div>
                     <div class="mistake-answers">
@@ -561,6 +599,47 @@ function clearAllMistakes() {
     }
 }
 
+// اشتباهات کاربر
+const MistakeStorage = {
+    getAll: function() {
+        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
+        return JSON.parse(localStorage.getItem(userKey) || '[]');
+    },
+    
+    addMistake: function(mistake) {
+        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
+        const mistakes = this.getAll();
+        
+        // جلوگیری از ذخیره تکراری
+        const exists = mistakes.some(m => 
+            m.question === mistake.question && 
+            m.correctAnswer === mistake.correctAnswer
+        );
+        
+        if (!exists) {
+            mistakes.push(mistake);
+            localStorage.setItem(userKey, JSON.stringify(mistakes));
+            this.updateMistakesCount();
+        }
+    },
+    
+    clearAll: function() {
+        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
+        localStorage.removeItem(userKey);
+        this.updateMistakesCount();
+        return true;
+    },
+    
+    updateMistakesCount: function() {
+        const count = this.getAll().length;
+        const countElement = document.getElementById('mistakesCount');
+        if (countElement) {
+            countElement.textContent = count;
+        }
+        return count;
+    }
+};
+
 // اکسپورت توابع
 window.startQuiz = startQuiz;
 window.currentQuiz = currentQuiz;
@@ -568,3 +647,4 @@ window.reviewMistakesPage = reviewMistakesPage;
 window.practiceMistakes = practiceMistakes;
 window.clearAllMistakes = clearAllMistakes;
 window.MistakeStorage = MistakeStorage;
+window.speakCurrentQuestion = speakCurrentQuestion; // اضافه کردن تابع تلفظ
