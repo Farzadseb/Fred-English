@@ -1,220 +1,148 @@
-// telegram-integration.js - با توکن جدید
-console.log('🤖 سیستم تلگرام بارگذاری شد');
+// =======================
+// TELEGRAM INTEGRATION - نسخه کامل با شناسایی کاربر
+// =======================
 
+// تنظیمات تلگرام (اینجا قرار دهید یا در config.js)
 const TelegramConfig = {
-    botToken: '8592902186:AAGdV2eHkocXaRr7kKrxLrap7jWVPm0pq-Q', // توکن جدید
-    chatId: '96991859',
-    botUsername: 'EnglishWithFredBot',
-    teacherPhone: '09017708544',
-    teacherName: 'English with Fred'
+    BOT_TOKEN: window.TELEGRAM_CONFIG?.BOT_TOKEN || '',
+    CHAT_ID: window.TELEGRAM_CONFIG?.CHAT_ID || '',
+    API_URL: 'https://api.telegram.org/bot'
 };
 
-// تولید گزارش
-function createProgressReport() {
-    const userId = localStorage.getItem('userId') || 'user_' + Date.now();
-    const bestScore = localStorage.getItem('bestScore') || '0';
-    const testHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
-    const totalTests = testHistory.length;
+// تابع ارسال پیام به تلگرام
+async function sendToTelegram(message) {
+    // اگر توکن تنظیم نشده
+    if (!TelegramConfig.BOT_TOKEN || TelegramConfig.BOT_TOKEN.includes('AAG')) {
+        console.warn('⚠️ توکن تلگرام تنظیم نشده یا قدیمی است');
+        return showTelegramFallback(message);
+    }
     
-    const now = new Date();
-    
-    return {
-        fullReport: `
-📊 گزارش پیشرفت English with Fred
-
-👤 دانش‌آموز: ${userId}
-📅 تاریخ: ${now.toLocaleDateString('fa-IR')}
-⏰ ساعت: ${now.toLocaleTimeString('fa-IR')}
-
-🏆 بهترین امتیاز: ${bestScore}%
-📊 تعداد آزمون‌ها: ${totalTests}
-
-👨‍🏫 مدرس: ${TelegramConfig.teacherName}
-📱 تماس: ${TelegramConfig.teacherPhone}
-
-✨ هر روز بهتر از دیروز ✨
-        `.trim(),
-        shortReport: `📊 گزارش English with Fred - بهترین امتیاز: ${bestScore}%`,
-        markdownReport: `*📊 گزارش پیشرفت English with Fred*
-
-*👤 دانش‌آموز:* ${userId}
-*📅 تاریخ:* ${now.toLocaleDateString('fa-IR')} - ${now.toLocaleTimeString('fa-IR')}
-
-*🏆 بهترین امتیاز:* ${bestScore}%
-*📊 تعداد آزمون‌ها:* ${totalTests}
-
-*👨‍🏫 مدرس:* ${TelegramConfig.teacherName}
-*📱 تماس:* ${TelegramConfig.teacherPhone}
-
-_✨ هر روز بهتر از دیروز ✨_`
-    };
-}
-
-// ارسال از طریق API
-async function sendViaTelegramAPI() {
+    // ارسال به تلگرام
     try {
-        const report = createProgressReport();
+        const url = `${TelegramConfig.API_URL}${TelegramConfig.BOT_TOKEN}/sendMessage`;
+        const payload = {
+            chat_id: TelegramConfig.CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+        };
         
-        console.log('📤 ارسال از طریق API...');
-        
-        const response = await fetch(
-            `https://api.telegram.org/bot${TelegramConfig.botToken}/sendMessage`,
-            {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    chat_id: TelegramConfig.chatId,
-                    text: report.markdownReport,
-                    parse_mode: 'Markdown',
-                    disable_web_page_preview: true
-                })
-            }
-        );
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
         
         const data = await response.json();
         
         if (data.ok) {
-            console.log('✅ پیام ارسال شد:', data.result.message_id);
-            return {
-                success: true,
-                message: '✅ گزارش به تلگرام ارسال شد',
-                method: 'API'
-            };
-        } else {
-            console.error('❌ خطای API:', data.description);
-            throw new Error(data.description);
-        }
-    } catch (error) {
-        console.error('❌ خطا در API:', error.message);
-        return {
-            success: false,
-            error: error.message,
-            method: 'API'
-        };
-    }
-}
-
-// ارسال از طریق لینک
-function sendViaTelegramLink() {
-    const report = createProgressReport();
-    const encodedMessage = encodeURIComponent(report.shortReport);
-    const telegramLink = `https://t.me/${TelegramConfig.botUsername}?text=${encodedMessage}`;
-    
-    const newWindow = window.open(telegramLink, '_blank');
-    
-    if (newWindow) {
-        console.log('✅ لینک تلگرام باز شد');
-        return {
-            success: true,
-            message: '📱 تلگرام باز شد! دکمه SEND را بزنید.',
-            method: 'Link'
-        };
-    } else {
-        console.warn('⚠️ پنجره باز نشد (popup blocker)');
-        return {
-            success: false,
-            error: 'Popup blocked',
-            method: 'Link'
-        };
-    }
-}
-
-// ارسال هوشمند
-async function sendTelegramReport() {
-    // اول سعی می‌کنیم با API ارسال کنیم
-    const apiResult = await sendViaTelegramAPI();
-    
-    if (apiResult.success) {
-        showNotification(apiResult.message, 'success');
-        return true;
-    }
-    
-    // اگر API کار نکرد، از لینک استفاده می‌کنیم
-    console.log('🔄 API کار نکرد، در حال استفاده از لینک...');
-    
-    const linkResult = sendViaTelegramLink();
-    
-    if (linkResult.success) {
-        showNotification(linkResult.message, 'info');
-        return true;
-    }
-    
-    // اگر لینک هم کار نکرد، کپی به کلیپ‌بورد
-    console.log('🔄 لینک هم کار نکرد، در حال کپی به کلیپ‌بورد...');
-    
-    const report = createProgressReport();
-    copyToClipboard(report.fullReport);
-    
-    showNotification('📋 گزارش در حافظه کپی شد!', 'success');
-    
-    // راهنمایی بیشتر
-    setTimeout(() => {
-        alert(
-            '📋 گزارش در حافظه کپی شد!\n\n' +
-            'حالا می‌توانید:\n' +
-            '1. تلگرام را باز کنید\n' +
-            '2. به @EnglishWithFredBot بروید\n' +
-            '3. پیام را Paste کنید (Ctrl+V)\n' +
-            '4. دکمه SEND را بزنید\n\n' +
-            'مدرس به زودی با شما تماس می‌گیرد 📞'
-        );
-    }, 500);
-    
-    return true;
-}
-
-// کپی به کلیپ‌بورد
-function copyToClipboard(text) {
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(text);
-    } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-    }
-}
-
-// تست ربات
-async function testBotConnection() {
-    console.log('🔗 تست اتصال ربات جدید...');
-    
-    try {
-        const response = await fetch(`https://api.telegram.org/bot${TelegramConfig.botToken}/getMe`);
-        const data = await response.json();
-        
-        if (data.ok) {
-            const result = `✅ ربات فعال است!\n\n` +
-                          `🤖 نام: ${data.result.first_name}\n` +
-                          `📱 یوزرنیم: @${data.result.username}\n` +
-                          `🆔 شناسه: ${data.result.id}`;
-            
-            alert(result);
-            console.log('✅ تست موفق:', result);
+            showNotification('✅ گزارش به تلگرام ارسال شد', 'success');
             return true;
         } else {
-            alert(`❌ مشکل در ربات: ${data.description}`);
-            return false;
+            console.error('❌ خطای تلگرام:', data.description);
+            return showTelegramFallback(message);
         }
     } catch (error) {
-        alert(`❌ خطای شبکه: ${error.message}`);
-        return false;
+        console.error('❌ خطا در ارسال به تلگرام:', error);
+        return showTelegramFallback(message);
     }
 }
 
-// راه‌اندازی
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 سیستم تلگرام با توکن جدید آماده است');
+// روش جایگزین اگر ارسال مستقیم شکست خورد
+function showTelegramFallback(message) {
+    const shareText = `${message}\n\n📍 برنامه: English with Fred\n🔗 لینک: ${window.location.href}`;
     
-    // تست خودکار (اختیاری)
-    setTimeout(() => {
-        console.log('برای تست ربات، در کنسول تایپ کنید: testBotConnection()');
-    }, 2000);
-});
+    // روش ۱: کپی به کلیپ‌بورد
+    navigator.clipboard.writeText(shareText)
+        .then(() => {
+            if (confirm('📋 گزارش در کلیپ‌بورد کپی شد!\n\nآیا می‌خواهید آن را در تلگرام پیست کنید؟')) {
+                // باز کردن تلگرام بدون اجبار
+                window.open('https://t.me', '_blank');
+            } else {
+                showNotification('📋 گزارش در کلیپ‌بورد کپی شد', 'success');
+            }
+        })
+        .catch(() => {
+            // روش ۲: نمایش در پنجره
+            showNotification('📤 گزارش آماده ارسال است', 'info');
+            setTimeout(() => {
+                alert('📊 گزارش:\n\n' + shareText + '\n\nاین متن را در تلگرام کپی کنید.');
+            }, 500);
+        });
+    
+    return false;
+}
 
-// اضافه کردن به global scope
+// تابع ارسال گزارش پیشرفت
+async function sendTelegramReport() {
+    const currentUser = window.appState?.currentUser;
+    const userId = currentUser?.id || 'anonymous';
+    const username = currentUser?.username || 'کاربر ناشناس';
+    const phone = currentUser?.phone || 'ثبت نشده';
+    
+    const bestScoreKey = currentUser ? `bestScore_${userId}` : 'bestScore';
+    const historyKey = currentUser ? `testHistory_${userId}` : 'testHistory';
+    const mistakesKey = currentUser ? `fredMistakes_${userId}` : 'fredMistakes';
+    
+    const bestScore = localStorage.getItem(bestScoreKey) || '0';
+    const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+    const mistakes = JSON.parse(localStorage.getItem(mistakesKey) || '[]');
+    const now = new Date();
+    
+    let message = `<b>📊 گزارش English with Fred</b>\n`;
+    message += `<b>👤 کاربر:</b> ${username}\n`;
+    message += `<b>📱 شماره:</b> ${phone}\n`;
+    message += `<b>🆔 شناسه:</b> ${userId.substring(0, 8)}...\n`;
+    message += `<b>⏰ زمان:</b> ${now.toLocaleTimeString('fa-IR')}\n`;
+    message += `<b>📅 تاریخ:</b> ${now.toLocaleDateString('fa-IR')}\n\n`;
+    
+    message += `<b>🏆 بهترین امتیاز:</b> ${bestScore}%\n`;
+    message += `<b>📈 تعداد آزمون‌ها:</b> ${history.length}\n`;
+    message += `<b>❌ اشتباهات ذخیره شده:</b> ${mistakes.length}\n\n`;
+    
+    if (history.length > 0) {
+        const lastTest = history[history.length - 1];
+        message += `<b>آخرین آزمون:</b>\n`;
+        message += `🎯 حالت: ${getModeName(lastTest.mode)}\n`;
+        message += `✅ امتیاز: ${lastTest.score}%\n`;
+        message += `⏱️ مدت: ${lastTest.duration} ثانیه\n`;
+        message += `🕐 ساعت: ${lastTest.time || '--'}\n`;
+    }
+    
+    message += `\n🔗 <a href="${window.location.href}">لینک برنامه</a>`;
+    
+    // ارسال به تلگرام
+    await sendToTelegram(message);
+}
+
+// پیام ارشادی بدون باز کردن تلگرام
+function showMotivationalTelegramMessage() {
+    const currentUser = window.appState?.currentUser;
+    const username = currentUser?.username || 'کاربر';
+    
+    const messages = [
+        `🌟 ${username} عزیز، پیشرفت‌ات عالی است! ادامه بده!`,
+        `💪 ${username} جان، هر روز بهتر از دیروز!`,
+        `🎯 ${username} عزیز، تمرین مستمر کلید موفقیت است!`,
+        `🔥 ${username} جان، تو می‌توانی به تمام اهداف‌ات برسی!`,
+        `🚀 ${username} عزیز، همین امروز یک قدم به هدفت نزدیک‌تر شو!`
+    ];
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    
+    // فقط نمایش در برنامه - نه در تلگرام
+    showNotification(randomMessage, 'success');
+    
+    // در تاریخچه ذخیره کن
+    const motivKey = window.appState?.currentUser ? `motivMessages_${window.appState.currentUser.id}` : 'motivMessages';
+    const motivHistory = JSON.parse(localStorage.getItem(motivKey) || '[]');
+    motivHistory.push({
+        message: randomMessage,
+        username: username,
+        time: new Date().toISOString()
+    });
+    localStorage.setItem(motivKey, JSON.stringify(motivHistory.slice(-10))); // فقط 10 تای آخر
+}
+
+// اکسپورت توابع
 window.sendTelegramReport = sendTelegramReport;
-window.testBotConnection = testBotConnection;
-window.TelegramConfig = TelegramConfig;
+window.showMotivationalTelegramMessage = showMotivationalTelegramMessage;
