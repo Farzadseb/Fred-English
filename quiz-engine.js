@@ -1,5 +1,5 @@
 // =======================
-// QUIZ ENGINE - نسخه کامل و اصلاح شده
+// QUIZ ENGINE - نسخه کامل با پشتیبانی از چند کاربر
 // =======================
 
 // وضعیت آزمون
@@ -16,11 +16,14 @@ let currentQuiz = {
 // اشتباهات کاربر
 const MistakeStorage = {
     getAll: function() {
-        return JSON.parse(localStorage.getItem('fredMistakes') || '[]');
+        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
+        return JSON.parse(localStorage.getItem(userKey) || '[]');
     },
     
     addMistake: function(mistake) {
+        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
         const mistakes = this.getAll();
+        
         // جلوگیری از ذخیره تکراری
         const exists = mistakes.some(m => 
             m.question === mistake.question && 
@@ -29,13 +32,14 @@ const MistakeStorage = {
         
         if (!exists) {
             mistakes.push(mistake);
-            localStorage.setItem('fredMistakes', JSON.stringify(mistakes));
+            localStorage.setItem(userKey, JSON.stringify(mistakes));
             this.updateMistakesCount();
         }
     },
     
     clearAll: function() {
-        localStorage.removeItem('fredMistakes');
+        const userKey = window.appState?.currentUser ? `fredMistakes_${window.appState.currentUser.id}` : 'fredMistakes';
+        localStorage.removeItem(userKey);
         this.updateMistakesCount();
         return true;
     },
@@ -108,7 +112,8 @@ function startQuiz(mode) {
         totalQuestions: 10,
         isActive: true,
         startTime: Date.now(),
-        wordSource: availableWords
+        wordSource: availableWords,
+        userId: window.appState?.currentUser?.id || 'anonymous'
     };
     
     // تولید سوالات
@@ -243,30 +248,53 @@ function generateQuestions(mode, wordList) {
     console.log(`✅ ${currentQuiz.questions.length} سوال تولید شد`);
 }
 
-// تولید گزینه‌ها
+// تولید گزینه‌ها (رفع مشکل گزینه خالی)
 function generateOptions(correctAnswer, allAnswers) {
-    if (!correctAnswer || !allAnswers || allAnswers.length < 4) {
-        return ['گزینه ۱', 'گزینه ۲', 'گزینه ۳', 'گزینه ۴'];
-    }
+    if (!correctAnswer) correctAnswer = "پاسخ صحیح";
     
     const options = [correctAnswer];
     
-    // حذف پاسخ صحیح و انتخاب تصادفی
-    const otherAnswers = allAnswers
-        .filter(answer => answer && answer !== correctAnswer)
-        .filter((value, index, self) => self.indexOf(value) === index); // حذف تکراری‌ها
+    // فیلتر گزینه‌های معتبر
+    const validAnswers = allAnswers
+        .filter(answer => answer && answer.toString().trim() !== '' && answer !== correctAnswer)
+        .filter((value, index, self) => self.indexOf(value) === index);
     
-    const shuffled = [...otherAnswers].sort(() => Math.random() - 0.5);
-    const randomOptions = shuffled.slice(0, 3);
-    
-    options.push(...randomOptions);
-    
-    // اگر گزینه‌ها کافی نبودند، اضافه کردن گزینه‌های عمومی
-    while (options.length < 4) {
-        options.push(`گزینه ${options.length + 1}`);
+    // اگر کافی نبود، از لغات دیگر استفاده کن
+    if (validAnswers.length < 3) {
+        const wordList = currentQuiz.wordSource || window.words || [];
+        const randomWords = [...wordList]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 10)
+            .map(w => {
+                if (currentQuiz.mode === 'english-persian' || currentQuiz.mode === 'word-definition') {
+                    return w.english;
+                } else {
+                    return w.persian;
+                }
+            })
+            .filter(word => word && word.toString().trim() !== '' && word !== correctAnswer);
+        
+        const uniqueRandomWords = [...new Set(randomWords)];
+        validAnswers.push(...uniqueRandomWords);
     }
     
-    return options.sort(() => Math.random() - 0.5);
+    // انتخاب ۳ گزینه تصادفی
+    const shuffled = [...validAnswers].sort(() => Math.random() - 0.5);
+    const selectedOptions = shuffled.slice(0, 3);
+    
+    options.push(...selectedOptions);
+    
+    // حذف تکراری‌ها و خالی‌ها
+    const finalOptions = [...new Set(options)]
+        .filter(opt => opt && opt.toString().trim() !== '')
+        .slice(0, 4);
+    
+    // اگر هنوز ۴ گزینه نداریم، گزینه عمومی اضافه کن
+    while (finalOptions.length < 4) {
+        finalOptions.push(`گزینه ${finalOptions.length + 1}`);
+    }
+    
+    return finalOptions.sort(() => Math.random() - 0.5);
 }
 
 // گزینه تصادفی
@@ -317,6 +345,13 @@ function displayCurrentQuestion() {
     });
     
     console.log(`✅ ${question.options.length} گزینه نمایش داده شد`);
+    
+    // تلفظ سوال با تأخیر ۰.۵ ثانیه
+    setTimeout(() => {
+        if (window.appState?.soundEnabled && window.speakText) {
+            window.speakText(question.text, 0.5);
+        }
+    }, 500);
 }
 
 // بررسی پاسخ
@@ -403,11 +438,13 @@ function finishQuiz() {
     
     const finalScore = Math.round((currentQuiz.score / currentQuiz.totalQuestions) * 100);
     const duration = Math.round((Date.now() - currentQuiz.startTime) / 1000);
+    const now = new Date();
     
     console.log(`🏁 پایان آزمون: ${finalScore}% در ${duration} ثانیه`);
     
-    // ذخیره تاریخچه
-    const testHistory = JSON.parse(localStorage.getItem('testHistory') || '[]');
+    // ذخیره تاریخچه با شناسه کاربر
+    const userKey = window.appState?.currentUser ? `testHistory_${window.appState.currentUser.id}` : 'testHistory';
+    const testHistory = JSON.parse(localStorage.getItem(userKey) || '[]');
     testHistory.push({
         mode: currentQuiz.mode,
         score: finalScore,
@@ -415,23 +452,26 @@ function finishQuiz() {
         total: currentQuiz.totalQuestions,
         duration: duration,
         date: new Date().toISOString(),
-        wordSource: currentQuiz.wordSource ? 'available' : 'unknown'
+        time: now.toLocaleTimeString('fa-IR'),
+        userId: currentQuiz.userId,
+        username: window.appState?.currentUser?.username || 'کاربر ناشناس'
     });
-    localStorage.setItem('testHistory', JSON.stringify(testHistory));
+    localStorage.setItem(userKey, JSON.stringify(testHistory));
     
     // به‌روزرسانی بهترین امتیاز
-    const bestScore = parseInt(localStorage.getItem('bestScore') || '0');
+    const bestScoreKey = window.appState?.currentUser ? `bestScore_${window.appState.currentUser.id}` : 'bestScore';
+    const bestScore = parseInt(localStorage.getItem(bestScoreKey) || '0');
     if (finalScore > bestScore) {
-        localStorage.setItem('bestScore', finalScore.toString());
+        localStorage.setItem(bestScoreKey, finalScore.toString());
         showNotification(`🎉 رکورد جدید! ${finalScore}%`, 'success');
     }
     
     // نمایش نتایج
-    displayResults(finalScore, currentQuiz.score, currentQuiz.totalQuestions, bestScore);
+    displayResults(finalScore, currentQuiz.score, currentQuiz.totalQuestions, bestScore, now);
     
     // به‌روزرسانی ستاره‌ها
     if (window.updateStars) {
-        updateStars();
+        window.updateStars();
     }
     
     // پیشنهاد نصب PWA پس از موفقیت
@@ -441,21 +481,32 @@ function finishQuiz() {
         }, 1000);
     }
     
+    // پیام انگیزشی با تأخیر ۲ ثانیه
+    setTimeout(() => {
+        if (window.showMotivationalTelegramMessage) {
+            window.showMotivationalTelegramMessage();
+        }
+    }, 2000);
+    
     // رفتن به صفحه نتایج
     switchView('results');
 }
 
 // نمایش نتایج
-function displayResults(score, correct, total, bestScore) {
+function displayResults(score, correct, total, bestScore, date) {
     const finalScoreElement = document.getElementById('finalScore');
     const correctCountElement = document.getElementById('correctCount');
     const totalCountElement = document.getElementById('totalCount');
     const bestResultElement = document.getElementById('bestResult');
+    const resultTimeElement = document.getElementById('resultTimeText');
     
     if (finalScoreElement) finalScoreElement.textContent = `${score}%`;
     if (correctCountElement) correctCountElement.textContent = correct;
     if (totalCountElement) totalCountElement.textContent = total;
     if (bestResultElement) bestResultElement.textContent = `${Math.max(score, bestScore)}%`;
+    if (resultTimeElement && date) {
+        resultTimeElement.textContent = `${date.toLocaleDateString('fa-IR')} - ${date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}`;
+    }
     
     console.log(`📊 نتایج: ${correct}/${total} (${score}%) - بهترین: ${bestScore}%`);
 }
