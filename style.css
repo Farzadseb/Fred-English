@@ -87,51 +87,57 @@ body.light-theme {
 }
 
 /* ======================= */
-/* LOGIN PAGE - اصلاح شده */
+/* LOGIN PAGE - کاملاً اصلاح شده */
 /* ======================= */
 .login-container {
     max-width: 320px;
-    margin: -80px auto 0; /* 40% بالاتر رفت */
+    margin: 0 auto;
     padding: 1.5rem;
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* تغییر از center به flex-start */
-    padding-top: 40%; /* کادرها بالاتر می‌روند */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
 .login-header {
     text-align: center;
-    margin-bottom: 2rem; /* کمتر شده تا کادرها نزدیکتر شوند */
+    margin-bottom: 2rem;
+    width: 100%;
 }
 
 .login-header h1 {
     color: var(--primary-color);
-    font-size: 1.6rem;
-    margin-bottom: 0.5rem; /* کمتر شده */
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
+    text-align: center;
+    width: 100%;
 }
 
 .login-header p {
     color: var(--text-muted);
-    font-size: 0.88rem;
+    font-size: 0.95rem;
+    text-align: center;
 }
 
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem; /* 20% کمتر شده */
-    margin-top: 0.5rem;
+    gap: 1.2rem;
+    width: 100%;
+    margin-top: 1rem;
 }
 
 .input-group {
     position: relative;
     display: flex;
     align-items: center;
-    margin-bottom: 0.5rem; /* کمتر شده */
+    width: 100%;
 }
 
 .input-group i {
@@ -139,14 +145,15 @@ body.light-theme {
     right: 0.8rem;
     color: var(--primary-color);
     font-size: 1rem;
+    z-index: 1;
 }
 
 .input-group input {
     width: 100%;
-    padding: 0.8rem 2.4rem 0.8rem 0.8rem;
+    padding: 0.9rem 2.5rem 0.9rem 1rem;
     border: 2px solid #e2e8f0;
     border-radius: var(--radius-md);
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     font-family: inherit;
     transition: all 0.3s;
     background: white;
@@ -175,8 +182,8 @@ body.light-theme {
     border: none;
     border-radius: var(--radius-lg);
     color: white;
-    padding: 0.96rem;
-    font-size: 0.96rem;
+    padding: 1rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
@@ -184,8 +191,9 @@ body.light-theme {
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    margin-top: 0.5rem; /* کمتر شده */
+    margin-top: 0.5rem;
     box-shadow: var(--shadow-md);
+    width: 100%;
 }
 
 .login-btn:hover {
@@ -194,12 +202,14 @@ body.light-theme {
 }
 
 .login-info {
-    margin-top: 1.2rem; /* کمتر شده */
+    margin-top: 1.5rem;
     padding: 0.8rem;
     background: rgba(59, 130, 246, 0.05);
     border-radius: var(--radius-md);
     font-size: 0.8rem;
     color: var(--text-muted);
+    width: 100%;
+    text-align: center;
 }
 
 .dark-theme .login-info {
@@ -209,6 +219,7 @@ body.light-theme {
 .login-info p {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.4rem;
     margin-bottom: 0.4rem;
 }
@@ -272,6 +283,7 @@ body.light-theme {
     color: var(--primary-color);
     font-size: 0.96rem;
     border: 2px solid rgba(59, 130, 246, 0.2);
+    cursor: pointer;
 }
 
 .light-theme .mute-btn,
@@ -291,32 +303,34 @@ body.light-theme {
 /* ======================= */
 .menu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 0.6rem; /* کمتر شده تا کادرها نزدیکتر شوند */
-    margin-top: 1.2rem; /* کمتر شده */
-    margin-bottom: 2rem; /* اضافه شد برای فاصله از پایین */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+    margin: 1rem 0 2rem 0;
+    padding: 0 0.5rem;
 }
 
 .menu-btn {
-    padding: 1rem 0.6rem; /* کمتر شده */
+    padding: 1.2rem 0.5rem;
     border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     color: white;
     font-weight: 600;
     text-align: center;
     box-shadow: var(--shadow-md);
     border: none;
     transition: all 0.3s ease;
-    font-size: 0.8rem;
-    min-height: 90px;
+    font-size: 0.85rem;
+    min-height: 100px;
+    width: 100%;
+    cursor: pointer;
 }
 
 .menu-btn i {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     margin-bottom: 0.3rem;
 }
 
@@ -336,8 +350,9 @@ body.light-theme {
 .gradient-whatsapp { background: var(--gradient-whatsapp); }
 .gradient-exit { 
     background: var(--gradient-exit);
-    grid-column: span 2; /* دکمه خروج بزرگتر */
-    height: 70px;
+    grid-column: span 2;
+    height: 80px;
+    margin-top: 0.5rem;
 }
 
 /* ======================= */
@@ -349,9 +364,9 @@ body.light-theme {
     padding: 1.2rem;
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
     box-shadow: var(--shadow-primary);
-    margin-bottom: 1.6rem;
+    margin-bottom: 1rem;
     text-align: center;
-    min-height: 144px;
+    min-height: 130px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -370,7 +385,7 @@ body.light-theme {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     border-radius: var(--radius-md);
-    padding: 1rem;
+    padding: 0.8rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
@@ -407,13 +422,50 @@ body.light-theme {
 }
 
 /* ======================= */
-/* QUIZ STYLES - اصلاح گزینه خالی */
+/* QUIZ STYLES - اصلاح شده */
 /* ======================= */
 .quiz-content {
     overflow: hidden;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 180px);
+}
+
+.question-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border: 2px solid rgba(59, 130, 246, 0.1);
+    position: relative;
+}
+
+.light-theme .question-card {
+    background: white;
+}
+
+.dark-theme .question-card {
+    background: var(--card-dark);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.question-speak-btn {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+}
+
+.question-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 1rem 0;
+    margin-right: 2.5rem;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .options-container {
@@ -436,6 +488,7 @@ body.light-theme {
     justify-content: right;
     word-break: break-word;
     overflow-wrap: break-word;
+    cursor: pointer;
 }
 
 .light-theme .option-btn {
@@ -546,12 +599,442 @@ body.light-theme {
 }
 
 /* ======================= */
+/* LEARNING PAGE STYLES */
+/* ======================= */
+
+/* بنر یادگیری در صفحه اصلی */
+.learning-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 1.2rem;
+    margin: 1rem 0 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.learning-banner:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.banner-icon {
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.2);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-content {
+    flex: 1;
+}
+
+.banner-content h3 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.banner-content p {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.progress-info {
+    font-size: 0.8rem;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.banner-arrow {
+    font-size: 1.2rem;
+    opacity: 0.7;
+}
+
+/* هدر صفحه یادگیری */
+.learning-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    box-shadow: var(--shadow-primary);
+    margin-bottom: 1.5rem;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn-small {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.back-btn-small:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.learning-header h1 {
+    flex: 1;
+    font-size: 1.2rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.learning-progress {
+    width: 120px;
+    text-align: center;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+}
+
+.learning-progress .progress-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.learning-progress .progress-fill {
+    height: 100%;
+    background: #4ade80;
+    transition: width 0.3s;
+}
+
+/* محتوای صفحه یادگیری */
+.learning-content {
+    padding: 0 0.5rem;
+}
+
+.word-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid rgba(59, 130, 246, 0.1);
+}
+
+.dark-theme .word-card {
+    background: var(--card-dark);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.word-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.word-main {
+    flex: 1;
+}
+
+.word-english {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+}
+
+.word-persian {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.word-pronunciation {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-top: 0.5rem;
+}
+
+.speak-word-btn {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.speak-word-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: scale(1.05);
+}
+
+/* بخش‌های مختلف کارت */
+.word-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.dark-theme .word-section {
+    border-top-color: #4a5568;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+.section-title i {
+    font-size: 0.9rem;
+}
+
+.example-content {
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.dark-theme .example-content {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.example-english {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.example-persian {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding-right: 0.5rem;
+    border-right: 3px solid var(--primary-color);
+}
+
+.definition-content, .collocation-content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-light);
+}
+
+.dark-theme .definition-content,
+.dark-theme .collocation-content {
+    color: var(--text-dark);
+}
+
+.phrasal-verbs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.phrasal-verb-item {
+    background: rgba(16, 185, 129, 0.05);
+    border-radius: var(--radius-md);
+    padding: 0.8rem;
+}
+
+.dark-theme .phrasal-verb-item {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.phrasal-verb {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.3rem;
+}
+
+.phrasal-meaning {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* کنترل‌های یادگیری */
+.learning-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.center-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.icon-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+}
+
+.icon-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.prev-btn, .next-btn {
+    min-width: 120px;
+}
+
+.prev-btn:disabled, .next-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* دکمه‌های عملیات */
+.learning-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 0.5rem;
+}
+
+.practice-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.finish-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+}
+
+/* نشانگر لغت نشان شده */
+.marked-word .word-english {
+    position: relative;
+}
+
+.marked-word .word-english::after {
+    content: "📌";
+    position: absolute;
+    left: -25px;
+    top: 0;
+    font-size: 1rem;
+}
+
+/* INSTALL BANNER */
+.install-banner {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--gradient-primary);
+    color: white;
+    padding: 0.8rem;
+    z-index: 10000;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.banner-text {
+    flex: 1;
+    margin: 0 1rem;
+    text-align: right;
+}
+
+.banner-text strong {
+    display: block;
+    font-size: 0.9rem;
+}
+
+.banner-text small {
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+.install-btn {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.close-banner {
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+/* ======================= */
 /* RESPONSIVE DESIGN */
 /* ======================= */
 @media (max-width: 768px) {
     .menu-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
+        gap: 0.6rem;
     }
     
     .app-header h1 {
@@ -563,8 +1046,42 @@ body.light-theme {
     }
     
     .login-container {
-        margin-top: -60px;
-        padding-top: 30%;
+        padding: 1rem;
+    }
+    
+    .menu-btn {
+        min-height: 90px;
+        padding: 1rem 0.4rem;
+    }
+    
+    .gradient-exit {
+        height: 70px;
+    }
+    
+    .learning-header h1 {
+        font-size: 1rem;
+    }
+    
+    .word-english {
+        font-size: 1.6rem;
+    }
+    
+    .word-persian {
+        font-size: 1.1rem;
+    }
+    
+    .learning-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .center-controls {
+        order: -1;
+        margin-bottom: 1rem;
+    }
+    
+    .prev-btn, .next-btn {
+        width: 100%;
     }
 }
 
@@ -592,12 +1109,36 @@ body.light-theme {
     }
     
     .login-container {
-        padding: 1rem;
-        margin-top: -40px;
-        padding-top: 25%;
+        padding: 0.8rem;
     }
     
     .gradient-exit {
         grid-column: span 1;
+        height: 70px;
     }
-                               }
+    
+    .learning-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .banner-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .learning-progress {
+        width: 100%;
+    }
+    
+    .word-card {
+        padding: 1.2rem;
+    }
+}
