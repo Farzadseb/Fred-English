@@ -9,7 +9,7 @@
     
     <!-- PWA Configuration -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#6a0dad">
+    <meta name="theme-color" content="#3b82f6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="EnglishFred">
@@ -32,8 +32,8 @@
                 </div>
                 
                 <div class="input-group">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" id="phoneInput" placeholder="شماره موبایل (اختیاری)" maxlength="11">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" id="studentCode" placeholder="کد زبان آموز (اختیاری)" maxlength="10">
                 </div>
                 
                 <button class="btn login-btn" onclick="saveUserInfo()">
@@ -299,6 +299,23 @@
     <!-- اعلان‌ها -->
     <div id="notification" class="notification"></div>
 
+    <!-- بنر نصب PWA -->
+    <div id="installBanner" class="install-banner">
+        <div class="banner-content">
+            <i class="fas fa-download"></i>
+            <div class="banner-text">
+                <strong>📱 نصب برنامه English with Fred</strong>
+                <small>برای دسترسی سریع‌تر و تجربه بهتر</small>
+            </div>
+            <button class="install-btn" onclick="installPWA()">
+                <i class="fas fa-download"></i> نصب
+            </button>
+            <button class="close-banner" onclick="hideInstallBanner()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- اسکریپت‌ها -->
     <script src="words.js"></script>
     <script src="quiz-engine.js"></script>
@@ -322,4 +339,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
