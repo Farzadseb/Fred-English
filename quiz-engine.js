@@ -65,7 +65,12 @@ function startQuiz(mode) {
         console.log("✅ لغات از words بارگیری شد");
         availableWords = words;
     }
-    // روش ۳: بررسی localStorage
+    // روش ۳: بررسی A1Words
+    else if (window.A1Words && A1Words.words && A1Words.words.length > 0) {
+        console.log("✅ لغات از A1Words بارگیری شد");
+        availableWords = A1Words.words;
+    }
+    // روش ۴: بررسی localStorage
     else {
         const storedWords = localStorage.getItem('fredWords');
         if (storedWords) {
@@ -340,7 +345,7 @@ function getRandomOption(wordList) {
     return randomWord.english || 'بدون متن';
 }
 
-// نمایش سوال فعلی - اصلاح پخش صوت
+// نمایش سوال فعلی - با پخش خودکار صوت
 function displayCurrentQuestion() {
     if (!currentQuiz.isActive || currentQuiz.currentQuestionIndex >= currentQuiz.questions.length) {
         console.error("❌ آزمون فعال نیست یا سوالی وجود ندارد");
@@ -381,14 +386,14 @@ function displayCurrentQuestion() {
     
     console.log(`✅ ${validOptions.length} گزینه معتبر نمایش داده شد`);
     
-    // پخش خودکار صوت فقط در دور اول هر سوال
+    // پخش خودکار صوت فقط در دور اول هر سوال با تأخیر 500ms
     setTimeout(() => {
         if (window.appState?.soundEnabled && window.speakText && !currentQuiz.soundPlayed[currentQuiz.currentQuestionIndex]) {
             window.speakText(question.text, 0.5);
             currentQuiz.soundPlayed[currentQuiz.currentQuestionIndex] = true;
-            console.log(`🔊 پخش خودکار صوت سوال ${currentQuiz.currentQuestionIndex + 1}: ${question.text}`);
+            console.log(`🔊 پخش خودکار صوت سوال ${currentQuiz.currentQuestionIndex + 1} با سرعت 0.5`);
         }
-    }, 800);
+    }, 500);
 }
 
 // تلفظ سوال فعلی (برای دکمه بلندگو)
