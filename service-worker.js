@@ -8,6 +8,8 @@ const ASSETS_TO_CACHE = [
   '/quiz-engine.js',
   '/telegram-integration.js',
   '/words.js',
+  '/a1-words.js',
+  '/learning-engine.js',
   '/install-promotion.js',
   '/icon-192x192.png',
   '/icon-512x512.png',
