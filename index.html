@@ -4,417 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>English with Fred</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- PWA Configuration -->
+
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#3b82f6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="EnglishFred">
-    <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
+
 <body class="dark-theme">
-    <!-- صفحه ورود نام کاربر -->
-    <div id="login" class="view active">
-        <div class="login-container">
-            <div class="login-header">
-                <h1><i class="fas fa-user-graduate"></i> English with Fred</h1>
-                <p>برای شروع، لطفاً نام خود را وارد کنید</p>
-            </div>
-            
-            <div class="login-form">
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="usernameInput" placeholder="نام شما (مثلاً: علی)" maxlength="20">
-                </div>
-                
-                <div class="input-group">
-                    <i class="fas fa-id-card"></i>
-                    <input type="text" id="studentCode" placeholder="کد زبان آموز (اختیاری)" maxlength="10">
-                </div>
-                
-                <button class="btn login-btn" onclick="saveUserInfo()">
-                    <i class="fas fa-play-circle"></i> شروع یادگیری
-                </button>
-                
-                <div class="login-info">
-                    <p><i class="fas fa-info-circle"></i> نام شما در گزارش‌ها ذخیره می‌شود</p>
-                    <p><i class="fas fa-shield-alt"></i> اطلاعات شما محرمانه می‌ماند</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- صفحه اصلی -->
-    <div id="home" class="view">
-        <div class="top-bar">
-            <button class="mute-btn" id="globalMuteBtn">
-                <i class="fas fa-volume-up"></i>
-            </button>
-            <button class="theme-btn" id="themeToggle">
-                <i class="fas fa-sun"></i>
-            </button>
-            <div class="user-info">
-                <i class="fas fa-user-circle"></i>
-                <span id="currentUsername">کاربر</span>
-            </div>
+<!-- LOGIN -->
+<div id="login" class="view active">
+    <div class="login-container">
+        <div class="login-header">
+            <h1><i class="fas fa-user-graduate"></i> English with Fred</h1>
+            <p>برای شروع، لطفاً نام خود را وارد کنید</p>
         </div>
 
-        <header class="app-header">
-            <h1><i class="fas fa-graduation-cap"></i> English with Fred</h1>
-            <div class="score-card">
-                <div class="stars" id="starsContainer">
-                    <i class="far fa-star" data-star="1"></i>
-                    <i class="far fa-star" data-star="2"></i>
-                    <i class="far fa-star" data-star="3"></i>
-                    <i class="far fa-star" data-star="4"></i>
-                    <i class="far fa-star" data-star="5"></i>
-                </div>
-                <div class="best-score">
-                    <i class="fas fa-trophy"></i>
-                    <span>بهترین امتیاز</span>
-                    <strong id="bestScore">0%</strong>
-                </div>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <!-- کادر یادگیری لغات A1 -->
-            <div class="learning-banner" onclick="startA1Learning()">
-                <div class="banner-icon">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <div class="banner-content">
-                    <h3>🎯 یادگیری لغات A1</h3>
-                    <p>۲۰۰ کلمه ضروری برای شروع یادگیری زبان انگلیسی</p>
-                    <div class="progress-info">
-                        <span>📚 سطح A1 • 🏆 ۲۰۰ کلمه</span>
-                    </div>
-                </div>
-                <div class="banner-arrow">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
+        <div class="login-form">
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="usernameInput" placeholder="نام شما" maxlength="20">
             </div>
 
-            <div class="menu-grid">
-                <button class="menu-btn gradient-blue" onclick="startQuiz('english-persian')">
-                    <i class="fas fa-language"></i>
-                    <span>English → Persian</span>
-                </button>
-                
-                <button class="menu-btn gradient-blue" onclick="startQuiz('persian-english')">
-                    <i class="fas fa-exchange-alt"></i>
-                    <span>Persian → English</span>
-                </button>
-                
-                <button class="menu-btn gradient-green" onclick="startQuiz('word-definition')">
-                    <i class="fas fa-book"></i>
-                    <span>Word → Definition</span>
-                </button>
-                
-                <button class="menu-btn gradient-green" onclick="startQuiz('definition-word')">
-                    <i class="fas fa-search"></i>
-                    <span>Definition → Word</span>
-                </button>
-                
-                <button class="menu-btn gradient-orange" onclick="reviewMistakesPage()">
-                    <i class="fas fa-redo"></i>
-                    <span>مرور اشتباهات</span>
-                </button>
-                
-                <button class="menu-btn gradient-purple" onclick="showProgressReport()">
-                    <i class="fas fa-chart-line"></i>
-                    <span>گزارش پیشرفت</span>
-                </button>
-                
-                <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">
-                    <i class="fab fa-whatsapp"></i>
-                    <span>ثبت نام در واتساپ</span>
-                </button>
-                
-                <button class="menu-btn gradient-exit" onclick="showExitOptions()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>خروج / تغییر کاربر</span>
-                </button>
-            </div>
-        </main>
-    </div>
-
-    <!-- صفحه یادگیری لغات A1 -->
-    <div id="learning" class="view">
-        <div class="top-bar">
-            <button class="mute-btn" onclick="toggleGlobalMute()">
-                <i class="fas fa-volume-up"></i>
-            </button>
-            <button class="theme-btn" onclick="toggleTheme()">
-                <i class="fas fa-moon"></i>
-            </button>
-            <div class="user-info">
-                <i class="fas fa-user-circle"></i>
-                <span id="learningUsername">کاربر</span>
-            </div>
-        </div>
-
-        <header class="learning-header">
-            <div class="header-content">
-                <button class="back-btn-small" onclick="switchView('home')">
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-                <h1><i class="fas fa-book-open"></i> یادگیری لغات A1</h1>
-                <div class="learning-progress">
-                    <div class="progress-text">
-                        <span id="currentWordIndex">1</span>/<span id="totalWords">200</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="learningProgressFill" style="width: 0.5%"></div>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="learning-content">
-            <div class="word-card" id="wordCard">
-                <!-- محتوای کارت لغت اینجا نمایش داده می‌شود -->
+            <div class="input-group">
+                <i class="fas fa-id-card"></i>
+                <input type="text" id="studentCode" placeholder="کد زبان‌آموز (اختیاری)" maxlength="10">
             </div>
 
-            <div class="learning-controls">
-                <button class="btn prev-btn" onclick="prevWord()" id="prevBtn" disabled>
-                    <i class="fas fa-arrow-right"></i> لغت قبلی
-                </button>
-                
-                <div class="center-controls">
-                    <button class="icon-btn speak-btn" onclick="speakCurrentWord()" title="تلفظ">
-                        <i class="fas fa-volume-up"></i>
-                    </button>
-                    <button class="icon-btn example-btn" onclick="toggleExample()" title="نمایش/مخفی مثال">
-                        <i class="fas fa-comment-alt"></i>
-                    </button>
-                    <button class="icon-btn mark-btn" onclick="toggleMarkWord()" title="علامت‌گذاری">
-                        <i class="far fa-bookmark"></i>
-                    </button>
-                </div>
-                
-                <button class="btn next-btn" onclick="nextWord()" id="nextBtn">
-                    لغت بعدی <i class="fas fa-arrow-left"></i>
-                </button>
-            </div>
-
-            <div class="learning-actions">
-                <button class="btn practice-btn" onclick="startPractice()">
-                    <i class="fas fa-play-circle"></i> تمرین این لغت
-                </button>
-                <button class="btn finish-btn" onclick="finishLearning()">
-                    <i class="fas fa-flag-checkered"></i> اتمام یادگیری و آزمون
-                </button>
-            </div>
-        </main>
-    </div>
-
-    <!-- صفحه آزمون -->
-    <div id="quiz" class="view">
-        <div class="quiz-top-bar">
-            <div class="quiz-user">
-                <i class="fas fa-user-circle"></i>
-                <span id="quizUsername">کاربر</span>
-            </div>
-        </div>
-
-        <header class="quiz-header">
-            <div class="quiz-info">
-                <div class="quiz-progress">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <div class="quiz-stats">
-                        <span class="stat">
-                            <i class="fas fa-question-circle"></i>
-                            <span id="currentQuestion">1</span>/<span id="totalQuestions">10</span>
-                        </span>
-                        <span class="stat">
-                            <i class="fas fa-star"></i>
-                            <span id="quizScore">0</span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <main class="quiz-content">
-            <div class="question-card">
-                <button class="question-speak-btn" id="questionSpeakBtn" onclick="speakCurrentQuestion()">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-                <div class="question-header">
-                    <div id="questionText" class="question-text">
-                        سوال اینجا نمایش داده می‌شود
-                    </div>
-                </div>
-            </div>
-
-            <div class="options-container" id="quizOptions">
-                <!-- گزینه‌ها توسط جاوااسکریپت ساخته می‌شوند -->
-            </div>
-
-            <div class="quiz-actions">
-                <button class="btn back-btn" onclick="confirmExitQuiz()">
-                    <i class="fas fa-arrow-right"></i> بازگشت
-                </button>
-            </div>
-        </main>
-    </div>
-
-    <!-- صفحه نتایج -->
-    <div id="results" class="view">
-        <div class="top-bar">
-            <button class="mute-btn" id="resultsMuteBtn">
-                <i class="fas fa-volume-up"></i>
-            </button>
-            <button class="theme-btn" id="resultsThemeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
-            <div class="user-info">
-                <i class="fas fa-user-circle"></i>
-                <span id="resultsUsername">کاربر</span>
-            </div>
-        </div>
-
-        <header class="results-header">
-            <h2><i class="fas fa-flag-checkered"></i> پایان آزمون</h2>
-        </header>
-
-        <main class="results-content">
-            <div class="result-card">
-                <div class="result-icon">
-                    <i class="fas fa-medal"></i>
-                </div>
-                <div class="result-score">
-                    <span id="finalScore">85%</span>
-                    <small>امتیاز شما</small>
-                </div>
-                
-                <div class="result-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">پاسخ صحیح</span>
-                        <span class="stat-value" id="correctCount">8</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">کل سوالات</span>
-                        <span class="stat-value" id="totalCount">10</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">بهترین امتیاز</span>
-                        <span class="stat-value" id="bestResult">90%</span>
-                    </div>
-                </div>
-
-                <div class="result-time">
-                    <i class="far fa-clock"></i>
-                    <span id="resultTimeText">--:--</span>
-                </div>
-            </div>
-
-            <div class="results-actions">
-                <button class="btn restart-btn" onclick="switchView('home')">
-                    <i class="fas fa-home"></i> صفحه اصلی
-                </button>
-                <button class="btn review-btn" onclick="reviewMistakesPage()">
-                    <i class="fas fa-eye"></i> مرور اشتباهات
-                </button>
-            </div>
-        </main>
-    </div>
-
-    <!-- صفحه مرور اشتباهات -->
-    <div id="mistakes" class="view">
-        <div class="top-bar">
-            <button class="mute-btn" onclick="toggleGlobalMute()">
-                <i class="fas fa-volume-up"></i>
-            </button>
-            <button class="theme-btn" onclick="toggleTheme()">
-                <i class="fas fa-moon"></i>
-            </button>
-            <div class="user-info">
-                <i class="fas fa-user-circle"></i>
-                <span id="mistakesUsername">کاربر</span>
-            </div>
-        </div>
-
-        <header class="app-header">
-            <h1><i class="fas fa-redo"></i> مرور اشتباهات</h1>
-            <div class="score-card">
-                <div class="best-score">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <span>تعداد اشتباهات</span>
-                    <strong id="mistakesCount">0</strong>
-                </div>
-            </div>
-        </header>
-
-        <main class="main-content">
-            <div class="mistakes-list" id="mistakesList">
-                <!-- اشتباهات اینجا نمایش داده می‌شوند -->
-            </div>
-
-            <div class="mistakes-actions">
-                <button class="btn gradient-green" onclick="practiceMistakes()">
-                    <i class="fas fa-play"></i> تمرین اشتباهات
-                </button>
-                <button class="btn gradient-orange" onclick="clearAllMistakes()">
-                    <i class="fas fa-trash"></i> پاک کردن همه
-                </button>
-                <button class="btn back-btn" onclick="switchView('home')">
-                    <i class="fas fa-arrow-right"></i> بازگشت
-                </button>
-            </div>
-        </main>
-    </div>
-
-    <!-- اعلان‌ها -->
-    <div id="notification" class="notification"></div>
-
-    <!-- بنر نصب PWA -->
-    <div id="installBanner" class="install-banner">
-        <div class="banner-content">
-            <i class="fas fa-download"></i>
-            <div class="banner-text">
-                <strong>📱 نصب برنامه English with Fred</strong>
-                <small>برای دسترسی سریع‌تر و تجربه بهتر</small>
-            </div>
-            <button class="install-btn" onclick="installPWA()">
-                <i class="fas fa-download"></i> نصب
-            </button>
-            <button class="close-banner" onclick="hideInstallBanner()">
-                <i class="fas fa-times"></i>
+            <button class="btn login-btn" onclick="saveUserInfo()">
+                <i class="fas fa-play-circle"></i> شروع یادگیری
             </button>
         </div>
     </div>
+</div>
 
-    <!-- اسکریپت‌ها -->
-    <script src="words.js"></script>
-    <script src="a1-words.js"></script> <!-- فایل جدید لغات A1 -->
-    <script src="quiz-engine.js"></script>
-    <script src="telegram-integration.js"></script>
-    <script src="install-promotion.js"></script>
-    <script src="learning-engine.js"></script> <!-- فایل جدید برای سیستم یادگیری -->
-    <script src="app.js"></script>
-    
-    <!-- PWA Service Worker -->
-    <script>
-        // ثبت Service Worker برای PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('service-worker.js')
-                    .then(function(registration) {
-                        console.log('✅ Service Worker ثبت شد با اسکوپ: ', registration.scope);
-                    })
-                    .catch(function(error) {
-                        console.log('❌ ثبت Service Worker با خطا مواجه شد: ', error);
-                    });
-            });
-        }
-    </script>
+<!-- HOME -->
+<div id="home" class="view">
+    <div class="top-bar">
+        <button class="mute-btn" onclick="toggleGlobalMute()">
+            <i class="fas fa-volume-up"></i>
+        </button>
+
+        <div class="user-info">
+            <i class="fas fa-user-circle"></i>
+            <span id="currentUsername">کاربر</span>
+        </div>
+
+        <button class="theme-btn" onclick="toggleTheme()">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <header class="app-header">
+        <h1><i class="fas fa-graduation-cap"></i> English with Fred</h1>
+        <div class="score-card">
+            <div class="stars" id="starsContainer">
+                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                <i class="far fa-star"></i><i class="far fa-star"></i>
+            </div>
+            <div class="best-score">
+                <i class="fas fa-trophy"></i>
+                <span>بهترین امتیاز</span>
+                <strong id="bestScore">0%</strong>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="learning-banner" onclick="startA1Learning()">
+            <div class="banner-icon"><i class="fas fa-book-open"></i></div>
+            <div class="banner-content">
+                <h3>یادگیری لغات A1</h3>
+                <p>۲۰۰ لغت ضروری</p>
+            </div>
+            <div class="banner-arrow"><i class="fas fa-arrow-left"></i></div>
+        </div>
+
+        <div class="menu-grid">
+            <button class="menu-btn gradient-blue" onclick="startQuiz('en-fa')">English → Persian</button>
+            <button class="menu-btn gradient-blue" onclick="startQuiz('fa-en')">Persian → English</button>
+            <button class="menu-btn gradient-green" onclick="startQuiz('word-def')">Word → Definition</button>
+            <button class="menu-btn gradient-green" onclick="startQuiz('def-word')">Definition → Word</button>
+            <button class="menu-btn gradient-orange" onclick="reviewMistakesPage()">مرور اشتباهات</button>
+            <button class="menu-btn gradient-purple" onclick="showProgressReport()">گزارش پیشرفت</button>
+            <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">واتساپ</button>
+            <button class="menu-btn gradient-exit" onclick="showExitOptions()">خروج</button>
+        </div>
+    </main>
+</div>
+
+<!-- LEARNING / QUIZ / RESULTS / MISTAKES -->
+<!-- بدون تغییر ساختاری، فقط CSS و JS کنترل می‌کنند -->
+
+<script src="words.js"></script>
+<script src="a1-words.js"></script>
+<script src="quiz-engine.js"></script>
+<script src="learning-engine.js"></script>
+<script src="app.js"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+    });
+}
+</script>
+
 </body>
 </html>
