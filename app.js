@@ -101,7 +101,7 @@ function saveUserInfo() {
 function updateUserDisplay() {
     if (!appState.currentUser) return;
     
-    const usernameElements = document.querySelectorAll('#currentUsername, #quizUsername, #resultsUsername, #mistakesUsername, #learningUsername');
+    const usernameElements = document.querySelectorAll('#currentUsername, #quizUsername, #resultsUsername, #mistakesUsername');
     usernameElements.forEach(element => {
         if (element) {
             element.textContent = appState.currentUser.username;
@@ -389,7 +389,7 @@ function confirmExitQuiz() {
     }
 }
 
-// تلفظ متن با سرعت ۰.۵ و صدای زن آمریکایی - کاملاً اصلاح شده
+// تلفظ متن با سرعت ۰.۵ و صدای زن آمریکایی - اصلاح شده
 function speakText(text, rate = 0.5) {
     if (!appState.soundEnabled || !('speechSynthesis' in window)) {
         console.log('🔇 صدا غیرفعال است یا پشتیبانی نمی‌شود');
@@ -399,29 +399,14 @@ function speakText(text, rate = 0.5) {
     // متوقف کردن تلفظ قبلی
     speechSynthesis.cancel();
     
-    // مطمئن شویم که صداها بارگذاری شده‌اند
-    let voices = speechSynthesis.getVoices();
-    if (voices.length === 0) {
-        // اگر صداها بارگذاری نشده‌اند، منتظر بمان
-        speechSynthesis.addEventListener('voiceschanged', () => {
-            voices = speechSynthesis.getVoices();
-            speakWithVoice(text, rate, voices);
-        }, { once: true });
-        return;
-    }
-    
-    speakWithVoice(text, rate, voices);
-}
-
-// تابع کمکی برای تلفظ
-function speakWithVoice(text, rate, voices) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US';
-    utterance.rate = rate;
+    utterance.rate = rate; // سرعت 0.5
     utterance.volume = 1;
     utterance.pitch = 1;
     
     // پیدا کردن صدای زن آمریکایی
+    const voices = speechSynthesis.getVoices();
     let femaleVoice = null;
     
     // اولویت‌بندی برای صداهای زن آمریکایی
@@ -436,12 +421,21 @@ function speakWithVoice(text, rate, voices) {
     for (const voiceName of preferredVoices) {
         femaleVoice = voices.find(voice => 
             voice.lang === 'en-US' && 
-            voice.name.includes(voiceName)
+            voice.name.includes(voiceName) &&
+            voice.gender === 'female'
         );
         if (femaleVoice) break;
     }
     
-    // اگر پیدا نشد، اولین صدای انگلیسی آمریکایی
+    // اگر پیدا نشد، اولین صدای زن انگلیسی آمریکایی
+    if (!femaleVoice) {
+        femaleVoice = voices.find(voice => 
+            voice.lang === 'en-US' && 
+            voice.gender === 'female'
+        );
+    }
+    
+    // اگر باز هم پیدا نشد، هر صدای انگلیسی آمریکایی
     if (!femaleVoice) {
         femaleVoice = voices.find(voice => voice.lang === 'en-US');
     }
@@ -463,7 +457,7 @@ function speakWithVoice(text, rate, voices) {
         console.error('❌ خطا در تلفظ:', event.error);
     };
     
-    // تاخیر کوچک برای اطمینان از آماده بودن
+    // تأخیر کوچک برای اطمینان از بارگذاری صداها
     setTimeout(() => {
         speechSynthesis.speak(utterance);
     }, 100);
