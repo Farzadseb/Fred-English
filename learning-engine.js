@@ -79,7 +79,7 @@ function findFemaleVoice(voices) {
 // تلفظ متن با تنظیمات ویژه
 function speakText(text, rate = 0.5) {
     if (!window.appState?.soundEnabled) {
-        showNotification('🔇 لطفاً ابتدا صدا را فعال کنید', 'warning');
+        showNotification('🎧 Please enable sound from top-right speaker button', 'info');
         return;
     }
     
@@ -184,7 +184,7 @@ function displayCurrentWord() {
     // بررسی آیا لغت نشان شده است
     const isMarked = learningState.markedWords.includes(word.id);
     
-    // ساختار کارت لغت
+    // ساختار کامل کلمه
     wordCard.innerHTML = `
         <div class="word-header">
             <div class="word-main">
@@ -195,6 +195,9 @@ function displayCurrentWord() {
                     <button class="speak-word-btn" onclick="speakCurrentWord()" title="تلفظ کلمه">
                         <i class="fas fa-volume-up"></i>
                     </button>
+                    <button class="repeat-all-btn" onclick="repeatAllPronunciation()" title="تکرار همه">
+                        <i class="fas fa-redo"></i> تکرار
+                    </button>
                 </div>
             </div>
             <div class="word-difficulty">
@@ -204,65 +207,95 @@ function displayCurrentWord() {
             </div>
         </div>
         
+        <!-- مثال -->
         <div class="word-section">
             <div class="section-title">
                 <i class="fas fa-comment-alt"></i>
                 <span>مثال</span>
+                <button class="small-speaker-btn" onclick="speakText('${escapeText(word.example)}')">
+                    <i class="fas fa-volume-up"></i>
+                </button>
             </div>
-            <div class="example-content" id="exampleContent" style="display: ${learningState.showExample ? 'block' : 'none'}">
+            <div class="example-content">
                 <div class="english-sentence">
-                    <button class="sentence-speaker-btn" onclick="speakSentence('${escapeText(word.example)}')" title="تلفظ جمله">
+                    <button class="sentence-speaker-btn" onclick="speakText('${escapeText(word.example)}')" title="تلفظ جمله">
                         <i class="fas fa-volume-up"></i>
                     </button>
-                    ${word.example || 'No example available'}
+                    <span class="english-text">${word.example || 'No example available'}</span>
                 </div>
                 <div class="example-persian">${word.examplePersian || 'ترجمه فارسی'}</div>
             </div>
         </div>
         
+        <!-- Collocation با مثال و معنی -->
+        ${word.collocation ? `
+        <div class="word-section">
+            <div class="section-title">
+                <i class="fas fa-link"></i>
+                <span>Collocation</span>
+                <button class="small-speaker-btn" onclick="speakCollocation()">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+            <div class="collocation-content">
+                <div class="collocation-english">${word.collocation.text || word.collocation}</div>
+                ${word.collocation.example ? `
+                <div class="collocation-example">
+                    <em>Example:</em> ${word.collocation.example}
+                    <button class="tiny-speaker-btn" onclick="speakText('${escapeText(word.collocation.example)}')">
+                        <i class="fas fa-volume-up fa-xs"></i>
+                    </button>
+                </div>` : ''}
+                ${word.collocation.meaning ? `
+                <div class="collocation-meaning">
+                    <em>Meaning:</em> ${word.collocation.meaning}
+                </div>` : ''}
+            </div>
+        </div>
+        ` : ''}
+        
+        <!-- Phrasal Verbs با مثال و معنی -->
+        ${word.phrasalVerbs && word.phrasalVerbs.length > 0 ? `
+        <div class="word-section">
+            <div class="section-title">
+                <i class="fas fa-bolt"></i>
+                <span>Phrasal Verbs</span>
+                <button class="small-speaker-btn" onclick="speakPhrasalVerbs()">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+            <div class="phrasal-verbs-list">
+                ${word.phrasalVerbs.map((pv, index) => `
+                <div class="phrasal-verb-item">
+                    <div class="phrasal-verb">${pv.verb || pv.english}</div>
+                    <div class="phrasal-meaning">${pv.meaning || pv.persian}</div>
+                    ${pv.example ? `
+                    <div class="phrasal-example">
+                        <em>Example:</em> ${pv.example}
+                        <button class="tiny-speaker-btn" onclick="speakText('${escapeText(pv.example)}')">
+                            <i class="fas fa-volume-up fa-xs"></i>
+                        </button>
+                    </div>` : ''}
+                </div>
+                `).join('')}
+            </div>
+        </div>
+        ` : ''}
+        
+        <!-- تعریف انگلیسی سطح A1 -->
         <div class="word-section">
             <div class="section-title">
                 <i class="fas fa-book"></i>
-                <span>تعریف</span>
+                <span>تعریف انگلیسی (A1)</span>
+                <button class="small-speaker-btn" onclick="speakText('${escapeText(word.definitionA1 || word.definition)}')">
+                    <i class="fas fa-volume-up"></i>
+                </button>
             </div>
-            <div class="definition-content">${word.definition || 'تعریف'}</div>
+            <div class="definition-content">
+                ${word.definitionA1 || word.definition || 'Definition'}
+            </div>
         </div>
     `;
-    
-    // اضافه کردن Collocation اگر وجود دارد
-    if (word.collocation) {
-        wordCard.innerHTML += `
-            <div class="collocation-section">
-                <div class="section-title">
-                    <i class="fas fa-link"></i>
-                    <span>ترکیبات رایج (Collocation)</span>
-                </div>
-                <div class="collocation-content">${word.collocation}</div>
-            </div>
-        `;
-    }
-    
-    // اضافه کردن Phrasal Verbs اگر وجود دارد
-    if (word.phrasalVerbs && word.phrasalVerbs.length > 0) {
-        const phrasalVerbsHTML = word.phrasalVerbs.map(pv => `
-            <div class="phrasal-verb-item">
-                <div class="phrasal-verb">${pv.verb || pv.english}</div>
-                <div class="phrasal-meaning">${pv.meaning || pv.persian}</div>
-            </div>
-        `).join('');
-        
-        wordCard.innerHTML += `
-            <div class="phrasal-verbs-section">
-                <div class="section-title">
-                    <i class="fas fa-bolt"></i>
-                    <span>افعال عبارتی (Phrasal Verbs)</span>
-                </div>
-                <div class="phrasal-verbs-list">
-                    ${phrasalVerbsHTML}
-                </div>
-            </div>
-        `;
-    }
     
     // اضافه کردن کلاس marked اگر لغت نشان شده باشد
     if (isMarked) {
@@ -279,12 +312,12 @@ function displayCurrentWord() {
     // به‌روزرسانی اطلاعات صفحه
     updateLearningInfo();
     
-    // پخش خودکار تلفظ لغت
-    if (window.appState?.soundEnabled) {
-        setTimeout(() => {
+    // تلفظ خودکار لغت اصلی (همیشه)
+    setTimeout(() => {
+        if (window.appState?.soundEnabled) {
             speakText(word.english, 0.5);
-        }, 800);
-    }
+        }
+    }, 500);
 }
 
 // تابع escape برای متن
@@ -311,6 +344,73 @@ function speakSentence(text) {
     }
     
     speakText(text, 0.5);
+}
+
+// تابع تکرار همه
+function repeatAllPronunciation() {
+    const word = A1Words.words[learningState.currentWordIndex];
+    
+    // 1. تلفظ کلمه اصلی
+    speakText(word.english, 0.5);
+    
+    // 2. تلفظ مثال (با تاخیر)
+    if (word.example && word.example !== 'No example available') {
+        setTimeout(() => {
+            speakText(word.example, 0.5);
+        }, 1500);
+    }
+    
+    // 3. تلفظ Collocation (با تاخیر)
+    if (word.collocation) {
+        setTimeout(() => {
+            const collocText = word.collocation.text || word.collocation;
+            speakText(collocText, 0.5);
+            
+            // اگر مثال دارد
+            if (word.collocation.example) {
+                setTimeout(() => {
+                    speakText(word.collocation.example, 0.5);
+                }, 1500);
+            }
+        }, 3000);
+    }
+    
+    // 4. تلفظ Phrasal Verbs (با تاخیر)
+    if (word.phrasalVerbs && word.phrasalVerbs.length > 0) {
+        word.phrasalVerbs.forEach((pv, index) => {
+            setTimeout(() => {
+                speakText(pv.verb || pv.english, 0.5);
+                
+                // اگر مثال دارد
+                if (pv.example) {
+                    setTimeout(() => {
+                        speakText(pv.example, 0.5);
+                    }, 1500);
+                }
+            }, 4500 + (index * 2500));
+        });
+    }
+}
+
+// تلفظ Collocation
+function speakCollocation() {
+    const word = A1Words.words[learningState.currentWordIndex];
+    if (word.collocation) {
+        const text = word.collocation.text || word.collocation;
+        speakText(text, 0.5);
+    }
+}
+
+// تلفظ Phrasal Verbs
+function speakPhrasalVerbs() {
+    const word = A1Words.words[learningState.currentWordIndex];
+    if (word.phrasalVerbs && word.phrasalVerbs.length > 0) {
+        word.phrasalVerbs.forEach((pv, index) => {
+            setTimeout(() => {
+                speakText(pv.verb || pv.english, 0.5);
+            }, index * 1500);
+        });
+    }
 }
 
 // نمایش/مخفی کردن مثال
@@ -574,5 +674,8 @@ window.prevWord = prevWord;
 window.startPractice = startPractice;
 window.finishLearning = finishLearning;
 window.speakText = speakText;
+window.repeatAllPronunciation = repeatAllPronunciation;
+window.speakCollocation = speakCollocation;
+window.speakPhrasalVerbs = speakPhrasalVerbs;
 
 console.log('✅ Learning Engine آماده است');
