@@ -2,32 +2,26 @@
 /* VARIABLES - رنگ آبی جدید */
 /* ======================= */
 :root {
-    /* رنگ‌های اصلی - تغییر از بنفش به آبی */
+    /* رنگ‌های اصلی */
     --primary-color: #3b82f6;
     --primary-dark: #1d4ed8;
     --primary-light: #60a5fa;
     --secondary-color: #0ea5e9;
     --accent-color: #f59e0b;
     
-    /* گرادینت‌های آبی جدید */
+    /* گرادینت‌ها */
     --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%);
     --gradient-green: linear-gradient(135deg, #10b981 0%, #059669 100%);
     --gradient-orange: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     --gradient-whatsapp: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
     --gradient-exit: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    --gradient-back: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    
-    /* رنگ‌های نرم آبی */
-    --soft-blue: rgba(59, 130, 246, 0.9);
-    --soft-green: rgba(46, 204, 113, 0.9);
-    --soft-gradient: linear-gradient(135deg, var(--soft-blue) 0%, var(--soft-green) 100%);
     
     /* رنگ‌های زمینه */
     --bg-light: #f8fafc;
-    --bg-dark: #1a202c;
+    --bg-dark: #2d3748; /* روشن‌تر برای تم شب */
     --card-light: #ffffff;
-    --card-dark: #2d3748;
+    --card-dark: #4a5568; /* روشن‌تر */
     
     /* رنگ‌های متن */
     --text-light: #1e293b;
@@ -39,55 +33,54 @@
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
     --shadow-primary: 0 4px 20px rgba(59, 130, 246, 0.3);
-    --shadow-ios: 0 10px 20px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.35);
     
-    /* گوشه‌ها */
+    /* گوشه‌های گرد - جدید */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 20px;
+    --radius-full: 9999px;
+    
+    /* انیمیشن‌ها */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
 }
 
 /* ======================= */
-/* RESET & BASE STYLES */
+/* ANIMATIONS - جدید */
 /* ======================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
-html {
-    scroll-behavior: smooth;
-    height: 100%;
-    overflow: hidden;
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
-body {
-    font-family: 'Vazirmatn', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    min-height: 100vh;
-    background: var(--bg-light);
-    color: var(--text-light);
-    transition: background-color 0.3s, color 0.3s;
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
-    height: 100%;
-    overflow: hidden;
-}
-
-body.dark-theme {
-    background: var(--bg-dark);
-    color: var(--text-dark);
-}
-
-body.light-theme {
-    background: var(--bg-light);
-    color: var(--text-light);
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
 }
 
 /* ======================= */
-/* LOGIN PAGE - کاملاً اصلاح شده */
+/* LOGIN PAGE - جدید با دسته گل */
 /* ======================= */
 .login-container {
     max-width: 320px;
@@ -99,6 +92,64 @@ body.light-theme {
     justify-content: center;
     align-items: center;
     text-align: center;
+    animation: slideInFromRight 3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.login-container::after {
+    content: '';
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.flower-animation {
+    position: absolute;
+    top: 20%;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    z-index: -1;
+}
+
+.flower-animation i {
+    font-size: 24px;
+    color: #10b981;
+    animation: float 3s ease-in-out infinite;
+}
+
+.flower-animation i:nth-child(1) {
+    animation-delay: 0s;
+    color: #10b981;
+}
+
+.flower-animation i:nth-child(2) {
+    animation-delay: 1s;
+    color: #3b82f6;
+}
+
+.flower-animation i:nth-child(3) {
+    animation-delay: 2s;
+    color: #8b5cf6;
 }
 
 .login-header {
@@ -115,14 +166,11 @@ body.light-theme {
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    text-align: center;
-    width: 100%;
 }
 
 .login-header p {
     color: var(--text-muted);
     font-size: 0.95rem;
-    text-align: center;
 }
 
 .login-form {
@@ -159,12 +207,6 @@ body.light-theme {
     background: white;
 }
 
-.light-theme .input-group input {
-    background: white;
-    border-color: #e2e8f0;
-    color: var(--text-light);
-}
-
 .dark-theme .input-group input {
     background: var(--card-dark);
     border-color: #4a5568;
@@ -178,7 +220,7 @@ body.light-theme {
 }
 
 .login-btn {
-    background: var(--soft-gradient);
+    background: var(--gradient-primary);
     border: none;
     border-radius: var(--radius-lg);
     color: white;
@@ -225,8 +267,449 @@ body.light-theme {
 }
 
 /* ======================= */
-/* LAYOUT & CONTAINERS */
+/* جملات انگلیسی چپ‌چین - جدید */
 /* ======================= */
+.english-sentence {
+    text-align: left !important;
+    direction: ltr !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    padding-left: 35px; /* فضای برای دکمه بلندگو */
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.english-sentence::after {
+    content: "." !important;
+    color: inherit !important;
+}
+
+.sentence-speaker-btn {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(59, 130, 246, 0.1);
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    color: var(--primary-color);
+    font-size: 14px;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.sentence-speaker-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* ======================= */
+/* کادرهای مرور اشتباهات - ارتفاع دو برابر */
+/* ======================= */
+.mistakes-list > div {
+    background: white;
+    border-radius: var(--radius-xl) !important; /* گوشه‌های گرد */
+    padding: 25px;
+    margin-bottom: 15px;
+    box-shadow: var(--shadow-md);
+    border: 2px solid rgba(59, 130, 246, 0.1);
+    height: 120px !important; /* ارتفاع دو برابر */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.dark-theme .mistakes-list > div {
+    background: var(--card-dark);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.mistakes-list > div:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.mistakes-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.mistakes-actions .btn {
+    height: 70px !important; /* ارتفاع بیشتر */
+    border-radius: var(--radius-xl) !important;
+    font-size: 1.1rem !important;
+    font-weight: 600;
+}
+
+/* ======================= */
+/* کوچک کردن کادرهای بالا - 20% */
+/* ======================= */
+.top-bar {
+    height: 60px !important; /* 20% کوچکتر */
+    padding: 0.6rem 0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.app-header {
+    min-height: 100px !important; /* 20% کوچکتر */
+    padding: 0.8rem !important;
+    margin-bottom: 0.8rem !important;
+}
+
+/* دکمه‌های بزرگتر لغت بعدی/قبلی */
+.prev-btn, .next-btn {
+    min-height: 70px !important;
+    font-size: 1.1rem !important;
+    border-radius: var(--radius-xl) !important;
+    padding: 0 1.5rem !important;
+}
+
+.practice-btn, .finish-btn {
+    height: 80px !important;
+    font-size: 1.2rem !important;
+    border-radius: var(--radius-xl) !important;
+    font-weight: 600;
+}
+
+/* ======================= */
+/* تم شب روشن */
+/* ======================= */
+.dark-theme {
+    background: #2d3748 !important; /* روشن‌تر از سیاه کامل */
+    color: #e2e8f0 !important;
+}
+
+.dark-theme .word-card,
+.dark-theme .question-card,
+.dark-theme .result-card,
+.dark-theme .stat-card,
+.dark-theme .chart-card,
+.dark-theme .recent-activity {
+    background: #4a5568 !important; /* روشن‌تر */
+    border-color: #718096 !important;
+}
+
+/* ======================= */
+/* گوشه‌های گرد برای همه چیز */
+/* ======================= */
+.menu-btn, .word-card, .question-card, .result-card,
+.mistakes-list > div, .login-container, .option-btn,
+.stat-card, .chart-card, .recent-activity,
+.learning-banner, .progress-bar, .btn,
+.input-group input, .notification {
+    border-radius: var(--radius-lg) !important;
+}
+
+.icon-btn, .mute-btn, .theme-btn, .question-speak-btn,
+.sentence-speaker-btn, .speak-word-btn {
+    border-radius: 50% !important;
+}
+
+/* ======================= */
+/* نمودار پیشرفت - جدید */
+/* ======================= */
+.chart-container {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: var(--shadow-lg);
+    border: 2px solid rgba(59, 130, 246, 0.1);
+}
+
+.dark-theme .chart-container {
+    background: var(--card-dark);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.progress-content {
+    padding: 1rem;
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-theme .stat-card {
+    background: var(--card-dark);
+}
+
+.stat-card i {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.chart-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.dark-theme .chart-card {
+    background: var(--card-dark);
+}
+
+.chart-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.recent-activity {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+}
+
+.dark-theme .recent-activity {
+    background: var(--card-dark);
+}
+
+.recent-activity h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: var(--radius-lg);
+}
+
+.dark-theme .activity-item {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.activity-item i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+}
+
+.activity-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* ======================= */
+/* Phrasal Verbs & Collocations - جدید */
+/* ======================= */
+.phrasal-verbs-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.dark-theme .phrasal-verbs-section {
+    border-top-color: #4a5568;
+}
+
+.phrasal-verb-item {
+    background: rgba(245, 158, 11, 0.05);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.dark-theme .phrasal-verb-item {
+    background: rgba(245, 158, 11, 0.1);
+}
+
+.phrasal-verb {
+    font-weight: 600;
+    color: #f59e0b;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.phrasal-meaning {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.collocation-section {
+    background: rgba(16, 185, 129, 0.05);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.dark-theme .collocation-section {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+/* ======================= */
+/* iPhone Friendly */
+/* ======================= */
+@media (max-width: 480px) {
+    .btn, .menu-btn, .option-btn {
+        min-height: 60px !important;
+        padding: 15px !important;
+        border-radius: var(--radius-lg) !important;
+    }
+    
+    .icon-btn {
+        width: 60px !important;
+        height: 60px !important;
+        border-radius: 50% !important;
+    }
+    
+    .progress-stats {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .flower-animation {
+        display: none;
+    }
+    
+    .english-sentence {
+        padding-left: 40px;
+        font-size: 1rem;
+    }
+    
+    .sentence-speaker-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .mistakes-list > div {
+        height: 100px !important;
+        padding: 20px;
+    }
+    
+    .mistakes-actions .btn {
+        height: 60px !important;
+        font-size: 1rem !important;
+    }
+}
+
+/* ======================= */
+/* دکمه تلگرام */
+/* ======================= */
+.telegram-btn {
+    background: linear-gradient(135deg, #0088cc 0%, #006699 100%);
+    color: white;
+    border: none;
+}
+
+.telegram-btn:hover {
+    background: linear-gradient(135deg, #006699 0%, #004466 100%);
+}
+
+.progress-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.progress-actions .btn {
+    flex: 1;
+}
+
+/* ======================= */
+/* بقیه استایل‌های اصلی */
+/* ======================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: 'Vazirmatn', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    background: var(--bg-light);
+    color: var(--text-light);
+    transition: background-color 0.3s, color 0.3s;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+    height: 100%;
+    overflow: hidden;
+}
+
+body.dark-theme {
+    background: var(--bg-dark);
+    color: var(--text-dark);
+}
+
 .view {
     display: none;
     min-height: 100vh;
@@ -241,66 +724,7 @@ body.light-theme {
     display: block;
 }
 
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem 0;
-    margin-bottom: 0.8rem;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: var(--primary-color);
-    font-weight: 600;
-    padding: 0.4rem 0.8rem;
-    background: rgba(59, 130, 246, 0.1);
-    border-radius: var(--radius-md);
-    font-size: 0.88rem;
-}
-
-.light-theme .user-info {
-    background: rgba(59, 130, 246, 0.08);
-}
-
-.dark-theme .user-info {
-    background: rgba(59, 130, 246, 0.2);
-}
-
-/* ======================= */
-/* دکمه‌های بلندگو و تم */
-/* ======================= */
-.mute-btn, .theme-btn, .question-speak-btn {
-    width: 38.4px;
-    height: 38.4px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--primary-color);
-    font-size: 0.96rem;
-    border: 2px solid rgba(59, 130, 246, 0.2);
-    cursor: pointer;
-}
-
-.light-theme .mute-btn,
-.light-theme .theme-btn,
-.light-theme .question-speak-btn {
-    background: rgba(59, 130, 246, 0.08);
-    border-color: rgba(59, 130, 246, 0.15);
-}
-
-.mute-btn:hover, .theme-btn:hover, .question-speak-btn:hover {
-    background: rgba(59, 130, 246, 0.2);
-    transform: translateY(-2px);
-}
-
-/* ======================= */
-/* MENU - اصلاح شده برای نمایش دکمه خروج */
-/* ======================= */
+/* منو */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -339,14 +763,10 @@ body.light-theme {
     box-shadow: var(--shadow-lg);
 }
 
-/* استایل‌های باقی‌مانده برای دکمه‌ها */
 .gradient-blue { background: var(--gradient-blue); }
 .gradient-green { background: var(--gradient-green); }
 .gradient-orange { background: var(--gradient-orange); }
-.gradient-purple { 
-    background: var(--gradient-primary);
-    display: flex !important;
-}
+.gradient-purple { background: var(--gradient-primary); }
 .gradient-whatsapp { background: var(--gradient-whatsapp); }
 .gradient-exit { 
     background: var(--gradient-exit);
@@ -355,258 +775,157 @@ body.light-theme {
     margin-top: 0.5rem;
 }
 
-/* ======================= */
-/* HEADERS & CARDS */
-/* ======================= */
-.app-header {
-    background: var(--gradient-primary);
-    color: white;
-    padding: 1.2rem;
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-    box-shadow: var(--shadow-primary);
-    margin-bottom: 1rem;
-    text-align: center;
-    min-height: 130px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.app-header h1 {
-    font-size: 1.44rem;
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-}
-
-.score-card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: var(--radius-md);
-    padding: 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.stars {
-    display: flex;
-    gap: 0.4rem;
-    margin-bottom: 0.5rem;
-    justify-content: center;
-}
-
-.stars i {
-    font-size: 1.2rem;
-    color: #fbbf24;
-}
-
-.best-score {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.88rem;
-    justify-content: center;
-}
-
-.best-score i {
-    color: #fbbf24;
-}
-
-.best-score strong {
-    font-size: 1.04rem;
-    margin-right: 0.4rem;
-}
-
-/* ======================= */
-/* QUIZ STYLES - اصلاح شده */
-/* ======================= */
-.quiz-content {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 180px);
-}
-
-.question-card {
+/* کارت لغت */
+.word-card {
     background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.5rem;
+    border-radius: var(--radius-xl);
+    padding: 1.8rem;
     margin-bottom: 1.5rem;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
     border: 2px solid rgba(59, 130, 246, 0.1);
-    position: relative;
 }
 
-.light-theme .question-card {
-    background: white;
-}
-
-.dark-theme .question-card {
+.dark-theme .word-card {
     background: var(--card-dark);
     border-color: rgba(59, 130, 246, 0.3);
 }
 
-.question-speak-btn {
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
+.word-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
 }
 
-.question-text {
-    font-size: 1.2rem;
+.word-main {
+    flex: 1;
+}
+
+.word-english {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+}
+
+.word-persian {
+    font-size: 1.3rem;
+    color: var(--text-muted);
     font-weight: 600;
-    text-align: center;
-    padding: 1rem 0;
-    margin-right: 2.5rem;
-    min-height: 80px;
+}
+
+.word-pronunciation {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-top: 0.5rem;
+}
+
+.speak-word-btn {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+    border: 2px solid rgba(59, 130, 246, 0.2);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.options-container {
-    display: grid;
-    gap: 0.8rem;
-    margin-bottom: 1.6rem;
-}
-
-.option-btn {
-    padding: 1rem;
-    background: white;
-    border: 2px solid #e2e8f0;
-    border-radius: var(--radius-md);
-    font-size: 0.88rem;
-    text-align: right;
+    cursor: pointer;
     transition: all 0.3s;
-    min-height: 60px;
+}
+
+.speak-word-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    transform: scale(1.05);
+}
+
+.word-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.dark-theme .word-section {
+    border-top-color: #4a5568;
+}
+
+.section-title {
     display: flex;
     align-items: center;
-    justify-content: right;
-    word-break: break-word;
-    overflow-wrap: break-word;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+}
+
+.section-title i {
+    font-size: 0.9rem;
+}
+
+.example-content {
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.dark-theme .example-content {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.example-persian {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding-right: 0.5rem;
+    border-right: 3px solid var(--primary-color);
+    margin-top: 0.5rem;
+}
+
+/* کنترل‌های یادگیری */
+.learning-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.center-controls {
+    display: flex;
+    gap: 1rem;
+}
+
+.icon-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary-color);
+    border: 2px solid rgba(59, 130, 246, 0.2);
     cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s;
 }
 
-.light-theme .option-btn {
-    background: white;
-    border-color: #e2e8f0;
-    color: var(--text-light);
-}
-
-.dark-theme .option-btn {
-    background: var(--card-dark);
-    border-color: #4a5568;
-    color: var(--text-dark);
-}
-
-.option-btn:hover {
-    border-color: var(--primary-light);
+.icon-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
     transform: translateY(-2px);
 }
 
-.option-btn.correct {
-    background: #10b981;
-    color: white;
-    border-color: #10b981;
-}
-
-.option-btn.wrong {
-    background: #ef4444;
-    color: white;
-    border-color: #ef4444;
-}
-
-/* ======================= */
-/* RESULTS PAGE */
-/* ======================= */
-.result-card {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.6rem;
-    text-align: center;
-    box-shadow: var(--shadow-lg);
-    margin-bottom: 1.6rem;
-    border: 2px solid rgba(59, 130, 246, 0.1);
-    position: relative;
-}
-
-.light-theme .result-card {
-    background: white;
-}
-
-.dark-theme .result-card {
-    background: var(--card-dark);
-    border-color: rgba(59, 130, 246, 0.3);
-}
-
-/* ======================= */
-/* NOTIFICATIONS */
-/* ======================= */
-.notification {
-    position: fixed;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.8rem 1.2rem;
-    border-radius: var(--radius-md);
-    background: white;
-    box-shadow: var(--shadow-lg);
-    z-index: 1000;
-    display: none;
-    max-width: 90%;
-    text-align: center;
-    font-weight: 600;
-    border: 2px solid transparent;
-    font-size: 0.88rem;
-}
-
-.light-theme .notification {
-    background: white;
-    color: var(--text-light);
-}
-
-.dark-theme .notification {
-    background: var(--card-dark);
-    color: var(--text-dark);
-}
-
-.notification.success {
-    background: #10b981;
-    color: white;
-    border-color: #059669;
-}
-
-.notification.error {
-    background: #ef4444;
-    color: white;
-    border-color: #dc2626;
-}
-
-.notification.warning {
-    background: #f59e0b;
-    color: white;
-    border-color: #d97706;
-}
-
-.notification.info {
-    background: var(--primary-color);
-    color: white;
-    border-color: var(--primary-dark);
-}
-
-/* ======================= */
-/* LEARNING PAGE STYLES */
-/* ======================= */
-
-/* بنر یادگیری در صفحه اصلی */
+/* یادگیری */
 .learning-banner {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     padding: 1.2rem;
     margin: 1rem 0 1.5rem 0;
     display: flex;
@@ -621,7 +940,6 @@ body.light-theme {
 .learning-banner:hover {
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
-    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .banner-icon {
@@ -666,12 +984,12 @@ body.light-theme {
     opacity: 0.7;
 }
 
-/* هدر صفحه یادگیری */
+/* هدر یادگیری */
 .learning-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 1rem;
-    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
     box-shadow: var(--shadow-primary);
     margin-bottom: 1.5rem;
 }
@@ -734,253 +1052,230 @@ body.light-theme {
     transition: width 0.3s;
 }
 
-/* محتوای صفحه یادگیری */
-.learning-content {
-    padding: 0 0.5rem;
+/* آزمون */
+.quiz-content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 180px);
 }
 
-.word-card {
+.question-card {
     background: white;
-    border-radius: var(--radius-lg);
-    padding: 1.8rem;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
     border: 2px solid rgba(59, 130, 246, 0.1);
+    position: relative;
 }
 
-.dark-theme .word-card {
+.dark-theme .question-card {
     background: var(--card-dark);
     border-color: rgba(59, 130, 246, 0.3);
 }
 
-.word-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
+.question-speak-btn {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
 }
 
-.word-main {
-    flex: 1;
-}
-
-.word-english {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 0.3rem;
-    line-height: 1.2;
-}
-
-.word-persian {
-    font-size: 1.3rem;
-    color: var(--text-muted);
+.question-text {
+    font-size: 1.2rem;
     font-weight: 600;
-}
-
-.word-pronunciation {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--primary-color);
-    margin-top: 0.5rem;
-}
-
-.speak-word-btn {
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--primary-color);
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    text-align: center;
+    padding: 1rem 0;
+    margin-right: 2.5rem;
+    min-height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+}
+
+.options-container {
+    display: grid;
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
+}
+
+.option-btn {
+    padding: 1rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    text-align: right;
     transition: all 0.3s;
-}
-
-.speak-word-btn:hover {
-    background: rgba(59, 130, 246, 0.2);
-    transform: scale(1.05);
-}
-
-/* بخش‌های مختلف کارت */
-.word-section {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px dashed #e2e8f0;
-}
-
-.dark-theme .word-section {
-    border-top-color: #4a5568;
-}
-
-.section-title {
+    min-height: 60px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    color: var(--primary-color);
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
+    justify-content: right;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    cursor: pointer;
 }
 
-.section-title i {
-    font-size: 0.9rem;
-}
-
-.example-content {
-    background: rgba(59, 130, 246, 0.05);
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    margin-bottom: 0.8rem;
-}
-
-.dark-theme .example-content {
-    background: rgba(59, 130, 246, 0.1);
-}
-
-.example-english {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
-}
-
-.example-persian {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-    padding-right: 0.5rem;
-    border-right: 3px solid var(--primary-color);
-}
-
-.definition-content, .collocation-content {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--text-light);
-}
-
-.dark-theme .definition-content,
-.dark-theme .collocation-content {
+.dark-theme .option-btn {
+    background: var(--card-dark);
+    border-color: #4a5568;
     color: var(--text-dark);
 }
 
-.phrasal-verbs-list {
+.option-btn:hover {
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.option-btn.correct {
+    background: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+.option-btn.wrong {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+/* نتایج */
+.result-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.6rem;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    margin-bottom: 1.6rem;
+    border: 2px solid rgba(59, 130, 246, 0.1);
+    position: relative;
+}
+
+.dark-theme .result-card {
+    background: var(--card-dark);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.result-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.result-score {
+    margin-bottom: 1.5rem;
+}
+
+.result-score span {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+}
+
+.result-score small {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-item {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.3rem;
 }
 
-.phrasal-verb-item {
-    background: rgba(16, 185, 129, 0.05);
-    border-radius: var(--radius-md);
-    padding: 0.8rem;
-}
-
-.dark-theme .phrasal-verb-item {
-    background: rgba(16, 185, 129, 0.1);
-}
-
-.phrasal-verb {
-    font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: 0.3rem;
-}
-
-.phrasal-meaning {
+.stat-label {
     font-size: 0.9rem;
     color: var(--text-muted);
 }
 
-/* کنترل‌های یادگیری */
-.learning-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding: 0 0.5rem;
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
 }
 
-.center-controls {
-    display: flex;
-    gap: 1rem;
-}
-
-.icon-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
+.result-time {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--primary-color);
-    border: 2px solid rgba(59, 130, 246, 0.2);
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.3s;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
-.icon-btn:hover {
-    background: rgba(59, 130, 246, 0.2);
-    transform: translateY(-2px);
-}
-
-.prev-btn, .next-btn {
-    min-width: 120px;
-}
-
-.prev-btn:disabled, .next-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* دکمه‌های عملیات */
-.learning-actions {
+.results-actions {
     display: flex;
-    flex-direction: column;
     gap: 1rem;
-    padding: 0 0.5rem;
 }
 
-.practice-btn {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-}
-
-.finish-btn {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    color: white;
-}
-
-/* نشانگر لغت نشان شده */
-.marked-word .word-english {
-    position: relative;
-}
-
-.marked-word .word-english::after {
-    content: "📌";
-    position: absolute;
-    left: -25px;
-    top: 0;
-    font-size: 1rem;
-}
-
-/* INSTALL BANNER */
-.install-banner {
+/* اعلان‌ها */
+.notification {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius-md);
+    background: white;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
     display: none;
+    max-width: 90%;
+    text-align: center;
+    font-weight: 600;
+    border: 2px solid transparent;
+    font-size: 0.88rem;
+}
+
+.dark-theme .notification {
+    background: var(--card-dark);
+    color: var(--text-dark);
+}
+
+.notification.success {
+    background: #10b981;
+    color: white;
+    border-color: #059669;
+}
+
+.notification.error {
+    background: #ef4444;
+    color: white;
+    border-color: #dc2626;
+}
+
+.notification.warning {
+    background: #f59e0b;
+    color: white;
+    border-color: #d97706;
+}
+
+.notification.info {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-dark);
+}
+
+/* PWA Install Banner */
+.install-banner {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: white;
     padding: 0.8rem;
     z-index: 10000;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: none;
 }
 
 .banner-content {
@@ -1029,116 +1324,20 @@ body.light-theme {
     margin-right: 0.5rem;
 }
 
-/* ======================= */
-/* RESPONSIVE DESIGN */
-/* ======================= */
-@media (max-width: 768px) {
-    .menu-grid {
-        gap: 0.6rem;
-    }
-    
-    .app-header h1 {
-        font-size: 1.2rem;
-    }
-    
-    .view {
-        padding: 0.6rem;
-    }
-    
-    .login-container {
-        padding: 1rem;
-    }
-    
-    .menu-btn {
-        min-height: 90px;
-        padding: 1rem 0.4rem;
-    }
-    
-    .gradient-exit {
-        height: 70px;
-    }
-    
-    .learning-header h1 {
-        font-size: 1rem;
-    }
-    
-    .word-english {
-        font-size: 1.6rem;
-    }
-    
-    .word-persian {
-        font-size: 1.1rem;
-    }
-    
-    .learning-controls {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .center-controls {
-        order: -1;
-        margin-bottom: 1rem;
-    }
-    
-    .prev-btn, .next-btn {
-        width: 100%;
-    }
+/* آفلاین */
+.offline-badge {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: #ef4444;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    z-index: 10000;
+    display: none;
 }
 
-@media (max-width: 480px) {
-    .menu-grid {
-        grid-template-columns: 1fr;
+.offline .offline-badge {
+    display: block;
     }
-    
-    .app-header {
-        padding: 0.8rem;
-        min-height: 120px;
-    }
-    
-    .question-card {
-        padding: 1.2rem;
-    }
-    
-    .results-actions, .mistakes-actions {
-        flex-direction: column;
-    }
-    
-    .btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .login-container {
-        padding: 0.8rem;
-    }
-    
-    .gradient-exit {
-        grid-column: span 1;
-        height: 70px;
-    }
-    
-    .learning-banner {
-        flex-direction: column;
-        text-align: center;
-        padding: 1rem;
-    }
-    
-    .banner-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.5rem;
-    }
-    
-    .header-content {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .learning-progress {
-        width: 100%;
-    }
-    
-    .word-card {
-        padding: 1.2rem;
-    }
-}
