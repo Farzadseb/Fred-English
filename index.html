@@ -82,6 +82,23 @@
         </header>
 
         <main class="main-content">
+            <!-- کادر یادگیری لغات A1 -->
+            <div class="learning-banner" onclick="startA1Learning()">
+                <div class="banner-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="banner-content">
+                    <h3>🎯 یادگیری لغات A1</h3>
+                    <p>۲۰۰ کلمه ضروری برای شروع یادگیری زبان انگلیسی</p>
+                    <div class="progress-info">
+                        <span>📚 سطح A1 • 🏆 ۲۰۰ کلمه</span>
+                    </div>
+                </div>
+                <div class="banner-arrow">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+            </div>
+
             <div class="menu-grid">
                 <button class="menu-btn gradient-blue" onclick="startQuiz('english-persian')">
                     <i class="fas fa-language"></i>
@@ -121,6 +138,76 @@
                 <button class="menu-btn gradient-exit" onclick="showExitOptions()">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>خروج / تغییر کاربر</span>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- صفحه یادگیری لغات A1 -->
+    <div id="learning" class="view">
+        <div class="top-bar">
+            <button class="mute-btn" onclick="toggleGlobalMute()">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <button class="theme-btn" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="learningUsername">کاربر</span>
+            </div>
+        </div>
+
+        <header class="learning-header">
+            <div class="header-content">
+                <button class="back-btn-small" onclick="switchView('home')">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h1><i class="fas fa-book-open"></i> یادگیری لغات A1</h1>
+                <div class="learning-progress">
+                    <div class="progress-text">
+                        <span id="currentWordIndex">1</span>/<span id="totalWords">200</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="learningProgressFill" style="width: 0.5%"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="learning-content">
+            <div class="word-card" id="wordCard">
+                <!-- محتوای کارت لغت اینجا نمایش داده می‌شود -->
+            </div>
+
+            <div class="learning-controls">
+                <button class="btn prev-btn" onclick="prevWord()" id="prevBtn" disabled>
+                    <i class="fas fa-arrow-right"></i> لغت قبلی
+                </button>
+                
+                <div class="center-controls">
+                    <button class="icon-btn speak-btn" onclick="speakCurrentWord()" title="تلفظ">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button class="icon-btn example-btn" onclick="toggleExample()" title="نمایش/مخفی مثال">
+                        <i class="fas fa-comment-alt"></i>
+                    </button>
+                    <button class="icon-btn mark-btn" onclick="toggleMarkWord()" title="علامت‌گذاری">
+                        <i class="far fa-bookmark"></i>
+                    </button>
+                </div>
+                
+                <button class="btn next-btn" onclick="nextWord()" id="nextBtn">
+                    لغت بعدی <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <div class="learning-actions">
+                <button class="btn practice-btn" onclick="startPractice()">
+                    <i class="fas fa-play-circle"></i> تمرین این لغت
+                </button>
+                <button class="btn finish-btn" onclick="finishLearning()">
+                    <i class="fas fa-flag-checkered"></i> اتمام یادگیری و آزمون
                 </button>
             </div>
         </main>
@@ -307,9 +394,11 @@
 
     <!-- اسکریپت‌ها -->
     <script src="words.js"></script>
+    <script src="a1-words.js"></script> <!-- فایل جدید لغات A1 -->
     <script src="quiz-engine.js"></script>
     <script src="telegram-integration.js"></script>
     <script src="install-promotion.js"></script>
+    <script src="learning-engine.js"></script> <!-- فایل جدید برای سیستم یادگیری -->
     <script src="app.js"></script>
     
     <!-- PWA Service Worker -->
