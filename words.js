@@ -1485,4 +1485,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = A1Words;
 } else {
     window.A1Words = A1Words;
-                      }
+            }
