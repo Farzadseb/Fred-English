@@ -1,12 +1,8 @@
 const App = {
-    adminClickCount: 0,
-    adminTimer: null,
-
     init() {
         this.hideLoader();
-        const logo = document.getElementById('admin-trigger');
-        if (logo) logo.addEventListener('click', () => this.handleAdminTrigger());
-        this.syncAdminInputs();
+        this.setupAdminTrigger();
+        this.loadSavedConfig();
     },
 
     hideLoader() {
@@ -22,29 +18,68 @@ const App = {
         }, 1500);
     },
 
-    handleAdminTrigger() {
-        this.adminClickCount++;
-        clearTimeout(this.adminTimer);
-        if (this.adminClickCount >= 3) {
-            document.getElementById('adminModal').style.display = 'flex';
-            this.adminClickCount = 0;
-        } else {
-            this.adminTimer = setTimeout(() => { this.adminClickCount = 0; }, 600);
+    setupAdminTrigger() {
+        const trigger = document.getElementById('admin-trigger');
+        let clicks = 0;
+        if (trigger) {
+            trigger.addEventListener('click', () => {
+                clicks++;
+                if (clicks >= 3) {
+                    window.openAdminModal();
+                    clicks = 0;
+                }
+                setTimeout(() => clicks = 0, 1000);
+            });
         }
     },
 
-    syncAdminInputs() {
-        const config = ConfigManager.getTelegramConfig();
-        if (document.getElementById('adminToken')) document.getElementById('adminToken').value = config.token;
-        if (document.getElementById('adminChatId')) document.getElementById('adminChatId').value = config.chatId;
+    loadSavedConfig() {
+        const token = localStorage.getItem('telegramBotToken');
+        const chatId = localStorage.getItem('telegramChatId');
+        if (token) document.getElementById('adminToken').value = token;
+        if (chatId) document.getElementById('adminChatId').value = chatId;
     }
 };
 
-window.showNotification = function(message, type = 'info') {
+// توابع جهانی برای فراخوانی از HTML
+window.openAdminModal = function() {
+    document.getElementById('adminModal').style.display = 'flex';
+};
+
+window.closeAdminModal = function() {
+    document.getElementById('adminModal').style.display = 'none';
+};
+
+window.saveAdminData = function() {
+    const token = document.getElementById('adminToken').value.trim();
+    const chatId = document.getElementById('adminChatId').value.trim();
+    
+    if (token && chatId) {
+        localStorage.setItem('telegramBotToken', token);
+        localStorage.setItem('telegramChatId', chatId);
+        
+        // همگام سازی با ConfigManager در صورت وجود
+        if (window.ConfigManager) {
+            ConfigManager.set(ConfigManager.keys.botToken, token);
+            ConfigManager.set(ConfigManager.keys.chatId, chatId);
+        }
+
+        window.showNotification('✅ تنظیمات با موفقیت ذخیره شد.');
+        
+        setTimeout(() => {
+            window.closeAdminModal();
+            location.reload();
+        }, 1200);
+    } else {
+        alert('لطفاً هر دو مورد را وارد کنید.');
+    }
+};
+
+window.showNotification = function(message) {
     const container = document.getElementById('notification-container');
     const note = document.createElement('div');
-    note.className = `notification ${type}`;
-    note.innerHTML = `<span>${message}</span>`;
+    note.className = 'notification';
+    note.innerHTML = message;
     container.appendChild(note);
     setTimeout(() => note.remove(), 3000);
 };
