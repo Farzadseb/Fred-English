@@ -1,218 +1,63 @@
 // =======================
-// TELEGRAM INTEGRATION - ارسال خودکار بدون نمایش دکمه
+// TELEGRAM INTEGRATION
 // =======================
 
-// تنظیمات تلگرام
-const TelegramConfig = {
-    BOT_TOKEN: '8592902186:AAGdV2eHkocXaRr7kKrxLrap7jWVPm0pq-Q',
-    CHAT_ID: '96991859',
-    API_URL: 'https://api.telegram.org/bot'
-};
-
-// تابع ارسال پیام به تلگرام
+// ارسال پیام به تلگرام
 async function sendToTelegram(message, silent = true) {
-    if (!TelegramConfig.BOT_TOKEN) {
-        console.log('⚠️ توکن تلگرام تنظیم نشده است');
-        return false;
-    }
-    
+    const cfg = window.TelegramConfig;
+    if (!cfg || !cfg.BOT_TOKEN) return false;
+
     try {
-        const url = `${TelegramConfig.API_URL}${TelegramConfig.BOT_TOKEN}/sendMessage`;
-        const payload = {
-            chat_id: TelegramConfig.CHAT_ID,
-            text: message,
-            parse_mode: 'HTML'
-        };
-        
-        console.log('📤 در حال ارسال خودکار به تلگرام...');
-        
-        const response = await fetch(url, {
+        const res = await fetch(`${cfg.API_URL}${cfg.BOT_TOKEN}/sendMessage`, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: cfg.CHAT_ID,
+                text: message,
+                parse_mode: 'HTML'
+            })
         });
-        
-        const data = await response.json();
-        
-        if (data.ok) {
-            console.log('✅ ارسال خودکار به تلگرام موفق بود');
-            if (!silent) {
-                showNotification('✅ گزارش به تلگرام ارسال شد', 'success');
-            }
-            return true;
-        } else {
-            console.error('❌ خطای تلگرام:', data.description);
-            if (!silent) {
-                showNotification(`❌ خطا در ارسال: ${data.description}`, 'error');
-            }
-            return false;
-        }
-    } catch (error) {
-        console.error('❌ خطا در ارسال به تلگرام:', error);
-        if (!silent) {
-            showNotification('❌ خطا در اتصال به تلگرام', 'error');
-        }
+
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.description);
+        if (!silent) showNotification('✅ گزارش به تلگرام ارسال شد', 'success');
+        return true;
+    } catch {
+        if (!silent) showNotification('❌ خطا در ارسال تلگرام', 'error');
         return false;
     }
 }
 
-// ارسال خودکار گزارش پس از آزمون
-async function sendTelegramReportAuto(score, mode, duration) {
-    const currentUser = window.appState?.currentUser;
-    
-    if (!currentUser) {
-        console.log('❌ کاربر لاگین نکرده است');
-        return;
-    }
-    
-    const userId = currentUser.id;
-    const username = currentUser.username;
-    const studentCode = currentUser.studentCode || 'ثبت نشده';
+// گزارش خودکار بعد از آزمون
+function sendTelegramReportAuto(score, mode, duration) {
+    const u = window.appState?.currentUser;
+    if (!u) return;
+
     const now = new Date();
-    
-    let message = `<b>📊 گزارش آزمون English with Fred</b>\n\n`;
-    message += `<b>👤 دانش‌آموز:</b> ${username}\n`;
-    if (studentCode !== 'ثبت نشده') {
-        message += `<b>🔢 کد زبان‌آموز:</b> ${studentCode}\n`;
-    }
-    message += `<b>🆔 شناسه:</b> ${userId}\n`;
-    message += `<b>📅 تاریخ:</b> ${now.toLocaleDateString('fa-IR')}\n`;
-    message += `<b>⏰ ساعت:</b> ${now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}\n\n`;
-    
-    message += `<b>🎯 آزمون:</b> ${getModeName(mode)}\n`;
-    message += `<b>✅ امتیاز:</b> ${score}%\n`;
-    message += `<b>⏱️ مدت زمان:</b> ${duration} ثانیه\n\n`;
-    
-    // پیام انگیزشی بر اساس امتیاز
-    if (score >= 90) {
-        message += `<b>✨ عملکرد:</b> عالی! شما یک نابغه هستید! 🧠\n`;
-    } else if (score >= 70) {
-        message += `<b>✨ عملکرد:</b> خوب! ادامه دهید! 👍\n`;
-    } else if (score >= 50) {
-        message += `<b>✨ عملکرد:</b> متوسط! نیاز به تمرین بیشتر! 💪\n`;
-    } else {
-        message += `<b>✨ عملکرد:</b> نیاز به تلاش بیشتر! 📚\n`;
-    }
-    
-    message += `\n<b>👨‍🏫 مدرس:</b> English with Fred\n`;
-    message += `<b>📱 تماس:</b> 09017708544\n\n`;
-    message += `<b>🎯 شعار:</b> هر روز بهتر از دیروز!`;
-    
-    // ارسال به تلگرام در پس‌زمینه (silent = true)
-    sendToTelegram(message, true);
+    let msg = `<b>📊 گزارش آزمون</b>\n\n`;
+    msg += `👤 ${u.username}\n`;
+    msg += `🆔 ${u.id}\n`;
+    msg += `📅 ${now.toLocaleDateString('fa-IR')}\n`;
+    msg += `⏰ ${now.toLocaleTimeString('fa-IR')}\n\n`;
+    msg += `🎯 ${getModeName(mode)}\n`;
+    msg += `✅ امتیاز: ${score}%\n`;
+    msg += `⏱️ زمان: ${duration} ثانیه\n`;
+
+    sendToTelegram(msg, true);
 }
 
-// ارسال خودکار گزارش هنگام خروج
-async function sendExitTelegramReport() {
-    const currentUser = window.appState?.currentUser;
-    
-    if (!currentUser) {
-        return;
-    }
-    
-    const userId = currentUser.id;
-    const username = currentUser.username;
-    const studentCode = currentUser.studentCode || 'ثبت نشده';
-    
-    const bestScoreKey = `bestScore_${userId}`;
-    const historyKey = `testHistory_${userId}`;
-    const mistakesKey = `fredMistakes_${userId}`;
-    
-    const bestScore = localStorage.getItem(bestScoreKey) || '0';
-    const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-    const mistakes = JSON.parse(localStorage.getItem(mistakesKey) || '[]');
-    const now = new Date();
-    
-    let message = `<b>📤 گزارش خروج English with Fred</b>\n\n`;
-    message += `<b>👤 دانش‌آموز:</b> ${username}\n`;
-    if (studentCode !== 'ثبت نشده') {
-        message += `<b>🔢 کد زبان‌آموز:</b> ${studentCode}\n`;
-    }
-    message += `<b>🆔 شناسه:</b> ${userId}\n`;
-    message += `<b>📅 تاریخ خروج:</b> ${now.toLocaleDateString('fa-IR')}\n`;
-    message += `<b>⏰ ساعت خروج:</b> ${now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}\n\n`;
-    
-    message += `<b>🏆 بهترین امتیاز:</b> ${bestScore}%\n`;
-    message += `<b>📊 تعداد آزمون‌ها:</b> ${history.length}\n`;
-    message += `<b>❌ اشتباهات ذخیره شده:</b> ${mistakes.length}\n\n`;
-    
-    if (history.length > 0) {
-        const lastTest = history[history.length - 1];
-        message += `<b>آخرین آزمون:</b>\n`;
-        message += `🎯 حالت: ${getModeName(lastTest.mode)}\n`;
-        message += `✅ امتیاز: ${lastTest.score}%\n`;
-        message += `⏱️ مدت: ${lastTest.duration} ثانیه\n`;
-        message += `🕐 تاریخ: ${new Date(lastTest.date).toLocaleDateString('fa-IR')}\n\n`;
-    }
-    
-    message += `<b>👨‍🏫 مدرس:</b> English with Fred\n`;
-    message += `<b>📱 تماس:</b> 09017708544\n\n`;
-    message += `<b>👋 تا بعد! امیدواریم بازگردید! 🎯</b>`;
-    
-    // ارسال به تلگرام در پس‌زمینه (silent = true)
-    sendToTelegram(message, true);
+// گزارش خروج
+function sendExitTelegramReport() {
+    const u = window.appState?.currentUser;
+    if (!u) return;
+
+    const best = localStorage.getItem(`bestScore_${u.id}`) || 0;
+    let msg = `<b>📤 گزارش خروج</b>\n\n`;
+    msg += `👤 ${u.username}\n`;
+    msg += `🏆 بهترین امتیاز: ${best}%`;
+
+    sendToTelegram(msg, true);
 }
 
-// تابع ارسال گزارش پیشرفت (برای مواقع خاص - فعلاً استفاده نمی‌شود)
-async function sendTelegramReport() {
-    const currentUser = window.appState?.currentUser;
-    
-    if (!currentUser) {
-        showNotification('❌ ابتدا وارد شوید', 'error');
-        return;
-    }
-    
-    const userId = currentUser.id;
-    const username = currentUser.username;
-    const studentCode = currentUser.studentCode || 'ثبت نشده';
-    
-    const bestScoreKey = `bestScore_${userId}`;
-    const historyKey = `testHistory_${userId}`;
-    const mistakesKey = `fredMistakes_${userId}`;
-    
-    const bestScore = localStorage.getItem(bestScoreKey) || '0';
-    const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-    const mistakes = JSON.parse(localStorage.getItem(mistakesKey) || '[]');
-    const now = new Date();
-    
-    let message = `<b>📊 گزارش کامل English with Fred</b>\n\n`;
-    message += `<b>👤 دانش‌آموز:</b> ${username}\n`;
-    if (studentCode !== 'ثبت نشده') {
-        message += `<b>🔢 کد زبان‌آموز:</b> ${studentCode}\n`;
-    }
-    message += `<b>🆔 شناسه:</b> ${userId}\n`;
-    message += `<b>📅 تاریخ:</b> ${now.toLocaleDateString('fa-IR')}\n`;
-    message += `<b>⏰ ساعت:</b> ${now.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' })}\n\n`;
-    
-    message += `<b>🏆 بهترین امتیاز:</b> ${bestScore}%\n`;
-    message += `<b>📊 تعداد آزمون‌ها:</b> ${history.length}\n`;
-    message += `<b>❌ اشتباهات ذخیره شده:</b> ${mistakes.length}\n\n`;
-    
-    if (history.length > 0) {
-        const lastTest = history[history.length - 1];
-        message += `<b>آخرین آزمون:</b>\n`;
-        message += `🎯 حالت: ${getModeName(lastTest.mode)}\n`;
-        message += `✅ امتیاز: ${lastTest.score}%\n`;
-        message += `⏱️ مدت: ${lastTest.duration} ثانیه\n`;
-        message += `🕐 تاریخ: ${new Date(lastTest.date).toLocaleDateString('fa-IR')}\n\n`;
-    }
-    
-    message += `<b>👨‍🏫 مدرس:</b> English with Fred\n`;
-    message += `<b>📱 تماس:</b> 09017708544\n\n`;
-    message += `<b>🎯 شعار:</b> هر روز بهتر از دیروز!`;
-    
-    // ارسال به تلگرام (silent = false برای نمایش اعلان)
-    const success = await sendToTelegram(message, false);
-    
-    if (success) {
-        showNotification('✅ گزارش کامل ارسال شد', 'success');
-    }
-}
-
-// اکسپورت توابع
-window.sendTelegramReport = sendTelegramReport;
 window.sendTelegramReportAuto = sendTelegramReportAuto;
 window.sendExitTelegramReport = sendExitTelegramReport;
