@@ -1,25 +1,65 @@
-// =======================
-// a1-words.js (FULL - ساختار کامل)
-// =======================
+// config.js - مدیریت مرکزی تنظیمات و امنیت داده‌ها
+console.log('⚙️ Config Engine Initialized');
 
-const A1Words = {
-  level: "A1",
-  totalWords: 200,
-  words: [
-    // ✅ شما فعلاً 100 تا گذاشتی. مشکلی نیست.
-    // هر وقت 100 تای بعدی رو اضافه کنی سیستم اتومات می‌خونه.
-    // (کدهای اپ به totalWords وابسته نیستند؛ به words.length تکیه می‌کنند.)
+const ConfigManager = {
+    // کلیدهای ذخیره‌سازی
+    keys: {
+        botToken: 'fred_tk_secure',
+        chatId: 'fred_cid_secure',
+        settings: 'fred_app_pref',
+        stats: 'fred_user_progress'
+    },
 
-    { id: 1, english: "hello", persian: "سلام", pronunciation: "/həˈloʊ/", example: "Hello, my name is John.", examplePersian: "سلام، اسم من جان است.", definition: "A greeting or expression of goodwill used when meeting someone", collocation: "say hello, hello everyone, hello there", phrasalVerbs: [], difficulty: "easy", category: "greetings" },
-    { id: 2, english: "goodbye", persian: "خداحافظ", pronunciation: "/ˌɡʊdˈbaɪ/", example: "Goodbye, see you tomorrow!", examplePersian: "خداحافظ، فردا می‌بینمت!", definition: "A farewell expression used when leaving", collocation: "say goodbye, kiss goodbye, wave goodbye", phrasalVerbs: [], difficulty: "easy", category: "greetings" },
+    // تابع کمکی برای انکریپت ساده (پیشنهاد شما)
+    _encrypt(data) {
+        return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    },
 
-    /* ... ادامه لیست شما ... */
+    // تابع کمکی برای دکریپت
+    _decrypt(cipher) {
+        try {
+            return JSON.parse(decodeURIComponent(escape(atob(cipher))));
+        } catch (e) {
+            return null;
+        }
+    },
 
-    { id: 100, english: "woman", persian: "زن", pronunciation: "/ˈwʊmən/", example: "She is a strong woman.", examplePersian: "او یک زن قوی است.", definition: "An adult human female", collocation: "young woman, old woman, woman and child", phrasalVerbs: [], difficulty: "easy", category: "people" }
+    // ذخیره داده‌ها
+    set(key, value) {
+        const encryptedValue = this._encrypt(value);
+        localStorage.setItem(key, encryptedValue);
+    },
 
-    // TODO: 101..200 را همین‌جا اضافه کنید
-  ]
+    // بازخوانی داده‌ها
+    get(key, defaultValue = null) {
+        const saved = localStorage.getItem(key);
+        if (!saved) return defaultValue;
+        const decrypted = this._decrypt(saved);
+        return decrypted !== null ? decrypted : defaultValue;
+    },
+
+    // تنظیمات تلگرام برای بقیه فایل‌ها
+    getTelegramConfig() {
+        return {
+            token: this.get(this.keys.botToken, ''),
+            chatId: this.get(this.keys.chatId, ''),
+            apiUrl: 'https://api.telegram.org/bot'
+        };
+    },
+
+    // متد پاکسازی (Reset)
+    clearAll() {
+        Object.values(this.keys).forEach(k => localStorage.removeItem(k));
+        window.location.reload();
+    }
 };
 
-if (typeof module !== 'undefined' && module.exports) module.exports = A1Words;
-else window.A1Words = A1Words;
+// وضعیت لحظه‌ای اپلیکیشن (Global State)
+window.appState = {
+    isQuizActive: false,
+    soundEnabled: ConfigManager.get(ConfigManager.keys.settings)?.sound !== false,
+    currentLevel: 'A1',
+    userStats: ConfigManager.get(ConfigManager.keys.stats, { correct: 0, wrong: 0 })
+};
+
+window.ConfigManager = ConfigManager;
