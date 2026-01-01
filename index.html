@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>English with Fred</title>
-    
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e293b">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Fred App">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <div id="installBanner" class="install-banner" style="display:none;">
+        <div class="banner-content">
+            <i class="fas fa-mobile-alt"></i>
+            <div class="banner-text">
+                <strong>نصب اپلیکیشن آکادمی</strong>
+                <small>برای دسترسی سریع و آفلاین نصب کنید</small>
+            </div>
+            <button class="install-btn" onclick="installPWA()">نصب</button>
+            <button class="close-banner" onclick="hideInstallBanner()">×</button>
+        </div>
+    </div>
 
     <div id="app-loader" class="loader-overlay">
         <div class="loader-content">
@@ -26,36 +30,20 @@
 
     <header>
         <div class="logo-container" id="admin-trigger">
-            <img src="icon-192.png" alt="Fred Logo">
+            <img src="icon-192.png" alt="Logo">
             <h1>English with Fred</h1>
         </div>
     </header>
 
-    <main id="app-container">
-        </main>
+    <main id="app-container"></main>
 
     <div id="adminModal" class="admin-modal" style="display:none;">
         <div class="admin-content">
-            <h3><i class="fas fa-user-shield"></i> پنل مدیریت ادمین</h3>
-            
-            <div class="admin-field">
-                <label>Telegram Bot Token:</label>
-                <input type="password" id="adminToken" placeholder="توکن ربات تلگرام...">
-            </div>
-            
-            <div class="admin-field">
-                <label>Telegram Chat ID:</label>
-                <input type="text" id="adminChatId" placeholder="چت آیدی شما...">
-            </div>
-
-            <div class="admin-actions">
-                <button onclick="saveAdminData()" class="btn-save">ذخیره تنظیمات</button>
-                <div class="admin-divider"></div>
-                <button onclick="forceAppUpdate()" class="btn-force-update">
-                    <i class="fas fa-sync-alt"></i> بروزرسانی نسخه برای همه
-                </button>
-                <button onclick="closeAdminModal()" class="btn-cancel">بستن</button>
-            </div>
+            <h3><i class="fas fa-user-shield"></i> پنل مدیریت</h3>
+            <input type="password" id="adminToken" placeholder="Bot Token">
+            <input type="text" id="adminChatId" placeholder="Chat ID">
+            <button onclick="saveAdminData()" class="btn-save">ذخیره</button>
+            <button onclick="closeAdminModal()" class="btn-cancel">بستن</button>
         </div>
     </div>
 
@@ -69,14 +57,5 @@
     <script src="quiz-engine.js"></script>
     <script src="install-promotion.js"></script>
     <script src="app.js"></script>
-
-    <script>
-        // ثبت Service Worker برای آفلاین و نصب
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js');
-            });
-        }
-    </script>
 </body>
 </html>
