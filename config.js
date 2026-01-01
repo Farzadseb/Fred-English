@@ -1,47 +1,65 @@
-// config.js - مدیریت تنظیمات و ذخیره‌سازی
-console.log('⚙️ سیستم تنظیمات بارگذاری شد');
+// config.js - مدیریت مرکزی تنظیمات و امنیت داده‌ها
+console.log('⚙️ Config Engine Initialized');
 
 const ConfigManager = {
-    // کلیدهای ذخیره‌سازی در LocalStorage
+    // کلیدهای ذخیره‌سازی
     keys: {
-        botToken: 'fred_telegram_token',
-        chatId: 'fred_telegram_chatid',
-        userStats: 'fred_user_stats',
-        settings: 'fred_app_settings'
+        botToken: 'fred_tk_secure',
+        chatId: 'fred_cid_secure',
+        settings: 'fred_app_pref',
+        stats: 'fred_user_progress'
     },
 
-    // دریافت یک مقدار (اول از حافظه گوشی، اگر نبود از مقادیر پیش‌فرض)
-    get(key, defaultValue = null) {
-        const saved = localStorage.getItem(key);
+    // تابع کمکی برای انکریپت ساده (پیشنهاد شما)
+    _encrypt(data) {
+        return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    },
+
+    // تابع کمکی برای دکریپت
+    _decrypt(cipher) {
         try {
-            return saved ? JSON.parse(saved) : defaultValue;
-        } catch {
-            return saved || defaultValue;
+            return JSON.parse(decodeURIComponent(escape(atob(cipher))));
+        } catch (e) {
+            return null;
         }
     },
 
-    // ذخیره یک مقدار در حافظه گوشی
+    // ذخیره داده‌ها
     set(key, value) {
-        const valueToSave = typeof value === 'object' ? JSON.stringify(value) : value;
-        localStorage.setItem(key, valueToSave);
+        const encryptedValue = this._encrypt(value);
+        localStorage.setItem(key, encryptedValue);
     },
 
-    // تنظیمات فعال تلگرام
+    // بازخوانی داده‌ها
+    get(key, defaultValue = null) {
+        const saved = localStorage.getItem(key);
+        if (!saved) return defaultValue;
+        const decrypted = this._decrypt(saved);
+        return decrypted !== null ? decrypted : defaultValue;
+    },
+
+    // تنظیمات تلگرام برای بقیه فایل‌ها
     getTelegramConfig() {
         return {
-            token: this.get(this.keys.botToken, ''), // اگر ادمین ست کرده باشد
-            chatId: this.get(this.keys.chatId, ''),   // اگر ادمین ست کرده باشد
+            token: this.get(this.keys.botToken, ''),
+            chatId: this.get(this.keys.chatId, ''),
             apiUrl: 'https://api.telegram.org/bot'
         };
+    },
+
+    // متد پاکسازی (Reset)
+    clearAll() {
+        Object.values(this.keys).forEach(k => localStorage.removeItem(k));
+        window.location.reload();
     }
 };
 
-// در دسترس قرار دادن تنظیمات برای کل پروژه
-window.ConfigManager = ConfigManager;
-
-// تنظیمات اولیه وضعیت اپلیکیشن
+// وضعیت لحظه‌ای اپلیکیشن (Global State)
 window.appState = {
     isQuizActive: false,
     soundEnabled: ConfigManager.get(ConfigManager.keys.settings)?.sound !== false,
-    currentLevel: 'A1'
+    currentLevel: 'A1',
+    userStats: ConfigManager.get(ConfigManager.keys.stats, { correct: 0, wrong: 0 })
 };
+
+window.ConfigManager = ConfigManager;
