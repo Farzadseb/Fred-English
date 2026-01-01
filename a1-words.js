@@ -1,65 +1,68 @@
-// config.js - مدیریت مرکزی تنظیمات و امنیت داده‌ها
-console.log('⚙️ Config Engine Initialized');
+// telegram-integration.js - مدیریت ارسال گزارش‌ها به تلگرام
+console.log('📨 Telegram Integration Loaded');
 
-const ConfigManager = {
-    // کلیدهای ذخیره‌سازی
-    keys: {
-        botToken: 'fred_tk_secure',
-        chatId: 'fred_cid_secure',
-        settings: 'fred_app_pref',
-        stats: 'fred_user_progress'
-    },
+const TelegramReporter = {
+    // تابع اصلی ارسال پیام
+    async sendMessage(text) {
+        // دریافت تنظیمات از ConfigManager (که قبلاً با Base64 امن شده)
+        const config = ConfigManager.getTelegramConfig();
+        
+        if (!config.token || !config.chatId) {
+            console.warn('⚠️ تنظیمات تلگرام (Token/ChatID) در پنل ادمین وارد نشده است.');
+            return false;
+        }
 
-    // تابع کمکی برای انکریپت ساده (پیشنهاد شما)
-    _encrypt(data) {
-        return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-    },
-
-    // تابع کمکی برای دکریپت
-    _decrypt(cipher) {
+        const url = `${config.apiUrl}${config.token}/sendMessage`;
+        
         try {
-            return JSON.parse(decodeURIComponent(escape(atob(cipher))));
-        } catch (e) {
-            return null;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: config.chatId,
+                    text: text,
+                    parse_mode: 'HTML'
+                }),
+                keepalive: true // تضمین ارسال پیام حتی اگر کاربر بلافاصله صفحه را ببندد
+            });
+            return response.ok;
+        } catch (error) {
+            console.error('❌ خطا در ارتباط با تلگرام:', error);
+            return false;
         }
     },
 
-    // ذخیره داده‌ها
-    set(key, value) {
-        const encryptedValue = this._encrypt(value);
-        localStorage.setItem(key, encryptedValue);
+    // گزارش نمره نهایی آزمون
+    sendQuizResult(score, total, level = 'A1') {
+        const percentage = Math.round((score / total) * 100);
+        const statusIcon = percentage >= 70 ? '✅' : '⚠️';
+
+        const message = `
+${statusIcon} <b>گزارش آزمون جدید</b>
+--------------------------
+📊 نمره: <b>${score}</b> از ${total} (${percentage}%)
+📈 سطح: <code>${level}</code>
+🕒 زمان: ${new Date().toLocaleTimeString('fa-IR')}
+📅 تاریخ: ${new Date().toLocaleDateString('fa-IR')}
+--------------------------
+#QuizResult #EnglishWithFred`;
+        
+        this.sendMessage(message);
     },
 
-    // بازخوانی داده‌ها
-    get(key, defaultValue = null) {
-        const saved = localStorage.getItem(key);
-        if (!saved) return defaultValue;
-        const decrypted = this._decrypt(saved);
-        return decrypted !== null ? decrypted : defaultValue;
-    },
-
-    // تنظیمات تلگرام برای بقیه فایل‌ها
-    getTelegramConfig() {
-        return {
-            token: this.get(this.keys.botToken, ''),
-            chatId: this.get(this.keys.chatId, ''),
-            apiUrl: 'https://api.telegram.org/bot'
-        };
-    },
-
-    // متد پاکسازی (Reset)
-    clearAll() {
-        Object.values(this.keys).forEach(k => localStorage.removeItem(k));
-        window.location.reload();
+    // گزارش خروج کاربر از برنامه
+    sendExitReport() {
+        const message = `
+🚪 <b>گزارش خروج</b>
+--------------------------
+کاربر در این لحظه از برنامه خارج شد.
+🕒 زمان: ${new Date().toLocaleTimeString('fa-IR')}
+--------------------------
+#UserExit`;
+        
+        this.sendMessage(message);
     }
 };
 
-// وضعیت لحظه‌ای اپلیکیشن (Global State)
-window.appState = {
-    isQuizActive: false,
-    soundEnabled: ConfigManager.get(ConfigManager.keys.settings)?.sound !== false,
-    currentLevel: 'A1',
-    userStats: ConfigManager.get(ConfigManager.keys.stats, { correct: 0, wrong: 0 })
-};
-
-window.ConfigManager = ConfigManager;
+// معرفی به فضای سراسری
+window.TelegramReporter = TelegramReporter;
