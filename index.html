@@ -1,119 +1,377 @@
+<!-- =======================
+     index.html (FULL)
+======================= -->
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English with Fred</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>English with Fred</title>
 
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3b82f6">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+  <!-- Font (optional) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Icons (FontAwesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 
 <body class="dark-theme">
+  <!-- Notification -->
+  <div id="notification" class="notification info" aria-live="polite"></div>
 
-<!-- LOGIN -->
-<div id="login" class="view active">
-    <div class="login-container">
-        <div class="login-header">
-            <h1><i class="fas fa-user-graduate"></i> English with Fred</h1>
-            <p>برای شروع، لطفاً نام خود را وارد کنید</p>
-        </div>
-
-        <div class="login-form">
-            <div class="input-group">
-                <i class="fas fa-user"></i>
-                <input type="text" id="usernameInput" placeholder="نام شما" maxlength="20">
-            </div>
-
-            <div class="input-group">
-                <i class="fas fa-id-card"></i>
-                <input type="text" id="studentCode" placeholder="کد زبان‌آموز (اختیاری)" maxlength="10">
-            </div>
-
-            <button class="btn login-btn" onclick="saveUserInfo()">
-                <i class="fas fa-play-circle"></i> شروع یادگیری
-            </button>
-        </div>
+  <!-- Install Banner (Android) -->
+  <div id="installBanner" class="install-banner" style="display:none;">
+    <div class="banner-content">
+      <i class="fas fa-download"></i>
+      <div class="banner-text">
+        <strong>نصب برنامه</strong>
+        <small>برای دسترسی سریع‌تر نصب کنید</small>
+      </div>
+      <button class="install-btn" onclick="installPWA()">
+        <i class="fas fa-download"></i> نصب
+      </button>
+      <button class="close-banner" onclick="hideInstallBanner()">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
-</div>
+  </div>
 
-<!-- HOME -->
-<div id="home" class="view">
-    <div class="top-bar">
-        <button class="mute-btn" onclick="toggleGlobalMute()">
+  <!-- iOS Install Hint -->
+  <div id="iosInstallHint" class="ios-hint" style="display:none;">
+    <div class="ios-hint-card">
+      <div class="ios-hint-title"><i class="fa-solid fa-apple-whole"></i> نصب روی آیفون</div>
+      <div class="ios-hint-text">
+        در Safari روی <b>Share</b> بزنید و گزینه <b>Add to Home Screen</b> را انتخاب کنید.
+      </div>
+      <button class="btn btn-primary" onclick="hideIOSHint()">باشه</button>
+    </div>
+  </div>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">F</div>
+      <div class="title">
+        <div class="appname">English with Fred</div>
+        <div class="subtitle">لغت • آزمون • یادگیری</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <button id="themeToggle" class="icon-btn theme-btn" title="تغییر تم">
+        <i class="fas fa-sun"></i>
+      </button>
+      <button id="globalMuteBtn" class="icon-btn mute-btn" title="قطع/وصل صدا">
+        <i class="fas fa-volume-up"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Views -->
+  <main class="main">
+
+    <!-- LOGIN -->
+    <section id="login" class="view active">
+      <div class="card">
+        <h2 class="card-title">ورود</h2>
+
+        <div class="form">
+          <label class="label">نام</label>
+          <input id="usernameInput" class="input" type="text" placeholder="نام خود را وارد کنید" autocomplete="name" />
+
+          <label class="label">کد زبان‌آموز (اختیاری)</label>
+          <input id="studentCodeInput" class="input" type="text" placeholder="اختیاری" />
+
+          <button class="btn btn-primary" onclick="saveUserInfo()">
+            <i class="fas fa-check"></i> شروع
+          </button>
+
+          <button class="btn btn-ghost" onclick="showIOSHint()">
+            <i class="fas fa-download"></i> نصب دستی (آیفون)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOME -->
+    <section id="home" class="view">
+      <div class="home-head">
+        <div class="hello">
+          سلام <b id="currentUsername">—</b> 👋
+        </div>
+
+        <div class="mini-stats">
+          <div class="pill">
+            <i class="fa-solid fa-trophy"></i>
+            <span>بهترین امتیاز:</span>
+            <b id="bestScore">0%</b>
+          </div>
+          <div class="pill">
+            <i class="fa-solid fa-fire"></i>
+            <span>Streak:</span>
+            <b id="streakCount">0</b>
+          </div>
+        </div>
+
+        <div class="stars" aria-label="stars">
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+          <i class="far fa-star"></i>
+        </div>
+
+        <div id="badgeRow" class="badge-row"></div>
+      </div>
+
+      <div class="menu-grid">
+        <button class="menu-btn gradient-a1" onclick="startA1Learning()">
+          <i class="fas fa-book-open"></i>
+          <span>یادگیری A1</span>
+        </button>
+
+        <button id="a2Btn" class="menu-btn gradient-a2 disabled" onclick="startA2Learning()">
+          <i class="fas fa-level-up-alt"></i>
+          <span>شروع A2</span>
+          <small id="a2LockText">قفل (A1≥80%)</small>
+        </button>
+
+        <button class="menu-btn gradient-quiz" onclick="openQuizMenu()">
+          <i class="fas fa-question-circle"></i>
+          <span>شروع آزمون</span>
+        </button>
+
+        <button class="menu-btn gradient-report" onclick="showLearningReport()">
+          <i class="fas fa-chart-line"></i>
+          <span>گزارش یادگیری</span>
+        </button>
+
+        <button class="menu-btn gradient-mistakes" onclick="openMistakes()">
+          <i class="fas fa-dumbbell"></i>
+          <span>تمرین اشتباهات</span>
+        </button>
+
+        <button class="menu-btn gradient-progress" onclick="showProgressReport()">
+          <i class="fas fa-clipboard-list"></i>
+          <span>گزارش آزمون‌ها</span>
+        </button>
+
+        <button class="menu-btn gradient-leitner" onclick="leitnerSystem.showLeitnerStats()">
+          <i class="fas fa-brain"></i>
+          <span>لایتنر</span>
+        </button>
+
+        <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">
+          <i class="fab fa-whatsapp"></i>
+          <span>ثبت‌نام واتساپ</span>
+        </button>
+
+        <button class="menu-btn gradient-exit" onclick="showExitOptions()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>خروج / تغییر کاربر</span>
+        </button>
+      </div>
+
+      <div class="manual-install">
+        <button class="btn btn-secondary" onclick="tryManualInstall()">
+          <i class="fas fa-download"></i> نصب (دستی/اندروید)
+        </button>
+      </div>
+    </section>
+
+    <!-- LEARNING -->
+    <section id="learning" class="view">
+      <div class="top-row">
+        <div class="title2">
+          <div class="t1">یادگیری لغات</div>
+          <div class="t2">کاربر: <b id="learningUsername">—</b></div>
+        </div>
+
+        <div class="right-tools">
+          <button class="icon-btn" onclick="toggleExample()" title="نمایش/مخفی مثال">
+            <i class="fas fa-comment-alt"></i>
+          </button>
+          <button class="icon-btn" onclick="toggleMarkWord()" title="علامت‌گذاری">
+            <i class="fas fa-thumbtack"></i>
+          </button>
+          <button class="icon-btn" onclick="speakCurrentWord()" title="تلفظ">
             <i class="fas fa-volume-up"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div id="learningProgressFill" class="progress-fill"></div>
+      </div>
+
+      <div class="learning-info">
+        <div>لغت: <b id="currentWordIndex">1</b> / <b id="totalWords">0</b></div>
+        <div>تسلط A1: <b id="a1MasteryPercent">0%</b></div>
+      </div>
+
+      <div id="wordCard" class="word-card"></div>
+
+      <div class="actions-row">
+        <button id="prevBtn" class="btn btn-ghost" onclick="prevWord()">
+          <i class="fas fa-arrow-right"></i> قبلی
         </button>
-
-        <div class="user-info">
-            <i class="fas fa-user-circle"></i>
-            <span id="currentUsername">کاربر</span>
-        </div>
-
-        <button class="theme-btn" onclick="toggleTheme()">
-            <i class="fas fa-moon"></i>
+        <button class="btn btn-secondary" onclick="startPractice()">
+          <i class="fas fa-dumbbell"></i> تمرین
         </button>
-    </div>
+        <button id="nextBtn" class="btn btn-primary" onclick="nextWord()">
+          بعدی <i class="fas fa-arrow-left"></i>
+        </button>
+      </div>
 
-    <header class="app-header">
-        <h1><i class="fas fa-graduation-cap"></i> English with Fred</h1>
-        <div class="score-card">
-            <div class="stars" id="starsContainer">
-                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-                <i class="far fa-star"></i><i class="far fa-star"></i>
-            </div>
-            <div class="best-score">
-                <i class="fas fa-trophy"></i>
-                <span>بهترین امتیاز</span>
-                <strong id="bestScore">0%</strong>
-            </div>
+      <div class="actions-row">
+        <button class="btn btn-ghost" onclick="switchView('home')">
+          <i class="fas fa-home"></i> خانه
+        </button>
+        <button class="btn btn-primary" onclick="finishLearning()">
+          <i class="fas fa-flag-checkered"></i> پایان و آزمون
+        </button>
+      </div>
+    </section>
+
+    <!-- QUIZ MENU -->
+    <section id="quizMenu" class="view">
+      <div class="card">
+        <h2 class="card-title">انتخاب نوع آزمون</h2>
+        <div class="quiz-modes">
+          <button class="menu-btn gradient-quiz" onclick="startQuiz('english-persian', 10)">
+            انگلیسی → فارسی
+          </button>
+          <button class="menu-btn gradient-quiz" onclick="startQuiz('persian-english', 10)">
+            فارسی → انگلیسی
+          </button>
+          <button class="menu-btn gradient-quiz" onclick="startQuiz('word-definition', 10)">
+            کلمه → تعریف
+          </button>
+          <button class="menu-btn gradient-quiz" onclick="startQuiz('definition-word', 10)">
+            تعریف → کلمه
+          </button>
+          <button class="menu-btn gradient-leitner" onclick="leitnerSystem.startLeitnerQuiz()">
+            مرور لایتنر (Due)
+          </button>
         </div>
-    </header>
 
-    <main class="main-content">
-        <div class="learning-banner" onclick="startA1Learning()">
-            <div class="banner-icon"><i class="fas fa-book-open"></i></div>
-            <div class="banner-content">
-                <h3>یادگیری لغات A1</h3>
-                <p>۲۰۰ لغت ضروری</p>
-            </div>
-            <div class="banner-arrow"><i class="fas fa-arrow-left"></i></div>
+        <div class="actions-row">
+          <button class="btn btn-ghost" onclick="switchView('home')">
+            <i class="fas fa-home"></i> خانه
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="view">
+      <div class="quiz-top">
+        <div class="quiz-title">
+          <div>کاربر: <b id="quizUsername">—</b></div>
+          <div class="quiz-meta">
+            سوال <b id="currentQuestion">1</b> از <b id="totalQuestions">10</b> • امتیاز: <b id="quizScore">0</b>
+          </div>
         </div>
 
-        <div class="menu-grid">
-            <button class="menu-btn gradient-blue" onclick="startQuiz('en-fa')">English → Persian</button>
-            <button class="menu-btn gradient-blue" onclick="startQuiz('fa-en')">Persian → English</button>
-            <button class="menu-btn gradient-green" onclick="startQuiz('word-def')">Word → Definition</button>
-            <button class="menu-btn gradient-green" onclick="startQuiz('def-word')">Definition → Word</button>
-            <button class="menu-btn gradient-orange" onclick="reviewMistakesPage()">مرور اشتباهات</button>
-            <button class="menu-btn gradient-purple" onclick="showProgressReport()">گزارش پیشرفت</button>
-            <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">واتساپ</button>
-            <button class="menu-btn gradient-exit" onclick="showExitOptions()">خروج</button>
+        <button class="btn btn-ghost" onclick="confirmExitQuiz()">
+          <i class="fas fa-xmark"></i> خروج
+        </button>
+      </div>
+
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+
+      <div class="card">
+        <div class="question-row">
+          <div id="questionText" class="question-text">—</div>
+          <button class="icon-btn" onclick="speakQuizQuestion()" title="تلفظ سوال">
+            <i class="fas fa-volume-up"></i>
+          </button>
         </div>
-    </main>
-</div>
 
-<!-- LEARNING / QUIZ / RESULTS / MISTAKES -->
-<!-- بدون تغییر ساختاری، فقط CSS و JS کنترل می‌کنند -->
+        <div id="quizOptions" class="options-grid"></div>
+      </div>
+    </section>
 
-<script src="words.js"></script>
-<script src="a1-words.js"></script>
-<script src="quiz-engine.js"></script>
-<script src="learning-engine.js"></script>
-<script src="app.js"></script>
+    <!-- RESULTS -->
+    <section id="results" class="view">
+      <div class="card">
+        <h2 class="card-title">نتیجه آزمون</h2>
 
-<script>
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
-    });
-}
-</script>
+        <div class="results-grid">
+          <div class="result-box">
+            <div class="rb-title">امتیاز</div>
+            <div id="finalScore" class="rb-value">0%</div>
+          </div>
+          <div class="result-box">
+            <div class="rb-title">درست</div>
+            <div id="correctCount" class="rb-value">0</div>
+          </div>
+          <div class="result-box">
+            <div class="rb-title">کل</div>
+            <div id="totalCount" class="rb-value">0</div>
+          </div>
+          <div class="result-box">
+            <div class="rb-title">زمان</div>
+            <div id="quizTime" class="rb-value">0 ثانیه</div>
+          </div>
+        </div>
 
+        <div id="motivationMsg" class="motivation">—</div>
+
+        <div class="actions-row">
+          <button class="btn btn-primary" onclick="openQuizMenu()">
+            <i class="fas fa-rotate-right"></i> آزمون دوباره
+          </button>
+          <button class="btn btn-secondary" onclick="openMistakes()">
+            <i class="fas fa-dumbbell"></i> تمرین اشتباهات
+          </button>
+          <button class="btn btn-ghost" onclick="switchView('home')">
+            <i class="fas fa-home"></i> خانه
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISTAKES -->
+    <section id="mistakes" class="view">
+      <div class="card">
+        <h2 class="card-title">اشتباهات</h2>
+        <div class="muted">این بخش از آخرین اشتباهات شما تمرین می‌سازد.</div>
+
+        <div id="mistakesList" class="mistakes-list"></div>
+
+        <div class="actions-row">
+          <button class="btn btn-primary" onclick="startMistakesQuiz()">
+            <i class="fas fa-play"></i> شروع تمرین
+          </button>
+          <button class="btn btn-ghost" onclick="switchView('home')">
+            <i class="fas fa-home"></i> خانه
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts (order مهم) -->
+  <script src="a1-words.js"></script>
+  <script src="mistake-storage.js"></script>
+  <script src="leitner.js"></script>
+  <script src="telegram-integration.js"></script>
+  <script src="install-promotion.js"></script>
+  <script src="learning-engine.js"></script>
+  <script src="quiz-engine.js"></script>
+  <script src="app.js"></script>
 </body>
-</html>
+                                     </html>
