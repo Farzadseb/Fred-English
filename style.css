@@ -3,8 +3,6 @@
     --bg: #0f172a;
     --card-bg: #1e293b;
     --text: #f8fafc;
-    --success: #22c55e;
-    --danger: #ef4444;
 }
 
 body {
@@ -12,110 +10,107 @@ body {
     font-family: system-ui, -apple-system, sans-serif;
     background-color: var(--bg);
     color: var(--text);
-    line-height: 1.6;
-    overflow-x: hidden;
+    direction: rtl;
 }
 
-/* --- استایل پنل مدیریت (بزرگ و لمس‌پذیر) --- */
+/* --- استایل اختصاصی پنل مدیریت فرزاد --- */
 .admin-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(10, 15, 28, 0.96);
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* پنل را بالا نگه می‌دارد */
     justify-content: center;
-    z-index: 20000;
-    padding: 15px;
-    backdrop-filter: blur(5px);
+    z-index: 99999;
+    padding-top: 60px; /* فاصله از سقف برای راحتی چشم */
 }
 
 .admin-content {
     background: var(--card-bg);
-    width: 100%;
-    max-width: 450px;
-    padding: 35px 25px;
-    border-radius: 24px;
+    width: 92%;
+    max-width: 400px;
+    padding: 35px 15px;
+    border-radius: 28px;
     border: 1px solid #334155;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+.admin-header i {
+    font-size: 2.8rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.admin-header h3 {
+    margin: 0 0 30px 0;
+    font-size: 1.5rem;
+}
+
+.admin-inputs-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* کادرها را وسط‌چین می‌کند */
+    width: 100%;
 }
 
 .input-group {
     position: relative;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
+    width: 85%; /* عرض ۸۵ درصد برای زیبایی و فاصله از لبه‌ها */
+    margin-bottom: 18px;
 }
 
 .input-group i {
     position: absolute;
-    right: 15px;
-    color: #64748b;
-    font-size: 1.2rem;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    font-size: 1.3rem;
 }
 
-.admin-content input {
+.input-group input {
     width: 100%;
-    height: 60px; /* ارتفاع بلند برای راحتی در موبایل */
+    height: 75px; /* ارتفاع بسیار بلند و درشت */
     background: #0f172a;
     border: 2px solid #334155;
-    border-radius: 15px;
+    border-radius: 18px;
     color: white;
-    padding: 0 45px 0 15px; /* فضا برای آیکون */
-    font-size: 1.1rem;
+    padding: 0 55px 0 15px; /* فاصله برای آیکون راست */
+    font-size: 1.2rem;
     outline: none;
-    transition: all 0.3s;
     box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
-.admin-content input:focus {
+.input-group input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+    background: #1e293b;
 }
 
 .btn-save {
-    width: 100%;
-    height: 60px;
+    width: 85%; /* هم‌اندازه با کادرهای ورودی */
+    height: 70px;
     background: var(--primary);
     color: white;
     border: none;
-    border-radius: 15px;
-    font-size: 1.2rem;
+    border-radius: 18px;
+    font-size: 1.3rem;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 10px;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    margin-top: 15px;
 }
 
 .btn-cancel {
-    margin-top: 20px;
     background: transparent;
-    color: #94a3b8;
+    color: #64748b;
     border: none;
-    font-size: 1rem;
+    margin-top: 25px;
+    font-size: 1.1rem;
     cursor: pointer;
 }
 
-/* --- بنر نصب PWA --- */
-.install-banner {
-    position: fixed;
-    bottom: 30px;
-    left: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: white;
-    padding: 20px;
-    border-radius: 18px;
-    z-index: 10001;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-}
-
-.banner-content { display: flex; align-items: center; gap: 15px; }
-.banner-text { flex: 1; text-align: right; }
-.banner-text strong { display: block; font-size: 1.1rem; }
-.install-btn { background: white; color: var(--primary); border: none; padding: 10px 20px; border-radius: 10px; font-weight: bold; }
-
-/* --- لودر --- */
+/* --- لودر و انیمیشن --- */
 .loader-overlay {
     position: fixed;
     inset: 0;
@@ -123,8 +118,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999;
-    transition: opacity 0.6s ease-out;
+    z-index: 10000;
 }
 
 .loader {
@@ -136,14 +130,16 @@ body {
     animation: spin 1s linear infinite;
 }
 
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* انیمیشن ورود */
-.animate-in {
-    animation: fadeInUp 0.5s ease-out forwards;
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* بنر نصب */
+.install-banner {
+    position: fixed;
+    bottom: 25px;
+    left: 15px;
+    right: 15px;
+    background: var(--primary);
+    padding: 15px;
+    border-radius: 15px;
+    z-index: 999;
 }
