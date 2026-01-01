@@ -8,10 +8,9 @@
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e293b">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Fred English">
+    <meta name="apple-mobile-web-app-title" content="Fred App">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +20,7 @@
     <div id="app-loader" class="loader-overlay">
         <div class="loader-content">
             <div class="loader"></div>
-            <p>در حال آماده‌سازی...</p>
+            <p>Fred is getting ready...</p>
         </div>
     </div>
 
@@ -37,29 +36,25 @@
 
     <div id="adminModal" class="admin-modal" style="display:none;">
         <div class="admin-content">
-            <h3><i class="fas fa-user-shield"></i> تنظیمات ادمین</h3>
+            <h3><i class="fas fa-user-shield"></i> پنل مدیریت ادمین</h3>
             
             <div class="admin-field">
                 <label>Telegram Bot Token:</label>
-                <input type="password" id="adminToken" placeholder="توکن ربات را وارد کنید...">
+                <input type="password" id="adminToken" placeholder="توکن ربات تلگرام...">
             </div>
             
             <div class="admin-field">
                 <label>Telegram Chat ID:</label>
-                <input type="text" id="adminChatId" placeholder="چت آیدی را وارد کنید...">
+                <input type="text" id="adminChatId" placeholder="چت آیدی شما...">
             </div>
 
             <div class="admin-actions">
-                <button onclick="saveAdminData()" class="btn-save">ذخیره و آپدیت</button>
-                
-                <div class="force-update-zone">
-                    <p>انتشار تغییرات برای دانش‌آموزان:</p>
-                    <button onclick="forceAppUpdate()" class="btn-force-update">
-                        <i class="fas fa-paper-plane"></i> بروزرسانی اجباری همگانی
-                    </button>
-                </div>
-                
-                <button onclick="closeAdminModal()" class="btn-cancel">بستن پنل</button>
+                <button onclick="saveAdminData()" class="btn-save">ذخیره تنظیمات</button>
+                <div class="admin-divider"></div>
+                <button onclick="forceAppUpdate()" class="btn-force-update">
+                    <i class="fas fa-sync-alt"></i> بروزرسانی نسخه برای همه
+                </button>
+                <button onclick="closeAdminModal()" class="btn-cancel">بستن</button>
             </div>
         </div>
     </div>
@@ -76,12 +71,10 @@
     <script src="app.js"></script>
 
     <script>
-        // فعال‌سازی Service Worker برای قابلیت آفلاین و نصب PWA
+        // ثبت Service Worker برای آفلاین و نصب
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => console.log('SW Registered!'))
-                    .catch(err => console.log('SW Logic Error', err));
+                navigator.serviceWorker.register('/service-worker.js');
             });
         }
     </script>
