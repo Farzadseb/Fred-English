@@ -11,53 +11,55 @@ body {
     background-color: var(--bg);
     color: var(--text);
     direction: rtl;
+    overflow-x: hidden;
 }
 
-/* --- استایل اختصاصی پنل مدیریت فرزاد --- */
+/* --- تنظیمات اختصاصی پنل مدیریت فرزاد --- */
 .admin-modal {
     position: fixed;
     inset: 0;
-    background: rgba(10, 15, 28, 0.96);
+    background: rgba(7, 10, 19, 0.98);
     display: flex;
-    align-items: flex-start; /* پنل را بالا نگه می‌دارد */
+    align-items: flex-start; /* چسباندن به سقف */
     justify-content: center;
-    z-index: 99999;
-    padding-top: 60px; /* فاصله از سقف برای راحتی چشم */
+    z-index: 999999;
+    padding-top: 30px; /* فاصله کم از بالا برای دیده شدن همه چیز */
 }
 
 .admin-content {
     background: var(--card-bg);
-    width: 92%;
-    max-width: 400px;
-    padding: 35px 15px;
-    border-radius: 28px;
-    border: 1px solid #334155;
+    width: 90%;
+    max-width: 380px;
+    padding: 25px 15px;
+    border-radius: 30px;
+    border: 2px solid #334155;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.7);
 }
 
 .admin-header i {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
     color: var(--primary);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .admin-header h3 {
-    margin: 0 0 30px 0;
-    font-size: 1.5rem;
+    margin: 0 0 20px 0;
+    font-size: 1.3rem;
+    color: white;
 }
 
 .admin-inputs-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* کادرها را وسط‌چین می‌کند */
+    align-items: center;
     width: 100%;
 }
 
 .input-group {
     position: relative;
-    width: 85%; /* عرض ۸۵ درصد برای زیبایی و فاصله از لبه‌ها */
-    margin-bottom: 18px;
+    width: 88%; /* تعادل بین درشت بودن و زیبایی */
+    margin-bottom: 15px;
 }
 
 .input-group i {
@@ -66,51 +68,52 @@ body {
     top: 50%;
     transform: translateY(-50%);
     color: var(--primary);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    z-index: 5;
 }
 
 .input-group input {
     width: 100%;
-    height: 75px; /* ارتفاع بسیار بلند و درشت */
-    background: #0f172a;
+    height: 80px; /* ارتفاع فوق‌العاده درشت برای لمس عالی */
+    background: #070b13;
     border: 2px solid #334155;
-    border-radius: 18px;
+    border-radius: 20px;
     color: white;
-    padding: 0 55px 0 15px; /* فاصله برای آیکون راست */
+    padding: 0 55px 0 15px;
     font-size: 1.2rem;
     outline: none;
     box-sizing: border-box;
-    transition: all 0.3s ease;
+    display: block;
 }
 
 .input-group input:focus {
     border-color: var(--primary);
-    background: #1e293b;
+    background: #0f172a;
 }
 
 .btn-save {
-    width: 85%; /* هم‌اندازه با کادرهای ورودی */
+    width: 88%;
     height: 70px;
     background: var(--primary);
     color: white;
     border: none;
-    border-radius: 18px;
+    border-radius: 20px;
     font-size: 1.3rem;
     font-weight: bold;
     cursor: pointer;
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .btn-cancel {
     background: transparent;
     color: #64748b;
     border: none;
-    margin-top: 25px;
+    margin-top: 15px;
     font-size: 1.1rem;
     cursor: pointer;
 }
 
-/* --- لودر و انیمیشن --- */
+/* --- سایر المان‌ها --- */
 .loader-overlay {
     position: fixed;
     inset: 0;
@@ -125,21 +128,9 @@ body {
     border: 5px solid #1e293b;
     border-top: 5px solid var(--primary);
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
-
-/* بنر نصب */
-.install-banner {
-    position: fixed;
-    bottom: 25px;
-    left: 15px;
-    right: 15px;
-    background: var(--primary);
-    padding: 15px;
-    border-radius: 15px;
-    z-index: 999;
-}
