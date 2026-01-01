@@ -15,10 +15,10 @@
 
     <div id="installBanner" class="install-banner" style="display:none;">
         <div class="banner-content">
-            <i class="fas fa-cloud-download-alt fa-2x"></i>
+            <i class="fas fa-download"></i>
             <div class="banner-text">
-                <strong>نصب اپلیکیشن آکادمی</strong>
-                <small>برای دسترسی سریع و آفلاین، اپ را نصب کنید</small>
+                <strong>نصب اپلیکیشن</strong>
+                <small>نسخه موبایل را نصب کنید</small>
             </div>
             <button class="install-btn" onclick="installPWA()">نصب</button>
             <button class="close-banner" onclick="hideInstallBanner()">×</button>
@@ -34,7 +34,7 @@
 
     <header>
         <div class="logo-container" id="admin-trigger">
-            <img src="icon-192.png" alt="Fred Logo">
+            <img src="icon-192.png" alt="Logo">
             <h1>English with Fred</h1>
         </div>
     </header>
@@ -43,21 +43,25 @@
 
     <div id="adminModal" class="admin-modal" style="display:none;">
         <div class="admin-content">
-            <h3><i class="fas fa-user-shield"></i> تنظیمات پنل مدیریت</h3>
-            <p style="color: #94a3b8; margin-bottom: 20px; font-size: 0.9rem;">اطلاعات ربات تلگرام را برای دریافت گزارشات وارد کنید</p>
-            
-            <div class="input-group">
-                <i class="fas fa-key"></i>
-                <input type="password" id="adminToken" placeholder="Bot Token (توکن ربات)">
+            <div class="admin-header">
+                <i class="fas fa-user-shield"></i>
+                <h3>تنظیمات مدیریت</h3>
             </div>
             
-            <div class="input-group">
-                <i class="fas fa-id-badge"></i>
-                <input type="text" id="adminChatId" placeholder="Chat ID (آیدی عددی شما)">
+            <div class="admin-inputs-container">
+                <div class="input-group">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="adminToken" placeholder="Bot Token">
+                </div>
+                
+                <div class="input-group">
+                    <i class="fas fa-id-badge"></i>
+                    <input type="text" id="adminChatId" placeholder="Chat ID">
+                </div>
             </div>
 
-            <button onclick="saveAdminData()" class="btn-save">ذخیره و اتصال به تلگرام</button>
-            <button onclick="closeAdminModal()" class="btn-cancel">انصراف و بستن</button>
+            <button onclick="saveAdminData()" class="btn-save">ذخیره تنظیمات</button>
+            <button onclick="closeAdminModal()" class="btn-cancel">انصراف</button>
         </div>
     </div>
 
