@@ -1,31 +1,33 @@
-// mistake-storage.js - مدیریت هوشمند یادگیری و اشتباهات
-console.log('🧠 Adaptive Learning System (MistakeManager) Ready');
+// mistake-storage.js - مدیریت هوشمند لغات دشوار
+console.log('🧠 MistakeManager (Adaptive Learning) Active');
 
 const MistakeManager = {
-    // کلید ثابت برای جلوگیری از خطای undefined
+    // کلید اصلی ذخیره‌سازی
     storageKey: 'fred_mistakes_v1',
 
-    // مدیریت چند کاربره (Per-User Support)
+    // مدیریت چند کاربره (جداسازی حافظه بر اساس نام کاربری یا آیدی)
     getStorageKey() {
-        const userId = window.appState?.currentUser?.id || 'anonymous';
+        const userId = window.appState?.currentUser?.id || 'default_user';
         return `${this.storageKey}_${userId}`;
     },
 
-    // دریافت لیست لغات دشوار
+    // ۱. دریافت لیست لغات دشوار
     getMistakes() {
         const data = ConfigManager.get(this.getStorageKey(), []);
         return Array.isArray(data) ? data : [];
     },
 
-    // اضافه کردن یا آپدیت اشتباه
+    // ۲. اضافه کردن لغت به لیست (یا افزایش نمره منفی)
     addMistake(word) {
         let mistakes = this.getMistakes();
         const existingIndex = mistakes.findIndex(m => m.id === word.id);
 
         if (existingIndex > -1) {
+            // اگر قبلاً بود، نمره منفی را بالا ببر
             mistakes[existingIndex].wrongCount += 1;
             mistakes[existingIndex].lastTime = new Date().toISOString();
         } else {
+            // اگر جدید بود، با مشخصات کامل ذخیره کن
             mistakes.push({
                 id: word.id,
                 english: word.english,
@@ -37,13 +39,13 @@ const MistakeManager = {
 
         ConfigManager.set(this.getStorageKey(), mistakes);
         
-        // نوتیفیکیشن (اگر تابع آن در app.js تعریف شده باشد)
+        // نمایش نوتیفیکیشن برای فیدبک به کاربر
         if (window.showNotification) {
-            window.showNotification(`📌 لغت "${word.english}" برای تمرین ذخیره شد.`, 'info');
+            window.showNotification(`📌 لغت "${word.english}" به تمرینات اضافه شد`, 'info');
         }
     },
 
-    // کاهش نمره منفی (وقتی کاربر درست جواب می‌دهد) - پیشنهاد طلایی شما
+    // ۳. کاهش نمره منفی (وقتی کاربر لغت را درست جواب می‌دهد) - طبق پیشنهاد شما
     reduceMistake(wordId) {
         let mistakes = this.getMistakes();
         const index = mistakes.findIndex(m => m.id === wordId);
@@ -51,10 +53,10 @@ const MistakeManager = {
         if (index > -1) {
             mistakes[index].wrongCount -= 1;
             
-            // اگر کاربر لغت را کاملاً یاد گرفته (نمره به صفر رسید) حذفش کن
+            // اگر نمره منفی به صفر رسید، یعنی کاربر یاد گرفته -> حذف از لیست
             if (mistakes[index].wrongCount <= 0) {
                 mistakes.splice(index, 1);
-                console.log(`✅ لغت با آیدی ${wordId} از لیست دشوارها حذف شد (یادگیری کامل).`);
+                console.log(`✅ لغت ${wordId} کاملاً یاد گرفته شد و حذف گردید.`);
             } else {
                 mistakes[index].lastTime = new Date().toISOString();
             }
@@ -63,25 +65,21 @@ const MistakeManager = {
         }
     },
 
-    // الگوریتم Spaced Repetition برای اولویت‌بندی (پیشنهاد شما)
+    // ۴. دریافت سخت‌ترین لغات (با اولویت‌بندی زمانی و تعدادی)
     getHardestWords(limit = 10) {
         return this.getMistakes()
             .sort((a, b) => {
-                // اولویت ۱: تعداد اشتباه بیشتر
+                // اولویت اول: تعداد اشتباه بیشتر
                 if (b.wrongCount !== a.wrongCount) {
                     return b.wrongCount - a.wrongCount;
                 }
-                // اولویت ۲: لغاتی که قدیمی‌تر هستند (زمان بیشتری از دیدنشان گذشته)
+                // اولویت دوم: لغاتی که زمان بیشتری است دیده نشده‌اند (Spaced Repetition)
                 return new Date(a.lastTime) - new Date(b.lastTime);
             })
             .slice(0, limit);
     },
 
-    removeMistake(wordId) {
-        const mistakes = this.getMistakes().filter(m => m.id !== wordId);
-        ConfigManager.set(this.getStorageKey(), mistakes);
-    },
-
+    // پاکسازی کامل
     reset() {
         ConfigManager.set(this.getStorageKey(), []);
     }
