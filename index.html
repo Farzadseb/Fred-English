@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English with Fred</title>
+    <title>Farzadseb Academy | English with Fred</title>
+    
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e293b">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+
     <div id="installBanner" class="install-banner" style="display:none;">
         <div class="banner-content">
-            <i class="fas fa-mobile-alt"></i>
+            <i class="fas fa-cloud-download-alt fa-2x"></i>
             <div class="banner-text">
                 <strong>نصب اپلیکیشن آکادمی</strong>
-                <small>برای دسترسی سریع و آفلاین نصب کنید</small>
+                <small>برای دسترسی سریع و آفلاین، اپ را نصب کنید</small>
             </div>
             <button class="install-btn" onclick="installPWA()">نصب</button>
             <button class="close-banner" onclick="hideInstallBanner()">×</button>
@@ -30,7 +34,7 @@
 
     <header>
         <div class="logo-container" id="admin-trigger">
-            <img src="icon-192.png" alt="Logo">
+            <img src="icon-192.png" alt="Fred Logo">
             <h1>English with Fred</h1>
         </div>
     </header>
@@ -39,11 +43,21 @@
 
     <div id="adminModal" class="admin-modal" style="display:none;">
         <div class="admin-content">
-            <h3><i class="fas fa-user-shield"></i> پنل مدیریت</h3>
-            <input type="password" id="adminToken" placeholder="Bot Token">
-            <input type="text" id="adminChatId" placeholder="Chat ID">
-            <button onclick="saveAdminData()" class="btn-save">ذخیره</button>
-            <button onclick="closeAdminModal()" class="btn-cancel">بستن</button>
+            <h3><i class="fas fa-user-shield"></i> تنظیمات پنل مدیریت</h3>
+            <p style="color: #94a3b8; margin-bottom: 20px; font-size: 0.9rem;">اطلاعات ربات تلگرام را برای دریافت گزارشات وارد کنید</p>
+            
+            <div class="input-group">
+                <i class="fas fa-key"></i>
+                <input type="password" id="adminToken" placeholder="Bot Token (توکن ربات)">
+            </div>
+            
+            <div class="input-group">
+                <i class="fas fa-id-badge"></i>
+                <input type="text" id="adminChatId" placeholder="Chat ID (آیدی عددی شما)">
+            </div>
+
+            <button onclick="saveAdminData()" class="btn-save">ذخیره و اتصال به تلگرام</button>
+            <button onclick="closeAdminModal()" class="btn-cancel">انصراف و بستن</button>
         </div>
     </div>
 
@@ -57,5 +71,6 @@
     <script src="quiz-engine.js"></script>
     <script src="install-promotion.js"></script>
     <script src="app.js"></script>
+
 </body>
 </html>
