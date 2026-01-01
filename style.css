@@ -1,311 +1,180 @@
-/* =======================
-   ROOT VARIABLES
-======================= */
+/* فونت وزیرمتن برای خوانایی حداکثری */
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+
 :root {
-  --primary: #3b82f6;
-  --secondary: #22c55e;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-  --info: #0ea5e9;
-
-  --bg: #f8fafc;
-  --card-bg: #ffffff;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --border: #e5e7eb;
-
-  --radius: 14px;
-  --radius-sm: 10px;
-
-  --shadow-sm: 0 2px 6px rgba(0,0,0,.06);
-  --shadow-md: 0 10px 25px rgba(0,0,0,.12);
-
-  --gradient-main: linear-gradient(135deg,#3b82f6,#22c55e);
-  --gradient-danger: linear-gradient(135deg,#ef4444,#dc2626);
+    --bg-dark: #0f172a;
+    --bg-card: #1e293b;
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --success: #10b981;
+    --danger: #ef4444;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --safe-bottom: env(safe-area-inset-bottom);
 }
 
-/* =======================
-   DARK THEME
-======================= */
-.dark-theme {
-  --bg: #020617;
-  --card-bg: #020617;
-  --text: #e5e7eb;
-  --text-muted: #94a3b8;
-  --border: #1e293b;
-}
-
-/* =======================
-   BASE
-======================= */
 * {
-  box-sizing: border-box;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; /* جلوگیری از کپی شدن متن لغات در حالت امتحان */
 }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+    font-family: 'Vazirmatn', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    direction: rtl;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* =======================
-   VIEW SYSTEM
-======================= */
-.view {
-  display: none;
-  padding: 1rem;
+/* هدر ثابت و شیشه‌ای (Glassmorphism) */
+header {
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
 }
 
-.view.active {
-  display: block;
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* =======================
-   CARDS
-======================= */
-.card {
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  padding: 1rem;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+.logo-container img {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
 }
 
-/* =======================
-   HEADER
-======================= */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+/* استایل لودر ورودی */
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
 }
 
-.header h2 {
-  margin: 0;
-  font-size: 1.2rem;
+.loader-content { text-align: center; }
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--bg-card);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
 }
 
-/* =======================
-   BUTTONS
-======================= */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* پنل مدیریت (Modal) */
+.admin-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+}
+
+.admin-content {
+    background: var(--bg-card);
+    width: 100%;
+    max-width: 350px;
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-field { margin-bottom: 20px; }
+
+.admin-field label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+}
+
+.admin-field input {
+    width: 100%;
+    padding: 12px;
+    background: var(--bg-dark);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    color: #fff;
+    direction: ltr;
+}
+
+/* دکمه‌ها */
 button {
-  border: none;
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.1s, opacity 0.2s;
 }
 
-.menu-btn,
-.option-btn,
-.theme-btn,
-.mute-btn {
-  padding: 1rem;
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  box-shadow: var(--shadow-sm);
-  transition: all .3s ease;
+button:active { transform: scale(0.96); }
+
+.btn-save {
+    background: var(--primary);
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: bold;
 }
 
-.menu-btn:hover,
-.option-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
+.btn-force-update {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    margin: 15px 0;
+    font-size: 0.9rem;
 }
 
-.menu-btn.disabled {
-  opacity: .5;
-  cursor: not-allowed;
-  transform: none !important;
+.btn-cancel {
+    background: none;
+    color: var(--text-muted);
+    width: 100%;
+    font-size: 0.85rem;
 }
 
-/* =======================
-   MENU GRID
-======================= */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  gap: 1rem;
-}
-
-@media(max-width:480px){
-  .menu-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* =======================
-   GRADIENT BUTTONS
-======================= */
-.gradient-primary {
-  background: var(--gradient-main);
-  color: #fff;
-}
-
-.gradient-danger {
-  background: var(--gradient-danger);
-  color: #fff;
-}
-
-/* =======================
-   QUIZ
-======================= */
-#questionText {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-#quizOptions {
-  display: grid;
-  gap: .8rem;
-}
-
-.option-btn.correct {
-  background: #16a34a !important;
-  color: #fff;
-}
-
-.option-btn.wrong {
-  background: #dc2626 !important;
-  color: #fff;
-}
-
-/* =======================
-   PROGRESS BAR
-======================= */
-.progress-bar {
-  height: 8px;
-  background: rgba(59,130,246,.2);
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 1rem 0;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: var(--gradient-main);
-  transition: width .4s ease;
-}
-
-.dark-theme .progress-bar {
-  background: rgba(59,130,246,.1);
-}
-
-/* =======================
-   STARS
-======================= */
-.stars {
-  display: flex;
-  gap: .3rem;
-}
-
-.stars i {
-  color: #facc15;
-}
-
-/* =======================
-   NOTIFICATION
-======================= */
+/* اعلان‌ها */
 .notification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-20px);
-  padding: .8rem 1.2rem;
-  border-radius: var(--radius);
-  color: #fff;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .4s ease, transform .4s ease;
-  z-index: 9999;
+    background: var(--bg-card);
+    border-left: 4px solid var(--primary);
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    animation: slideRight 0.3s ease-out;
 }
 
-.notification.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
+@keyframes slideRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+/* فضای اصلی اپلیکیشن */
+#app-container {
+    padding: 20px 15px calc(20px + var(--safe-bottom));
+    max-width: 500px;
+    margin: 0 auto;
 }
-
-.notification.success { background: #16a34a; }
-.notification.error { background: #dc2626; }
-.notification.info { background: #0ea5e9; }
-.notification.warning { background: #f59e0b; }
-
-/* =======================
-   CLICKABLE SPEAK
-======================= */
-[onclick^="speakText"] {
-  cursor: pointer;
-  padding: .3rem;
-  border-radius: var(--radius-sm);
-  transition: background .2s ease;
-}
-
-[onclick^="speakText"]:hover {
-  background: rgba(59,130,246,.1);
-}
-
-/* =======================
-   MODAL
-======================= */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9998;
-}
-
-.modal-content {
-  background: var(--card-bg);
-  padding: 1.2rem;
-  border-radius: var(--radius);
-  max-width: 90%;
-}
-
-.modal-close {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  background: none;
-  font-size: 1.5rem;
-  color: var(--text);
-}
-
-/* =======================
-   INSTALL BANNER
-======================= */
-#installBanner {
-  display: none;
-  position: fixed;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--gradient-main);
-  color: #fff;
-  padding: 1rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
-  width: 90%;
-  max-width: 420px;
-}
-
-#installBanner button {
-  background: #fff;
-  color: #000;
-  margin-top: .5rem;
-}
-
-/* =======================
-   IOS SAFE AREA
-======================= */
-@supports(padding: env(safe-area-inset-bottom)){
-  body {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-   }
