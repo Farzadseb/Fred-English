@@ -22,19 +22,13 @@
 
 <body class="dark-theme">
 
-<!-- ===================== -->
-<!-- NOTIFICATION -->
-<!-- ===================== -->
+<!-- Notification -->
 <div id="notification" class="notification"></div>
 
-<!-- ===================== -->
-<!-- INSTALL BANNER -->
-<!-- ===================== -->
+<!-- Install Banner -->
 <div id="installBanner" class="install-banner"></div>
 
-<!-- ===================== -->
-<!-- LOGIN VIEW -->
-<!-- ===================== -->
+<!-- LOGIN -->
 <section id="login" class="view active">
     <div class="card center">
         <h2>English with Fred</h2>
@@ -44,9 +38,7 @@
     </div>
 </section>
 
-<!-- ===================== -->
-<!-- HOME VIEW -->
-<!-- ===================== -->
+<!-- HOME -->
 <section id="home" class="view">
     <header class="top-bar">
         <span>سلام <strong id="currentUsername"></strong> 👋</span>
@@ -91,9 +83,12 @@
             <span>گزارش پیشرفت</span>
         </button>
 
-        <button class="menu-btn" onclick="joinWhatsApp()">
-            <i class="fab fa-whatsapp"></i>
-            <span>واتس‌اپ</span>
+        <!-- ADMIN ONLY -->
+        <button id="adminClearCacheBtn"
+                class="menu-btn danger"
+                style="display:none"
+                onclick="adminClearCache()">
+            🧹 پاک‌سازی کش (ادمین)
         </button>
 
         <button class="menu-btn gradient-telegram" onclick="showExitOptions()">
@@ -103,9 +98,7 @@
     </div>
 </section>
 
-<!-- ===================== -->
-<!-- QUIZ VIEW -->
-<!-- ===================== -->
+<!-- QUIZ -->
 <section id="quiz" class="view">
     <header class="top-bar">
         <span id="quizUsername"></span>
@@ -120,9 +113,7 @@
 
     <div class="quiz-card">
         <div id="questionText" class="question"></div>
-
         <div id="quizOptions" class="options"></div>
-
         <div class="quiz-info">
             <span>سوال <b id="currentQuestion">1</b>/<span id="totalQuestions">10</span></span>
             <span>امتیاز: <b id="quizScore">0</b></span>
@@ -130,29 +121,20 @@
     </div>
 </section>
 
-<!-- ===================== -->
-<!-- RESULT VIEW -->
-<!-- ===================== -->
+<!-- RESULT -->
 <section id="results" class="view">
     <div class="card center">
         <h2>نتیجه آزمون</h2>
         <p>امتیاز: <strong id="finalScore"></strong></p>
         <p>درست: <span id="correctCount"></span> / <span id="totalCount"></span></p>
         <p id="motivationMsg"></p>
-
         <button class="menu-btn primary" onclick="switchView('home')">بازگشت</button>
     </div>
 </section>
 
-<!-- ===================== -->
-<!-- SCRIPTS (ORDER مهم) -->
-<!-- ===================== -->
-
+<!-- Scripts -->
 <script src="a1-words.js"></script>
-
-<script src="telegram-config.js"></script>
 <script src="telegram-integration.js"></script>
-
 <script src="quiz-engine.js"></script>
 <script src="app.js"></script>
 <script src="install-promotion.js"></script>
