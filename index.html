@@ -3,126 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English with Fred | یادگیری هوشمند انگلیسی</title>
+    <title>English with Fred</title>
     
+    <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#3b82f6">
+    <meta name="theme-color" content="#1e293b">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <meta name="apple-mobile-web-app-title" content="Fred English">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        /* چند استایل ضروری برای جلوگیری از پرش صفحه قبل از لود CSS */
-        :root { --primary-color: #3b82f6; }
-        body { font-family: 'Vazirmatn', sans-serif; margin: 0; padding: 0; }
-        .view { display: none; }
-        .view.active { display: block; }
-    </style>
 </head>
-<body class="dark-theme">
+<body>
 
-    <div id="app-container">
-        <section id="login" class="view active">
-            <div class="login-container">
-                <header class="login-header">
-                    <h1><i class="fas fa-user-graduate"></i> English with Fred</h1>
-                    <p>برای شروع، لطفاً نام خود را وارد کنید</p>
-                </header>
-                
-                <div class="login-form">
-                    <div class="input-group">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="usernameInput" placeholder="نام شما (مثلاً: علی)" maxlength="20">
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-id-card"></i>
-                        <input type="text" id="studentCode" placeholder="کد زبان آموز (اختیاری)" maxlength="10">
-                    </div>
-                    
-                    <button class="btn login-btn" onclick="saveUserInfo()">
-                        <i class="fas fa-play-circle"></i> شروع یادگیری
-                    </button>
-                    
-                    <footer class="login-info">
-                        <p><i class="fas fa-info-circle"></i> نام شما در گزارش‌ها ذخیره می‌شود</p>
-                        <p><i class="fas fa-shield-alt"></i> اطلاعات شما محرمانه می‌ماند</p>
-                    </footer>
-                </div>
-            </div>
-        </section>
-
-        <section id="home" class="view">
-            <nav class="top-bar">
-                <div class="actions">
-                    <button class="mute-btn" id="globalMuteBtn" title="قطع/وصل صدا"><i class="fas fa-volume-up"></i></button>
-                    <button class="theme-btn" id="themeToggle" title="تغییر تم"><i class="fas fa-sun"></i></button>
-                </div>
-                <div class="user-info">
-                    <i class="fas fa-user-circle"></i>
-                    <span id="currentUsername">کاربر</span>
-                </div>
-            </nav>
-
-            <header class="app-header">
-                <h2><i class="fas fa-graduation-cap"></i> English with Fred</h2>
-                <div class="score-card">
-                    <div class="stars" id="starsContainer">
-                        </div>
-                    <div class="best-score">
-                        <i class="fas fa-trophy"></i>
-                        <span>بهترین امتیاز: </span>
-                        <strong id="bestScore">0%</strong>
-                    </div>
-                </div>
-            </header>
-
-            <main class="menu-grid">
-                <button class="menu-btn gradient-blue" onclick="startQuiz('english-persian')">
-                    <i class="fas fa-language"></i><span>English → Persian</span>
-                </button>
-                <button class="menu-btn gradient-blue" onclick="startQuiz('persian-english')">
-                    <i class="fas fa-exchange-alt"></i><span>Persian → English</span>
-                </button>
-                <button class="menu-btn gradient-green" onclick="startQuiz('word-definition')">
-                    <i class="fas fa-book"></i><span>Word → Definition</span>
-                </button>
-                <button class="menu-btn gradient-green" onclick="startQuiz('definition-word')">
-                    <i class="fas fa-search"></i><span>Definition → Word</span>
-                </button>
-                <button class="menu-btn gradient-orange" onclick="reviewMistakesPage()">
-                    <i class="fas fa-redo"></i><span>مرور اشتباهات</span>
-                </button>
-                <button class="menu-btn gradient-purple" onclick="showProgressReport()">
-                    <i class="fas fa-chart-line"></i><span>گزارش پیشرفت</span>
-                </button>
-                <button class="menu-btn gradient-whatsapp" onclick="joinWhatsApp()">
-                    <i class="fab fa-whatsapp"></i><span>ثبت نام واتساپ</span>
-                </button>
-                <button class="menu-btn gradient-exit" onclick="showExitOptions()">
-                    <i class="fas fa-sign-out-alt"></i><span>خروج / تغییر کاربر</span>
-                </button>
-            </main>
-        </section>
-
-        <section id="quiz" class="view">
-            <div class="quiz-progress-container">
-                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-            </div>
-            <div id="questionContainer">
-                </div>
-        </section>
-
-        <div id="notification" class="notification" role="alert"></div>
+    <div id="app-loader" class="loader-overlay">
+        <div class="loader-content">
+            <div class="loader"></div>
+            <p>در حال آماده‌سازی...</p>
+        </div>
     </div>
 
-    <script src="words.js" defer></script>
-    <script src="quiz-engine.js" defer></script>
-    <script src="telegram-integration.js" defer></script>
-    <script src="app.js" defer></script>
+    <header>
+        <div class="logo-container" id="admin-trigger">
+            <img src="icon-192.png" alt="Fred Logo">
+            <h1>English with Fred</h1>
+        </div>
+    </header>
 
+    <main id="app-container">
+        </main>
+
+    <div id="adminModal" class="admin-modal" style="display:none;">
+        <div class="admin-content">
+            <h3><i class="fas fa-user-shield"></i> تنظیمات ادمین</h3>
+            
+            <div class="admin-field">
+                <label>Telegram Bot Token:</label>
+                <input type="password" id="adminToken" placeholder="توکن ربات را وارد کنید...">
+            </div>
+            
+            <div class="admin-field">
+                <label>Telegram Chat ID:</label>
+                <input type="text" id="adminChatId" placeholder="چت آیدی را وارد کنید...">
+            </div>
+
+            <div class="admin-actions">
+                <button onclick="saveAdminData()" class="btn-save">ذخیره و آپدیت</button>
+                
+                <div class="force-update-zone">
+                    <p>انتشار تغییرات برای دانش‌آموزان:</p>
+                    <button onclick="forceAppUpdate()" class="btn-force-update">
+                        <i class="fas fa-paper-plane"></i> بروزرسانی اجباری همگانی
+                    </button>
+                </div>
+                
+                <button onclick="closeAdminModal()" class="btn-cancel">بستن پنل</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script src="config.js"></script>
+    <script src="a1-words.js"></script>
+    <script src="speech.js"></script>
+    <script src="telegram-integration.js"></script>
+    <script src="mistake-storage.js"></script>
+    <script src="quiz-engine.js"></script>
+    <script src="install-promotion.js"></script>
+    <script src="app.js"></script>
+
+    <script>
+        // فعال‌سازی Service Worker برای قابلیت آفلاین و نصب PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('SW Registered!'))
+                    .catch(err => console.log('SW Logic Error', err));
+            });
+        }
+    </script>
 </body>
 </html>
