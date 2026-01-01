@@ -3,37 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Farzadseb Academy</title>
+    <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* استایل اختصاصی برای وسط‌چین کردن هدر */
-        header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 70px;
-            background: #1e293b;
-            position: relative;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            cursor: pointer;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: white;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-    </style>
 </head>
 <body>
 
@@ -44,7 +17,7 @@
         </div>
     </div>
 
-    <header>
+    <header class="main-header">
         <div class="logo-container" id="admin-trigger">
             <h1>English with Fred</h1>
         </div>
@@ -72,7 +45,7 @@
             </div>
 
             <button onclick="saveAdminData()" class="btn-save">ذخیره تنظیمات</button>
-            <button onclick="closeAdminModal()" class="btn-cancel">انصراف</button>
+            <button onclick="closeAdminModal()" class="btn-cancel">انصراف و بستن</button>
         </div>
     </div>
 
