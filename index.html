@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English with Fred</title>
+    <title>English with Fred - A1 Level</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #ffffff; --blue: #00a8ff; --accent: #94a3b8; }
-        .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --blue: #2563eb; --accent: #64748b; }
+        :root { --bg: #0f172a; --card: #1e293b; --text: #ffffff; --blue: #00a8ff; --accent: #94a3b8; --green: #00b894; --orange: #fdcb6e; }
+        .light-mode { --bg: #f1f5f9; --card: #ffffff; --text: #0f172a; --blue: #0984e3; --accent: #636e72; }
 
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; transition: 0.3s; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         .top-bar { width: 100%; max-width: 450px; display: flex; justify-content: space-between; padding: 15px; box-sizing: border-box; }
-        .icon-btn { background: var(--card); border: 1px solid var(--accent); color: var(--text); padding: 10px; border-radius: 12px; cursor: pointer; }
+        .icon-btn { background: var(--card); border: 1px solid var(--accent); color: var(--text); padding: 10px; border-radius: 12px; cursor: pointer; width: 45px; }
         
-        .quiz-card { background: var(--card); padding: 20px; border-radius: 25px; width: 92%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-top: 5px; }
-        .word-title { font-size: 38px; color: var(--blue); text-align: center; margin: 0; }
-        .word-trans { text-align: center; font-size: 18px; color: var(--accent); margin-bottom: 15px; }
+        .quiz-card { background: var(--card); padding: 20px; border-radius: 25px; width: 92%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 10px 0; border-top: 5px solid var(--blue); }
+        .word-title { font-size: 42px; color: var(--blue); text-align: center; margin: 0; font-weight: bold; letter-spacing: -1px; }
+        .word-trans { text-align: center; font-size: 22px; color: var(--accent); margin-bottom: 20px; }
 
-        .section-box { text-align: right; margin-bottom: 12px; background: rgba(128,128,128,0.1); padding: 12px; border-radius: 15px; position: relative; }
-        .section-label { font-size: 12px; color: var(--blue); font-weight: bold; margin-bottom: 5px; display: block; }
-        .eng-text { display: block; direction: ltr; font-weight: 600; font-size: 16px; line-height: 1.4; }
-        .fa-text { display: block; color: var(--accent); font-size: 14px; margin-top: 4px; }
+        .section-box { text-align: right; margin-bottom: 15px; background: rgba(128,128,128,0.05); padding: 15px; border-radius: 18px; position: relative; border-right: 4px solid var(--blue); }
+        .section-label { font-size: 11px; color: var(--blue); font-weight: bold; margin-bottom: 8px; display: block; }
+        .eng-text { display: block; direction: ltr; font-weight: 500; font-size: 17px; line-height: 1.5; color: var(--text); }
+        .fa-text { display: block; color: var(--accent); font-size: 14px; margin-top: 5px; }
         
-        .speaker-btn { background: none; border: none; color: var(--blue); cursor: pointer; font-size: 16px; float: left; }
-        .next-btn { width: 100%; padding: 16px; border-radius: 15px; border: none; background: var(--blue); color: white; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 10px; }
+        .speaker-btn { background: #334155; border: none; color: var(--blue); cursor: pointer; font-size: 14px; float: left; padding: 5px 10px; border-radius: 8px; }
+        .next-btn { width: 92%; max-width: 420px; padding: 18px; border-radius: 20px; border: none; background: var(--blue); color: white; font-weight: bold; font-size: 19px; cursor: pointer; margin-bottom: 30px; }
     </style>
 </head>
 <body>
@@ -33,9 +33,10 @@
         <button class="icon-btn" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i></button>
     </div>
 
-    <div id="app" class="quiz-card"></div>
+    <div id="app" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
 
     <script src="a1-words.js"></script>
+
     <script>
         let isMuted = false;
         let index = 0;
@@ -53,51 +54,48 @@
 
         const App = {
             render() {
-                const w = window.words[index];
+                const w = window.wordsA1[index]; // فراخوانی از آرایه سطح A1
                 document.getElementById('app').innerHTML = `
-                    <div class="word-title">${w.word}</div>
-                    <div class="word-trans">${w.translation}</div>
+                    <div class="quiz-card">
+                        <div class="word-title">${w.word}</div>
+                        <div class="word-trans">${w.translation}</div>
 
-                    <div class="section-box">
-                        <span class="section-label">COLLOCATION</span>
-                        <button class="speaker-btn" onclick="speak('${w.coll_en}')"><i class="fas fa-volume-up"></i></button>
-                        <span class="eng-text">${w.coll_en}</span>
-                        <span class="fa-text">${w.coll_fa}</span>
+                        <div class="section-box">
+                            <span class="section-label">VOCABULARY EXAMPLE</span>
+                            <button class="speaker-btn" onclick="speak('${w.ex_en}')"><i class="fas fa-volume-up"></i></button>
+                            <span class="eng-text">${w.ex_en}</span>
+                            <span class="fa-text">${w.ex_fa}</span>
+                        </div>
+
+                        <div class="section-box" style="border-right-color: var(--green);">
+                            <span class="section-label" style="color:var(--green)">COLLOCATION</span>
+                            <button class="speaker-btn" onclick="speak('${w.coll_en}. ${w.coll_ex_en}')"><i class="fas fa-volume-up"></i></button>
+                            <span class="eng-text">${w.coll_en}</span>
+                            <span class="fa-text">${w.coll_fa}</span>
+                            <span class="eng-text" style="font-size:14px; color:var(--accent); margin-top:5px;">Ex: ${w.coll_ex_en}</span>
+                            <span class="fa-text" style="font-size:13px;">${w.coll_ex_fa}</span>
+                        </div>
+
+                        <div class="section-box" style="border-right-color: var(--orange);">
+                            <span class="section-label" style="color:var(--orange)">PHRASAL VERBS</span>
+                            <button class="speaker-btn" onclick="speak('${w.ph1_en}. ${w.ph1_ex_en}. ${w.ph2_en}. ${w.ph2_ex_en}')"><i class="fas fa-volume-up"></i></button>
+                            <span class="eng-text">1. ${w.ph1_en}: <small style="color:var(--accent)">${w.ph1_fa}</small></span>
+                            <span class="eng-text" style="font-size:14px; color:var(--accent)">Ex: ${w.ph1_ex_en}</span>
+                            <span class="fa-text" style="font-size:13px; border-bottom: 1px solid #334155; padding-bottom:5px;">${w.ph1_ex_fa}</span>
+                            
+                            <span class="eng-text" style="margin-top:10px;">2. ${w.ph2_en}: <small style="color:var(--accent)">${w.ph2_fa}</small></span>
+                            <span class="eng-text" style="font-size:14px; color:var(--accent)">Ex: ${w.ph2_ex_en}</span>
+                            <span class="fa-text" style="font-size:13px;">${w.ph2_ex_fa}</span>
+                        </div>
                     </div>
-
-                    <div class="section-box">
-                        <span class="section-label">EXAMPLE</span>
-                        <button class="speaker-btn" onclick="speak('${w.ex_en}')"><i class="fas fa-volume-up"></i></button>
-                        <span class="eng-text">${w.ex_en}</span>
-                        <span class="fa-text">${w.ex_fa}</span>
-                    </div>
-
-                    <div class="section-box">
-                        <span class="section-label">PHRASAL VERB 1</span>
-                        <button class="speaker-btn" onclick="speak('${w.ph1_en}. ${w.ph1_ex}')"><i class="fas fa-volume-up"></i></button>
-                        <span class="eng-text">${w.ph1_en}</span>
-                        <span class="fa-text">${w.ph1_fa}</span>
-                        <span class="eng-text" style="margin-top:5px; font-size:14px; color:var(--accent)">Ex: ${w.ph1_ex}</span>
-                        <span class="fa-text" style="font-size:12px;">${w.ph1_ex_fa}</span>
-                    </div>
-
-                    <div class="section-box">
-                        <span class="section-label">PHRASAL VERB 2</span>
-                        <button class="speaker-btn" onclick="speak('${w.ph2_en}. ${w.ph2_ex}')"><i class="fas fa-volume-up"></i></button>
-                        <span class="eng-text">${w.ph2_en}</span>
-                        <span class="fa-text">${w.ph2_fa}</span>
-                        <span class="eng-text" style="margin-top:5px; font-size:14px; color:var(--accent)">Ex: ${w.ph2_ex}</span>
-                        <span class="fa-text" style="font-size:12px;">${w.ph2_ex_fa}</span>
-                    </div>
-
                     <button class="next-btn" onclick="App.next()">Next Word</button>
                 `;
                 speak(w.word);
             },
             next() {
                 index++;
-                if(index < window.words.length) this.render();
-                else alert("پایان لیست لغات");
+                if(index < window.wordsA1.length) { this.render(); window.scrollTo(0,0); }
+                else alert("پایان سطح A1");
             }
         };
         window.onload = () => App.render();
