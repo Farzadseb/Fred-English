@@ -1,18 +1,19 @@
+// mistake-storage.js
 const MistakeManager = {
     add(word) {
-        let list = JSON.parse(localStorage.getItem('fred_errors') || '[]');
-        if(!list.find(x => x.id === word.id)) {
-            list.push(word);
-            localStorage.setItem('fred_errors', JSON.stringify(list));
+        let mistakes = JSON.parse(localStorage.getItem('fred_mistakes') || '[]');
+        if (!mistakes.find(m => m.id === word.id)) {
+            mistakes.push(word);
+            localStorage.setItem('fred_mistakes', JSON.stringify(mistakes));
         }
     },
     showReview() {
-        let list = JSON.parse(localStorage.getItem('fred_errors') || '[]');
-        if(list.length === 0) {
-            alert("هنوز کلمه اشتباهی ندارید!");
+        let mistakes = JSON.parse(localStorage.getItem('fred_mistakes') || '[]');
+        if (mistakes.length === 0) {
+            alert("هنوز کلمه اشتباهی برای مرور ندارید!");
             return;
         }
-        window.words = list;
+        window.words = mistakes;
         window.QuizEngine.start('fa-en');
     }
 };
