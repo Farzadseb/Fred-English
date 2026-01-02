@@ -6,124 +6,154 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #ffffff; --blue: #00a8ff; --accent: #94a3b8; --green: #00b894; --gold: #f1c40f; }
-        .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --blue: #2563eb; --accent: #64748b; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; transition: 0.3s; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        :root { --bg: #0b1426; --card: #1e293b; --blue: #00a8ff; --green: #00b894; --dark-green: #008000; --orange: #e67e22; --red: #d63031; --purple: #8e44ad; --text: #ffffff; --gray: #94a3b8; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
         
-        /* ستاره‌ها */
-        .stars-container { margin: 15px 0; font-size: 24px; color: #475569; }
-        .star-active { color: var(--gold); text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
-
-        #setup-screen { background: var(--card); padding: 30px; border-radius: 25px; width: 85%; max-width: 380px; margin-top: 50px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-        input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 15px; border: 2px solid var(--blue); background: var(--bg); color: var(--text); text-align: center; outline: none; }
+        .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 20px; border-radius: 20px; margin-top: 20px; }
+        input { width: 85%; padding: 12px; border-radius: 10px; border: 1px solid var(--gray); background: var(--bg); color: white; text-align: center; margin-top: 10px; outline: none; }
         
-        .progress-container { width: 90%; background: rgba(128,128,128,0.2); height: 10px; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); width: 0%; transition: 0.5s; }
+        .stars { color: #475569; font-size: 22px; margin-bottom: 5px; }
+        .star-active { color: #f1c40f; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
 
-        .quiz-card { background: var(--card); padding: 20px; border-radius: 25px; width: 92%; max-width: 420px; margin: 15px 0; border-top: 6px solid var(--blue); position: relative; }
-        .next-btn { width: 92%; max-width: 420px; padding: 18px; border-radius: 20px; border: none; background: var(--blue); color: white; font-weight: bold; font-size: 19px; cursor: pointer; margin-bottom: 30px; }
+        .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .menu-item { display: flex; align-items: center; padding: 18px 20px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
+        .menu-item i { width: 30px; font-size: 18px; text-align: center; margin-left: 10px; }
+        .menu-item span { flex-grow: 1; text-align: center; }
+
+        .q-card { background: var(--card); padding: 25px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .ans-input { width: 90%; padding: 15px; border-radius: 12px; border: 2px solid var(--blue); background: var(--bg); color: white; text-align: center; font-size: 18px; margin-bottom: 15px; outline: none; }
+        
+        .progress-bar-container { width: 100%; background: #334155; height: 8px; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: var(--green); width: 0%; transition: 0.4s; }
+
         .hidden { display: none; }
+        .box-info { text-align: right; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin-bottom: 10px; border-right: 4px solid var(--blue); }
     </style>
 </head>
 <body>
 
-    <div id="setup-screen">
-        <i class="fas fa-user-graduate" style="font-size:50px; color:var(--blue)"></i>
-        <h2>خوش آمدی قهرمان!</h2>
-        
-        <div class="stars-container" id="mainStars">
-            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+    <div id="setup-screen" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+        <h1 style="margin-top:20px;">English with Fred</h1>
+        <div class="header-box">
+            <div class="stars" id="mainStars">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <input type="text" id="userName" placeholder="نام خود را وارد کنید">
         </div>
 
-        <input type="text" id="userName" placeholder="نام قشنگت رو بنویس">
-        <button class="next-btn" onclick="startApp()" style="width:100%">بزن بریم برای یادگیری!</button>
+        <div class="menu-container">
+            <button class="menu-item" style="background: var(--purple);" onclick="Engine.start('study')"><i class="fas fa-graduation-cap"></i><span>آموزش لغات (Study Mode)</span></button>
+            <button class="menu-item" style="background: var(--blue);" onclick="Engine.start('fa-en')"><i class="fas fa-exchange-alt"></i><span>Persian → English</span></button>
+            <button class="menu-item" style="background: var(--green);" onclick="Engine.start('word-def')"><i class="fas fa-book"></i><span>Word → Definition</span></button>
+            <button class="menu-item" style="background: var(--dark-green);" onclick="Engine.start('def-word')"><i class="fas fa-search"></i><span>Definition → Word</span></button>
+            <button class="menu-item" style="background: var(--orange);" onclick="Engine.start('review')"><i class="fas fa-sync-alt"></i><span>مرور اشتباهات</span></button>
+            <button class="menu-item" style="background: var(--red);" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i><span>خروج / تغییر کاربر</span></button>
+        </div>
     </div>
 
-    <div id="main-app" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
-        <div id="progressText" style="font-size:12px; margin-top:5px;"></div>
-        <div id="app-content" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
+    <div id="quiz-screen" class="hidden" style="width:100%; max-width:400px;">
+        <div class="progress-bar-container"><div id="progressBar" class="progress-bar-fill"></div></div>
+        <div id="quiz-content"></div>
     </div>
 
     <script src="a1-words.js"></script>
     <script>
-        const MY_TOKEN = "8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw"; 
+        const MY_TOKEN = "8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw";
         const MY_CHAT_ID = "96991859";
-        let studentName = "";
-        let index = 0;
 
-        // پیام مانع شدن از خروج (طنز)
-        window.addEventListener('beforeunload', (event) => {
-            event.preventDefault();
-            event.returnValue = 'کجا با این عجله؟ حیوانکی لغات دارن گریه می‌کنن! بمون یه چند تا دیگه یاد بگیر دلاور!';
-        });
-
-        function updateStars(percent) {
-            const stars = document.getElementById('mainStars').children;
-            const activeCount = Math.floor(percent / 20);
-            for(let i=0; i<5; i++) {
-                stars[i].className = i < activeCount ? "fas fa-star star-active" : "fas fa-star";
-            }
-        }
-
-        function startApp() {
-            studentName = document.getElementById('userName').value;
-            if(!studentName) return alert("بدون نام که نمیشه قهرمان!");
-            localStorage.setItem('fredStudent', studentName);
-            document.getElementById('setup-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            App.render();
-        }
-
-        async function sendReport(word, isComplete) {
-            const dailyGoal = 10;
-            const currentInDay = (index % dailyGoal) + 1;
-            let motivMsg = "ماشاالله! همینجوری ادامه بده 🚀";
-            if(currentInDay > 8) motivMsg = "چیزی نمونده، تو فوق‌العاده‌ای! 🔥";
-            if(isComplete) motivMsg = "ایول! ۱۰ تا رو ترکوندی! فردا منتظرتم 🏆";
-
-            const text = `👤 دانش‌آموز: ${studentName}\n✅ کلمه: ${word}\n📊 پیشرفت: ${currentInDay} از ${dailyGoal}\n💬 پیام استاد: ${motivMsg}`;
-            const url = `https://api.telegram.org/bot${MY_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(text)}`;
-            fetch(url);
-        }
-
-        const App = {
-            render() {
-                const dailyGoal = 10;
-                const currentInDay = (index % dailyGoal) + 1;
-                const percent = Math.round((currentInDay / dailyGoal) * 100);
-                
-                document.getElementById('progressBar').style.width = percent + "%";
-                document.getElementById('progressText').innerText = `کلمه ${currentInDay} از ${dailyGoal}`;
-                
-                updateStars(percent);
-                const w = window.wordsA1[index];
-                document.getElementById('app-content').innerHTML = `
-                    <div class="quiz-card">
-                        <div style="font-size:40px; color:var(--blue); text-align:center; font-weight:bold;">${w.word}</div>
-                        <div style="text-align:center; color:var(--accent); font-size:20px;">${w.translation}</div>
-                        <p style="direction:ltr; text-align:left; background:rgba(0,0,0,0.1); padding:10px; border-radius:10px;">${w.ex_en}</p>
-                    </div>
-                    <button class="next-btn" onclick="App.next()">کلمه بعدی ➔</button>
-                `;
-                sendReport(w.word, false);
-            },
-            next() {
-                index++;
-                if(index % 10 === 0) {
-                    alert("ایول! ۱۰ لغت امروز تموم شد. تو یه غول مرحله آخری! 🐲");
-                    sendReport("پایان روز", true);
-                }
-                if(index < window.wordsA1.length) App.render();
-            }
-        };
+        let session = { mode: '', questions: [], index: 0, score: 0, mistakes: [] };
 
         window.onload = () => {
-            const saved = localStorage.getItem('fredStudent');
-            if(saved) {
-                document.getElementById('userName').value = saved;
-                // ستاره‌های دفعه قبل را بر اساس آخرین فعالیت نشان بده
-                updateStars(0); 
+            const lastScore = localStorage.getItem('lastScore') || 0;
+            const stars = document.getElementById('mainStars').children;
+            const activeCount = Math.floor(lastScore / 2);
+            for(let i=0; i<5; i++) stars[i].className = i < activeCount ? "fas fa-star star-active" : "fas fa-star";
+            const savedName = localStorage.getItem('fredName');
+            if(savedName) document.getElementById('userName').value = savedName;
+        };
+
+        const Engine = {
+            start(mode) {
+                const name = document.getElementById('userName').value;
+                if(!name) return alert("لطفاً نام خود را وارد کنید.");
+                localStorage.setItem('fredName', name);
+
+                session.mode = mode;
+                session.index = 0;
+                session.score = 0;
+                session.mistakes = [];
+
+                if(mode === 'review') {
+                    const saved = JSON.parse(localStorage.getItem('mistakes') || "[]");
+                    if(saved.length === 0) return alert("لیست اشتباهات خالی است!");
+                    session.questions = saved.sort(() => 0.5 - Math.random()).slice(0, 10);
+                } else {
+                    session.questions = [...window.wordsA1].sort(() => 0.5 - Math.random()).slice(0, 10);
+                }
+
+                document.getElementById('setup-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                this.render();
+            },
+
+            render() {
+                const q = session.questions[session.index];
+                const progress = ((session.index + 1) / 10 * 100);
+                document.getElementById('progressBar').style.width = progress + "%";
+                
+                let html = '';
+                if(session.mode === 'study') {
+                    html = `
+                        <div class="q-card">
+                            <div style="font-size:40px; color:var(--blue); font-weight:bold;">${q.word}</div>
+                            <div style="color:var(--gray); margin-bottom:20px;">${q.translation}</div>
+                            <div class="box-info"><small style="color:var(--blue)">EXAMPLE</small><div>${q.ex_en}</div><div style="font-size:13px; color:var(--gray)">${q.ex_fa}</div></div>
+                            <div class="box-info" style="border-right-color:var(--green)"><small style="color:var(--green)">COLLOCATION</small><div>${q.coll_en}</div><div style="font-size:13px; color:var(--gray)">${q.coll_fa}</div></div>
+                            <button class="menu-item" style="background:var(--blue); width:100%; margin-top:15px; justify-content:center;" onclick="Engine.next()">متوجه شدم / بعدی</button>
+                        </div>`;
+                } else {
+                    let questionText = session.mode === 'fa-en' ? q.translation : q.word;
+                    html = `
+                        <div class="q-card">
+                            <div style="font-size:12px; color:var(--gray); margin-bottom:10px;">ترجمه کنید:</div>
+                            <div style="font-size:32px; color:var(--blue); margin-bottom:25px;">${questionText}</div>
+                            <input type="text" id="ansInput" class="ans-input" placeholder="پاسخ را بنویسید..." autocomplete="off">
+                            <button class="menu-item" style="background:var(--blue); width:100%; justify-content:center;" onclick="Engine.check()">ثبت پاسخ</button>
+                        </div>`;
+                }
+                document.getElementById('quiz-content').innerHTML = html;
+                if(document.getElementById('ansInput')) document.getElementById('ansInput').focus();
+            },
+
+            check() {
+                const val = document.getElementById('ansInput').value.trim().toLowerCase();
+                const correct = session.questions[session.index].word.toLowerCase();
+                if(val === correct) { session.score++; } 
+                else { 
+                    session.mistakes.push(session.questions[session.index]);
+                    let mists = JSON.parse(localStorage.getItem('mistakes') || "[]");
+                    if(!mists.find(x => x.id === session.questions[session.index].id)) {
+                        mists.push(session.questions[session.index]);
+                        localStorage.setItem('mistakes', JSON.stringify(mists));
+                    }
+                }
+                this.next();
+            },
+
+            next() {
+                session.index++;
+                if(session.index < session.questions.length) this.render();
+                else this.finish();
+            },
+
+            async finish() {
+                if(session.mode !== 'study') {
+                    localStorage.setItem('lastScore', session.score);
+                    const msg = `📊 گزارش نهایی\n👤 زبان‌آموز: ${localStorage.getItem('fredName')}\n🎯 نمره: ${session.score} از 10\n🛠 حالت: ${session.mode}`;
+                    await fetch(`https://api.telegram.org/bot${MY_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(msg)}`);
+                }
+                alert("خسته نباشید! تمرین این بخش به پایان رسید.");
+                location.reload();
             }
         };
     </script>
