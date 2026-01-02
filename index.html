@@ -8,10 +8,10 @@
     <style>
         :root { --bg: #0b1426; --card: #ffffff; --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; --text: #1e293b; --gray: #64748b; }
         body.light-mode { --bg: #f1f5f9; --text: #1e293b; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; transition: 0.3s; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; transition: 0.3s; overflow-x: hidden; }
         
         .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 45px; height: 45px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 45px; height: 45px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 20px; border-radius: 20px; color: var(--text); margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .stars { color: #cbd5e1; font-size: 24px; margin-bottom: 10px; }
@@ -23,7 +23,7 @@
         .menu-item i { width: 30px; font-size: 18px; margin-left: 10px; }
         .menu-item span { flex-grow: 1; text-align: center; }
 
-        input#userName { width: 80%; padding: 12px; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 16px; }
+        input#userName { width: 80%; padding: 12px; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 16px; outline: none; }
         .hidden { display: none; }
     </style>
 </head>
@@ -41,8 +41,8 @@
                 <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
             </div>
             <div class="best-score" id="bestScoreLabel">Best Score: 0%</div>
-            <input type="text" id="userName" placeholder="نام شما">
-            <button onclick="login()" id="loginBtn" style="width: 85%; padding: 12px; margin-top: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold;">ورود</button>
+            <input type="text" id="userName" placeholder="Fred">
+            <button onclick="login()" id="loginBtn" style="width: 85%; padding: 12px; margin-top: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">ورود</button>
         </div>
 
         <div id="menuOptions" class="menu-container hidden">
@@ -53,22 +53,58 @@
             <button class="menu-item" style="background: #25d366;" onclick="window.open('https://wa.me/989125514654')"><i class="fab fa-whatsapp"></i><span>ارسال گزارش به واتس‌اپ</span></button>
             <button class="menu-item" style="background: var(--orange);" onclick="startQuiz('review')"><i class="fas fa-chart-line"></i><span>گزارش پیشرفت و مرور</span></button>
             <button class="menu-item" style="background: var(--red);" onclick="logout()"><i class="fas fa-user-slash"></i><span>خروج / تغییر کاربر</span></button>
+            <button class="menu-item" style="background: #334155;" onclick="clearAllData()"><i class="fas fa-trash-alt"></i><span>پاک کردن کل حافظه</span></button>
         </div>
     </div>
 
     <script>
-        function toggleTheme() { document.body.classList.toggle('light-mode'); const icon = document.getElementById('themeIcon'); icon.className = document.body.classList.contains('light-mode') ? 'fas fa-moon' : 'fas fa-sun'; }
-        function toggleMute() { const icon = document.getElementById('muteIcon'); icon.className = icon.className.includes('up') ? 'fas fa-volume-mute' : 'fas fa-volume-up'; localStorage.setItem('fredMute', icon.className.includes('mute')); }
-        function login() { const n = document.getElementById('userName').value; if(!n) return; localStorage.setItem('fredName', n); document.getElementById('menuOptions').classList.remove('hidden'); document.getElementById('loginBtn').classList.add('hidden'); }
+        function toggleTheme() { 
+            document.body.classList.toggle('light-mode'); 
+            const icon = document.getElementById('themeIcon');
+            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        function toggleMute() { 
+            const icon = document.getElementById('muteIcon');
+            const isMuting = icon.className.includes('up');
+            icon.className = isMuting ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+            localStorage.setItem('fredMute', isMuting);
+        }
+
+        function login() { 
+            const n = document.getElementById('userName').value.trim();
+            if(!n) return alert("نام؟");
+            localStorage.setItem('fredName', n);
+            document.getElementById('menuOptions').classList.remove('hidden');
+            document.getElementById('loginBtn').classList.add('hidden');
+        }
+
         function logout() { localStorage.removeItem('fredName'); location.reload(); }
-        function startQuiz(mode) { localStorage.setItem('quizMode', mode); window.location.href = 'quiz.html'; }
+
+        function clearAllData() {
+            if(confirm("آیا از پاک کردن تمام امتیازات و ستاره‌ها مطمئن هستید؟")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function startQuiz(mode) { 
+            localStorage.setItem('quizMode', mode); 
+            window.location.href = 'quiz.html'; 
+        }
 
         window.onload = () => {
             const best = localStorage.getItem('fredBest') || 0;
             document.getElementById('bestScoreLabel').innerText = `Best Score: ${best}%`;
             const stars = document.getElementById('mainStars').children;
-            for(let i=0; i<5; i++) stars[i].className = i < Math.floor(best/20) ? "fas fa-star star-active" : "far fa-star";
-            if(localStorage.getItem('fredName')) { document.getElementById('userName').value = localStorage.getItem('fredName'); login(); }
+            const activeStars = Math.floor(best / 20);
+            for(let i=0; i<5; i++) {
+                stars[i].className = i < activeStars ? "fas fa-star star-active" : "far fa-star";
+            }
+            if(localStorage.getItem('fredName')) {
+                document.getElementById('userName').value = localStorage.getItem('fredName');
+                login();
+            }
         };
     </script>
 </body>
