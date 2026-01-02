@@ -2,20 +2,31 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مدیریت پنل - فرزاد</title>
+    <title>پنل مدیریت فرزاد</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Tahoma; background: #0f172a; color: white; display: flex; justify-content: center; padding-top: 50px; }
-        .box { background: #1e293b; padding: 20px; border-radius: 15px; width: 300px; text-align: center; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; }
-        button { background: #00a8ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+        body { font-family: Tahoma; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
+        .box { background: #1e293b; padding: 25px; border-radius: 20px; width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; text-align: center; }
+        button { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-save { background: #00a8ff; color: white; }
+        .btn-cache { background: #eb4d4b; color: white; margin-top: 20px; }
+        .btn-cache:hover { background: #ff7675; }
+        i { margin-left: 8px; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h3>تنظیمات ربات تلگرام</h3>
+        <h3><i class="fas fa-robot"></i> تنظیمات ربات</h3>
         <input type="text" id="token" placeholder="Bot Token">
         <input type="text" id="chatid" placeholder="Chat ID">
-        <button onclick="save()">ذخیره تنظیمات</button>
+        <button class="btn-save" onclick="save()"><i class="fas fa-save"></i> ذخیره تنظیمات</button>
+    </div>
+
+    <div class="box" style="border: 1px solid #eb4d4b;">
+        <h3><i class="fas fa-tools"></i> ابزار بروزرسانی</h3>
+        <p style="font-size: 12px; color: #94a3b8;">اگر لغات جدید را در گیت‌هاب آپدیت کردی، این دکمه را بزن:</p>
+        <button class="btn-cache" onclick="clearAppCache()"><i class="fas fa-sync-alt"></i> پاکسازی کش و آپدیت لغات</button>
     </div>
 
     <script>
@@ -25,9 +36,27 @@
                 chatId: document.getElementById('chatid').value
             };
             localStorage.setItem('fredTelegramConfig', JSON.stringify(config));
-            alert("تنظیمات با موفقیت ذخیره شد.");
+            alert("✅ تنظیمات با موفقیت ذخیره شد.");
         }
-        // پر کردن خودکار اگر قبلاً ذخیره شده باشد
+
+        async function clearAppCache() {
+            if (confirm("آیا از پاکسازی کش اطمینان دارید؟ (برنامه دوباره بارگذاری خواهد شد)")) {
+                // پاک کردن تمام اطلاعات ذخیره شده مربوط به لغات
+                const studentName = localStorage.getItem('fredCurrentStudent');
+                const config = localStorage.getItem('fredTelegramConfig');
+                
+                // پاک کردن کش مرورگر (Service Workers)
+                if (window.caches) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+                
+                // رفرش اجباری از سرور
+                location.reload(true);
+                alert("🚀 کش پاک شد! حالا آخرین نسخه لغات از گیت‌هاب فراخوانی می‌شود.");
+            }
+        }
+
         window.onload = () => {
             const saved = localStorage.getItem('fredTelegramConfig');
             if(saved) {
