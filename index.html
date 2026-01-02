@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>English with Fred</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -19,24 +19,22 @@
 
     <header class="iphone-header">
         <button id="back-btn" class="back-btn" onclick="goBack()" style="visibility: hidden;">〈 بازگشت</button>
-        <div class="user-center" id="current-user" onclick="handleAdminClicks()">کاربر</div>
+        <div class="user-center" id="current-user">Fred User</div>
         <button id="mute-btn" class="nav-icon-btn" onclick="toggleMute()">🔇</button>
     </header>
 
     <main id="app-content">
         <div id="main-menu" class="button-grid">
-            <button class="apple-btn btn-blue" onclick="startApp('p2e')">Persian → English ⇄</button>
-            <button class="apple-btn btn-green" onclick="startApp('w2d')">Word → Definition 📖</button>
-            <button class="apple-btn btn-dark-green" onclick="startApp('d2w')">Definition → Word 🔍</button>
-            <button class="apple-btn btn-orange" onclick="startApp('mistakes')">مرور اشتباهات 🔄</button>
-            <button class="apple-btn btn-red" onclick="logout()">خروج ➜</button>
+            <button class="apple-btn btn-blue" onclick="startApp('p2e')">Persian → English ⇄ <span class="gloss"></span></button>
+            <button class="apple-btn btn-green" onclick="startApp('w2d')">Word → Definition 📖 <span class="gloss"></span></button>
+            <button class="apple-btn btn-dark-green" onclick="startApp('d2w')">Definition → Word 🔍 <span class="gloss"></span></button>
+            <button class="apple-btn btn-orange" onclick="startApp('mistakes')">مرور اشتباهات 🔄 <span class="gloss"></span></button>
+            <button class="apple-btn btn-red" onclick="logout()">خروج ➜ <span class="gloss"></span></button>
         </div>
 
-        <div id="quiz-container" style="display:none;">
-            </div>
+        <div id="quiz-container" style="display:none;"></div>
     </main>
 
-    <script src="config.js"></script>
     <script src="a1-words.js"></script>
     <script src="speech.js"></script>
     <script src="app.js"></script>
