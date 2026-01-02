@@ -3,115 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* استایل‌های ضروری برای اطمینان از نمایش درست */
-        .choices-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
-        .choice-btn { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #334155; background: #1e293b; color: white; cursor: pointer; font-size: 1rem; }
-        .notification { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 8px; color: white; z-index: 1000; }
-    </style>
+    <link rel="manifest" href="manifest.json">
+    <title>English with Fred</title>
 </head>
 <body>
 
-    <div id="app-loader" class="loader-overlay">
-        <div class="loader-content"><div class="loader"></div><p>Fred is preparing your lesson...</p></div>
+    <div id="welcome-screen">
+        <div class="welcome-card">
+            <span class="flower-icon">💐</span>
+            <h2>خوش آمدید</h2>
+            <p>English with Fred</p>
+        </div>
     </div>
 
-    <header class="main-header">
-        <div class="logo-container" id="admin-trigger"><h1>English with Fred</h1></div>
+    <header class="iphone-header">
+        <button id="back-btn" class="back-btn" onclick="goBack()" style="visibility: hidden;">〈 بازگشت</button>
+        <div class="user-center" id="current-user" onclick="handleAdminClicks()">کاربر</div>
+        <button id="mute-btn" class="nav-icon-btn" onclick="toggleMute()">🔇</button>
     </header>
 
-    <main id="app-container">
-        <div id="main-menu" class="menu-container">
-            <button class="menu-btn blue" onclick="QuizEngine.start('fa-en')"><i class="fas fa-exchange-alt"></i> Persian → English</button>
-            <button class="menu-btn green" onclick="QuizEngine.start('word-def')"><i class="fas fa-book"></i> Word → Definition</button>
-            <button class="menu-btn dark-green" onclick="QuizEngine.start('def-word')"><i class="fas fa-search"></i> Definition → Word</button>
-            <button class="menu-btn orange" onclick="MistakeManager.showReview()"><i class="fas fa-sync-alt"></i> مرور اشتباهات</button>
-            <button class="menu-btn red" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> خروج / تغییر کاربر</button>
+    <main id="app-content">
+        <div id="main-menu" class="button-grid">
+            <button class="apple-btn btn-blue" onclick="startApp('p2e')">Persian → English ⇄</button>
+            <button class="apple-btn btn-green" onclick="startApp('w2d')">Word → Definition 📖</button>
+            <button class="apple-btn btn-dark-green" onclick="startApp('d2w')">Definition → Word 🔍</button>
+            <button class="apple-btn btn-orange" onclick="startApp('mistakes')">مرور اشتباهات 🔄</button>
+            <button class="apple-btn btn-red" onclick="logout()">خروج ➜</button>
         </div>
+
+        <div id="quiz-container" style="display:none;">
+            </div>
     </main>
 
-    <div id="notification-container"></div>
-
-    <script>
-        // ۱. کلمات تست (برای اینکه مطمئن شویم برنامه بدون فایل خارجی هم کار می‌کند)
-        window.words = [
-            { id: 1, word: "Ability", translation: "توانایی", definition: "The power or skill to do something", collocation: "Great ability", phrasal: "N/A", example: "He has the ability to learn quickly." },
-            { id: 2, word: "Accept", translation: "پذیرفتن", definition: "To agree to take something", collocation: "Accept an invitation", phrasal: "Accept as", example: "I accept your apology." }
-        ];
-
-        // ۲. موتور تلفظ
-        window.speak = (text) => {
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'en-US';
-            window.speechSynthesis.speak(msg);
-        };
-
-        // ۳. سیستم اعلان
-        window.showNotification = (msg, type) => {
-            const container = document.getElementById('notification-container');
-            const div = document.createElement('div');
-            div.className = 'notification';
-            div.style.background = type === 'success' ? '#10b981' : '#ef4444';
-            div.textContent = msg;
-            container.appendChild(div);
-            setTimeout(() => div.remove(), 2000);
-        };
-
-        // ۴. مدیریت اشتباهات
-        const MistakeManager = {
-            add(word) {
-                let list = JSON.parse(localStorage.getItem('fred_err') || '[]');
-                if(!list.find(x => x.id === word.id)) { list.push(word); localStorage.setItem('fred_err', JSON.stringify(list)); }
-            },
-            showReview() {
-                let list = JSON.parse(localStorage.getItem('fred_err') || '[]');
-                if(list.length === 0) { alert("کلمه اشتباهی ندارید!"); return; }
-                window.words = list; QuizEngine.start('fa-en');
-            }
-        };
-
-        // ۵. موتور اصلی آزمون
-        const QuizEngine = {
-            currentIndex: 0, score: 0, totalQuestions: 5, mode: 'fa-en',
-            start(mode) {
-                this.mode = mode; this.currentIndex = 0; this.score = 0;
-                this.nextQuestion();
-            },
-            nextQuestion() {
-                const container = document.getElementById('app-container');
-                if (this.currentIndex >= this.totalQuestions || this.currentIndex >= window.words.length) {
-                    container.innerHTML = `<div class="quiz-card" style="text-align:center;"><h2>پایان آزمون</h2><button class="menu-btn blue" onclick="location.reload()">بازگشت به منو</button></div>`;
-                    return;
-                }
-                const word = window.words[this.currentIndex];
-                let correct = (this.mode === 'fa-en') ? word.translation : (this.mode === 'word-def' ? word.definition : word.word);
-                
-                container.innerHTML = `
-                    <div class="quiz-card animate-in">
-                        <h2 onclick="window.speak('${word.word}')">${word.word} <i class="fas fa-volume-up"></i></h2>
-                        <div class="details-box" style="text-align:left; direction:ltr; background:#0f172a; padding:10px; border-radius:10px; margin:10px 0;">
-                            <p><b>• Collocation:</b> ${word.collocation}</p>
-                            <p><b>• Example:</b> ${word.example}</p>
-                        </div>
-                        <div class="choices-grid">
-                            <button class="choice-btn" onclick="QuizEngine.check('${correct}', '${correct}')">${correct}</button>
-                            <button class="choice-btn" onclick="QuizEngine.check('Wrong Answer', '${correct}')">گزینه اشتباه</button>
-                        </div>
-                    </div>`;
-            },
-            check(selected, correct) {
-                if (selected === correct) { this.score++; window.showNotification('عالی!', 'success'); }
-                else { window.showNotification('غلط!', 'error'); MistakeManager.add(window.words[this.currentIndex]); }
-                this.currentIndex++;
-                setTimeout(() => this.nextQuestion(), 1000);
-            }
-        };
-
-        // حذف لودر
-        window.onload = () => { document.getElementById('app-loader').style.display = 'none'; };
-    </script>
+    <script src="config.js"></script>
+    <script src="a1-words.js"></script>
+    <script src="speech.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
