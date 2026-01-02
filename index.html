@@ -3,273 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English with Fred</title>
+    <title>English with Fred - Professional</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --bg: #0f172a; --card: #1e293b; 
-            --light-blue: #3498db; --blue: #00a8ff; --green: #009432; 
-            --dark-green: #006400; --orange: #e67e22; --whatsapp: #25D366; --red: #c0392b; 
+        :root {
+            --bg: #0f172a; --card: #1e293b; --text: #ffffff;
+            --blue: #00a8ff; --accent: #94a3b8;
         }
+        .light-mode {
+            --bg: #f8fafc; --card: #ffffff; --text: #1e293b;
+            --blue: #2563eb; --accent: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; transition: all 0.3s;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        /* نوار ابزار بالا (تم و صدا) */
+        .top-bar {
+            width: 100%; max-width: 450px; display: flex;
+            justify-content: space-between; padding: 20px; box-sizing: border-box;
+        }
+        .icon-btn {
+            background: var(--card); border: 1px solid var(--accent);
+            color: var(--text); padding: 10px; border-radius: 12px;
+            cursor: pointer; font-size: 18px; width: 45px; height: 45px;
+        }
+
+        .quiz-card {
+            background: var(--card); padding: 25px; border-radius: 25px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-top: 10px;
+        }
+
+        .word-title { font-size: 35px; color: var(--blue); font-weight: bold; margin-bottom: 5px; }
         
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            background-color: var(--bg); color: white; margin: 0; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; 
-        }
-
-        header { margin-bottom: 20px; text-align: center; }
+        /* بخش جزئیات لغت */
+        .detail-item { text-align: right; margin-bottom: 15px; background: rgba(0,0,0,0.05); padding: 12px; border-radius: 15px; }
+        .eng-text { display: block; direction: ltr; font-weight: 600; font-size: 17px; margin-bottom: 4px; }
+        .fa-text { display: block; color: var(--accent); font-size: 14px; }
         
-        /* استایل فرم تنظیمات اولیه */
-        .admin-setup { 
-            background: white; color: #333; padding: 30px; border-radius: 20px; 
-            width: 85%; max-width: 400px; text-align: center; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-        .admin-setup input { 
-            width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; 
-            border: 2px solid #e2e8f0; box-sizing: border-box; direction: ltr; 
-        }
-        .btn-save { 
-            background: #10b981; color: white; border: none; width: 100%; 
-            padding: 16px; border-radius: 10px; cursor: pointer; font-weight: bold; 
-        }
-
-        /* استایل منوی اصلی کادرها */
-        .menu-container, .quiz-container { 
-            display: flex; flex-direction: column; gap: 12px; width: 90%; max-width: 400px; 
-        }
-
-        .menu-btn, .choice-btn { 
-            width: 100%; padding: 18px 25px; border: none; border-radius: 20px; 
-            color: white; font-size: 17px; font-weight: bold; cursor: pointer; 
-            display: flex; align-items: center; justify-content: space-between; 
-            transition: all 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .menu-btn:active { transform: scale(0.97); }
-        .menu-btn i { font-size: 20px; width: 30px; text-align: center; }
-        .menu-btn span { flex-grow: 1; text-align: right; margin-right: 15px; }
-
-        /* استایل کارت آزمون */
-        .quiz-card { background: var(--card); padding: 25px; border-radius: 25px; text-align: center; width: 100%; box-sizing: border-box; border: 1px solid #334155; }
-        .choice-btn { background: #334155; margin-top: 10px; font-size: 16px; justify-content: center; }
-        .choice-btn:hover { background: #475569; }
-
-        /* رنگ‌بندی */
-        .light-blue { background-color: var(--light-blue); }
-        .blue { background-color: var(--blue); }
-        .green { background-color: var(--green); }
-        .dark-green { background-color: var(--dark-green); }
-        .orange { background-color: var(--orange); }
-        .whatsapp { background-color: var(--whatsapp); }
-        .red { background-color: var(--red); }
+        .speaker-small { background: none; border: none; color: var(--blue); cursor: pointer; float: left; }
         
+        .choice-btn {
+            width: 100%; padding: 18px; border-radius: 15px; border: none;
+            background: var(--blue); color: white; font-weight: bold;
+            font-size: 18px; cursor: pointer; margin-top: 15px;
+        }
+
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <header id="app-header"><h1>English with Fred</h1></header>
-
-    <div id="setup-section" class="admin-setup">
-        <h2>تنظیمات اولیه</h2>
-        <p style="color: #64748b;">اطلاعات ربات تلگرام را وارد کنید</p>
-        <input type="text" id="botToken" placeholder="Bot Token">
-        <input type="text" id="chatId" placeholder="Chat ID">
-        <button class="btn-save" onclick="saveAdminData()">ذخیره و ورود به برنامه</button>
+    <div class="top-bar">
+        <button class="icon-btn" onclick="toggleTheme()" id="themeBtn"><i class="fas fa-moon"></i></button>
+        <button class="icon-btn" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i></button>
     </div>
 
-    <div id="main-menu" class="menu-container hidden">
-        <button class="menu-btn light-blue" onclick="QuizEngine.start('en-fa')">
-            <i class="fas fa-language"></i> <span>English → Persian</span>
-        </button>
-
-        <button class="menu-btn blue" onclick="QuizEngine.start('fa-en')">
-            <i class="fas fa-exchange-alt"></i> <span>Persian → English</span>
-        </button>
-        
-        <button class="menu-btn green" onclick="QuizEngine.start('word-def')">
-            <i class="fas fa-book"></i> <span>Word → Definition</span>
-        </button>
-        
-        <button class="menu-btn dark-green" onclick="QuizEngine.start('def-word')">
-            <i class="fas fa-search"></i> <span>Definition → Word</span>
-        </button>
-        
-        <button class="menu-btn orange" onclick="MistakeManager.showReview()">
-            <i class="fas fa-sync-alt"></i> <span>مرور اشتباهات</span>
-        </button>
-
-        <button class="menu-btn whatsapp" onclick="window.open('https://wa.me/989017708544')">
-            <i class="fab fa-whatsapp"></i> <span>ثبت نام در واتس‌اپ</span>
-        </button>
-        
-        <button class="menu-btn red" onclick="localStorage.clear(); location.reload();">
-            <i class="fas fa-sign-out-alt"></i> <span>خروج / تغییر کاربر</span>
-        </button>
-    </div>
-
-    <div id="quiz-container" class="quiz-container hidden"></div>
+    <div id="quiz-area" class="quiz-card">
+        </div>
 
     <script src="a1-words.js"></script>
-
     <script>
-        // ۱. مدیریت وضعیت صفحه
-        window.onload = function() {
-            if (localStorage.getItem('fred_token')) showMenu();
-        };
+        let isMuted = false;
+        let currentWordIndex = 0;
 
-        function saveAdminData() {
-            const token = document.getElementById('botToken').value.trim();
-            const id = document.getElementById('chatId').value.trim();
-            if (token && id) {
-                localStorage.setItem('fred_token', token);
-                localStorage.setItem('fred_chat_id', id);
-                showMenu();
-            } else { alert("لطفاً کادرها را پر کنید."); }
+        // تنظیمات صدا
+        function speak(text) {
+            if (isMuted) return;
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            msg.rate = 0.5; // سرعت آرام درخواستی
+            window.speechSynthesis.speak(msg);
         }
 
-        function showMenu() {
-            document.getElementById('setup-section').classList.add('hidden');
-            document.getElementById('main-menu').classList.remove('hidden');
+        function toggleMute() {
+            isMuted = !isMuted;
+            document.getElementById('muteBtn').innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
         }
 
-        // ۲. مدیریت اشتباهات
-        const MistakeManager = {
-            add(word) {
-                let list = JSON.parse(localStorage.getItem('fred_mistakes') || '[]');
-                if (!list.find(m => m.id === word.id)) {
-                    list.push(word);
-                    localStorage.setItem('fred_mistakes', JSON.stringify(list));
-                }
-            },
-            showReview() {
-                const list = JSON.parse(localStorage.getItem('fred_mistakes') || '[]');
-                if (list.length === 0) { alert("هنوز کلمه اشتباهی ندارید!"); return; }
-                window.tempWords = list;
-                QuizEngine.start('en-fa', true);
-            }
-        };
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            document.getElementById('themeBtn').innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
 
-        // ۳. موتور آزمون
-        const QuizEngine = {
-            currentIndex: 0, score: 0, mode: '', currentData: [],
-            
-            start(mode, isReview = false) {
-                this.mode = mode;
-                this.currentIndex = 0;
-                this.score = 0;
-                this.currentData = isReview ? window.tempWords : (window.words || []);
+        const Engine = {
+            render() {
+                const word = window.words[currentWordIndex];
+                const container = document.getElementById('quiz-area');
                 
-                if (this.currentData.length === 0) { alert("خطا: کلمات یافت نشد!"); return; }
-                
-                document.getElementById('main-menu').classList.add('hidden');
-                document.getElementById('quiz-container').classList.remove('hidden');
-                this.renderQuestion();
-            },
-
-            renderQuestion() {
-                const container = document.getElementById('quiz-container');
-                const word = this.currentData[this.currentIndex];
-                
-                let qText, correctAns;
-                if (this.mode === 'en-fa') { qText = word.word; correctAns = word.translation; }
-                else if (this.mode === 'fa-en') { qText = word.translation; correctAns = word.word; }
-                else if (this.mode === 'word-def') { qText = word.word; correctAns = word.definition; }
-                else { qText = word.definition; correctAns = word.word; }
-
-                const choices = [correctAns];
-                while(choices.length < 4) {
-                    const randomWord = window.words[Math.floor(Math.random() * window.words.length)];
-                    let choice = (this.mode === 'en-fa' || this.mode === 'word-def') ? 
-                                   (this.mode === 'en-fa' ? randomWord.translation : randomWord.definition) : randomWord.word;
-                    if (!choices.includes(choice)) choices.push(choice);
-                }
-                choices.sort(() => Math.random() - 0.5);
-
                 container.innerHTML = `
-                    <div class="quiz-card">
-                        <p style="color:#94a3b8">سوال ${this.currentIndex + 1} از ${Math.min(this.currentData.length, 10)}</p>
-                        <h2 style="font-size:24px; margin:20px 0;">${qText}</h2>
-                        <div class="choices-list">
-                            ${choices.map(c => `<button class="choice-btn" onclick="QuizEngine.check('${c.replace(/'/g, "\\'")}', '${correctAns.replace(/'/g, "\\")}')">${c}</button>`).join('')}
-                        </div>
-                        <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; margin-top:20px; cursor:pointer;">انصراف و بازگشت</button>
-                    </div>`;
+                    <div class="word-title">${word.word}</div>
+                    <p style="margin-bottom:20px;">${word.translation}</p>
+
+                    <div class="detail-item">
+                        <button class="speaker-small" onclick="speak('${word.collocation.split('—')[0]}')"><i class="fas fa-volume-up"></i></button>
+                        <span class="eng-text">${word.collocation.split('—')[0]}</span>
+                        <span class="fa-text">${word.collocation.split('—')[1] || ''}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <button class="speaker-small" onclick="speak('${word.example}')"><i class="fas fa-volume-up"></i></button>
+                        <span class="eng-text">${word.example}</span>
+                        <span class="fa-text">مثال کاربردی</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <button class="speaker-small" onclick="speak('${word.phrasal.split('—')[0]}')"><i class="fas fa-volume-up"></i></button>
+                        <span class="eng-text">${word.phrasal.split('—')[0]}</span>
+                        <span class="fa-text">${word.phrasal.split('—')[1] || ''}</span>
+                    </div>
+
+                    <button class="choice-btn" onclick="Engine.next()">Next Word</button>
+                `;
+                // پخش خودکار تلفظ کلمه اصلی
+                speak(word.word);
             },
-
-            check(selected, correct) {
-                if (selected === correct) this.score++;
-                else MistakeManager.add(this.currentData[this.currentIndex]);
-
-                this.currentIndex++;
-                if (this.currentIndex < this.currentData.length && this.currentIndex < 10) {
-                    this.renderQuestion();
-                } else {
-                    this.finish();
-                }
-            },
-
-            async finish() {
-                const total = Math.min(this.currentData.length, 10);
-                const percentage = Math.round((this.score / total) * 100);
-                
-                document.getElementById('quiz-container').innerHTML = `
-                    <div class="quiz-card">
-                        <h2>پایان آزمون</h2>
-                        <div style="font-size:45px; color:#00a8ff; margin:20px 0;">${percentage}%</div>
-                        <p>تعداد درست: ${this.score} از ${total}</p>
-                        <button class="menu-btn blue" onclick="location.reload()">بازگشت به منو</button>
-                    </div>`;
-                
-                await this.sendReport(this.score, total);
-            },
-
-            async sendReport(score, total) {
-                const token = localStorage.getItem('fred_token');
-                const chatId = localStorage.getItem('fred_chat_id');
-                if (!token || !chatId) return;
-
-                const percentage = Math.round((score / total) * 100);
-                
-                // تحلیل پیشرفت/افت
-                const lastScore = localStorage.getItem('fred_last_score') || 0;
-                let trend = "اولین آزمون ✨";
-                if (lastScore > 0) {
-                    if (percentage > lastScore) trend = `پیشرفت (↑ ${percentage - lastScore}%) 📈`;
-                    else if (percentage < lastScore) trend = `افت (↓ ${lastScore - percentage}%) 📉`;
-                    else trend = "ثابت ◽";
-                }
-                localStorage.setItem('fred_last_score', percentage);
-
-                // آیلتس تخمینی
-                let ielts = percentage >= 85 ? "7.5 - 8.0" : percentage >= 70 ? "6.5 - 7.0" : percentage >= 50 ? "5.0 - 6.0" : "Below 5.0";
-                
-                const now = new Date().toLocaleString('fa-IR');
-                const userCode = "user_" + Math.random().toString(36).substr(2, 9);
-
-                const text = `📊 *گزارش پیشرفت English with Fred*
-
-👤 دانش‌آموز: ${userCode}
-📅 تاریخ: ${now}
-
-🏆 امتیاز فعلی: ${percentage}%
-📈 وضعیت: ${trend}
-🎓 تخمین آیلتس: ${ielts}
-
-👨‍🏫 مدرس: English with Fred
-📱 تماس: 09017708544
-
-✨ هر روز بهتر از دیروز ✨`;
-
-                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'Markdown' })
-                });
+            next() {
+                currentWordIndex++;
+                if(currentWordIndex < window.words.length) this.render();
+                else alert("پایان لیست لغات!");
             }
         };
+
+        window.onload = () => Engine.render();
     </script>
 </body>
 </html>
