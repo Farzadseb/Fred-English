@@ -6,147 +6,124 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #ffffff; --blue: #00a8ff; --accent: #94a3b8; --green: #00b894; --orange: #fdcb6e; }
+        :root { --bg: #0f172a; --card: #1e293b; --text: #ffffff; --blue: #00a8ff; --accent: #94a3b8; --green: #00b894; --gold: #f1c40f; }
         .light-mode { --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --blue: #2563eb; --accent: #64748b; }
-
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; transition: 0.3s; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; transition: 0.3s; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
         
-        /* صفحه ورود نام */
-        #setup-screen { background: var(--card); padding: 30px; border-radius: 25px; width: 85%; max-width: 380px; margin-top: 80px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-        .welcome-icon { font-size: 50px; color: var(--blue); margin-bottom: 15px; }
-        input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 15px; border: 2px solid var(--blue); background: var(--bg); color: var(--text); text-align: center; font-size: 16px; outline: none; }
-        
-        /* نوار ابزار */
-        .top-bar { width: 100%; max-width: 450px; display: flex; justify-content: space-between; padding: 15px; box-sizing: border-box; }
-        .icon-btn { background: var(--card); border: 1px solid var(--accent); color: var(--text); padding: 10px; border-radius: 12px; cursor: pointer; width: 45px; height: 45px; }
+        /* ستاره‌ها */
+        .stars-container { margin: 15px 0; font-size: 24px; color: #475569; }
+        .star-active { color: var(--gold); text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
 
-        .quiz-card { background: var(--card); padding: 20px; border-radius: 25px; width: 92%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin: 5px 0; border-top: 6px solid var(--blue); }
-        .word-title { font-size: 42px; color: var(--blue); text-align: center; margin: 0; font-weight: bold; }
-        .word-trans { text-align: center; font-size: 22px; color: var(--accent); margin-bottom: 20px; }
-
-        .section-box { text-align: right; margin-bottom: 12px; background: rgba(128,128,128,0.06); padding: 15px; border-radius: 18px; border-right: 4px solid var(--blue); position: relative; }
-        .section-label { font-size: 10px; color: var(--blue); font-weight: bold; margin-bottom: 5px; display: block; letter-spacing: 1px; }
-        .eng-text { display: block; direction: ltr; font-weight: 600; font-size: 17px; line-height: 1.5; }
-        .fa-text { display: block; color: var(--accent); font-size: 14px; margin-top: 4px; }
+        #setup-screen { background: var(--card); padding: 30px; border-radius: 25px; width: 85%; max-width: 380px; margin-top: 50px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 15px; border: 2px solid var(--blue); background: var(--bg); color: var(--text); text-align: center; outline: none; }
         
-        .speaker-btn { background: #334155; border: none; color: var(--blue); cursor: pointer; float: left; padding: 6px 10px; border-radius: 10px; }
-        .next-btn { width: 92%; max-width: 420px; padding: 18px; border-radius: 20px; border: none; background: var(--blue); color: white; font-weight: bold; font-size: 19px; cursor: pointer; margin-top: 15px; margin-bottom: 40px; }
+        .progress-container { width: 90%; background: rgba(128,128,128,0.2); height: 10px; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--blue), var(--green)); width: 0%; transition: 0.5s; }
+
+        .quiz-card { background: var(--card); padding: 20px; border-radius: 25px; width: 92%; max-width: 420px; margin: 15px 0; border-top: 6px solid var(--blue); position: relative; }
+        .next-btn { width: 92%; max-width: 420px; padding: 18px; border-radius: 20px; border: none; background: var(--blue); color: white; font-weight: bold; font-size: 19px; cursor: pointer; margin-bottom: 30px; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <div id="setup-screen">
-        <div class="welcome-icon"><i class="fas fa-user-graduate"></i></div>
-        <h2 style="margin:0">خوش آمدید</h2>
-        <p style="color:var(--accent); font-size:14px">لطفاً نام خود را به فارسی وارد کنید</p>
-        <input type="text" id="userName" placeholder="مثلاً: فرزاد سبحانی">
-        <button class="next-btn" onclick="startApp()" style="width:100%">شروع یادگیری</button>
+        <i class="fas fa-user-graduate" style="font-size:50px; color:var(--blue)"></i>
+        <h2>خوش آمدی قهرمان!</h2>
+        
+        <div class="stars-container" id="mainStars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+        </div>
+
+        <input type="text" id="userName" placeholder="نام قشنگت رو بنویس">
+        <button class="next-btn" onclick="startApp()" style="width:100%">بزن بریم برای یادگیری!</button>
     </div>
 
     <div id="main-app" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="top-bar">
-            <button class="icon-btn" onclick="toggleTheme()" id="themeBtn"><i class="fas fa-moon"></i></button>
-            <button class="icon-btn" onclick="toggleMute()" id="muteBtn"><i class="fas fa-volume-up"></i></button>
-        </div>
+        <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
+        <div id="progressText" style="font-size:12px; margin-top:5px;"></div>
         <div id="app-content" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
     </div>
 
     <script src="a1-words.js"></script>
     <script>
-        // --- تنظیمات امنیتی شما ---
-        const MY_BOT_TOKEN = "اینجا_توکن_خود_را_بگذارید"; 
-        const MY_CHAT_ID = "اینجا_آیدی_خود_را_بگذارید";
-        // -------------------------
-
+        const MY_TOKEN = "8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw"; 
+        const MY_CHAT_ID = "96991859";
         let studentName = "";
         let index = 0;
-        let isMuted = false;
+
+        // پیام مانع شدن از خروج (طنز)
+        window.addEventListener('beforeunload', (event) => {
+            event.preventDefault();
+            event.returnValue = 'کجا با این عجله؟ حیوانکی لغات دارن گریه می‌کنن! بمون یه چند تا دیگه یاد بگیر دلاور!';
+        });
+
+        function updateStars(percent) {
+            const stars = document.getElementById('mainStars').children;
+            const activeCount = Math.floor(percent / 20);
+            for(let i=0; i<5; i++) {
+                stars[i].className = i < activeCount ? "fas fa-star star-active" : "fas fa-star";
+            }
+        }
 
         function startApp() {
             studentName = document.getElementById('userName').value;
-            if(!studentName) return alert("نام خود را وارد کنید");
-            
-            localStorage.setItem('fredStudentName', studentName);
+            if(!studentName) return alert("بدون نام که نمیشه قهرمان!");
+            localStorage.setItem('fredStudent', studentName);
             document.getElementById('setup-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             App.render();
         }
 
-        function speak(text) {
-            if (isMuted) return;
-            window.speechSynthesis.cancel();
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'en-US'; msg.rate = 0.5;
-            window.speechSynthesis.speak(msg);
-        }
+        async function sendReport(word, isComplete) {
+            const dailyGoal = 10;
+            const currentInDay = (index % dailyGoal) + 1;
+            let motivMsg = "ماشاالله! همینجوری ادامه بده 🚀";
+            if(currentInDay > 8) motivMsg = "چیزی نمونده، تو فوق‌العاده‌ای! 🔥";
+            if(isComplete) motivMsg = "ایول! ۱۰ تا رو ترکوندی! فردا منتظرتم 🏆";
 
-        async function sendReport(word) {
-            const text = `👤 دانش‌آموز: ${studentName}\n✅ کلمه: ${word}\n📍 سطح: A1`;
-            const url = `https://api.telegram.org/bot${MY_BOT_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(text)}`;
-            try { await fetch(url); } catch(e) {}
+            const text = `👤 دانش‌آموز: ${studentName}\n✅ کلمه: ${word}\n📊 پیشرفت: ${currentInDay} از ${dailyGoal}\n💬 پیام استاد: ${motivMsg}`;
+            const url = `https://api.telegram.org/bot${MY_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(text)}`;
+            fetch(url);
         }
-
-        function toggleMute() { isMuted = !isMuted; document.getElementById('muteBtn').innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>'; }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
         const App = {
             render() {
+                const dailyGoal = 10;
+                const currentInDay = (index % dailyGoal) + 1;
+                const percent = Math.round((currentInDay / dailyGoal) * 100);
+                
+                document.getElementById('progressBar').style.width = percent + "%";
+                document.getElementById('progressText').innerText = `کلمه ${currentInDay} از ${dailyGoal}`;
+                
+                updateStars(percent);
                 const w = window.wordsA1[index];
                 document.getElementById('app-content').innerHTML = `
                     <div class="quiz-card">
-                        <div class="word-title">${w.word}</div>
-                        <div class="word-trans">${w.translation}</div>
-
-                        <div class="section-box">
-                            <span class="section-label">EXAMPLE</span>
-                            <button class="speaker-btn" onclick="speak('${w.ex_en}')"><i class="fas fa-volume-up"></i></button>
-                            <span class="eng-text">${w.ex_en}</span>
-                            <span class="fa-text">${w.ex_fa}</span>
-                        </div>
-
-                        <div class="section-box" style="border-right-color: var(--green);">
-                            <span class="section-label" style="color:var(--green)">COLLOCATION</span>
-                            <button class="speaker-btn" onclick="speak('${w.coll_en}. ${w.coll_ex_en}')"><i class="fas fa-volume-up"></i></button>
-                            <span class="eng-text">${w.coll_en}</span>
-                            <span class="fa-text">${w.coll_fa}</span>
-                            <span class="eng-text" style="font-size:14px; color:var(--accent); margin-top:5px;">Ex: ${w.coll_ex_en}</span>
-                            <span class="fa-text" style="font-size:13px;">${w.coll_ex_fa}</span>
-                        </div>
-
-                        <div class="section-box" style="border-right-color: var(--orange);">
-                            <span class="section-label" style="color:var(--orange)">PHRASAL VERBS</span>
-                            <button class="speaker-btn" onclick="speak('${w.ph1_en}. ${w.ph1_ex_en}. ${w.ph2_en}. ${w.ph2_ex_en}')"><i class="fas fa-volume-up"></i></button>
-                            <span class="eng-text">1. ${w.ph1_en}</span>
-                            <span class="fa-text">${w.ph1_fa}</span>
-                            <span class="eng-text" style="font-size:14px; color:var(--accent)">Ex: ${w.ph1_ex_en}</span>
-                            <span class="fa-text" style="font-size:13px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:5px;">${w.ph1_ex_fa}</span>
-                            
-                            <span class="eng-text" style="margin-top:10px;">2. ${w.ph2_en}</span>
-                            <span class="fa-text">${w.ph2_fa}</span>
-                            <span class="eng-text" style="font-size:14px; color:var(--accent)">Ex: ${w.ph2_ex_en}</span>
-                            <span class="fa-text" style="font-size:13px;">${w.ph2_ex_fa}</span>
-                        </div>
+                        <div style="font-size:40px; color:var(--blue); text-align:center; font-weight:bold;">${w.word}</div>
+                        <div style="text-align:center; color:var(--accent); font-size:20px;">${w.translation}</div>
+                        <p style="direction:ltr; text-align:left; background:rgba(0,0,0,0.1); padding:10px; border-radius:10px;">${w.ex_en}</p>
                     </div>
-                    <button class="next-btn" onclick="App.next()">کلمه بعدی</button>
+                    <button class="next-btn" onclick="App.next()">کلمه بعدی ➔</button>
                 `;
-                speak(w.word);
-                sendReport(w.word);
+                sendReport(w.word, false);
             },
             next() {
                 index++;
-                if(index < window.wordsA1.length) { this.render(); window.scrollTo(0,0); }
-                else alert("پایان لیست لغات سطح A1");
+                if(index % 10 === 0) {
+                    alert("ایول! ۱۰ لغت امروز تموم شد. تو یه غول مرحله آخری! 🐲");
+                    sendReport("پایان روز", true);
+                }
+                if(index < window.wordsA1.length) App.render();
             }
         };
 
         window.onload = () => {
-            const savedName = localStorage.getItem('fredStudentName');
-            if(savedName) {
-                studentName = savedName;
-                document.getElementById('setup-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                App.render();
+            const saved = localStorage.getItem('fredStudent');
+            if(saved) {
+                document.getElementById('userName').value = saved;
+                // ستاره‌های دفعه قبل را بر اساس آخرین فعالیت نشان بده
+                updateStars(0); 
             }
         };
     </script>
