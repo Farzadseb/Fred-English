@@ -1,19 +1,28 @@
-:root { --primary: #2563eb; --bg: #0f172a; --card: #1e293b; }
-body { margin: 0; font-family: sans-serif; background: var(--bg); color: white; direction: rtl; }
-.main-header { background: var(--card); padding: 15px; text-align: center; border-bottom: 2px solid #334155; }
-.menu-container { display: flex; flex-direction: column; gap: 10px; padding: 20px; }
+.iphone-header {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-/* استایل دکمه‌های رنگی */
-.menu-btn { border: none; border-radius: 12px; padding: 18px; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-.blue { background: linear-gradient(90deg, #1e90ff, #00bfff); }
-.green { background: #008f4c; }
-.dark-green { background: #006400; }
-.orange { background: #d47a00; }
-.light-blue { background: #007bff; }
-.whatsapp { background: #00a884; }
-.red { background: #c82333; }
+.header-icons {
+    display: flex;
+    gap: 12px;
+}
 
-.quiz-card { background: var(--card); width: 85%; margin: 20px auto; padding: 20px; border-radius: 20px; text-align: center; }
-.choice-btn { width: 100%; padding: 15px; margin-top: 10px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; }
-.score-circle { background: #2563eb; padding: 20px; border-radius: 15px; font-size: 1.5rem; margin: 15px 0; }
-.details-box { background: #0a0f1a; padding: 10px; border-radius: 10px; margin: 10px 0; font-size: 0.9rem; text-align: left; direction: ltr; }
+.nav-icon-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    cursor: pointer;
+}
