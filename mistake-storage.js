@@ -1,20 +1,24 @@
-// mistake-storage.js
-const MistakeManager = {
-    add(word) {
-        let mistakes = JSON.parse(localStorage.getItem('fred_mistakes') || '[]');
-        if (!mistakes.find(m => m.id === word.id)) {
-            mistakes.push(word);
-            localStorage.setItem('fred_mistakes', JSON.stringify(mistakes));
+// مدیریت ذخیره‌سازی اشتباهات در LocalStorage
+const MistakeStorage = {
+    save: function(wordObj) {
+        let mistakes = this.getAll();
+        // جلوگیری از ذخیره تکراری
+        if (!mistakes.find(m => m.id === wordObj.id)) {
+            mistakes.push(wordObj);
+            localStorage.setItem('user_mistakes', JSON.stringify(mistakes));
         }
     },
-    showReview() {
-        let mistakes = JSON.parse(localStorage.getItem('fred_mistakes') || '[]');
-        if (mistakes.length === 0) {
-            alert("هنوز کلمه اشتباهی برای مرور ندارید!");
-            return;
-        }
-        window.words = mistakes;
-        window.QuizEngine.start('fa-en');
+
+    getAll: function() {
+        return JSON.parse(localStorage.getItem('user_mistakes')) || [];
+    },
+
+    remove: function(wordId) {
+        let mistakes = this.getAll().filter(m => m.id !== wordId);
+        localStorage.setItem('user_mistakes', JSON.stringify(mistakes));
+    },
+
+    clearAll: function() {
+        localStorage.removeItem('user_mistakes');
     }
 };
-window.MistakeManager = MistakeManager;
