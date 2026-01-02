@@ -7,22 +7,34 @@
 
 body {
     margin: 0;
-    font-family: system-ui, sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     background-color: var(--bg);
     color: var(--text);
     direction: rtl;
     overflow-x: hidden;
 }
 
+/* --- هدر کاملاً وسط‌چین --- */
 .main-header {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
     height: 70px;
     background: var(--card-bg);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
+.main-header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+/* --- لودر کاملاً در مرکز --- */
 .loader-overlay {
     position: fixed;
     inset: 0;
@@ -46,15 +58,16 @@ body {
 
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
+/* --- پنل مدیریت فرزاد (کادرهای ۸۰٪) --- */
 .admin-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.95);
+    background: rgba(0, 0, 0, 0.95);
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    padding-top: 50px;
     z-index: 99999;
+    padding-top: 60px;
 }
 
 .admin-content {
@@ -62,49 +75,60 @@ body {
     width: 90%;
     max-width: 400px;
     padding: 30px 10px;
-    border-radius: 25px;
-    text-align: center;
+    border-radius: 30px;
     border: 2px solid #334155;
+    text-align: center;
 }
 
 .input-group {
     position: relative;
-    width: 80%;
+    width: 80%; 
     margin: 0 auto 15px auto;
 }
 
 .input-group input {
     width: 100%;
-    height: 70px;
+    height: 65px;
     background: #070b13;
     border: 2px solid #334155;
     border-radius: 15px;
     color: white;
     padding: 0 45px 0 15px;
-    box-sizing: border-box;
     font-size: 1.1rem;
     outline: none;
+    box-sizing: border-box;
+    text-align: left; /* برای توکن و آیدی */
+}
+
+.input-group i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
 }
 
 .btn-save {
     width: 80%;
-    height: 65px;
+    height: 60px;
     background: var(--primary);
     color: white;
     border: none;
     border-radius: 15px;
-    font-weight: bold;
     font-size: 1.2rem;
+    font-weight: bold;
     cursor: pointer;
+    margin-top: 10px;
 }
 
+/* --- کارت‌های تمرین و درس --- */
 .quiz-card {
     background: var(--card-bg);
     width: 85%;
     max-width: 400px;
-    margin: 40px auto;
-    padding: 30px;
-    border-radius: 20px;
+    margin: 30px auto;
+    padding: 25px;
+    border-radius: 25px;
     text-align: center;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
@@ -112,31 +136,35 @@ body {
 .choice-btn {
     width: 100%;
     padding: 15px;
-    margin-top: 10px;
+    margin-top: 12px;
     background: #0f172a;
     color: white;
     border: 1px solid #334155;
-    border-radius: 12px;
-    font-size: 1rem;
+    border-radius: 15px;
+    font-size: 1.1rem;
     cursor: pointer;
+    transition: 0.2s;
 }
 
+.choice-btn:active { background: var(--primary); }
+
+/* --- اعلان‌ها --- */
 #notification-container {
     position: fixed;
-    bottom: 30px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 999999;
+    z-index: 100000;
     width: 80%;
 }
 
 .notification {
     padding: 15px;
-    border-radius: 12px;
+    border-radius: 15px;
     color: white;
     text-align: center;
     margin-top: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
-
 .notification.success { background: #10b981; }
 .notification.error { background: #ef4444; }
