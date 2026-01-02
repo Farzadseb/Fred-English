@@ -3,29 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quiz Page</title>
+    <title>Quiz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --card: #ffffff; --blue: #00a8ff; --green: #00b894; --text: #1e293b; --gray: #64748b; --red: #d63031; }
+        :root { --bg: #0b1426; --blue: #00a8ff; --green: #00b894; --text: #1e293b; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
-        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 45px; height: 45px; border-radius: 12px; cursor: pointer; }
-        .q-card { background: white; color: var(--text); padding: 30px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .opt-btn { width: 100%; padding: 15px; margin-top: 10px; border-radius: 15px; border: 2px solid #e2e8f0; background: white; color: var(--text); font-size: 17px; font-weight: bold; cursor: pointer; }
-        .audio-btn { background: var(--blue); color: white; border: none; width: 55px; height: 55px; border-radius: 50%; font-size: 22px; cursor: pointer; margin-bottom: 15px; }
-        .progress-container { width: 100%; max-width: 400px; height: 8px; background: #334155; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--green); width: 0%; transition: 0.3s; }
+        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 45px; height: 45px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* کادر سوال کوچک و جمع‌وجور */
+        .q-card { background: white; color: var(--text); padding: 25px; border-radius: 25px; width: 90%; max-width: 360px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 10px; }
+        
+        .opt-btn { width: 100%; padding: 14px; margin-top: 10px; border-radius: 15px; border: 2px solid #e2e8f0; background: white; color: var(--text); font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .opt-btn:active { background: #f0f9ff; border-color: var(--blue); transform: scale(0.98); }
+        
+        .audio-btn { background: var(--blue); color: white; border: none; width: 55px; height: 55px; border-radius: 50%; font-size: 22px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,168,255,0.3); }
+        .progress-bar { width: 100%; max-width: 400px; height: 8px; background: #334155; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--green); width: 0%; transition: 0.3s; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
         <button class="control-btn" onclick="window.location.href='index.html'"><i class="fas fa-home"></i></button>
-        <button class="control-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></button>
-    </div>
+        <div style="width:45px"></div> </div>
 
-    <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
-    <div id="quiz-content" style="width:100%; max-width:400px;"></div>
+    <div class="progress-bar"><div id="fill" class="progress-fill"></div></div>
+    <div id="quiz-content" style="width:100%; display:flex; justify-content:center;"></div>
 
     <script src="a1-words.js"></script>
     <script>
@@ -33,24 +37,18 @@
         const MY_TOKEN = "8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw";
         const MY_CHAT_ID = "96991859";
 
-        function toggleMute() {
-            const icon = document.getElementById('muteIcon');
-            icon.classList.toggle('fa-volume-up');
-            icon.classList.toggle('fa-volume-mute');
-            icon.style.color = icon.classList.contains('fa-volume-mute') ? 'var(--red)' : 'var(--blue)';
-        }
-
         function speak(text) {
-            if(document.getElementById('muteIcon').classList.contains('fa-volume-mute')) return;
+            if(localStorage.getItem('fredMute') === 'true') return;
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
             msg.lang = 'en-US';
+            msg.rate = 0.9;
             window.speechSynthesis.speak(msg);
         }
 
         function render() {
             const q = session.questions[session.index];
-            document.getElementById('progressBar').style.width = ((session.index + 1) / 10 * 100) + "%";
+            document.getElementById('fill').style.width = ((session.index + 1) / 10 * 100) + "%";
             
             setTimeout(() => speak(q.word), 400);
 
@@ -58,9 +56,9 @@
                 <button class="audio-btn" onclick="speak('${q.word}')"><i class="fas fa-volume-up"></i></button>`;
 
             if(session.mode === 'study') {
-                html += `<h1>${q.word}</h1><p>${q.translation}</p>
-                         <div style="background:#f0f9ff; padding:10px; border-radius:10px; text-align:left;" dir="ltr"><b>Example:</b><br>${q.ex_en}</div>
-                         <button class="opt-btn" style="background:var(--blue); color:white; margin-top:20px;" onclick="next()">Next Word</button>`;
+                html += `<h1 style="color:var(--blue); margin:10px 0;">${q.word}</h1>
+                         <p style="font-size:20px; color:var(--gray);">${q.translation}</p>
+                         <button class="opt-btn" style="background:var(--blue); color:white; margin-top:20px;" onclick="next()">بعدی</button>`;
             } else {
                 let options = [q.word];
                 while(options.length < 4) {
@@ -68,7 +66,7 @@
                     if(!options.includes(r)) options.push(r);
                 }
                 options.sort(() => 0.5 - Math.random());
-                html += `<h3>${q.translation}</h3>
+                html += `<h3 style="margin-bottom:20px;">${q.translation}</h3>
                          ${options.map(o => `<button class="opt-btn" onclick="check('${o}','${q.word}')">${o}</button>`).join('')}`;
             }
             document.getElementById('quiz-content').innerHTML = html + `</div>`;
@@ -86,10 +84,12 @@
             const oldBest = localStorage.getItem('fredBest') || 0;
             if(percent > oldBest) localStorage.setItem('fredBest', percent);
 
-            const msg = `📊 گزارش: ${localStorage.getItem('fredName')}\n🎯 نمره: ${percent}%\n🛠 مود: ${session.mode}`;
-            fetch(`https://api.telegram.org/bot${MY_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(msg)}`);
+            if(session.mode !== 'study') {
+                const msg = `📊 گزارش: ${localStorage.getItem('fredName')}\n🎯 نمره: ${percent}%\n🛠 مود: ${session.mode}`;
+                fetch(`https://api.telegram.org/bot${MY_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(msg)}`);
+            }
 
-            alert("پایان تمرین! نمره: " + percent + "%");
+            alert(`پایان تمرین! نمره شما: ${percent}%`);
             window.location.href = 'index.html';
         }
 
