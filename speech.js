@@ -1,17 +1,21 @@
-let isMuted = true; // پیش‌فرض خاموش طبق دستور شما
+let isMuted = true; // پیش‌فرض خاموش
+
+function toggleMute() {
+    isMuted = !isMuted;
+    document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
+}
 
 function speak(text) {
     if (isMuted) {
-        alert("لطفاً ابتدا صدا را از بالای صفحه فعال کنید 🔊");
+        alert("لطفاً ابتدا صدا را فعال کنید 🔊");
         return;
     }
-    const msg = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voices = synth.getVoices();
     
-    // تلاش برای پیدا کردن صدای زن آمریکایی
-    msg.voice = voices.find(v => v.name.includes('Google US English') || v.name.includes('Samantha')) || voices[0];
-    msg.rate = 0.5; // سرعت کند شده
-    msg.lang = 'en-US';
-    
-    window.speechSynthesis.speak(msg);
+    // انتخاب صدای زن آمریکایی
+    utterance.voice = voices.find(v => v.lang === 'en-US' && v.name.includes('Google')) || voices[0];
+    utterance.rate = 0.5; // سرعت کند
+    synth.speak(utterance);
 }
