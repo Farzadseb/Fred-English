@@ -1,28 +1,51 @@
+:root {
+    --ios-blue: #007AFF; --ios-green: #34C759; --ios-orange: #FF9500;
+    --glass: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background: #000; color: #fff; font-family: -apple-system, sans-serif;
+    margin: 0; direction: rtl; overflow-x: hidden;
+}
+
+/* انیمیشن ورود ۳ ثانیه‌ای از راست */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+#welcome-screen {
+    position: fixed; inset: 0; background: #000; z-index: 10000;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.welcome-card {
+    width: 85%; padding: 40px; background: var(--glass);
+    border: 1.5px solid rgba(255,255,255,0.2); border-radius: 25px;
+    text-align: center; backdrop-filter: blur(25px);
+    animation: slideInRight 3s ease-out;
+}
+
 .iphone-header {
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 16px;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
+    position: sticky; top: 0; border-bottom: 0.5px solid #333; z-index: 1000;
 }
 
-.header-icons {
-    display: flex;
-    gap: 12px;
+.user-center { font-weight: 700; color: #FFD700; flex-grow: 1; text-align: center; }
+
+.apple-btn {
+    width: 100%; padding: 18px; margin-bottom: 10px; border-radius: 20px;
+    border: 2px solid rgba(255,255,255,0.4); color: #fff; font-weight: 600;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15), transparent);
+    position: relative; overflow: hidden; cursor: pointer;
 }
 
-.nav-icon-btn {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    cursor: pointer;
-}
+.btn-blue { background-color: var(--ios-blue); }
+.btn-green { background-color: var(--ios-green); }
+.btn-orange { background-color: var(--ios-orange); }
+.btn-red { background-color: #FF3B30; }
+
+.ltr-content { direction: ltr; text-align: left; }
+.progress-bar { width: 100%; height: 5px; background: #222; border-radius: 10px; margin: 15px 0; }
+.fill { height: 100%; background: var(--ios-blue); border-radius: 10px; transition: 0.4s; }
