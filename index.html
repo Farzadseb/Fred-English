@@ -3,102 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>English with Fred</title>
+    <title>English with Fred - Menu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg: #0b1426; --card: #ffffff; --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; --text: #1e293b; --gray: #64748b; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; transition: 0.3s; overflow-x: hidden; }
-        
-        /* هدر دکمه‌های کنترلی در دو طرف */
-        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 45px; height: 45px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-
-        .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 20px; border-radius: 20px; color: var(--text); margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
+        .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 20px; border-radius: 20px; color: var(--text); margin-top: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .stars { color: #cbd5e1; font-size: 24px; margin-bottom: 10px; }
         .star-active { color: #f1c40f !important; }
         .best-score { font-weight: bold; color: var(--blue); font-size: 14px; margin-top: 5px; }
-
         .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
-        .menu-item { display: flex; align-items: center; padding: 18px 20px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; text-decoration: none; }
+        .menu-item { display: flex; align-items: center; padding: 18px 20px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; }
         .menu-item i { width: 30px; font-size: 20px; margin-left: 10px; }
         .menu-item span { flex-grow: 1; text-align: center; }
-
-        /* استایل صفحه تمرین (مجزا) */
-        .quiz-page { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
-        .q-card { background: white; color: var(--text); padding: 30px; border-radius: 25px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 10px; }
-        .opt-btn { width: 100%; padding: 15px; margin-top: 10px; border-radius: 15px; border: 2px solid #e2e8f0; background: white; color: var(--text); font-size: 17px; font-weight: bold; cursor: pointer; transition: 0.1s; }
-        .opt-btn:active { background: #f0f9ff; border-color: var(--blue); transform: scale(0.98); }
-        
-        .audio-btn { background: var(--blue); color: white; border: none; width: 55px; height: 55px; border-radius: 50%; font-size: 22px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,168,255,0.3); }
-        
-        .progress-container { width: 100%; height: 8px; background: #334155; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--green); width: 0%; transition: 0.3s; }
+        input { width: 80%; padding: 12px; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; text-align: center; }
         .hidden { display: none; }
-
-        input#userName { width: 80%; padding: 12px; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 16px; outline: none; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <button class="control-btn" onclick="location.reload()" title="خانه"><i class="fas fa-home"></i></button>
-        <button class="control-btn" onclick="UI.toggleMute()" title="صدا">
-            <i id="muteIcon" class="fas fa-volume-up"></i>
-        </button>
-    </div>
+    <h1 style="margin-top: 30px;">English with Fred</h1>
 
-    <div id="setup-screen" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-        <h1 style="margin-bottom: 20px; letter-spacing: 1px;">English with Fred</h1>
-        <div class="header-box">
-            <div class="stars" id="mainStars">
-                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-            </div>
-            <div class="best-score" id="bestScoreLabel">Best Score: 0%</div>
-            <input type="text" id="userName" placeholder="نام خود را وارد کنید">
-            <button onclick="Engine.login()" id="loginBtn" style="width: 85%; padding: 12px; margin-top: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">ورود به پنل</button>
+    <div class="header-box">
+        <div class="stars" id="mainStars">
+            <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
         </div>
-
-        <div id="menuOptions" class="menu-container hidden">
-            <button class="menu-item" style="background: var(--purple);" onclick="Engine.start('study')"><i class="fas fa-graduation-cap"></i><span>آموزش لغات (Study Mode)</span></button>
-            <button class="menu-item" style="background: var(--blue);" onclick="Engine.start('fa-en')"><i class="fas fa-exchange-alt"></i><span>Persian → English</span></button>
-            <button class="menu-item" style="background: var(--green);" onclick="Engine.start('word-def')"><i class="fas fa-book"></i><span>Word → Definition</span></button>
-            <button class="menu-item" style="background: #006400;" onclick="Engine.start('def-word')"><i class="fas fa-search"></i><span>Definition → Word</span></button>
-            <button class="menu-item" style="background: var(--orange);" onclick="Engine.start('review')"><i class="fas fa-sync-alt"></i><span>مرور اشتباهات</span></button>
-        </div>
+        <div class="best-score" id="bestScoreLabel">Best Score: 0%</div>
+        <input type="text" id="userName" placeholder="نام خود را وارد کنید">
+        <button onclick="login()" id="loginBtn" style="width: 85%; padding: 12px; margin-top: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">ورود به پنل</button>
     </div>
 
-    <div id="quiz-screen" class="hidden quiz-page">
-        <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
-        <div id="quiz-content" style="width:100%;"></div>
+    <div id="menuOptions" class="menu-container hidden">
+        <button class="menu-item" style="background: var(--purple);" onclick="startQuiz('study')"><i class="fas fa-graduation-cap"></i><span>آموزش لغات (Study)</span></button>
+        <button class="menu-item" style="background: var(--blue);" onclick="startQuiz('fa-en')"><i class="fas fa-exchange-alt"></i><span>Persian → English</span></button>
+        <button class="menu-item" style="background: var(--green);" onclick="startQuiz('word-def')"><i class="fas fa-book"></i><span>Word → Definition</span></button>
+        <button class="menu-item" style="background: #006400;" onclick="startQuiz('def-word')"><i class="fas fa-search"></i><span>Definition → Word</span></button>
+        <button class="menu-item" style="background: var(--orange);" onclick="startQuiz('review')"><i class="fas fa-sync-alt"></i><span>مرور اشتباهات</span></button>
     </div>
 
-    <script src="a1-words.js"></script>
     <script>
-        const MY_TOKEN = "8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw";
-        const MY_CHAT_ID = "96991859";
-        let session = { mode: '', questions: [], index: 0, score: 0 };
+        function login() {
+            const n = document.getElementById('userName').value.trim();
+            if(!n) return alert("لطفاً نام را وارد کنید.");
+            localStorage.setItem('fredName', n);
+            document.getElementById('loginBtn').classList.add('hidden');
+            document.getElementById('menuOptions').classList.remove('hidden');
+        }
 
-        const UI = {
-            toggleMute() {
-                const icon = document.getElementById('muteIcon');
-                if(icon.classList.contains('fa-volume-up')) {
-                    icon.classList.replace('fa-volume-up', 'fa-volume-mute');
-                    icon.style.color = 'var(--red)';
-                } else {
-                    icon.classList.replace('fa-volume-mute', 'fa-volume-up');
-                    icon.style.color = 'var(--blue)';
-                }
-            },
-            speak(text) {
-                const isMuted = document.getElementById('muteIcon').classList.contains('fa-volume-mute');
-                if(isMuted) return;
-                window.speechSynthesis.cancel();
-                const msg = new SpeechSynthesisUtterance(text);
-                msg.lang = 'en-US';
-                msg.rate = 0.9;
-                window.speechSynthesis.speak(msg);
-            }
-        };
+        function startQuiz(mode) {
+            localStorage.setItem('quizMode', mode);
+            window.location.href = 'quiz.html';
+        }
 
         window.onload = () => {
             const best = localStorage.getItem('fredBest') || 0;
@@ -111,81 +66,6 @@
             }
             if(localStorage.getItem('fredName')) {
                 document.getElementById('userName').value = localStorage.getItem('fredName');
-            }
-        };
-
-        const Engine = {
-            login() {
-                const n = document.getElementById('userName').value.trim();
-                if(!n) return alert("لطفاً نام را وارد کنید.");
-                localStorage.setItem('fredName', n);
-                document.getElementById('loginBtn').classList.add('hidden');
-                document.getElementById('menuOptions').classList.remove('hidden');
-            },
-            start(mode) {
-                session.mode = mode; session.index = 0; session.score = 0;
-                session.questions = [...window.wordsA1].sort(() => 0.5 - Math.random()).slice(0, 10);
-                document.getElementById('setup-screen').classList.add('hidden');
-                document.getElementById('quiz-screen').classList.remove('hidden');
-                this.render();
-            },
-            render() {
-                const q = session.questions[session.index];
-                document.getElementById('progressBar').style.width = ((session.index + 1) / 10 * 100) + "%";
-                let html = '';
-                
-                // پخش خودکار صدا
-                setTimeout(() => UI.speak(q.word), 400);
-
-                if(session.mode === 'study') {
-                    html = `<div class="q-card">
-                        <button class="audio-btn" onclick="UI.speak('${q.word}')"><i class="fas fa-volume-up"></i></button>
-                        <h1 style="color:var(--blue); font-size:42px; margin:0;">${q.word}</h1>
-                        <p style="font-size:22px; color:var(--gray); margin-bottom:20px;">${q.translation}</p>
-                        <div dir="ltr" style="text-align:left; background:#f8fafc; padding:15px; border-radius:15px; border-left:5px solid var(--blue);">
-                            <small style="color:var(--blue); font-weight:bold; font-size:12px;">EXAMPLE</small>
-                            <div style="margin-top:5px; font-size:15px; line-height:1.5;">${q.ex_en}</div>
-                        </div>
-                        <button onclick="Engine.next()" style="width:100%; padding:18px; margin-top:25px; background:var(--blue); color:white; border:none; border-radius:15px; font-weight:bold; cursor:pointer; font-size:16px;">Next Word</button>
-                    </div>`;
-                } else {
-                    let options = [q.word];
-                    while(options.length < 4) {
-                        let r = window.wordsA1[Math.floor(Math.random()*window.wordsA1.length)].word;
-                        if(!options.includes(r)) options.push(r);
-                    }
-                    options.sort(() => 0.5 - Math.random());
-
-                    html = `<div class="q-card">
-                        <button class="audio-btn" onclick="UI.speak('${q.word}')"><i class="fas fa-volume-up"></i></button>
-                        <p style="color:var(--gray); margin-bottom:5px;">کدام گزینه درست است؟</p>
-                        <h1 style="color:var(--blue); margin-bottom:25px; font-size:32px;">${q.translation}</h1>
-                        ${options.map(opt => `<button class="opt-btn" onclick="Engine.check('${opt}', '${q.word}')">${opt}</button>`).join('')}
-                    </div>`;
-                }
-                document.getElementById('quiz-content').innerHTML = html;
-            },
-            check(sel, cor) {
-                if(sel === cor) session.score++;
-                this.next();
-            },
-            next() {
-                session.index++;
-                if(session.index < 10) this.render();
-                else this.finish();
-            },
-            async finish() {
-                const finalPercent = (session.score / 10) * 100;
-                const best = localStorage.getItem('fredBest') || 0;
-                if(finalPercent > best) localStorage.setItem('fredBest', finalPercent);
-
-                if(session.mode !== 'study') {
-                    const msg = `📊 گزارش: ${localStorage.getItem('fredName')}\n🎯 نمره: ${finalPercent}%\n🛠 مود: ${session.mode}`;
-                    fetch(`https://api.telegram.org/bot${MY_TOKEN}/sendMessage?chat_id=${MY_CHAT_ID}&text=${encodeURIComponent(msg)}`);
-                }
-                
-                alert(`تمرین تمام شد!\nامتیاز شما: ${finalPercent}%`);
-                location.reload();
             }
         };
     </script>
