@@ -2,110 +2,38 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تنظیمات مدیریت - Fred</title>
+    <title>مدیریت پنل - فرزاد</title>
     <style>
-        body {
-            font-family: Tahoma, Arial;
-            background-color: #0f172a;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .admin-box {
-            background: #1e293b;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid #334155;
-        }
-        h2 { color: #3b82f6; margin-bottom: 25px; }
-        .input-group { margin-bottom: 20px; text-align: right; }
-        label { display: block; margin-bottom: 8px; font-size: 14px; color: #94a3b8; }
-        input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: #10b981;
-            font-family: monospace;
-            font-size: 14px;
-            box-sizing: border-box;
-            direction: ltr;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        .btn-save { background: #10b981; color: white; margin-bottom: 10px; }
-        .btn-save:hover { background: #059669; }
-        .btn-back { background: #64748b; color: white; }
-        .status { margin-top: 15px; font-size: 13px; }
+        body { font-family: Tahoma; background: #0f172a; color: white; display: flex; justify-content: center; padding-top: 50px; }
+        .box { background: #1e293b; padding: 20px; border-radius: 15px; width: 300px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; }
+        button { background: #00a8ff; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <div class="admin-box">
-        <h2>تنظیمات ربات تلگرام</h2>
-        
-        <div class="input-group">
-            <label>توکن ربات (Bot Token):</label>
-            <input type="text" id="tokenInput" placeholder="123456789:ABCDEF...">
-        </div>
-
-        <div class="input-group">
-            <label>شناسه چت (Chat ID):</label>
-            <input type="text" id="chatIdInput" placeholder="987654321">
-        </div>
-
-        <button class="btn-save" onclick="saveData()">ذخیره تنظیمات</button>
-        <button class="btn-back" onclick="window.location.href='index.html'">بازگشت به برنامه</button>
-        
-        <div id="status" class="status"></div>
+    <div class="box">
+        <h3>تنظیمات ربات تلگرام</h3>
+        <input type="text" id="token" placeholder="Bot Token">
+        <input type="text" id="chatid" placeholder="Chat ID">
+        <button onclick="save()">ذخیره تنظیمات</button>
     </div>
 
     <script>
-        // لود کردن مقادیر قبلی در صورت وجود
-        window.onload = function() {
-            const savedToken = localStorage.getItem('fred_bot_token');
-            const savedChatId = localStorage.getItem('fred_chat_id');
-            
-            if (savedToken) document.getElementById('tokenInput').value = savedToken;
-            if (savedChatId) document.getElementById('chatIdInput').value = savedChatId;
-        };
-
-        function saveData() {
-            const token = document.getElementById('tokenInput').value.trim();
-            const chatId = document.getElementById('chatIdInput').value.trim();
-            const status = document.getElementById('status');
-
-            if (token && chatId) {
-                localStorage.setItem('fred_bot_token', token);
-                localStorage.setItem('fred_chat_id', chatId);
-                
-                status.style.color = "#10b981";
-                status.innerText = "✅ با موفقیت ذخیره شد. حالا نتایج ارسال می‌شوند.";
-                
-                // یک افکت لرزش کوچک برای دکمه بعد از ذخیره
-                setTimeout(() => {
-                    alert("تنظیمات با موفقیت در مرورگر شما ست شد.");
-                }, 500);
-            } else {
-                status.style.color = "#ef4444";
-                status.innerText = "❌ لطفا هر دو فیلد را پر کنید.";
+        function save() {
+            const config = {
+                token: document.getElementById('token').value,
+                chatId: document.getElementById('chatid').value
+            };
+            localStorage.setItem('fredTelegramConfig', JSON.stringify(config));
+            alert("تنظیمات با موفقیت ذخیره شد.");
+        }
+        // پر کردن خودکار اگر قبلاً ذخیره شده باشد
+        window.onload = () => {
+            const saved = localStorage.getItem('fredTelegramConfig');
+            if(saved) {
+                const data = JSON.parse(saved);
+                document.getElementById('token').value = data.token;
+                document.getElementById('chatid').value = data.chatId;
             }
         }
     </script>
