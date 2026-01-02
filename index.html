@@ -12,7 +12,7 @@
     <div id="app-loader" class="loader-overlay">
         <div class="loader-content">
             <div class="loader"></div>
-            <p>Fred is getting ready...</p>
+            <p>Fred is preparing your lesson...</p>
         </div>
     </div>
 
@@ -22,35 +22,52 @@
         </div>
     </header>
 
-    <main id="app-container"></main>
+    <main id="app-container">
+        <div id="main-menu" class="menu-container">
+            <button class="menu-btn blue" onclick="QuizEngine.start('fa-en')">
+                <i class="fas fa-exchange-alt"></i> Persian → English
+            </button>
+            <button class="menu-btn green" onclick="QuizEngine.start('word-def')">
+                <i class="fas fa-book"></i> Word → Definition
+            </button>
+            <button class="menu-btn dark-green" onclick="QuizEngine.start('def-word')">
+                <i class="fas fa-search"></i> Definition → Word
+            </button>
+            <button class="menu-btn orange" onclick="MistakeManager.showReview()">
+                <i class="fas fa-sync-alt"></i> مرور اشتباهات
+            </button>
+            <button class="menu-btn light-blue" onclick="QuizEngine.showResults(true)">
+                <i class="fas fa-chart-line"></i> گزارش پیشرفت
+            </button>
+            <button class="menu-btn whatsapp" onclick="window.open('https://wa.me/989017708544')">
+                <i class="fab fa-whatsapp"></i> ثبت نام در واتس‌اپ
+            </button>
+            <button class="menu-btn red" onclick="location.reload()">
+                <i class="fas fa-sign-out-alt"></i> خروج / تغییر کاربر
+            </button>
+        </div>
+    </main>
 
     <div id="adminModal" class="admin-modal" style="display:none;">
         <div class="admin-content">
-            <div class="admin-header">
-                <i class="fas fa-user-shield"></i>
-                <h3>تنظیمات مدیریت</h3>
+            <div class="admin-header"><h3>تنظیمات مدیریت</h3></div>
+            <div class="input-group">
+                <input type="password" id="adminToken" placeholder="Bot Token">
             </div>
-            <div class="admin-inputs-container">
-                <div class="input-group">
-                    <i class="fas fa-key"></i>
-                    <input type="password" id="adminToken" placeholder="Bot Token">
-                </div>
-                <div class="input-group">
-                    <i class="fas fa-id-badge"></i>
-                    <input type="text" id="adminChatId" placeholder="Chat ID">
-                </div>
+            <div class="input-group">
+                <input type="text" id="adminChatId" placeholder="Chat ID">
             </div>
-            <button onclick="saveAdminData()" class="btn-save">ذخیره تنظیمات</button>
-            <button onclick="closeAdminModal()" class="btn-cancel">انصراف و بستن</button>
+            <button onclick="saveAdminData()" class="btn-save">ذخیره</button>
+            <button onclick="closeAdminModal()" class="btn-cancel">بستن</button>
         </div>
     </div>
 
     <div id="notification-container"></div>
 
-    <script src="config.js"></script>
     <script src="speech.js"></script>
     <script src="a1-words.js"></script>
     <script src="telegram-integration.js"></script>
+    <script src="mistake-storage.js"></script>
     <script src="quiz-engine.js"></script>
     <script src="app.js"></script>
 </body>
