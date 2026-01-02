@@ -3,40 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* استایل اختصاصی برای بخش تنظیمات ادمین */
+        .admin-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+        }
+        .admin-content {
+            background: #1e293b; padding: 25px; border-radius: 20px;
+            width: 85%; max-width: 350px; border: 1px solid #334155;
+        }
+        .admin-content input {
+            width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px;
+            border: 1px solid #334155; background: #0f172a; color: white; direction: ltr;
+        }
+        .btn-save { background: #10b981; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-close { background: #ef4444; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+    </style>
 </head>
 <body>
 
-    <div id="welcome-screen">
-        <div class="welcome-card">
-            <span class="flower-icon">💐</span>
-            <h2>خوش آمدید</h2>
-            <p>English with Fred</p>
+    <div id="app-loader" class="loader-overlay">
+        <div class="loader-content"><div class="loader"></div><p>Fred is preparing your lesson...</p></div>
+    </div>
+
+    <header class="main-header">
+        <div class="logo-container" id="admin-trigger" style="cursor: pointer;">
+            <h1>English with Fred</h1>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <div id="main-menu" class="menu-container">
+            <button class="menu-btn blue" onclick="QuizEngine.start('fa-en')"><i class="fas fa-exchange-alt"></i> Persian → English</button>
+            <button class="menu-btn green" onclick="QuizEngine.start('word-def')"><i class="fas fa-book"></i> Word → Definition</button>
+            <button class="menu-btn dark-green" onclick="QuizEngine.start('def-word')"><i class="fas fa-search"></i> Definition → Word</button>
+            <button class="menu-btn orange" onclick="MistakeManager.showReview()"><i class="fas fa-sync-alt"></i> مرور اشتباهات</button>
+            <button class="menu-btn red" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i> خروج / تغییر کاربر</button>
+        </div>
+    </main>
+
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-content">
+            <h3 style="text-align: center; margin-bottom: 15px;">تنظیمات ربات تلگرام</h3>
+            <input type="text" id="botToken" placeholder="Bot Token (مثال: 12345:ABC...)">
+            <input type="text" id="chatId" placeholder="Chat ID (مثال: 98765432)">
+            <button class="btn-save" onclick="saveSettings()">ذخیره تنظیمات</button>
+            <button class="btn-close" onclick="toggleAdmin(false)">بستن</button>
         </div>
     </div>
 
-    <header class="iphone-header">
-        <button id="back-btn" class="back-btn" onclick="goBack()" style="visibility: hidden;">〈 بازگشت</button>
-        <div class="user-center" id="current-user">Fred User</div>
-        <button id="mute-btn" class="nav-icon-btn" onclick="toggleMute()">🔇</button>
-    </header>
+    <div id="notification-container"></div>
 
-    <main id="app-content">
-        <div id="main-menu" class="button-grid">
-            <button class="apple-btn btn-blue" onclick="startApp('p2e')">Persian → English ⇄ <span class="gloss"></span></button>
-            <button class="apple-btn btn-green" onclick="startApp('w2d')">Word → Definition 📖 <span class="gloss"></span></button>
-            <button class="apple-btn btn-dark-green" onclick="startApp('d2w')">Definition → Word 🔍 <span class="gloss"></span></button>
-            <button class="apple-btn btn-orange" onclick="startApp('mistakes')">مرور اشتباهات 🔄 <span class="gloss"></span></button>
-            <button class="apple-btn btn-red" onclick="logout()">خروج ➜ <span class="gloss"></span></button>
-        </div>
+    <script>
+        // ۱. دیتای کلمات (برای تست)
+        window.words = [
+            { id: 1, word: "Ability", translation: "توانایی", definition: "The power or skill to do something", collocation: "Great ability", example: "He has the ability to learn quickly." }
+        ];
 
-        <div id="quiz-container" style="display:none;"></div>
-    </main>
+        // ۲. مدیریت تنظیمات (بخش مورد نظر شما)
+        let clickCount = 0;
+        document.getElementById('admin-trigger').onclick = () => {
+            clickCount++;
+            if (clickCount >= 3) {
+                toggleAdmin(true);
+                clickCount = 0;
+            }
+            setTimeout(() => clickCount = 0, 2000);
+        };
 
-    <script src="a1-words.js"></script>
-    <script src="speech.js"></script>
-    <script src="app.js"></script>
+        function toggleAdmin(show) {
+            const modal = document.getElementById('adminModal');
+            modal.style.display = show ? 'flex' : 'none';
+            if (show) {
+                document.getElementById('botToken').value = localStorage.getItem('fred_bot_token') || '';
+                document.getElementById('chatId').value = localStorage.getItem('fred_chat_id') || '';
+            }
+        }
+
+        function saveSettings() {
+            const token = document.getElementById('botToken').value.trim();
+            const id = document.getElementById('chatId').value.trim();
+            if (token && id) {
+                localStorage.setItem('fred_bot_token', token);
+                localStorage.setItem('fred_chat_id', id);
+                alert('✅ تنظیمات با موفقیت ذخیره شد.');
+                toggleAdmin(false);
+            } else {
+                alert('❌ لطفاً هر دو مورد را پر کنید.');
+            }
+        }
+
+        // ۳. موتور ارسال گزارش به تلگرام
+        const TelegramReporter = {
+            async sendResult(score, total) {
+                const token = localStorage.getItem('fred_bot_token');
+                const chatId = localStorage.getItem('fred_chat_id');
+                if (!token || !chatId) return;
+
+                const message = `📊 *گزارش آزمون جدید*\n\n👤 کاربر: دانش‌آموز فرزاد\n✅ نمره: ${score} از ${total}\n📈 درصد: ${Math.round((score/total)*100)}%`;
+                
+                try {
+                    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
+                    });
+                } catch (e) { console.error("Telegram Error:", e); }
+            }
+        };
+
+        // ۴. موتور آزمون (QuizEngine)
+        const QuizEngine = {
+            currentIndex: 0, score: 0, totalQuestions: 1,
+            start(mode) {
+                this.currentIndex = 0; this.score = 0;
+                this.nextQuestion();
+            },
+            nextQuestion() {
+                const container = document.getElementById('app-container');
+                if (this.currentIndex >= this.totalQuestions) {
+                    this.finish(); return;
+                }
+                const word = window.words[0]; // فعلاً روی کلمه اول ثابت
+                container.innerHTML = `
+                    <div class="quiz-card animate-in">
+                        <h2>${word.word}</h2>
+                        <div class="choices-grid">
+                            <button class="choice-btn" onclick="QuizEngine.check(true)">${word.translation}</button>
+                            <button class="choice-btn" onclick="QuizEngine.check(false)">گزینه اشتباه</button>
+                        </div>
+                    </div>`;
+            },
+            check(isCorrect) {
+                if(isCorrect) this.score++;
+                this.currentIndex++;
+                this.nextQuestion();
+            },
+            finish() {
+                document.getElementById('app-container').innerHTML = `<div class="quiz-card" style="text-align:center;"><h2>آزمون تمام شد</h2><button class="menu-btn blue" onclick="location.reload()">بازگشت</button></div>`;
+                TelegramReporter.sendResult(this.score, this.totalQuestions);
+            }
+        };
+
+        window.onload = () => { document.getElementById('app-loader').style.display = 'none'; };
+    </script>
 </body>
 </html>
