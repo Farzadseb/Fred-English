@@ -24,25 +24,31 @@
 
     <main id="app-container">
         <div id="main-menu" class="menu-container">
-            <button class="menu-btn blue" onclick="QuizEngine.start('fa-en')">
+            <button class="menu-btn blue" onclick="window.QuizEngine.start('fa-en')">
                 <i class="fas fa-exchange-alt"></i> Persian → English
             </button>
-            <button class="menu-btn green" onclick="QuizEngine.start('word-def')">
+            
+            <button class="menu-btn green" onclick="window.QuizEngine.start('word-def')">
                 <i class="fas fa-book"></i> Word → Definition
             </button>
-            <button class="menu-btn dark-green" onclick="QuizEngine.start('def-word')">
+            
+            <button class="menu-btn dark-green" onclick="window.QuizEngine.start('def-word')">
                 <i class="fas fa-search"></i> Definition → Word
             </button>
-            <button class="menu-btn orange" onclick="MistakeManager.showReview()">
+            
+            <button class="menu-btn orange" onclick="window.MistakeManager.showReview()">
                 <i class="fas fa-sync-alt"></i> مرور اشتباهات
             </button>
-            <button class="menu-btn light-blue" onclick="QuizEngine.showResults(true)">
+            
+            <button class="menu-btn light-blue" onclick="window.QuizEngine.showResults(true)">
                 <i class="fas fa-chart-line"></i> گزارش پیشرفت
             </button>
+            
             <button class="menu-btn whatsapp" onclick="window.open('https://wa.me/989017708544')">
                 <i class="fab fa-whatsapp"></i> ثبت نام در واتس‌اپ
             </button>
-            <button class="menu-btn red" onclick="location.reload()">
+            
+            <button class="menu-btn red" onclick="localStorage.clear(); location.reload();">
                 <i class="fas fa-sign-out-alt"></i> خروج / تغییر کاربر
             </button>
         </div>
@@ -57,15 +63,15 @@
             <div class="input-group">
                 <input type="text" id="adminChatId" placeholder="Chat ID">
             </div>
-            <button onclick="saveAdminData()" class="btn-save">ذخیره</button>
-            <button onclick="closeAdminModal()" class="btn-cancel">بستن</button>
+            <button onclick="window.saveAdminData()" class="btn-save">ذخیره</button>
+            <button onclick="window.closeAdminModal()" class="btn-cancel">بستن</button>
         </div>
     </div>
 
     <div id="notification-container"></div>
 
-    <script src="speech.js"></script>
     <script src="a1-words.js"></script>
+    <script src="speech.js"></script>
     <script src="telegram-integration.js"></script>
     <script src="mistake-storage.js"></script>
     <script src="quiz-engine.js"></script>
