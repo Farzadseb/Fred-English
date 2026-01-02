@@ -8,23 +8,25 @@
     <style>
         :root { --bg: #0b1426; --card: #ffffff; --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; --text: #1e293b; --gray: #64748b; }
         body.light-mode { --bg: #f1f5f9; --text: #1e293b; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; transition: 0.3s; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; transition: 0.3s; overflow-x: hidden; }
         
-        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 45px; height: 45px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 42px; height: 42px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 20px; border-radius: 20px; color: var(--text); margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .stars { color: #cbd5e1; font-size: 24px; margin-bottom: 10px; }
+        /* کادر سفید بهینه شده و چسبیده به بالا */
+        .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 10px 15px; border-radius: 20px; color: var(--text); margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .stars { color: #cbd5e1; font-size: 20px; margin-bottom: 2px; }
         .star-active { color: #f1c40f !important; }
-        .best-score { font-weight: bold; color: var(--blue); font-size: 14px; margin-top: 5px; }
+        .best-score { font-weight: bold; color: var(--blue); font-size: 13px; margin-bottom: 8px; }
 
-        .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 10px; }
-        .menu-item { display: flex; align-items: center; padding: 15px 20px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s; text-decoration: none; }
-        .menu-item i { width: 30px; font-size: 18px; margin-left: 10px; }
+        .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 8px; }
+        .menu-item { display: flex; align-items: center; padding: 12px 18px; border-radius: 15px; border: none; color: white; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.2s; text-decoration: none; }
+        .menu-item i { width: 25px; font-size: 16px; margin-left: 10px; }
         .menu-item span { flex-grow: 1; text-align: center; }
 
-        input#userName { width: 80%; padding: 12px; margin-top: 15px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 16px; outline: none; }
+        input#userName { width: 85%; padding: 8px; margin-top: 5px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 15px; outline: none; background: #f8fafc; }
         .hidden { display: none; }
+        h1 { font-size: 22px; margin: 5px 0 10px 0; }
     </style>
 </head>
 <body>
@@ -35,14 +37,14 @@
     </div>
 
     <div id="setup-screen" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-        <h1 style="margin-bottom: 15px;">English with Fred</h1>
+        <h1>English with Fred</h1>
         <div class="header-box">
             <div class="stars" id="mainStars">
                 <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
             </div>
             <div class="best-score" id="bestScoreLabel">Best Score: 0%</div>
-            <input type="text" id="userName" placeholder="Fred">
-            <button onclick="login()" id="loginBtn" style="width: 85%; padding: 12px; margin-top: 15px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">ورود</button>
+            <input type="text" id="userName" placeholder="نام شما">
+            <button onclick="login()" id="loginBtn" style="width: 90%; padding: 8px; margin-top: 10px; background: var(--blue); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; display: block; margin-left: auto; margin-right: auto;">ورود</button>
         </div>
 
         <div id="menuOptions" class="menu-container hidden">
