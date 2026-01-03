@@ -6,61 +6,19 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; }
-        body.light-mode { --bg: #f1f5f9; --text: #1e293b; --card: rgba(0,0,0,0.05); }
-        body { font-family: Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; transition: 0.3s; }
-        
-        .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .top h1 { font-size: 18px; margin: 0; color: var(--blue); }
-        .icon-btn { width: 40px; height: 40px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; backdrop-filter: blur(10px); }
+        body { font-family: Tahoma, sans-serif; background: #0b1426; color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+        .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .top h1 { font-size: 22px; margin: 0; color: #00a8ff; }
+        .icon-btn { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
 
-        .header-card { width: 100%; max-width: 400px; background: var(--card); padding: 18px; border-radius: 22px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); margin-bottom: 15px; }
-        .stars { font-size: 28px; letter-spacing: 8px; margin-bottom: 8px; }
-        .best { font-size: 14px; font-weight: bold; color: var(--blue); margin: 8px 0; }
-        input#name { width: 80%; padding: 9px; border-radius: 10px; border: none; font-size: 13px; text-align: center; margin: 10px 0; background: rgba(255,255,255,0.2); color: var(--text); }
-        button#login { width: 80%; padding: 9px; background: var(--blue); color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .login-box { width: 100%; max-width: 400px; background: rgba(255,255,255,0.1); padding: 25px; border-radius: 25px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .stars { font-size: 36px; letter-spacing: 10px; margin-bottom: 15px; }
+        .best { font-size: 18px; font-weight: bold; color: #00a8ff; margin: 15px 0; }
+        input#name { width: 80%; padding: 12px; border-radius: 12px; border: none; font-size: 16px; text-align: center; margin: 15px 0; background: rgba(255,255,255,0.2); color: white; }
+        button#loginBtn { width: 80%; padding: 12px; background: #00a8ff; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
 
-        .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 10px; }
-        .menu-btn { padding: 14px; border-radius: 16px; color: white; font-weight: bold; font-size: 14px; text-align: center; cursor: pointer; box-shadow: 0 5px 12px rgba(0,0,0,0.3); }
-
-        .page { display: none; width: 100%; max-width: 400px; margin-top: 10px; }
-        .active { display: block; }
-
-        /* کادر سوال/تعریف - ارتفاع نصف و وسط صفحه */
-        .question-card { 
-            background: var(--card); 
-            border-radius: 25px; 
-            padding: 20px 20px; /* ارتفاع کمتر (نصف قبلی) */
-            text-align: center; 
-            backdrop-filter: blur(15px); 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3); 
-            width: 100%; 
-            max-width: 350px; 
-            margin: 30px auto; /* وسط صفحه و فاصله مناسب از بالا */
-        }
-        #q-text { font-size: 22px; color: var(--blue); margin: 10px 0; direction: ltr; text-align: center; line-height: 1.4; }
-        #q-hint { font-size: 14px; opacity: 0.8; margin: 10px 0 20px; }
-
-        .options { display: flex; flex-direction: column; gap: 10px; }
-        .opt { padding: 14px; background: var(--card); border-radius: 16px; font-size: 15px; cursor: pointer; }
-        .correct { background: #34c759 !important; color: white; }
-        .wrong { background: #ff3b30 !important; color: white; }
-
-        .progress { height: 6px; background: var(--card); border-radius: 3px; overflow: hidden; margin: 15px 0; width: 100%; max-width: 350px; }
-        #prog { width: 0%; height: 100%; background: var(--blue); transition: 0.3s; }
-
-        .study-card { background: var(--card); border-radius: 25px; padding: 35px 20px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); width: 100%; max-width: 350px; margin: 30px auto; }
-        .english-word { font-size: 32px; font-weight: bold; color: var(--blue); margin: 15px 0; direction: ltr; }
-        .persian { font-size: 18px; margin: 15px 0; opacity: 0.9; }
-        .definition { font-size: 16px; line-height: 1.5; direction: ltr; text-align: left; padding: 0 15px; opacity: 0.9; }
-
-        .next-btn { width: 80%; padding: 14px; background: var(--blue); color: white; border: none; border-radius: 18px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 30px; }
-
-        .report-card { background: var(--card); border-radius: 25px; padding: 25px; text-align: center; backdrop-filter: blur(15px); width: 100%; max-width: 350px; margin: 30px auto; }
-        .report-title { font-size: 20px; color: var(--blue); margin-bottom: 15px; }
-        .report-score { font-size: 38px; color: #00ff88; margin: 15px 0; }
-        .report-stars { font-size: 42px; letter-spacing: 10px; margin: 25px 0; }
-        .report-msg { font-size: 15px; line-height: 1.5; opacity: 0.9; }
+        .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 12px; margin-top: 20px; }
+        .menu-btn { padding: 18px; border-radius: 20px; color: white; font-weight: bold; font-size: 16px; text-align: center; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -71,13 +29,15 @@
         <div class="icon-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></div>
     </div>
 
-    <div class="header-card" id="loginCard">
+    <!-- کادر ورود و امتیاز -->
+    <div class="login-box" id="loginBox">
         <div class="stars" id="stars">☆☆☆☆☆</div>
         <div class="best" id="bestScore">Best Score: 0%</div>
         <input type="text" id="name" placeholder="نام خود را وارد کنید">
-        <button id="login">ورود</button>
+        <button id="loginBtn">ورود</button>
     </div>
 
+    <!-- منوی اصلی -->
     <div class="menu" id="mainMenu">
         <div class="menu-btn" style="background:#8e44ad" onclick="startMode('study')">آموزش لغات (Study Mode)</div>
         <div class="menu-btn" style="background:#00a8ff" onclick="startMode('fa-en')">Persian → English</div>
@@ -90,36 +50,68 @@
         <div class="menu-btn" style="background:#334155" onclick="clearAll()">پاک کردن کش و اطلاعات</div>
     </div>
 
-    <div class="page" id="quizPage">
-        <div class="progress"><div id="prog"></div></div>
-        <div class="study-card" id="studyCard">
-            <div class="english-word" id="englishWord"></div>
-            <div class="persian" id="persianText"></div>
-            <div class="definition" id="defText"></div>
-            <button class="next-btn" id="nextBtn" onclick="nextStudy()">بعدی</button>
-        </div>
-
-        <div class="question-card" id="questionCard">
-            <div id="q-text"></div>
-            <p id="q-hint"></p>
-        </div>
-        <div class="options" id="options"></div>
-    </div>
-
-    <div class="page" id="reviewPage">
-        <div class="report-card">
-            <div class="report-title">گزارش پیشرفت شما</div>
-            <div class="report-score" id="r-best">0%</div>
-            <div class="report-stars" id="r-stars">☆☆☆☆☆</div>
-            <div class="report-msg" id="r-msg">شروع کن! اولین قدم مهمه 💪</div>
-        </div>
-    </div>
-
-    <script src="a1-words.js"></script>
     <script>
-        // ... (کد جاوااسکریپت قبلی بدون تغییر، فقط کلاس question-card اصلاح شد)
-        // کد جاوااسکریپت همون قبلی هست — فقط CSS تغییر کرد
-        // اگر نیاز به کد کامل جاوااسکریپت داری، بگو تا اضافه کنم
+        function updateScore() {
+            let best = parseInt(localStorage.getItem('fredBest') || '0');
+            document.getElementById('bestScore').innerText = `Best Score: ${best}%`;
+            let filled = Math.floor(best / 20);
+            document.getElementById('stars').innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
+        }
+
+        // دکمه ورود — این قسمت کاملاً درست کار می‌کنه
+        document.getElementById('loginBtn').onclick = function() {
+            let name = document.getElementById('name').value.trim();
+            if (!name) {
+                alert("لطفاً نام خود را وارد کنید!");
+                return;
+            }
+            localStorage.setItem('fredName', name);
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'flex';
+            updateScore();
+        };
+
+        function startMode(mode) {
+            localStorage.setItem('quizMode', mode);
+            location.href = 'quiz.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('fredName');
+            location.reload();
+        }
+
+        function clearAll() {
+            if (confirm("همه اطلاعات پاک شود؟")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('themeIcon');
+            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-moon' : 'fas fa-sun';
+        }
+
+        function toggleMute() {
+            const icon = document.getElementById('muteIcon');
+            if (icon.classList.contains('fa-volume-up')) {
+                icon.classList.replace('fa-volume-up', 'fa-volume-mute');
+            } else {
+                icon.classList.replace('fa-volume-mute', 'fa-volume-up');
+            }
+        }
+
+        window.onload = function() {
+            updateScore();
+
+            // اگر قبلاً وارد شده بود
+            if (localStorage.getItem('fredName')) {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('mainMenu').style.display = 'flex';
+            }
+        };
     </script>
 </body>
 </html>
