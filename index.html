@@ -21,11 +21,11 @@
 
         .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 8px; }
         
-        /* دکمه‌های کالیبره شده منو */
+        /* تغییرات در این بخش اعمال شد */
         .menu-item { 
             width: 100%; 
-            height: clamp(56px, 7vh, 70px); 
-            padding: 0 16px; 
+            height: 85px; 
+            padding: 10px; 
             font-size: 16px; 
             border-radius: 12px; 
             border: none; 
@@ -33,11 +33,13 @@
             font-weight: bold; 
             cursor: pointer; 
             display: flex; 
+            flex-direction: column-reverse; /* آیکون بالا، متن پایین */
             align-items: center; 
-            justify-content: space-between; 
+            justify-content: center; 
+            gap: 8px;
             transition: 0.2s;
         }
-        .menu-item i { font-size: 18px; }
+        .menu-item i { font-size: 22px; }
         .menu-item:active { transform: scale(0.98); }
 
         input#userName { height: 45px; width: 70%; padding: 0 15px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 16px; margin: 10px 0; }
