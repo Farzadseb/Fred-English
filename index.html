@@ -6,151 +6,156 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --title: #ffffff; --glass: rgba(255, 255, 255, 0.18); }
-        body.light-mode { --bg: #f2f2f7; --title: #000000; --glass: rgba(255, 255, 255, 0.3); }
+        :root { --bg: #0b1426; --card: #ffffff; --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; --text: #1e293b; --gray: #64748b; }
+        body.light-mode { --bg: #f1f5f9; color: #1e293b; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; transition: 0.3s; }
         
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-            background: var(--bg); margin: 0; display: flex; flex-direction: column; 
-            align-items: center; min-height: 100vh; padding: 2vh 0; box-sizing: border-box;
-            transition: 0.3s; overflow-x: hidden;
-        }
+        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .top-bar h2 { font-size: 18px; margin: 0; flex-grow: 1; text-align: center; color: var(--blue); }
+        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
 
-        /* کادر امتیاز آیفونی */
-        .score-box {
-            width: 90%; max-width: 500px; background: var(--glass);
-            border-radius: 28px; padding: 18px; margin-bottom: 20px;
-            text-align: center; backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.25);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        .stars { color: #ffd700; font-size: 24px; margin-bottom: 8px; }
-        .best-record { 
-            display: inline-block; margin-top: 10px; padding: 6px 20px;
-            background: #5856d6; color: white; border-radius: 14px; font-weight: 800; font-size: 14px;
-        }
+        .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 20px; border-radius: 20px; color: var(--text); margin-bottom: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .stars { font-size: 24px; margin-bottom: 10px; }
+        .star-active { color: #f1c40f !important; }
+        .best-score { font-weight: bold; color: var(--blue); font-size: 16px; margin: 10px 0; }
 
-        .header { width: 90%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2vh; }
-        .brand-name { font-size: 28px; font-weight: 900; color: var(--title); margin: 0; }
-        .top-icon { font-size: 20px; color: var(--title); cursor: pointer; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--glass); border-radius: 50%; }
+        .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
+        .menu-item { display: flex; align-items: center; padding: 18px; border-radius: 18px; color: white; font-weight: bold; font-size: 16px; cursor: pointer; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .menu-item i { width: 30px; font-size: 20px; margin-left: 12px; }
+        .menu-item span { flex-grow: 1; text-align: center; }
 
-        .menu-container { width: 90%; max-width: 500px; display: flex; flex-direction: column; gap: 14px; }
+        input#userName { width: 70%; padding: 12px; margin: 15px 0; border-radius: 12px; border: 1px solid #ccc; text-align: center; font-size: 16px; background: #f8fafc; }
 
-        /* استایل براق کادرها */
-        .menu-item {
-            width: 100%; height: 68px; border-radius: 24px;
-            display: flex; flex-direction: row-reverse; align-items: center; 
-            padding: 0 20px; cursor: pointer; text-decoration: none; box-sizing: border-box;
-            position: relative; overflow: hidden; transition: 0.1s;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.4);
-            border: 1px solid rgba(255,255,255,0.25); backdrop-filter: blur(15px);
-        }
-
-        .menu-item::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 50%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
-            pointer-events: none;
-        }
-
-        .menu-item:active { transform: scale(0.96); filter: brightness(1.2); }
-
-        .icon-wrapper { display: flex; align-items: center; justify-content: flex-start; width: 75px; position: relative; }
-        .rect-flag { width: 34px; height: 22px; border-radius: 4px; object-fit: cover; border: 1.5px solid white; box-shadow: 0 3px 6px rgba(0,0,0,0.3); }
-        .menu-text { color: white; font-size: 17px; font-weight: 800; flex-grow: 1; text-align: right; }
-
-        /* رنگ‌های براق گرادینتی */
-        .bg-purple { background: linear-gradient(180deg, #bf5af2, #9437d0); }
-        .bg-blue-l { background: linear-gradient(180deg, #5ac8fa, #007aff); }
-        .bg-blue-d { background: linear-gradient(180deg, #007aff, #004fb1); }
-        .bg-teal   { background: linear-gradient(180deg, #64d2ff, #0a84ff); }
-        .bg-green  { background: linear-gradient(180deg, #34c759, #248a3d); }
-        .bg-whatsapp { background: linear-gradient(180deg, #30d158, #1c9b3b); }
-        .bg-orange { background: linear-gradient(180deg, #ff9f0a, #e67600); }
-        .bg-red    { background: linear-gradient(180deg, #ff453a, #b0231a); }
+        .hidden { display: none !important; }
     </style>
 </head>
-<body class="light-mode">
+<body>
 
-    <div class="header">
-        <div class="top-icon" onclick="toggleTheme()"><i class="fas fa-adjust"></i></div>
-        <h1 class="brand-name">English with Fred</h1>
-        <div id="m-btn" class="top-icon" onclick="toggleMute()"><i class="fas fa-volume-up"></i></div>
+    <div class="top-bar">
+        <button class="control-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></button>
+        <h2>English with Fred</h2>
+        <button class="control-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></button>
     </div>
 
-    <div class="score-box">
-        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></div>
-        <div class="best-record">Best Record: <span id="record-val">0</span>%</div>
+    <!-- کادر ورود و امتیاز -->
+    <div id="loginBox" class="header-box">
+        <div class="stars" id="mainStars">
+            <i class="far fa-star"></i>
+            <i class="far fa-star"></i>
+            <i class="far fa-star"></i>
+            <i class="far fa-star"></i>
+            <i class="far fa-star"></i>
+        </div>
+        <div class="best-score" id="bestScoreLabel">Best Score: 0%</div>
+        <input type="text" id="userName" placeholder="نام خود را وارد کنید">
+        <button onclick="login()" id="loginBtn" style="width: 70%; padding: 12px; margin-top: 10px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px;">ورود</button>
     </div>
 
-    <div class="menu-container">
-        <a href="study.html" class="menu-item bg-purple">
-            <span class="menu-text">آموزش لغات (Study)</span>
-            <div class="icon-wrapper">
-                <img src="https://flagcdn.com/us.svg" class="rect-flag" style="position:absolute; left:0; z-index:1; transform:rotate(-4deg)">
-                <img src="https://flagcdn.com/ir.svg" class="rect-flag" style="position:relative; left:14px; z-index:2; transform:rotate(3deg)">
-            </div>
-        </a>
-        <div class="menu-item bg-blue-l" onclick="go('fa-en')">
-            <span class="menu-text">Persian ➔ English</span>
-            <div class="icon-wrapper"><img src="https://flagcdn.com/ir.svg" class="rect-flag"></div>
-        </div>
-        <div class="menu-item bg-blue-d" onclick="go('en-fa')">
-            <span class="menu-text">English ➔ Persian</span>
-            <div class="icon-wrapper"><img src="https://flagcdn.com/us.svg" class="rect-flag"></div>
-        </div>
-        <div class="menu-item bg-teal" onclick="go('word-def')">
-            <span class="menu-text">Word ➔ Definition</span>
-            <div class="icon-wrapper"><img src="https://flagcdn.com/us.svg" class="rect-flag"></div>
-        </div>
-        <div class="menu-item bg-green" onclick="go('def-word')">
-            <span class="menu-text">Definition ➔ Word</span>
-            <div class="icon-wrapper"><img src="https://flagcdn.com/us.svg" class="rect-flag"></div>
-        </div>
-        <a href="https://wa.me/989017708544" class="menu-item bg-whatsapp">
-            <span class="menu-text">ثبت‌نام واتس‌اپ</span>
-            <div class="icon-wrapper"><i class="fab fa-whatsapp" style="font-size:28px; color:white;"></i></div>
-        </a>
-        <div class="menu-item bg-orange" onclick="showPrivateReport()">
-            <span class="menu-text">گزارش پیشرفت</span>
-            <div class="icon-wrapper"><i class="fas fa-chart-line" style="font-size:24px; color:white;"></i></div>
-        </div>
-        <div class="menu-item bg-red" onclick="handleExit()">
-            <span class="menu-text">تغییر کاربر / خروج</span>
-            <div class="icon-wrapper"><i class="fas fa-user-circle" style="font-size:24px; color:white;"></i></div>
-        </div>
+    <!-- منوی اصلی -->
+    <div id="menuOptions" class="menu-container hidden">
+        <button class="menu-item" style="background: var(--purple);" onclick="startQuiz('study')"><i class="fas fa-graduation-cap"></i><span>آموزش لغات (Study Mode)</span></button>
+        <button class="menu-item" style="background: var(--blue);" onclick="startQuiz('fa-en')"><i class="fas fa-exchange-alt"></i><span>Persian → English</span></button>
+        <button class="menu-item" style="background: #0984e3;" onclick="startQuiz('en-fa')"><i class="fas fa-language"></i><span>English → Persian</span></button>
+        <button class="menu-item" style="background: var(--green);" onclick="startQuiz('word-def')"><i class="fas fa-book"></i><span>Word → Definition</span></button>
+        <button class="menu-item" style="background: #006400;" onclick="startQuiz('def-word')"><i class="fas fa-search"></i><span>Definition → Word</span></button>
+        <button class="menu-item" style="background: #25d366;" onclick="window.open('https://wa.me/989017708544', '_blank')"><i class="fab fa-whatsapp"></i><span>ثبت‌نام در واتس‌اپ</span></button>
+        <button class="menu-item" style="background: var(--orange);" onclick="startQuiz('review')"><i class="fas fa-chart-line"></i><span>گزارش پیشرفت و مرور</span></button>
+        <button class="menu-item" style="background: var(--red);" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>خروج</span></button>
+        <button class="menu-item" style="background: #334155;" onclick="clearAllData()"><i class="fas fa-trash-alt"></i><span>پاک کردن همه اطلاعات</span></button>
     </div>
 
     <script>
+        // تغییر تم
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
-            localStorage.setItem('fTheme', document.body.classList.contains('light-mode')?'light':'dark');
+            const icon = document.getElementById('themeIcon');
+            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('fredTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         }
+
+        // بی‌صدا کردن
         function toggleMute() {
-            let m = localStorage.getItem('fMute')==='true';
-            localStorage.setItem('fMute', !m);
-            updMute();
+            const icon = document.getElementById('muteIcon');
+            if (icon.classList.contains('fa-volume-up')) {
+                icon.classList.replace('fa-volume-up', 'fa-volume-mute');
+                localStorage.setItem('fredMute', 'true');
+            } else {
+                icon.classList.replace('fa-volume-mute', 'fa-volume-up');
+                localStorage.setItem('fredMute', 'false');
+            }
         }
-        function updMute() {
-            const b = document.getElementById('m-btn');
-            b.innerHTML = localStorage.getItem('fMute')==='true'?'<i class="fas fa-volume-mute"></i>':'<i class="fas fa-volume-up"></i>';
+
+        // ورود کاربر
+        function login() {
+            const name = document.getElementById('userName').value.trim();
+            if (!name) {
+                alert("لطفاً نام خود را وارد کنید!");
+                return;
+            }
+            localStorage.setItem('fredName', name);
+            document.getElementById('loginBox').classList.add('hidden');
+            document.getElementById('menuOptions').classList.remove('hidden');
+            updateBestScore(); // به‌روزرسانی ستاره و امتیاز
         }
-        function go(mode) {
-            localStorage.setItem('qMode', mode);
-            localStorage.setItem('forceMute', mode === 'fa-en' ? 'true' : 'false');
+
+        // خروج
+        function logout() {
+            localStorage.removeItem('fredName');
+            location.reload();
+        }
+
+        // پاک کردن همه
+        function clearAllData() {
+            if (confirm("همه اطلاعات (نام، امتیاز، تم و ...) پاک شود؟")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // شروع آزمون
+        function startQuiz(mode) {
+            localStorage.setItem('quizMode', mode);
             window.location.href = 'quiz.html';
         }
-        function showPrivateReport() {
-            let score = parseFloat(localStorage.getItem('bestScore')) || 0;
-            let ielts = score >= 90 ? "8.0" : score >= 70 ? "6.5" : "5.0";
-            alert(`📊 گزارش اختصاصی استاد:\n\n🔹 نمره آیلتس تخمینی: ${ielts}\n🔹 وضعیت: ${score >= 70 ? 'در مسیر پیشرفت' : 'نیاز به تمرکز بیشتر'}`);
+
+        // تابع کلیدی: نمایش درست Best Score و ستاره‌ها
+        function updateBestScore() {
+            let best = parseInt(localStorage.getItem('fredBest') || '0');
+            document.getElementById('bestScoreLabel').innerText = `Best Score: ${best}%`;
+
+            const stars = document.getElementById('mainStars').children;
+            const filledCount = Math.floor(best / 20); // هر ۲۰ درصد = ۱ ستاره پر
+
+            for (let i = 0; i < 5; i++) {
+                if (i < filledCount) {
+                    stars[i].className = "fas fa-star star-active"; // زرد
+                } else {
+                    stars[i].className = "far fa-star"; // خالی
+                }
+            }
         }
-        function handleExit() {
-            alert("امروز عالی بودی! فردا منتظرت هستم تا لغات جدید رو بترکونیم. 🔥");
-        }
+
+        // وقتی صفحه لود می‌شه
         window.onload = () => {
-            if(localStorage.getItem('fTheme')==='dark') document.body.classList.remove('light-mode');
-            updMute();
-            document.getElementById('record-val').innerText = localStorage.getItem('bestScore') || '0';
+            updateBestScore(); // اول ستاره و امتیاز رو درست کن
+
+            // اگر قبلاً وارد شده بود
+            if (localStorage.getItem('fredName')) {
+                document.getElementById('userName').value = localStorage.getItem('fredName');
+                document.getElementById('loginBox').classList.add('hidden');
+                document.getElementById('menuOptions').classList.remove('hidden');
+            }
+
+            // بازیابی تم
+            if (localStorage.getItem('fredTheme') === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeIcon').className = 'fas fa-moon';
+            }
+
+            // بازیابی صدا
+            if (localStorage.getItem('fredMute') === 'true') {
+                document.getElementById('muteIcon').classList.replace('fa-volume-up', 'fa-volume-mute');
+            }
         };
     </script>
 </body>
