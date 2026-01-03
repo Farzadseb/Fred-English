@@ -9,41 +9,54 @@
         :root { --bg: #0b1426; --title: #ffffff; --glass: rgba(255, 255, 255, 0.1); }
         body.light-mode { --bg: #f2f2f7; --title: #000000; --glass: rgba(255, 255, 255, 0.5); }
         body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; color: var(--title); transition: 0.3s; overflow-x: hidden; }
+        
         .quiz-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .back-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--glass); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); font-size: 20px; backdrop-filter: blur(10px); }
+        
         .question-card { width: 100%; max-width: 500px; background: var(--glass); border-radius: 30px; padding: 35px 20px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin-bottom: 20px; }
         #question-text { font-size: 24px; font-weight: 800; color: #5856d6; line-height: 1.4; }
         #q-subtext { font-size: 14px; opacity: 0.7; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+
         .options-grid { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 10px; }
         .option-btn { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--title); font-size: 17px; font-weight: 600; cursor: pointer; transition: 0.2s; backdrop-filter: blur(10px); }
+        
         .correct { background: #34c759 !important; color: white !important; border: none; box-shadow: 0 0 20px rgba(52,199,89,0.3); }
         .wrong { background: #ff3b30 !important; color: white !important; border: none; }
+        
         .progress-bar { width: 100%; max-width: 500px; height: 8px; background: var(--glass); border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
         #progress-fill { width: 0%; height: 100%; background: #5856d6; transition: 0.4s; }
     </style>
 </head>
 <body class="light-mode">
+
     <div class="quiz-header">
         <div class="back-btn" onclick="exitQuiz()"><i class="fas fa-times"></i></div>
         <div id="q-counter" style="font-weight: bold;">سوال 1 از 10</div>
         <div style="width:40px"></div>
     </div>
+
     <div class="progress-bar"><div id="progress-fill"></div></div>
+
     <div class="question-card">
-        <h2 id="question-text">در حال لود...</h2>
-        <p id="q-subtext">لطفاً صبر کنید</p>
+        <h2 id="question-text">در حال آماده‌سازی...</h2>
+        <p id="q-subtext">لطفاً یکی از گزینه‌ها را انتخاب کنید</p>
     </div>
+
     <div class="options-grid" id="options-container"></div>
 
     <script src="a1-words.js"></script>
     <script>
-        let currentQ = 0; let score = 0; let quizWords = [];
+        let currentQ = 0;
+        let score = 0;
+        let quizWords = [];
+
         const mode = localStorage.getItem('quizMode') || 'fa-en';
         const wordsData = window.wordsA1 || window.words || [];
 
         function initQuiz() {
-            if (wordsData.length < 5) {
-                document.getElementById('question-text').innerText = "خطا در دیتابیس";
+            if (wordsData.length < 10) {
+                document.getElementById('question-text').innerText = "خطا!";
+                document.getElementById('q-subtext').innerText = "فایل لغات کافی نیست.";
                 return;
             }
             quizWords = [...wordsData].sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -51,78 +64,123 @@
         }
 
         function showQuestion() {
-            if (currentQ >= 10) return finishQuiz();
+            if (currentQ >= 10) {
+                finishQuiz();
+                return;
+            }
+
             const q = quizWords[currentQ];
+
             document.getElementById('progress-fill').style.width = ((currentQ + 1) / 10 * 100) + "%";
             document.getElementById('q-counter').innerText = `سوال ${currentQ + 1} از 10`;
 
-            let qTxt, correctAns, sub, optType;
+            let questionText, correctWord, subText;
 
-            // تنظیم محتوای سوال و نوع گزینه‌ها بر اساس تصویر شما
             if (mode === 'fa-en') {
-                qTxt = q.translation; correctAns = q.word; sub = "معادل انگلیسی را انتخاب کنید"; optType = 'word';
+                questionText = q.translation;
+                correctWord = q.word;
+                subText = "معادل انگلیسی را انتخاب کنید";
             } else if (mode === 'en-fa') {
-                qTxt = q.word; correctAns = q.translation; sub = "معادل فارسی را انتخاب کنید"; optType = 'translation';
+                questionText = q.word;
+                correctWord = q.translation;
+                subText = "معادل فارسی را انتخاب کنید";
+            } else if (mode === 'def-word' || mode === 'word-def') {
+                // درست: تعریف انگلیسی در سوال
+                questionText = q.definition || q.ex_en || "No definition available";
+                correctWord = q.word;
+                subText = "این تعریف مربوط به کدام کلمه است؟";
             } else {
-                // حالت Definition -> Word (طبق تصویر سبز شما)
-                qTxt = q.definition || q.ex_en || "تعریفی یافت نشد";
-                correctAns = q.word; sub = "این تعریف مربوط به کدام لغت است؟"; optType = 'word';
+                questionText = q.translation || q.word;
+                correctWord = q.word;
+                subText = "معادل انگلیسی را انتخاب کنید";
             }
 
-            document.getElementById('question-text').innerText = qTxt;
-            document.getElementById('q-subtext').innerText = sub;
-            if (mode !== 'fa-en' && localStorage.getItem('fredMute') !== 'true') speak(q.word);
+            document.getElementById('question-text').innerText = questionText;
+            document.getElementById('q-subtext').innerText = subText;
 
-            // ساخت ۴ گزینه هوشمند
-            let opts = [correctAns];
-            while (opts.length < 4) {
-                const r = wordsData[Math.floor(Math.random() * wordsData.length)];
-                const val = (optType === 'translation') ? r.translation : r.word;
-                if (!opts.includes(val) && val) opts.push(val);
+            // پخش صدا فقط در حالت‌هایی که لو نمی‌ده
+            if (mode !== 'fa-en' && localStorage.getItem('fredMute') !== 'true') {
+                speak(correctWord);
             }
-            opts.sort(() => 0.5 - Math.random());
+
+            // ساخت گزینه‌ها: همیشه ۴ کلمه انگلیسی
+            let options = [correctWord];
+            while (options.length < 4) {
+                const rand = wordsData[Math.floor(Math.random() * wordsData.length)];
+                if (!options.includes(rand.word) && rand.word) {
+                    options.push(rand.word);
+                }
+            }
+            options.sort(() => 0.5 - Math.random());
 
             const container = document.getElementById('options-container');
             container.innerHTML = '';
-            opts.forEach(o => {
-                const b = document.createElement('button');
-                b.className = 'option-btn';
-                b.textContent = o;
-                b.onclick = () => {
-                    document.querySelectorAll('.option-btn').forEach(btn => btn.style.pointerEvents = 'none');
-                    if (o === correctAns) { b.classList.add('correct'); score++; }
-                    else {
-                        b.classList.add('wrong');
-                        document.querySelectorAll('.option-btn').forEach(btn => { if(btn.textContent === correctAns) btn.classList.add('correct'); });
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = function() {
+                    const allBtns = container.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+                    if (opt === correctWord) {
+                        btn.classList.add('correct');
+                        score++;
+                    } else {
+                        btn.classList.add('wrong');
+                        allBtns.forEach(b => {
+                            if (b.textContent === correctWord) b.classList.add('correct');
+                        });
                     }
-                    setTimeout(() => { currentQ++; showQuestion(); }, 1200);
+
+                    setTimeout(() => {
+                        currentQ++;
+                        showQuestion();
+                    }, 1300);
                 };
-                container.appendChild(b);
+                container.appendChild(btn);
             });
         }
 
         function finishQuiz() {
-            const p = Math.round((score / 10) * 100);
-            localStorage.setItem('fredBest', p);
+            const percent = Math.round((score / 10) * 100);
 
-            // محاسبه ستاره‌ها بر اساس امتیاز واقعی
-            let starCount = Math.floor(p / 20); 
+            const currentBest = parseInt(localStorage.getItem('fredBest') || '0');
+            if (percent > currentBest) {
+                localStorage.setItem('fredBest', percent);
+            }
+
+            let starCount = 0;
+            if (percent >= 90) starCount = 5;
+            else if (percent >= 70) starCount = 4;
+            else if (percent >= 50) starCount = 3;
+            else if (percent >= 30) starCount = 2;
+            else if (percent >= 10) starCount = 1;
+
             const stars = "⭐".repeat(starCount) + "☆".repeat(5 - starCount);
 
-            alert(`پایان آزمون!\n\nامتیاز شما: ${p}%\nرتبه: ${stars}`);
+            alert(`آزمون تمام شد!\n\nامتیاز: ${percent}%\nستاره‌ها: \( {stars}\n\n \){percent >= 80 ? "عالی! ادامه بده 🚀" : "خوب بود! تمرین بیشتر کن 💪"}`);
+
             window.location.replace('index.html');
         }
 
         function exitQuiz() {
-            if (confirm("خروج از آزمون؟ امتیاز ثبت نمی‌شود.")) window.location.replace('index.html');
+            if (confirm("خروج از آزمون؟\nامتیاز ثبت نمی‌شود.")) {
+                window.location.replace('index.html');
+            }
         }
 
-        function speak(t) {
-            const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.9;
-            speechSynthesis.speak(u);
+        function speak(text) {
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'en-US';
+            utter.rate = 0.9;
+            speechSynthesis.speak(utter);
         }
 
-        if (localStorage.getItem('fredTheme') === 'dark') document.body.classList.remove('light-mode');
+        if (localStorage.getItem('fredTheme') === 'dark') {
+            document.body.classList.remove('light-mode');
+        }
+
         window.onload = initQuiz;
     </script>
 </body>
