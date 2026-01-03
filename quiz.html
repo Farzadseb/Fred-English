@@ -2,177 +2,122 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Quiz - English with Fred</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz</title>
+
 <style>
-:root { --bg:#0b1426; --title:#fff; --glass:rgba(255,255,255,.1); }
-body.light-mode { --bg:#f2f2f7; --title:#000; --glass:rgba(255,255,255,.5); }
 body{
-font-family:-apple-system,sans-serif;
-background:var(--bg);
+font-family:sans-serif;
+background:#f2f2f7;
 margin:0;
+padding:20px;
 display:flex;
 flex-direction:column;
-align-items:center;
-min-height:100vh;
+align-items:center
+}
+.card{
+width:100%;
+max-width:400px;
+background:white;
+border-radius:16px;
 padding:20px;
-color:var(--title)
+margin-bottom:15px;
+text-align:center
 }
-.quiz-header{
-width:100%;max-width:500px;
-display:flex;justify-content:space-between;align-items:center;
-margin-bottom:20px
-}
-.back-btn{
-width:40px;height:40px;border-radius:50%;
-background:var(--glass);
-display:flex;align-items:center;justify-content:center;
-cursor:pointer;font-size:20px
-}
-.question-card{
-width:100%;max-width:500px;
-background:var(--glass);
-border-radius:30px;
-padding:30px 20px;
-text-align:center;
-margin-bottom:20px
-}
-#question-text{font-size:22px;font-weight:800;color:#5856d6}
-#q-subtext{font-size:14px;opacity:.7;margin-top:12px}
-.options-grid{
-width:100%;max-width:500px;
-display:flex;flex-direction:column;gap:10px
-}
-.option-btn{
-padding:18px;border-radius:20px;
-background:var(--glass);
-border:none;font-size:16px;font-weight:600;
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border-radius:12px;
+border:none;
+font-size:16px;
 cursor:pointer
 }
-.correct{background:#34c759;color:#fff}
-.wrong{background:#ff3b30;color:#fff}
-.progress-bar{
-width:100%;max-width:500px;height:8px;
-background:var(--glass);border-radius:4px;margin-bottom:10px
-}
-#progress-fill{height:100%;background:#5856d6;width:0%}
+.correct{background:#34c759;color:white}
+.wrong{background:#ff3b30;color:white}
 </style>
 </head>
 
-<body class="light-mode">
+<body>
 
-<div class="quiz-header">
-<div class="back-btn" onclick="exitQuiz()"><i class="fas fa-times"></i></div>
-<div id="q-counter">سوال 1 از 10</div>
-<div style="width:40px"></div>
+<div class="card">
+<h2 id="question">...</h2>
+<p id="sub"></p>
 </div>
 
-<div class="progress-bar"><div id="progress-fill"></div></div>
-
-<div class="question-card">
-<h2 id="question-text">...</h2>
-<p id="q-subtext"></p>
-</div>
-
-<div class="options-grid" id="options-container"></div>
+<div id="options" style="width:100%;max-width:400px"></div>
 
 <script src="a1-words.js"></script>
 <script>
-let currentQ=0, score=0, quizWords=[];
-const mode=localStorage.getItem("quizMode")||"fa-en";
-const wordsData=window.wordsA1||window.words||[];
-
-function initQuiz(){
-quizWords=[...wordsData].sort(()=>0.5-Math.random()).slice(0,10);
-showQuestion();
-}
+let qIndex = 0;
+let score = 0;
+const mode = localStorage.getItem("quizMode") || "def-word";
+const words = window.words;
 
 function showQuestion(){
-if(currentQ>=10){finishQuiz();return}
-const q=quizWords[currentQ];
-document.getElementById("progress-fill").style.width=((currentQ+1)/10*100)+"%";
-document.getElementById("q-counter").innerText=`سوال ${currentQ+1} از 10`;
-
-let questionText="", correctAnswer="", subText="";
-
-if(mode==="fa-en"){
-questionText=q.translation;
-correctAnswer=q.word;
-subText="معادل انگلیسی را انتخاب کنید";
-}
-else if(mode==="en-fa"){
-questionText=q.word;
-correctAnswer=q.translation;
-subText="معادل فارسی را انتخاب کنید";
-}
-else if(mode==="def-word"){
-questionText=q.definition;
-correctAnswer=q.word;
-subText="این تعریف مربوط به کدام کلمه است؟";
+if(qIndex >= 10){
+alert("پایان آزمون\nامتیاز: " + score + "/10");
+location.href = "index.html";
+return;
 }
 
-if(!questionText) questionText="تعریف موجود نیست";
+const q = words[Math.floor(Math.random()*words.length)];
 
-document.getElementById("question-text").innerText=questionText;
-document.getElementById("q-subtext").innerText=subText;
+let questionText = "";
+let correct = "";
 
-let options=[correctAnswer];
-while(options.length<4){
-const r=wordsData[Math.floor(Math.random()*wordsData.length)];
-const val=(mode==="en-fa")?r.translation:r.word;
-if(val && !options.includes(val)) options.push(val);
+if(mode === "def-word"){
+questionText = q.definition;
+correct = q.word;
+document.getElementById("sub").innerText =
+"این تعریف مربوط به کدام کلمه است؟";
 }
-options.sort(()=>0.5-Math.random());
+else if(mode === "fa-en"){
+questionText = q.translation;
+correct = q.word;
+document.getElementById("sub").innerText =
+"معادل انگلیسی را انتخاب کنید";
+}
+else{
+questionText = q.word;
+correct = q.translation;
+document.getElementById("sub").innerText =
+"معادل فارسی را انتخاب کنید";
+}
 
-const box=document.getElementById("options-container");
-box.innerHTML="";
-options.forEach(opt=>{
-const b=document.createElement("button");
-b.className="option-btn";
-b.innerText=opt;
-b.onclick=()=>checkAnswer(b,opt===correctAnswer);
+document.getElementById("question").innerText = questionText;
+
+let opts = [correct];
+while(opts.length < 4){
+const r = words[Math.floor(Math.random()*words.length)];
+const val = mode==="en-fa" ? r.translation : r.word;
+if(val && !opts.includes(val)) opts.push(val);
+}
+opts.sort(()=>Math.random()-0.5);
+
+const box = document.getElementById("options");
+box.innerHTML = "";
+
+opts.forEach(o=>{
+const b = document.createElement("button");
+b.innerText = o;
+b.onclick = ()=>{
+if(o === correct){
+b.className = "correct";
+score++;
+}else{
+b.className = "wrong";
+}
+setTimeout(()=>{
+qIndex++;
+showQuestion();
+},800);
+};
 box.appendChild(b);
 });
 }
 
-function checkAnswer(btn,ok){
-document.querySelectorAll(".option-btn").forEach(b=>b.disabled=true);
-if(ok){btn.classList.add("correct");score++}
-else{
-btn.classList.add("wrong");
-document.querySelectorAll(".option-btn").forEach(b=>{
-if(b.innerText===(mode==="en-fa"?quizWords[currentQ].translation:quizWords[currentQ].word))
-b.classList.add("correct");
-});
-}
-setTimeout(()=>{currentQ++;showQuestion()},1200);
-}
-
-function finishQuiz(){
-const percent=Math.round(score/10*100);
-let stars=0;
-if(percent>=90)stars=5;
-else if(percent>=70)stars=4;
-else if(percent>=50)stars=3;
-else if(percent>=30)stars=2;
-else if(percent>=10)stars=1;
-
-alert(
-`آزمون تمام شد
-امتیاز: ${percent}%
-ستاره‌ها: ${"⭐".repeat(stars)}${"☆".repeat(5-stars)}`
-);
-window.location.href="index.html";
-}
-
-function exitQuiz(){
-if(confirm("خروج از آزمون؟")){
-window.location.href="index.html";
-}
-}
-
-window.onload=initQuiz;
+showQuestion();
 </script>
 </body>
 </html>
