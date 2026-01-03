@@ -1,136 +1,122 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quiz - English with Fred</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --bg: #0b1426; --blue: #00a8ff; --green: #28cd41; --red: #ff3b30; --text: #1e293b; --card: #ffffff; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; overflow-x: hidden; }
-
-        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .control-btn { background: rgba(30, 41, 59, 0.7); border: none; color: var(--blue); width: 42px; height: 42px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        .progress-bar { width: 95%; max-width: 380px; height: 6px; background: #334155; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--blue); width: 0%; transition: 0.4s; }
-
-        /* کادر سفید ۲۰ درصد کوچکتر */
-        .q-card { 
-            background: var(--card); 
-            color: var(--text); 
-            padding: 20px; 
-            border-radius: 28px; 
-            width: 75%; 
-            max-width: 280px; 
-            text-align: center; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
-            margin: 10px auto; 
-        }
-
-        .audio-btn { background: linear-gradient(145deg, #00bfff, #00a8ff); color: white; border: none; width: 46px; height: 46px; border-radius: 50%; font-size: 18px; cursor: pointer; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0, 168, 255, 0.3); }
-        .question-text { font-size: 20px; font-weight: 600; margin-bottom: 18px; color: #1c1c1e; min-height: 40px; display: flex; align-items: center; justify-content: center; }
-
-        .options-grid { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-        
-        /* دکمه‌های براق آیفونی */
-        .opt-btn { 
-            width: 100%;
-            height: 48px; 
-            padding: 0 15px;
-            font-size: 16px;
-            border-radius: 24px;
-            border: 1px solid rgba(0,0,0,0.05);
-            background: linear-gradient(180deg, #ffffff 0%, #f2f2f7 100%);
-            color: #1c1c1e;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .opt-btn.correct { background: linear-gradient(180deg, #34c759 0%, #28cd41 100%) !important; color: white !important; border: none; }
-        .opt-btn.wrong { background: linear-gradient(180deg, #ff453a 0%, #ff3b30 100%) !important; color: white !important; border: none; }
-    </style>
-</head>
-<body>
-    <div class="top-bar">
-        <button class="control-btn" onclick="window.location.href='index.html'"><i class="fas fa-home"></i></button>
-        <div id="score-display" style="font-weight: bold; color: var(--blue);">امتیاز: 0</div>
-    </div>
-    <div class="progress-bar"><div id="fill" class="progress-fill"></div></div>
-    <div id="quiz-content" style="width:100%; display:flex; justify-content:center;"></div>
-
-    <script src="a1-words.js"></script>
-    <script>
-        const words = window.wordsA1 || [];
-        let session = { mode: localStorage.getItem('quizMode') || 'fa-en', questions: [], index: 0, score: 0, answered: false };
-
-        function render() {
-            if (session.index >= 10) { finish(); return; }
-            const q = session.questions[session.index];
-            session.answered = false;
-            document.getElementById('fill').style.width = ((session.index + 1) / 10 * 100) + "%";
-            document.getElementById('score-display').innerText = `امتیاز: ${session.score}`;
-
-            let qTxt = "", aCor = "";
-            // تطبیق با ساختار فایل لغات شما
-            if (session.mode === 'fa-en') { qTxt = q.translation; aCor = q.word; }
-            else if (session.mode === 'en-fa') { qTxt = q.word; aCor = q.translation; }
-            else if (session.mode === 'word-def') { qTxt = q.word; aCor = q.ex_en; } // استفاده از مثال به جای تعریف
-            else { qTxt = q.ex_en; aCor = q.word; }
-
-            let opts = [aCor];
-            while(opts.length < 4) {
-                let r = words[Math.floor(Math.random() * words.length)];
-                let o = (session.mode === 'fa-en' || session.mode === 'def-word') ? r.word : (session.mode === 'en-fa' ? r.translation : r.ex_en);
-                if(o && !opts.includes(o)) opts.push(o);
-            }
-            opts.sort(() => Math.random() - 0.5);
-
-            document.getElementById('quiz-content').innerHTML = `
-                <div class="q-card">
-                    <button class="audio-btn" onclick="speak(\`${q.word}\`)"><i class="fas fa-volume-up"></i></button>
-                    <div class="question-text">${qTxt}</div>
-                    <div class="options-grid">${opts.map(o => `<button class="opt-btn" onclick="check(this,'${o}','${aCor}')">${o}</button>`).join('')}</div>
-                </div>`;
-
-            setTimeout(() => { speak(q.word); }, 500);
-        }
-
-        function check(btn, sel, cor) {
-            if(session.answered) return; session.answered = true;
-            if(sel === cor) { btn.classList.add('correct'); session.score++; }
-            else { 
-                btn.classList.add('wrong');
-                document.querySelectorAll('.opt-btn').forEach(b => { if(b.innerText === cor) b.classList.add('correct'); });
-            }
-            setTimeout(() => { session.index++; render(); }, 1200);
-        }
-
-        function finish() {
-            const p = (session.score / 10) * 100;
-            localStorage.setItem('fredBest', Math.max(p, localStorage.getItem('fredBest')||0));
-            alert(`نمره شما: ${p}%`); window.location.href = 'index.html';
-        }
-
-        function speak(t) { 
-            if(localStorage.getItem('fredMute')!=='true' && t) { 
-                speechSynthesis.cancel(); 
-                let m = new SpeechSynthesisUtterance(t); 
-                m.lang='en-US'; m.rate = 0.5; speechSynthesis.speak(m); 
-            } 
-        }
-
-        window.onload = () => { 
-            if(words.length > 0) {
-                session.questions = [...words].sort(()=>0.5-Math.random()).slice(0,10); 
-                render(); 
-            }
-        };
-    </script>
-</body>
-</html>
+window.wordsA1 = [
+    { 
+        id: 1, 
+        word: "be", 
+        translation: "بودن",
+        definition: "To exist or live.",
+        ex_en: "I want to be happy.", 
+        ex_fa: "من می‌خواهم خوشحال باشم.",
+        coll_en: "be careful (مواظب بودن)", 
+        coll_ex: "Please be careful with that glass. (لطفاً مواظب آن لیوان باش.)",
+        phrasal_1: "be up to (به عهده کسی بودن) - It's be up to you. (به عهده توست.)",
+        phrasal_2: "be over (تمام شدن) - The lesson is over. (درس تمام شد.)"
+    },
+    { 
+        id: 2, 
+        word: "am", 
+        translation: "هستم",
+        definition: "The form of 'be' used with 'I'.",
+        ex_en: "I am a student.", 
+        ex_fa: "من یک دانش‌آموز هستم.",
+        coll_en: "I am sure (مطمئن هستم)", 
+        coll_ex: "I am sure about my answer. (من درباره جوابم مطمئن هستم.)",
+        phrasal_1: "am in for (در معرض چیزی بودن) - I am in for a surprise. (من در انتظار یک غافلگیری هستم.)",
+        phrasal_2: "am after (به دنبال چیزی بودن) - I am after a better job. (من به دنبال شغل بهتری هستم.)"
+    },
+    { 
+        id: 3, 
+        word: "is", 
+        translation: "هست",
+        definition: "The form of 'be' used with 'he', 'she', or 'it'.",
+        ex_en: "He is my teacher.", 
+        ex_fa: "او معلم من هست.",
+        coll_en: "is famous for (مشهور بودن برای)", 
+        coll_ex: "She is famous for her art. (او برای هنرش مشهور هست.)",
+        phrasal_1: "is off (رفتن/مرخصی بودن) - He is off today. (او امروز مرخصی هست.)",
+        phrasal_2: "is into (علاقه‌مند بودن به) - He is into music. (او به موسیقی علاقه‌مند هست.)"
+    },
+    { 
+        id: 4, 
+        word: "are", 
+        translation: "هستید / هستند",
+        definition: "The form of 'be' used with 'you', 'we', or 'they'.",
+        ex_en: "They are my friends.", 
+        ex_fa: "آن‌ها دوستان من هستند.",
+        coll_en: "are ready (آماده هستند)", 
+        coll_ex: "Are you ready to go? (آیا برای رفتن آماده هستید؟)",
+        phrasal_1: "are out of (تمام کردن چیزی) - We are out of milk. (شیر ما تمام شده است.)",
+        phrasal_2: "are back (برگشتن) - They are back from trip. (آن‌ها از سفر برگشته‌اند.)"
+    },
+    { 
+        id: 5, 
+        word: "have", 
+        translation: "داشتن",
+        definition: "To own something.",
+        ex_en: "I have a small car.", 
+        ex_fa: "من یک ماشین کوچک دارم.",
+        coll_en: "have a problem (مشکل داشتن)", 
+        coll_ex: "I have a problem with my phone. (من با گوشی‌ام یک مشکل دارم.)",
+        phrasal_1: "have on (پوشیدن) - I have a warm coat on. (من یک کت گرم پوشیده‌ام.)",
+        phrasal_2: "have to (اجبار داشتن) - I have to go now. (من مجبورم الان بروم.)"
+    },
+    { 
+        id: 6, 
+        word: "has", 
+        translation: "دارد",
+        definition: "The form of 'have' used with 'he', 'she', or 'it'.",
+        ex_en: "She has a blue bag.", 
+        ex_fa: "او یک کیف آبی دارد.",
+        coll_en: "has a cold (سرما خوردن)", 
+        coll_ex: "He has a bad cold today. (او امروز سرماخوردگی بدی دارد.)",
+        phrasal_1: "has in (موجود داشتن) - The shop has it in. (مغازه آن را موجود دارد.)",
+        phrasal_2: "has up (در آستین داشتن) - She has a plan up. (او نقشه‌ای در آستین دارد.)"
+    },
+    { 
+        id: 7, 
+        word: "do", 
+        translation: "انجام دادن",
+        definition: "To perform an action.",
+        ex_en: "I do my work every day.", 
+        ex_fa: "من هر روز کارم را انجام می‌دهم.",
+        coll_en: "do a favor (لطف کردن)", 
+        coll_ex: "Can you do me a favor? (می‌توانی به من یک لطفی بکنی؟)",
+        phrasal_1: "do over (دوباره انجام دادن) - Do this task over. (این کار را دوباره انجام بده.)",
+        phrasal_2: "do without (بدون چیزی سر کردن) - I can't do without coffee. (بدون قهوه نمی‌توانم سر کنم.)"
+    },
+    { 
+        id: 8, 
+        word: "does", 
+        translation: "انجام می‌دهد",
+        definition: "The form of 'do' used with 'he', 'she', or 'it'.",
+        ex_en: "He does his best.", 
+        ex_fa: "او بیشترین تلاشش را انجام می‌دهد.",
+        coll_en: "does exercise (ورزش کردن)", 
+        coll_ex: "She does exercise in the morning. (او صبح‌ها ورزش انجام می‌دهد.)",
+        phrasal_1: "does up (بستن دکمه/بند) - He does up his shoes. (او بند کفش‌هایش را می‌بندد.)",
+        phrasal_2: "does with (نیاز داشتن) - He does with a rest. (او به یک استراحت نیاز دارد.)"
+    },
+    { 
+        id: 9, 
+        word: "work", 
+        translation: "کار کردن",
+        definition: "To have a job or do tasks.",
+        ex_en: "I work in an office.", 
+        ex_fa: "من در یک اداره کار می‌کنم.",
+        coll_en: "work hard (سخت کار کردن)", 
+        coll_ex: "They work hard to finish the project. (آن‌ها برای تمام کردن پروژه سخت کار می‌کنند.)",
+        phrasal_1: "work out (ورزش کردن/حل شدن) - I work out at the gym. (من در باشگاه ورزش می‌کنم.)",
+        phrasal_2: "work on (روی چیزی کار کردن) - I am working on a new idea. (من روی یک ایده جدید کار می‌کنم.)"
+    },
+    { 
+        id: 10, 
+        word: "go", 
+        translation: "رفتن",
+        definition: "To move from one place to another.",
+        ex_en: "I go to school by bus.", 
+        ex_fa: "من با اتوبوس به مدرسه می‌روم.",
+        coll_en: "go shopping (خرید رفتن)", 
+        coll_ex: "Let's go shopping today. (بیا امروز به خرید برویم.)",
+        phrasal_1: "go on (ادامه دادن) - Please go on speaking. (لطفاً به صحبت کردن ادامه بده.)",
+        phrasal_2: "go out (بیرون رفتن) - Do you want to go out tonight? (آیا می‌خواهی امشب بیرون بروی؟)"
+    }
+];
