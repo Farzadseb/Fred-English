@@ -6,113 +6,186 @@
     <title>Quiz - English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --title: #ffffff; --glass: rgba(255, 255, 255, 0.1); }
-        body.light-mode { --bg: #f2f2f7; --title: #000000; --glass: rgba(255, 255, 255, 0.5); }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; color: var(--title); transition: 0.3s; }
-        .quiz-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .back-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--glass); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        .question-card { width: 100%; max-width: 500px; background: var(--glass); border-radius: 30px; padding: 35px 20px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin-bottom: 20px; }
-        #question-text { font-size: 22px; font-weight: 800; color: #5856d6; line-height: 1.5; }
-        #q-subtext { font-size: 14px; opacity: 0.7; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
-        .options-grid { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 10px; }
-        .option-btn { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--title); font-size: 17px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .correct { background: #34c759 !important; color: white !important; }
-        .wrong { background: #ff3b30 !important; color: white !important; }
-        #progress-fill { width: 0%; height: 6px; background: #5856d6; position: fixed; top: 0; left: 0; transition: 0.3s; }
+        body { font-family: Tahoma, sans-serif; background: #0b1426; color: white; margin: 0; padding: 20px; min-height: 100vh; }
+        .back { position: fixed; top: 20px; left: 20px; width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 10; }
+        .card { background: rgba(255,255,255,0.1); border-radius: 25px; padding: 30px; margin: 80px auto 20px; max-width: 400px; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; }
+        .title { font-size: 28px; color: #00a8ff; margin-bottom: 20px; }
+        .word { font-size: 36px; font-weight: bold; color: #00a8ff; margin: 20px 0; direction: ltr; }
+        .hint { font-size: 16px; opacity: 0.8; margin-bottom: 30px; }
+        .next { width: 80%; padding: 16px; background: #00a8ff; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 40px; }
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .opt { padding: 16px; background: rgba(255,255,255,0.1); border-radius: 18px; font-size: 16px; cursor: pointer; }
+        .correct { background: #34c759 !important; color: white; }
+        .wrong { background: #ff3b30 !important; color: white; }
+        .progress { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 20px 0; }
+        #prog { width: 0%; height: 100%; background: #00a8ff; transition: 0.3s; }
+
+        .report { display: none; text-align: center; margin-top: 100px; }
+        .report-title { font-size: 24px; color: #00a8ff; margin-bottom: 20px; }
+        .report-score { font-size: 48px; color: #00ff88; margin: 20px 0; }
+        .report-stars { font-size: 50px; letter-spacing: 15px; margin: 30px 0; }
+        .report-msg { font-size: 18px; line-height: 1.6; opacity: 0.9; }
     </style>
 </head>
-<body class="light-mode">
-    <div id="progress-fill"></div>
-    <div class="quiz-header">
-        <div class="back-btn" onclick="window.location.replace('index.html')"><i class="fas fa-times"></i></div>
-        <div id="q-counter">1/10</div>
-        <div style="width:40px"></div>
+<body>
+
+    <div class="back" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></div>
+
+    <div class="progress"><div id="prog"></div></div>
+
+    <div class="card" id="studyCard">
+        <div class="word" id="englishWord"></div>
+        <div class="hint" id="persianText"></div>
+        <div class="hint" id="defText"></div>
+        <button class="next" onclick="nextStudy()">بعدی</button>
     </div>
 
-    <div class="question-card">
-        <h2 id="question-text">...</h2>
-        <p id="q-subtext">لطفاً صبر کنید</p>
+    <div class="card" id="questionCard" style="display:none;">
+        <div class="word" id="q-text"></div>
+        <div class="hint" id="q-hint"></div>
     </div>
+    <div class="options" id="options" style="display:none;"></div>
 
-    <div class="options-grid" id="options-container"></div>
+    <div class="report" id="report">
+        <div class="report-title">گزارش پیشرفت شما</div>
+        <div class="report-score" id="r-best">0%</div>
+        <div class="report-stars" id="r-stars">☆☆☆☆☆</div>
+        <div class="report-msg" id="r-msg">شروع کن! اولین قدم مهمه 💪</div>
+    </div>
 
     <script src="a1-words.js"></script>
     <script>
-        let currentQ = 0, score = 0, quizWords = [];
-        const mode = localStorage.getItem('quizMode') || 'fa-en';
+        let currentQ = 0, score = 0, wordsList = [], mode = localStorage.getItem('quizMode') || 'fa-en';
+        let userInteracted = false;
 
-        function init() {
-            const data = window.words || window.wordsA1;
-            if (!data) { setTimeout(init, 200); return; }
-            quizWords = [...data].sort(() => 0.5 - Math.random()).slice(0, 10);
-            render();
+        const data = window.wordsA1 || window.words || [];
+
+        if (mode === 'review') {
+            document.getElementById('studyCard').style.display = 'none';
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('options').style.display = 'none';
+            document.getElementById('report').style.display = 'block';
+
+            let best = parseInt(localStorage.getItem('fredBest') || '0');
+            document.getElementById('r-best').innerText = best + "%";
+            let filled = Math.floor(best / 20);
+            document.getElementById('r-stars').innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
+            let msg = best >= 90 ? "عالی! حرفه‌ای شدی 🚀" :
+                      best >= 70 ? "خیلی خوب! نزدیک قله‌ای 📈" :
+                      best >= 50 ? "خوبه! ادامه بده ⭐" :
+                      best > 0 ? "شروع عالی! پیشرفتت مشخصه 💪" :
+                      "شروع کن! اولین قدم مهمه 😊";
+            document.getElementById('r-msg').innerText = msg;
+        } else {
+            if (data.length < 10) {
+                alert("لغات کافی نیست");
+                window.location.href = 'index.html';
+            }
+            wordsList = [...data].sort(() => 0.5 - Math.random());
+            if (mode === 'study' || mode === 'fa-en' || mode === 'word-def') {
+                currentQ = -1;
+                nextStudy();
+            } else {
+                nextQuestion();
+            }
         }
 
-        function render() {
-            if (currentQ >= 10) return end();
-            const q = quizWords[currentQ];
-            const data = window.words || window.wordsA1;
+        function nextStudy() {
+            currentQ++;
+            if (currentQ >= wordsList.length) currentQ = 0;
+            const item = wordsList[currentQ];
 
-            document.getElementById('progress-fill').style.width = (currentQ + 1) * 10 + "%";
-            document.getElementById('q-counter').innerText = `${currentQ + 1} / 10`;
+            document.getElementById('studyCard').style.display = 'block';
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('options').style.display = 'none';
+            document.getElementById('prog').style.width = ((currentQ + 1) / wordsList.length * 100) + "%";
 
-            let question, answer, subTitle, optionKey;
-
-            // منطق جداسازی مودها برای جلوگیری از اشتباه در محتوا
-            if (mode === 'fa-en') {
-                question = q.translation; answer = q.word; 
-                subTitle = "معادل انگلیسی کلمه بالا چیست؟"; optionKey = 'word';
-            } else if (mode === 'en-fa') {
-                question = q.word; answer = q.translation; 
-                subTitle = "معادل فارسی کلمه بالا چیست؟"; optionKey = 'translation';
-            } else {
-                // مود Definition (سبز)
-                question = q.definition || q.ex_en; answer = q.word; 
-                subTitle = "این تعریف مربوط به کدام لغت است؟"; optionKey = 'word';
+            document.getElementById('englishWord').innerText = item.word;
+            if (mode === 'study' || mode === 'fa-en') {
+                document.getElementById('persianText').innerText = item.translation;
+                document.getElementById('defText').innerText = item.definition || item.ex_en || "";
+            } else if (mode === 'word-def') {
+                document.getElementById('persianText').innerText = "";
+                document.getElementById('defText').innerText = item.definition || item.ex_en || "تعریف موجود نیست";
             }
 
-            document.getElementById('question-text').innerText = question;
-            document.getElementById('q-subtext').innerText = subTitle;
+            if (userInteracted && localStorage.getItem('fredMute') !== 'true') {
+                speak(item.word);
+            }
+        }
 
-            // ساخت گزینه‌ها بدون تداخل محتوایی
-            let choices = [answer];
+        function nextQuestion() {
+            if (currentQ >= 10) {
+                endQuiz();
+                return;
+            }
+
+            const item = wordsList[currentQ];
+            document.getElementById('studyCard').style.display = 'none';
+            document.getElementById('questionCard').style.display = 'block';
+            document.getElementById('options').style.display = 'flex';
+            document.getElementById('prog').style.width = ((currentQ + 1) / 10 * 100) + "%";
+
+            let qText, correct, hint;
+
+            if (mode === 'en-fa') {
+                qText = item.word;
+                correct = item.translation;
+                hint = "معادل فارسی را انتخاب کنید";
+            } else if (mode === 'def-word') {
+                qText = item.definition || item.ex_en || "تعریف موجود نیست";
+                correct = item.word;
+                hint = "این تعریف مربوط به کدام کلمه است؟";
+            }
+
+            document.getElementById('q-text').innerText = qText;
+            document.getElementById('q-hint').innerText = hint;
+
+            if (userInteracted && localStorage.getItem('fredMute') !== 'true') {
+                speak(item.word);
+            }
+
+            let choices = [correct];
             while (choices.length < 4) {
-                let rand = data[Math.floor(Math.random() * data.length)];
-                let val = rand[optionKey]; // استفاده از کلید مخصوص هر مود
-                if (!choices.includes(val) && val) choices.push(val);
+                const rand = wordsList[Math.floor(Math.random() * wordsList.length)];
+                const val = (mode === 'en-fa') ? rand.translation : rand.word;
+                if (val && !choices.includes(val)) choices.push(val);
             }
             choices.sort(() => 0.5 - Math.random());
 
-            const container = document.getElementById('options-container');
+            const container = document.getElementById('options');
             container.innerHTML = '';
             choices.forEach(c => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
+                const btn = document.createElement('div');
+                btn.className = 'opt';
                 btn.innerText = c;
                 btn.onclick = () => {
-                    document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
-                    if (c === answer) { btn.classList.add('correct'); score++; }
-                    else { 
-                        btn.classList.add('wrong'); 
-                        document.querySelectorAll('.option-btn').forEach(b => { if(b.innerText === answer) b.classList.add('correct'); });
-                    }
-                    setTimeout(() => { currentQ++; render(); }, 1000);
+                    userInteracted = true;
+                    document.querySelectorAll('.opt').forEach(b => b.onclick = null);
+                    if (c === correct) { btn.classList.add('correct'); score++; }
+                    else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if (b.innerText === correct) b.classList.add('correct'); }); }
+                    setTimeout(() => { currentQ++; nextQuestion(); }, 1300);
                 };
                 container.appendChild(btn);
             });
         }
 
-        function end() {
-            let p = (score / 10) * 100;
-            localStorage.setItem('fredBest', p);
-            let sCount = Math.floor(p / 20);
-            let stars = "⭐".repeat(sCount) + "☆".repeat(5 - sCount);
-            alert(`آزمون تمام شد!\nامتیاز شما: ${p}%\nرتبه: ${stars}`);
-            window.location.replace('index.html');
+        function speak(word) {
+            const utter = new SpeechSynthesisUtterance(word);
+            utter.lang = 'en-US';
+            utter.rate = 0.5; // سرعت ۰.۵
+            speechSynthesis.speak(utter);
         }
 
-        if (localStorage.getItem('fredTheme') === 'dark') document.body.classList.remove('light-mode');
-        window.onload = init;
+        function endQuiz() {
+            const p = Math.round((score / 10) * 100);
+            const best = parseInt(localStorage.getItem('fredBest') || '0');
+            if (p > best) localStorage.setItem('fredBest', p);
+
+            alert(`تمام!\nامتیاز: \( {p}%\n \){p > best ? "رکورد جدید!" : "بهترین: " + best + "%"}`);
+
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
