@@ -8,142 +8,131 @@
     <style>
         :root { 
             --bg: #0b1426; 
-            --title-color: #ffffff;
-            --card-text: #ffffff; 
-            --icon: #94a3b8; 
+            --title: #ffffff; 
+            --c-txt: #ffffff; 
+            --icon-bg: rgba(255, 255, 255, 0.1);
         }
         body.light-mode { 
-            --bg: #f8f9fa; 
-            --title-color: #000000;
-            --card-text: #ffffff; 
-            --icon: #475569; 
+            --bg: #f2f2f7; 
+            --title: #000000; 
+            --c-txt: #ffffff; 
+            --icon-bg: rgba(0, 0, 0, 0.05);
         }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
             background: var(--bg); 
-            transition: background 0.3s ease; 
-            margin: 0; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh;
-            /* استفاده از padding درصدی برای تنظیم خودکار در دستگاه‌ها */
-            padding: 5vh 0; 
-            box-sizing: border-box;
+            margin: 0; display: flex; flex-direction: column; 
+            align-items: center; min-height: 100vh; padding: 20px 0; box-sizing: border-box;
+            transition: background 0.3s ease;
         }
         
-        /* هدر هوشمند */
-        .header { 
-            width: 90%; 
-            max-width: 500px; /* جلوگیری از کشیدگی بیش از حد در تبلت */
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 4vh; 
-        }
+        /* هدر آیفونی */
+        .header { width: 90%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .brand-name { font-size: 30px; font-weight: 800; color: var(--title); margin: 0; letter-spacing: -0.5px; }
+        .top-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--icon-bg); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--title); cursor: pointer; backdrop-filter: blur(10px); }
 
-        .brand-name { 
-            /* فونت بر اساس عرض صفحه (vw) تنظیم می‌شود تا در موبایل‌های کوچک هم عالی باشد */
-            font-size: clamp(24px, 7vw, 32px); 
-            font-weight: 900; 
-            color: var(--title-color); 
-            margin: 0;
-            letter-spacing: -0.5px;
-            text-align: center;
-        }
+        .menu-container { width: 90%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; }
 
-        .top-icon { 
-            font-size: clamp(20px, 5vw, 26px); 
-            color: var(--icon); 
-            cursor: pointer; 
-        }
-
-        /* ظرف اصلی کادرها */
-        .menu-container { 
-            width: 90%; 
-            max-width: 500px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px; 
-        }
-
-        /* دکمه‌های آیفونی با ارتفاع داینامیک */
+        /* کادر براق و خوشگل iOS */
         .menu-item {
-            width: 100%; 
-            min-height: 55px;
-            height: 7vh; /* ارتفاع بر اساس قد صفحه موبایل */
-            max-height: 70px;
-            border-radius: 18px; 
-            border: none;
-            display: flex; 
-            align-items: center; 
-            padding: 0 15px; 
-            cursor: pointer;
-            text-decoration: none; 
-            box-sizing: border-box;
-            background-image: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: transform 0.1s ease;
+            width: 100%; height: 65px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: row-reverse; align-items: center; 
+            padding: 0 20px; cursor: pointer; text-decoration: none; box-sizing: border-box;
+            transition: all 0.2s ease;
+            position: relative; overflow: hidden;
+            /* افکت براق و سایه ملایم */
+            background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
         }
 
-        .menu-item:active { transform: scale(0.97); }
+        .menu-item:active { transform: scale(0.97); opacity: 0.8; }
 
-        .flags-left { display: flex; align-items: center; }
-
-        .flag { 
-            width: clamp(25px, 6vw, 32px); 
-            height: clamp(25px, 6vw, 32px); 
-            border-radius: 50%; 
-            border: 2px solid rgba(255,255,255,0.5); 
-            object-fit: cover;
+        /* پرچم مستطیلی سمت چپ */
+        .left-content { display: flex; align-items: center; justify-content: flex-start; width: 80px; }
+        .flag-rect { 
+            width: 35px; height: 23px; border-radius: 4px; 
+            object-fit: cover; border: 1.5px solid rgba(255,255,255,0.6);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
-
+        
         .menu-text { 
-            color: var(--card-text); 
-            font-size: clamp(14px, 4vw, 18px); 
-            font-weight: 700; 
-            margin-right: auto; 
-            text-align: right; 
+            color: var(--c-txt); font-size: 18px; font-weight: 700; 
+            flex-grow: 1; text-align: right;
         }
 
-        .bg-purple { background-color: #8b5cf6; }
-        .bg-blue { background-color: #0ea5e9; }
-        .bg-teal { background-color: #14b8a6; }
-        .bg-green { background-color: #10b981; }
+        /* رنگ‌بندی شفاف و جذاب */
+        .bg-1 { background-color: #5856d6; } /* بنفش */
+        .bg-2 { background-color: #007aff; } /* آبی روشن */
+        .bg-3 { background-color: #5ac8fa; } /* آبی فیروزه‌ای */
+        .bg-4 { background-color: #34c759; } /* سبز */
+        .bg-5 { background-color: #30d158; } /* سبز پررنگ */
+        .bg-6 { background-color: #25d366; } /* واتس‌اپ */
+        .bg-7 { background-color: #ff9500; } /* نارنجی */
+        .bg-8 { background-color: #ff3b30; } /* قرمز */
 
+        /* لایه براق روی کل کادر */
+        .gloss { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%); pointer-events: none; }
     </style>
 </head>
 <body class="light-mode">
 
     <div class="header">
-        <i id="m-btn" class="fas fa-volume-up top-icon" onclick="toggleMute()"></i>
+        <div class="top-btn" onclick="toggleTheme()"><i class="fas fa-adjust"></i></div>
         <h1 class="brand-name">English with Fred</h1>
-        <i class="fas fa-adjust top-icon" onclick="toggleTheme()"></i>
+        <div id="m-btn" class="top-btn" onclick="toggleMute()"><i class="fas fa-volume-up"></i></div>
     </div>
 
     <div class="menu-container">
-        <a href="study.html" class="menu-item bg-purple">
-            <div class="flags-left">
-                <img src="https://flagcdn.com/us.svg" class="flag">
-                <img src="https://flagcdn.com/ir.svg" class="flag" style="margin-right:-12px;">
-            </div>
+        <a href="study.html" class="menu-item bg-1">
+            <div class="gloss"></div>
             <span class="menu-text">آموزش لغات (Study)</span>
+            <div class="left-content">
+                <img src="https://flagcdn.com/us.svg" class="flag-rect" style="position:absolute; left:20px; z-index:1; transform:rotate(-3deg)">
+                <img src="https://flagcdn.com/ir.svg" class="flag-rect" style="position:relative; left:12px; z-index:2; transform:rotate(2deg)">
+            </div>
         </a>
 
-        <div class="menu-item bg-blue" onclick="go('fa-en')">
-            <div class="flags-left"><img src="https://flagcdn.com/ir.svg" class="flag"></div>
+        <div class="menu-item bg-2" onclick="go('fa-en')">
+            <div class="gloss"></div>
             <span class="menu-text">Persian ➔ English</span>
+            <div class="left-content"><img src="https://flagcdn.com/ir.svg" class="flag-rect"></div>
         </div>
 
-        <div class="menu-item bg-blue" onclick="go('en-fa')">
-            <div class="flags-left"><img src="https://flagcdn.com/us.svg" class="flag"></div>
+        <div class="menu-item bg-3" onclick="go('en-fa')">
+            <div class="gloss"></div>
             <span class="menu-text">English ➔ Persian</span>
+            <div class="left-content"><img src="https://flagcdn.com/us.svg" class="flag-rect"></div>
         </div>
 
-        <div class="menu-item bg-teal" onclick="go('word-def')">
-            <div class="flags-left"><img src="https://flagcdn.com/us.svg" class="flag"></div>
+        <div class="menu-item bg-4" onclick="go('word-def')">
+            <div class="gloss"></div>
             <span class="menu-text">Word ➔ Definition</span>
+            <div class="left-content"><img src="https://flagcdn.com/us.svg" class="flag-rect"></div>
+        </div>
+
+        <div class="menu-item bg-5" onclick="go('def-word')">
+            <div class="gloss"></div>
+            <span class="menu-text">Definition ➔ Word</span>
+            <div class="left-content"><img src="https://flagcdn.com/us.svg" class="flag-rect"></div>
+        </div>
+
+        <a href="https://wa.me/989123456789" class="menu-item bg-6">
+            <div class="gloss"></div>
+            <span class="menu-text">ثبت‌نام واتس‌اپ</span>
+            <div class="left-content"><i class="fab fa-whatsapp" style="font-size:28px; color:white;"></i></div>
+        </a>
+
+        <div class="menu-item bg-7">
+            <div class="gloss"></div>
+            <span class="menu-text">گزارش پیشرفت</span>
+            <div class="left-content"><i class="fas fa-chart-line" style="font-size:24px; color:white;"></i></div>
+        </div>
+
+        <div class="menu-item bg-8" onclick="alert('تغییر کاربر...')">
+            <div class="gloss"></div>
+            <span class="menu-text">تغییر کاربر / خروج</span>
+            <div class="left-content"><i class="fas fa-user-circle" style="font-size:24px; color:white;"></i></div>
         </div>
     </div>
 
@@ -159,7 +148,7 @@
         }
         function updMute() {
             const b = document.getElementById('m-btn');
-            b.className = localStorage.getItem('fMute')==='true'?'fas fa-volume-mute top-icon':'fas fa-volume-up top-icon';
+            b.innerHTML = localStorage.getItem('fMute')==='true'?'<i class="fas fa-volume-mute"></i>':'<i class="fas fa-volume-up"></i>';
         }
         function go(m) { localStorage.setItem('qMode', m); window.location.href='quiz.html'; }
         window.onload = () => {
