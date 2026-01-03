@@ -21,11 +21,11 @@
 
         .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 8px; }
         
-        /* تغییرات در این بخش اعمال شد */
+        /* اعمال تغییرات در ارتفاع و چیدمان */
         .menu-item { 
             width: 100%; 
-            height: 85px; 
-            padding: 10px; 
+            height: 75px; /* ۵ درصد افزایش نسبت به حالت قبل و فضای کافی برای آیکون */
+            padding: 8px; 
             font-size: 16px; 
             border-radius: 12px; 
             border: none; 
@@ -36,10 +36,11 @@
             flex-direction: column-reverse; /* آیکون بالا، متن پایین */
             align-items: center; 
             justify-content: center; 
-            gap: 8px;
+            text-align: center;
+            gap: 6px; 
             transition: 0.2s;
         }
-        .menu-item i { font-size: 22px; }
+        .menu-item i { font-size: 20px; }
         .menu-item:active { transform: scale(0.98); }
 
         input#userName { height: 45px; width: 70%; padding: 0 15px; border-radius: 10px; border: 1px solid #ddd; text-align: center; font-size: 16px; margin: 10px 0; }
