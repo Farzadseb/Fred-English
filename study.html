@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>آموزش لغات - Fred</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #0b1426; --title: #ffffff; --glass: rgba(255, 255, 255, 0.12); }
+        body.light-mode { --bg: #f2f2f7; --title: #000000; --glass: rgba(255, 255, 255, 0.5); }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--title); transition: 0.3s; }
+        .back-btn { font-size: 24px; cursor: pointer; margin-bottom: 20px; display: inline-block; color: #5856d6; }
+        .word-card {
+            background: var(--glass); border-radius: 25px; padding: 20px; margin-bottom: 15px;
+            backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); transition: 0.2s;
+        }
+        .word-card:active { transform: scale(0.98); }
+        .en-word { font-size: 24px; font-weight: 800; color: #5856d6; display: flex; justify-content: space-between; align-items: center; }
+        .fa-word { font-size: 18px; margin-top: 5px; opacity: 0.9; }
+        .details { font-size: 14px; margin-top: 10px; line-height: 1.6; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+        .phonetic { color: #ff9f0a; font-family: monospace; }
+    </style>
+</head>
+<body class="light-mode">
+    <i class="fas fa-chevron-right back-btn" onclick="location.href='index.html'"></i>
+    <h2 style="text-align: center;">لیست لغات آیلتس</h2>
+    <div id="words-list"></div>
+
+    <script src="a1-words.js"></script>
+    <script>
+        const list = document.getElementById('words-list');
+        words.forEach(w => {
+            const card = document.createElement('div');
+            card.className = 'word-card';
+            card.innerHTML = `
+                <div class="en-word">${w.word} <i class="fas fa-volume-up" onclick="speak('${w.word}')"></i></div>
+                <div class="phonetic">${w.phonetic}</div>
+                <div class="fa-word">${w.translation}</div>
+                <div class="details">
+                    <b>Definition:</b> ${w.definition}<br>
+                    <b>Example:</b> <i>${w.example}</i>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+
+        function speak(text) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'en-US';
+            window.speechSynthesis.speak(msg);
+        }
+        if(localStorage.getItem('fTheme')==='dark') document.body.classList.remove('light-mode');
+    </script>
+</body>
+</html>
