@@ -22,12 +22,12 @@
 
         .options-grid { width: 100%; display: flex; flex-direction: column; gap: 8px; }
         
-        /* دکمه‌های کالیبره شده پاسخ */
+        /* دکمه‌های اصلاح شده (۱۵ درصد کوچکتر) */
         .opt-btn { 
             width: 100%;
-            height: clamp(60px, 7vh, 80px);
-            padding: 0 16px;
-            font-size: clamp(16px, 2.2vh, 20px);
+            height: 55px; /* ارتفاع کاهش یافت */
+            padding: 0 12px;
+            font-size: 16px; /* فونت کمی کوچکتر شد */
             border-radius: 12px;
             border: 2px solid #e2e8f0;
             background: white;
@@ -85,6 +85,11 @@
                     <div class="question-text">${qTxt}</div>
                     <div class="options-grid">${opts.map(o => `<button class="opt-btn" onclick="check('${o}','${aCor}')">${o}</button>`).join('')}</div>
                 </div>`;
+
+            // پخش خودکار صدا بعد از یک تاخیر کوتاه برای هر سوال
+            setTimeout(() => {
+                speak(q.word);
+            }, 400);
         }
 
         function check(sel, cor) {
@@ -105,7 +110,15 @@
             alert(`نمره شما: ${p}%`); window.location.href = 'index.html';
         }
 
-        function speak(t) { if(localStorage.getItem('fredMute')!=='true') { speechSynthesis.cancel(); let m = new SpeechSynthesisUtterance(t); m.lang='en-US'; speechSynthesis.speak(m); } }
+        function speak(t) { 
+            if(localStorage.getItem('fredMute')!=='true') { 
+                speechSynthesis.cancel(); 
+                let m = new SpeechSynthesisUtterance(t); 
+                m.lang='en-US'; 
+                m.rate = 0.9; // کمی سرعت آرام‌تر برای یادگیری بهتر
+                speechSynthesis.speak(m); 
+            } 
+        }
 
         window.onload = () => { session.questions = [...window.wordsA1].sort(()=>0.5-Math.random()).slice(0,10); render(); };
     </script>
