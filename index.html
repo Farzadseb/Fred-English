@@ -29,7 +29,8 @@
         .question-card { background: var(--card); border-radius: 25px; padding: 30px; text-align: center; backdrop-filter: blur(15px); }
         #q-text { font-size: 28px; color: var(--blue); margin: 20px 0; }
         #q-hint { font-size: 16px; opacity: 0.8; margin-bottom: 30px; }
-        .speak-btn { width: 60px; height: 60px; background: var(--blue); color: white; border-radius: 50%; font-size: 28px; margin: 20px auto; cursor: pointer; box-shadow: 0 6px 20px rgba(0,168,255,0.4); }
+        .english { direction: ltr; text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 18px; margin: 15px 0; }
+
         .options { display: flex; flex-direction: column; gap: 12px; }
         .opt { padding: 18px; background: var(--card); border-radius: 18px; font-size: 17px; cursor: pointer; }
         .correct { background: #34c759 !important; color: white; }
@@ -71,30 +72,28 @@
         <div class="menu-btn" style="background:#d63031" onclick="logout()">خروج</div>
     </div>
 
-    <!-- صفحه آزمون -->
     <div class="page" id="quizPage">
         <div class="progress"><div id="prog"></div></div>
         <div class="question-card">
-            <h2 id="q-text">در حال بارگذاری...</h2>
+            <div id="q-text" class="english">Loading...</div>
             <p id="q-hint">لطفاً صبر کنید</p>
-            <div class="speak-btn" onclick="speakCurrentWord()"><i class="fas fa-volume-up"></i></div>
         </div>
         <div class="options" id="options"></div>
     </div>
 
-    <!-- صفحه گزارش -->
     <div class="page" id="reviewPage">
         <div class="report-card">
             <div class="report-title">گزارش پیشرفت شما</div>
             <div class="report-score" id="r-best">0%</div>
             <div class="report-stars" id="r-stars">☆☆☆☆☆</div>
-            <div class="report-msg" id="r-msg">شروع کن! اولین قدم همیشه مهمه 💪</div>
+            <div class="report-msg" id="r-msg">شروع کن! اولین قدم مهمه 💪</div>
         </div>
     </div>
 
     <script src="a1-words.js"></script>
     <script>
         let currentQ = 0, score = 0, wordsList = [], currentMode = '', currentWord = '';
+        let userInteracted = false; // برای فعال کردن صدای اتوماتیک
 
         function updateMainScore() {
             let best = parseInt(localStorage.getItem('fredBest') || '0');
@@ -167,6 +166,14 @@
             nextQ();
         }
 
+        function speak(word) {
+            if (localStorage.getItem('fredMute') === 'true') return;
+            const utter = new SpeechSynthesisUtterance(word);
+            utter.lang = 'en-US';
+            utter.rate = 0.9;
+            speechSynthesis.speak(utter);
+        }
+
         function nextQ() {
             if (currentQ >= 10) {
                 endQuiz();
@@ -200,10 +207,15 @@
                 hint = "معادل را انتخاب کنید";
             }
 
-            currentWord = item.word; // برای تلفظ
+            currentWord = item.word;
 
             document.getElementById('q-text').innerText = qText;
             document.getElementById('q-hint').innerText = hint;
+
+            // صدا اتوماتیک بعد از اولین تعامل کاربر
+            if (userInteracted) {
+                speak(currentWord);
+            }
 
             let choices = [correct];
             while (choices.length < 4) {
@@ -221,6 +233,7 @@
                 btn.className = 'opt';
                 btn.innerText = c;
                 btn.onclick = () => {
+                    userInteracted = true; // فعال کردن صدای اتوماتیک از این به بعد
                     document.querySelectorAll('.opt').forEach(b => b.onclick = null);
                     if (c === correct) { btn.classList.add('correct'); score++; }
                     else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if (b.innerText === correct) b.classList.add('correct'); }); }
@@ -228,14 +241,6 @@
                 };
                 container.appendChild(btn);
             });
-        }
-
-        function speakCurrentWord() {
-            if (localStorage.getItem('fredMute') === 'true') return;
-            const utter = new SpeechSynthesisUtterance(currentWord);
-            utter.lang = 'en-US';
-            utter.rate = 0.9;
-            speechSynthesis.speak(utter);
         }
 
         function endQuiz() {
