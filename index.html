@@ -6,96 +6,95 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --card: #ffffff; --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; --text: #1e293b; --gray: #64748b; }
-        body.light-mode { --bg: #f1f5f9; color: #1e293b; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; transition: 0.3s; }
-        
-        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .top-bar h2 { font-size: 18px; margin: 0; flex-grow: 1; text-align: center; color: var(--blue); }
-        .control-btn { background: #1e293b; border: none; color: var(--blue); width: 40px; height: 40px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        body { 
+            font-family: Tahoma, sans-serif; 
+            background: #0b1426; 
+            color: white; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        .header {
+            text-align: center;
+            background: white;
+            color: #1e293b;
+            padding: 20px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            margin-bottom: 20px;
+        }
+        .stars { font-size: 28px; margin-bottom: 10px; }
+        .star-filled { color: #f1c40f; }
+        .best-score { font-size: 18px; font-weight: bold; color: #00a8ff; margin: 10px 0; }
+        input#name { width: 80%; padding: 12px; border-radius: 12px; border: none; font-size: 16px; text-align: center; margin: 10px 0; }
+        button#login { width: 80%; padding: 12px; background: #00a8ff; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
 
-        .header-box { width: 100%; max-width: 400px; text-align: center; background: var(--card); padding: 20px; border-radius: 20px; color: var(--text); margin-bottom: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-        .stars { font-size: 24px; margin-bottom: 10px; }
-        .star-active { color: #f1c40f !important; }
-        .best-score { font-weight: bold; color: var(--blue); font-size: 16px; margin: 10px 0; }
-
-        .menu-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
-        .menu-item { display: flex; align-items: center; padding: 18px; border-radius: 18px; color: white; font-weight: bold; font-size: 16px; cursor: pointer; height: 60px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
-        .menu-item i { width: 30px; font-size: 20px; margin-left: 12px; }
-        .menu-item span { flex-grow: 1; text-align: center; }
-
-        input#userName { width: 70%; padding: 12px; margin: 15px 0; border-radius: 12px; border: 1px solid #ccc; text-align: center; font-size: 16px; background: #f8fafc; }
-
-        .hidden { display: none !important; }
+        .menu { width: 90%; max-width: 400px; display: none; flex-direction: column; gap: 12px; }
+        .btn { padding: 18px; border-radius: 18px; color: white; font-weight: bold; font-size: 16px; text-align: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <button class="control-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></button>
-        <h2>English with Fred</h2>
-        <button class="control-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></button>
-    </div>
-
-    <!-- کادر ورود و امتیاز -->
-    <div id="loginBox" class="header-box">
-        <div class="stars" id="mainStars">
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
-            <i class="far fa-star"></i>
+    <!-- کادر بالا با ستاره و امتیاز -->
+    <div class="header">
+        <div class="stars" id="stars">
+            ☆☆☆☆☆
         </div>
-        <div class="best-score" id="bestScoreLabel">Best Score: 0%</div>
-        <input type="text" id="userName" placeholder="نام خود را وارد کنید">
-        <button onclick="login()" id="loginBtn" style="width: 70%; padding: 12px; margin-top: 10px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 16px;">ورود</button>
+        <div class="best-score" id="bestScore">Best Score: 0%</div>
+
+        <input type="text" id="name" placeholder="نام خود را وارد کنید">
+        <button id="login">ورود</button>
     </div>
 
-    <!-- منوی اصلی -->
-    <div id="menuOptions" class="menu-container hidden">
-        <button class="menu-item" style="background: var(--purple);" onclick="startQuiz('study')"><i class="fas fa-graduation-cap"></i><span>آموزش لغات (Study Mode)</span></button>
-        <button class="menu-item" style="background: var(--blue);" onclick="startQuiz('fa-en')"><i class="fas fa-exchange-alt"></i><span>Persian → English</span></button>
-        <button class="menu-item" style="background: #0984e3;" onclick="startQuiz('en-fa')"><i class="fas fa-language"></i><span>English → Persian</span></button>
-        <button class="menu-item" style="background: var(--green);" onclick="startQuiz('word-def')"><i class="fas fa-book"></i><span>Word → Definition</span></button>
-        <button class="menu-item" style="background: #006400;" onclick="startQuiz('def-word')"><i class="fas fa-search"></i><span>Definition → Word</span></button>
-        <button class="menu-item" style="background: #25d366;" onclick="window.open('https://wa.me/989017708544', '_blank')"><i class="fab fa-whatsapp"></i><span>ثبت‌نام در واتس‌اپ</span></button>
-        <button class="menu-item" style="background: var(--orange);" onclick="startQuiz('review')"><i class="fas fa-chart-line"></i><span>گزارش پیشرفت و مرور</span></button>
-        <button class="menu-item" style="background: var(--red);" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>خروج</span></button>
-        <button class="menu-item" style="background: #334155;" onclick="clearAllData()"><i class="fas fa-trash-alt"></i><span>پاک کردن همه اطلاعات</span></button>
+    <!-- منوی اصلی (ابتدا مخفی) -->
+    <div class="menu" id="menu">
+        <div class="btn" style="background:#8e44ad" onclick="start('study')">آموزش لغات (Study Mode)</div>
+        <div class="btn" style="background:#00a8ff" onclick="start('fa-en')">Persian → English</div>
+        <div class="btn" style="background:#0984e3" onclick="start('en-fa')">English → Persian</div>
+        <div class="btn" style="background:#00b894" onclick="start('word-def')">Word → Definition</div>
+        <div class="btn" style="background:#006400" onclick="start('def-word')">Definition → Word</div>
+        <div class="btn" style="background:#25d366" onclick="window.open('https://wa.me/989017708544')">ثبت‌نام در واتس‌اپ</div>
+        <div class="btn" style="background:#e67e22" onclick="start('review')">گزارش پیشرفت</div>
+        <div class="btn" style="background:#d63031" onclick="logout()">خروج</div>
     </div>
 
     <script>
-        // تغییر تم
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const icon = document.getElementById('themeIcon');
-            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-moon' : 'fas fa-sun';
-            localStorage.setItem('fredTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-        }
+        // به‌روزرسانی ستاره و امتیاز
+        function updateScore() {
+            let best = parseInt(localStorage.getItem('fredBest') || '0');
+            document.getElementById('bestScore').innerText = `Best Score: ${best}%`;
 
-        // بی‌صدا کردن
-        function toggleMute() {
-            const icon = document.getElementById('muteIcon');
-            if (icon.classList.contains('fa-volume-up')) {
-                icon.classList.replace('fa-volume-up', 'fa-volume-mute');
-                localStorage.setItem('fredMute', 'true');
-            } else {
-                icon.classList.replace('fa-volume-mute', 'fa-volume-up');
-                localStorage.setItem('fredMute', 'false');
+            let filled = Math.floor(best / 20); // هر ۲۰ درصد = ۱ ستاره
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                stars += i < filled ? '⭐' : '☆';
             }
+            document.getElementById('stars').innerText = stars;
         }
 
         // ورود کاربر
-        function login() {
-            const name = document.getElementById('userName').value.trim();
+        document.getElementById('login').onclick = function() {
+            let name = document.getElementById('name').value.trim();
             if (!name) {
-                alert("لطفاً نام خود را وارد کنید!");
+                alert("نام را وارد کنید!");
                 return;
             }
             localStorage.setItem('fredName', name);
-            document.getElementById('loginBox').classList.add('hidden');
-            document.getElementById('menuOptions').classList.remove('hidden');
-            updateBestScore(); // به‌روزرسانی ستاره و امتیاز
+            document.querySelector('.header input').style.display = 'none';
+            document.querySelector('.header button').style.display = 'none';
+            document.getElementById('menu').style.display = 'flex';
+            updateScore();
+        };
+
+        // شروع آزمون
+        function start(mode) {
+            localStorage.setItem('quizMode', mode);
+            location.href = 'quiz.html';
         }
 
         // خروج
@@ -104,57 +103,14 @@
             location.reload();
         }
 
-        // پاک کردن همه
-        function clearAllData() {
-            if (confirm("همه اطلاعات (نام، امتیاز، تم و ...) پاک شود؟")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
+        // وقتی صفحه لود شد
+        window.onload = function() {
+            updateScore(); // همیشه ستاره و امتیاز رو نشون بده
 
-        // شروع آزمون
-        function startQuiz(mode) {
-            localStorage.setItem('quizMode', mode);
-            window.location.href = 'quiz.html';
-        }
-
-        // تابع کلیدی: نمایش درست Best Score و ستاره‌ها
-        function updateBestScore() {
-            let best = parseInt(localStorage.getItem('fredBest') || '0');
-            document.getElementById('bestScoreLabel').innerText = `Best Score: ${best}%`;
-
-            const stars = document.getElementById('mainStars').children;
-            const filledCount = Math.floor(best / 20); // هر ۲۰ درصد = ۱ ستاره پر
-
-            for (let i = 0; i < 5; i++) {
-                if (i < filledCount) {
-                    stars[i].className = "fas fa-star star-active"; // زرد
-                } else {
-                    stars[i].className = "far fa-star"; // خالی
-                }
-            }
-        }
-
-        // وقتی صفحه لود می‌شه
-        window.onload = () => {
-            updateBestScore(); // اول ستاره و امتیاز رو درست کن
-
-            // اگر قبلاً وارد شده بود
             if (localStorage.getItem('fredName')) {
-                document.getElementById('userName').value = localStorage.getItem('fredName');
-                document.getElementById('loginBox').classList.add('hidden');
-                document.getElementById('menuOptions').classList.remove('hidden');
-            }
-
-            // بازیابی تم
-            if (localStorage.getItem('fredTheme') === 'light') {
-                document.body.classList.add('light-mode');
-                document.getElementById('themeIcon').className = 'fas fa-moon';
-            }
-
-            // بازیابی صدا
-            if (localStorage.getItem('fredMute') === 'true') {
-                document.getElementById('muteIcon').classList.replace('fa-volume-up', 'fa-volume-mute');
+                document.querySelector('.header input').style.display = 'none';
+                document.querySelector('.header button').style.display = 'none';
+                document.getElementById('menu').style.display = 'flex';
             }
         };
     </script>
