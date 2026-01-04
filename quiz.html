@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Quiz - English with Fred</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body { font-family: Tahoma, sans-serif; background: #0b1426; color: white; margin: 0; padding: 20px; min-height: 100vh; }
     .back { position: fixed; top: 20px; left: 20px; width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 10; }
     .card { background: rgba(255,255,255,0.1); border-radius: 25px; padding: 30px; margin: 80px auto 20px; max-width: 400px; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; }
-    .title { font-size: 28px; color: #00a8ff; margin-bottom: 20px; }
     .word { font-size: 36px; font-weight: bold; color: #00a8ff; margin: 20px 0; direction: ltr; }
-    .hint { font-size: 16px; opacity: 0.8; margin-bottom: 30px; }
-    .next { width: 80%; padding: 16px; background: #00a8ff; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 40px; }
-    .options { display: flex; flex-direction: column; gap: 12px; }
+    .hint { font-size: 16px; opacity: 0.85; margin-bottom: 18px; line-height: 1.7; }
+    .next { width: 80%; padding: 16px; background: #00a8ff; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    .options { display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto; }
     .opt { padding: 16px; background: rgba(255,255,255,0.1); border-radius: 18px; font-size: 16px; cursor: pointer; }
     .correct { background: #34c759 !important; color: white; }
     .wrong { background: #ff3b30 !important; color: white; }
-    .progress { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 20px 0; }
+    .progress { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 20px 0; max-width: 400px; width: 100%; }
     #prog { width: 0%; height: 100%; background: #00a8ff; transition: 0.3s; }
 
     .report { display: none; text-align: center; margin-top: 100px; }
@@ -33,19 +32,22 @@
 
   <div class="progress"><div id="prog"></div></div>
 
-  <div class="card" id="studyCard">
+  <!-- کارت مطالعه -->
+  <div class="card" id="studyCard" style="display:none;">
     <div class="word" id="englishWord"></div>
     <div class="hint" id="persianText"></div>
     <div class="hint" id="defText"></div>
     <button class="next" onclick="nextStudy()">بعدی</button>
   </div>
 
+  <!-- کارت سوال -->
   <div class="card" id="questionCard" style="display:none;">
     <div class="word" id="q-text"></div>
     <div class="hint" id="q-hint"></div>
   </div>
   <div class="options" id="options" style="display:none;"></div>
 
+  <!-- گزارش -->
   <div class="report" id="report">
     <div class="report-title">گزارش پیشرفت شما</div>
     <div class="report-score" id="r-best">0%</div>
@@ -53,7 +55,7 @@
     <div class="report-msg" id="r-msg">شروع کن! اولین قدم مهمه 💪</div>
   </div>
 
-  <!-- فایل لغات: باید window.words را تعریف کند -->
+  <!-- باید window.words را تعریف کند -->
   <script src="a1-words.js"></script>
 
   <script>
@@ -63,11 +65,16 @@
 
     const data = Array.isArray(window.words) ? window.words : [];
 
+    function showOnly(which) {
+      document.getElementById('studyCard').style.display = (which === 'study') ? 'block' : 'none';
+      document.getElementById('questionCard').style.display = (which === 'q') ? 'block' : 'none';
+      document.getElementById('options').style.display = (which === 'q') ? 'flex' : 'none';
+      document.getElementById('report').style.display = (which === 'r') ? 'block' : 'none';
+    }
+
+    // ---------- REVIEW ----------
     if (mode === 'review') {
-      document.getElementById('studyCard').style.display = 'none';
-      document.getElementById('questionCard').style.display = 'none';
-      document.getElementById('options').style.display = 'none';
-      document.getElementById('report').style.display = 'block';
+      showOnly('r');
 
       const best = parseInt(localStorage.getItem('fredBest') || '0', 10);
       document.getElementById('r-best').innerText = best + "%";
@@ -84,6 +91,7 @@
       document.getElementById('r-msg').innerText = msg;
 
     } else {
+      // ---------- DATA CHECK ----------
       if (data.length < 10) {
         alert("لغات کافی نیست");
         window.location.href = 'index.html';
@@ -91,67 +99,77 @@
 
       wordsList = [...data].sort(() => Math.random() - 0.5);
 
-      if (mode === 'study' || mode === 'fa-en' || mode === 'word-def') {
+      // ---------- STUDY MODE فقط برای study ----------
+      if (mode === 'study') {
         currentQ = -1;
         nextStudy();
       } else {
+        // ---------- QUIZ MODES: fa-en, en-fa, word-def, def-word ----------
         currentQ = 0;
         score = 0;
         nextQuestion();
       }
     }
 
+    // --------- STUDY ----------
     function nextStudy() {
       currentQ++;
       if (currentQ >= wordsList.length) currentQ = 0;
 
       const item = wordsList[currentQ];
-
-      document.getElementById('studyCard').style.display = 'block';
-      document.getElementById('questionCard').style.display = 'none';
-      document.getElementById('options').style.display = 'none';
+      showOnly('study');
 
       document.getElementById('prog').style.width =
         ((currentQ + 1) / wordsList.length * 100) + "%";
 
       document.getElementById('englishWord').innerText = item.word || "";
-      if (mode === 'study' || mode === 'fa-en') {
-        document.getElementById('persianText').innerText = item.translation || "";
-        document.getElementById('defText').innerText = item.definition || item.ex_en || "";
-      } else if (mode === 'word-def') {
-        document.getElementById('persianText').innerText = "";
-        document.getElementById('defText').innerText = item.definition || item.ex_en || "تعریف موجود نیست";
-      }
+      document.getElementById('persianText').innerText = item.translation || "";
+      document.getElementById('defText').innerText = item.definition || item.ex_en || "";
 
-      if (userInteracted && localStorage.getItem('fredMute') !== 'true') {
-        speak(item.word);
-      }
+      if (userInteracted && localStorage.getItem('fredMute') !== 'true') speak(item.word);
     }
 
+    // --------- QUIZ ----------
     function nextQuestion() {
       if (currentQ >= 10) { endQuiz(); return; }
 
       const item = wordsList[currentQ];
-
-      document.getElementById('studyCard').style.display = 'none';
-      document.getElementById('questionCard').style.display = 'block';
-      document.getElementById('options').style.display = 'flex';
+      showOnly('q');
 
       document.getElementById('prog').style.width =
         ((currentQ + 1) / 10 * 100) + "%";
 
-      let qText = "", correct = "", hint = "";
+      let qText = "", correct = "", hint = "", choiceGetter = null;
 
-      if (mode === 'en-fa') {
+      // 1) Persian → English  (سوال فارسی، جواب انگلیسی)
+      if (mode === 'fa-en') {
+        qText = item.translation || "";
+        correct = item.word || "";
+        hint = "کلمه انگلیسی درست را انتخاب کنید";
+        choiceGetter = (w) => w.word || "";
+
+      // 2) English → Persian  (سوال انگلیسی، جواب فارسی)
+      } else if (mode === 'en-fa') {
         qText = item.word || "";
         correct = item.translation || "";
         hint = "معادل فارسی را انتخاب کنید";
+        choiceGetter = (w) => w.translation || "";
+
+      // 4) Word → Definition  (سوال کلمه، جواب تعریف)
+      } else if (mode === 'word-def') {
+        qText = item.word || "";
+        correct = (item.definition || item.ex_en || "");
+        hint = "تعریف درست را انتخاب کنید";
+        choiceGetter = (w) => (w.definition || w.ex_en || "");
+
+      // 5) Definition → Word (سوال تعریف، جواب کلمه)
       } else if (mode === 'def-word') {
-        qText = item.definition || item.ex_en || "تعریف موجود نیست";
+        qText = (item.definition || item.ex_en || "تعریف موجود نیست");
         correct = item.word || "";
         hint = "این تعریف مربوط به کدام کلمه است؟";
+        choiceGetter = (w) => w.word || "";
+
       } else {
-        // اگر مود ناشناخته بود برگرد به منو
         window.location.href = 'index.html';
         return;
       }
@@ -159,17 +177,24 @@
       document.getElementById('q-text').innerText = qText;
       document.getElementById('q-hint').innerText = hint;
 
-      if (userInteracted && localStorage.getItem('fredMute') !== 'true') {
-        speak(item.word);
-      }
+      // صدا همیشه کلمه انگلیسی را بخواند (اگر موجود بود)
+      if (userInteracted && localStorage.getItem('fredMute') !== 'true') speak(item.word);
 
-      // گزینه‌ها
-      const choices = [correct];
-      while (choices.length < 4) {
+      // ساخت گزینه‌ها
+      const choices = [];
+      if (correct) choices.push(correct);
+
+      let guard = 0;
+      while (choices.length < 4 && guard < 500) {
+        guard++;
         const rand = wordsList[Math.floor(Math.random() * wordsList.length)];
-        const val = (mode === 'en-fa') ? (rand.translation || "") : (rand.word || "");
+        const val = choiceGetter(rand);
         if (val && !choices.includes(val)) choices.push(val);
       }
+
+      // اگر تعاریف کم بود، پر کردن با گزینه‌های تکراری ممنوع؛ ولی جلوگیری از کرش
+      while (choices.length < 4) choices.push("—");
+
       choices.sort(() => Math.random() - 0.5);
 
       const container = document.getElementById('options');
@@ -197,7 +222,7 @@
           setTimeout(() => {
             currentQ++;
             nextQuestion();
-          }, 1300);
+          }, 1200);
         };
 
         container.appendChild(btn);
