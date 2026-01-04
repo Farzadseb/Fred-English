@@ -4,142 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>English with Fred</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; }
-        body.light-mode { --bg: #f1f5f9; --text: #1e293b; --card: rgba(0,0,0,0.05); }
-        
-        body { font-family: Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: background 0.3s; overflow-x: hidden; }
-        
-        /* استایل مخصوص چپ‌چین برای محتوای انگلیسی */
-        .en-content { direction: ltr; text-align: left; }
-
+        body { font-family: Tahoma, sans-serif; background: #0b1426; color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .top h1 { font-size: 20px; margin: 0; color: var(--blue); }
-        .icon-btn { width: 45px; height: 45px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); }
+        .top h1 { font-size: 22px; margin: 0; color: #00a8ff; }
+        .icon { width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; }
 
-        .header-card { width: 100%; max-width: 400px; background: var(--card); padding: 25px 20px; border-radius: 30px; text-align: center; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; }
-        .stars { font-size: 32px; letter-spacing: 5px; margin-bottom: 10px; color: #f1c40f; }
-        .best { font-size: 16px; font-weight: bold; color: var(--blue); margin-bottom: 15px; }
-        
-        input#name { width: 85%; padding: 12px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.2); font-size: 14px; text-align: center; margin-bottom: 15px; background: rgba(255,255,255,0.1); color: var(--text); outline: none; }
-        button#login { width: 85%; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 15px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button#login:active { transform: scale(0.95); }
+        .card { width: 100%; max-width: 400px; background: rgba(255,255,255,0.1); padding: 25px; border-radius: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 20px; }
+        .stars { font-size: 36px; letter-spacing: 10px; margin-bottom: 15px; }
+        .best { font-size: 18px; font-weight: bold; color: #00a8ff; margin: 15px 0; }
+        input#name { width: 80%; padding: 12px; border-radius: 12px; border: none; font-size: 16px; text-align: center; margin: 15px 0; background: rgba(255,255,255,0.2); color: white; }
+        button#login { width: 80%; padding: 12px; background: #00a8ff; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
 
         .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 12px; }
-        .menu-btn { padding: 18px; border-radius: 20px; color: white; font-weight: bold; font-size: 15px; text-align: center; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); }
-        .menu-btn:active { transform: scale(0.98); opacity: 0.9; }
+        .btn { padding: 18px; border-radius: 20px; color: white; font-weight: bold; font-size: 16px; text-align: center; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
     <div class="top">
-        <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></div>
+        <div class="icon" onclick="toggleTheme()"><i id="theme" class="fas fa-sun"></i></div>
         <h1>English with Fred</h1>
-        <div class="icon-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></div>
+        <div class="icon" onclick="toggleMute()"><i id="mute" class="fas fa-volume-up"></i></div>
     </div>
 
-    <div class="header-card" id="loginCard">
+    <div class="card" id="loginBox">
         <div class="stars" id="stars">☆☆☆☆☆</div>
-        <div id="welcomeTitle" style="margin-bottom: 5px; font-weight: bold;">خوش آمدید</div>
         <div class="best" id="bestScore">Best Score: 0%</div>
         <input type="text" id="name" placeholder="نام خود را وارد کنید">
-        <button id="login">ورود به برنامه</button>
+        <button id="login">ورود</button>
     </div>
 
-    <div class="menu" id="mainMenu">
-        <div class="menu-btn" style="background:#8e44ad" onclick="start('study')">📚 آموزش لغات (Study Mode)</div>
-        <div class="menu-btn" style="background:#00a8ff" onclick="start('fa-en')">🇮🇷 Persian → 🇬🇧 English</div>
-        <div class="menu-btn" style="background:#0984e3" onclick="start('en-fa')">🇬🇧 English → 🇮🇷 Persian</div>
-        <div class="menu-btn" style="background:#00b894" onclick="start('word-def')">📖 Word → Definition</div>
-        <div class="menu-btn" style="background:#006400" onclick="start('def-word')">🧠 Definition → Word</div>
-        <div class="menu-btn" style="background:#25d366" onclick="window.open('https://wa.me/989017708544','_blank')">💬 ثبت‌نام در واتس‌اپ</div>
-        <div class="menu-btn" style="background:#e67e22" onclick="start('review')">📊 گزارش پیشرفت و مرور</div>
-        <div class="menu-btn" style="background:#d63031" onclick="logout()">🚪 خروج از حساب</div>
-        <div class="menu-btn" style="background:#334155; font-size: 12px; padding: 10px;" onclick="clearAll()">🗑️ پاک کردن کل تاریخچه</div>
+    <div class="menu" id="menu">
+        <div class="btn" style="background:#8e44ad" onclick="go('study')">آموزش لغات (Study Mode)</div>
+        <div class="btn" style="background:#00a8ff" onclick="go('fa-en')">Persian → English</div>
+        <div class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Persian</div>
+        <div class="btn" style="background:#00b894" onclick="go('word-def')">Word → Definition</div>
+        <div class="btn" style="background:#006400" onclick="go('def-word')">Definition → Word</div>
+        <div class="btn" style="background:#25d366" onclick="window.open('https://wa.me/989017708544','_blank')">ثبت‌نام در واتس‌اپ</div>
+        <div class="btn" style="background:#e67e22" onclick="go('review')">گزارش پیشرفت و مرور</div>
+        <div class="btn" style="background:#d63031" onclick="logout()">خروج</div>
+        <div class="btn" style="background:#334155" onclick="clearAll()">پاک کردن کش و اطلاعات</div>
     </div>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
-        // بهینه‌سازی نمایش امتیاز و ستاره
         function updateScore() {
-            const best = parseInt(localStorage.getItem('fredBest') || '0');
-            const name = localStorage.getItem('fredName') || '';
-            
+            let best = parseInt(localStorage.getItem('fredBest') || '0');
             document.getElementById('bestScore').innerText = `Best Score: ${best}%`;
-            if(name) document.getElementById('welcomeTitle').innerText = `خوش آمدی، ${name}`;
-
             let filled = Math.floor(best / 20);
             document.getElementById('stars').innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
         }
 
         function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-mode');
-            document.getElementById('themeIcon').className = isLight ? 'fas fa-moon' : 'fas fa-sun';
-            localStorage.setItem('fredTheme', isLight ? 'light' : 'dark');
+            document.body.classList.toggle('light-mode');
+            document.getElementById('theme').className = document.body.classList.contains('light-mode') ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('fredTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
         }
 
         function toggleMute() {
-            const icon = document.getElementById('muteIcon');
-            const isMuted = icon.classList.contains('fa-volume-up');
-            icon.classList.replace(isMuted ? 'fa-volume-up' : 'fa-volume-mute', isMuted ? 'fa-volume-mute' : 'fa-volume-up');
-            localStorage.setItem('fredMute', isMuted ? 'true' : 'false');
+            const icon = document.getElementById('mute');
+            icon.className = icon.classList.contains('fa-volume-up') ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+            localStorage.setItem('fredMute', icon.classList.contains('fa-volume-mute'));
         }
 
         document.getElementById('login').onclick = () => {
-            const nameInput = document.getElementById('name');
-            const name = nameInput.value.trim();
-            if (!name) {
-                nameInput.style.border = "1px solid red";
-                return;
-            }
+            let name = document.getElementById('name').value.trim();
+            if (!name) return alert("نام را وارد کنید!");
             localStorage.setItem('fredName', name);
-            showMenu();
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('menu').style.display = 'flex';
+            updateScore();
         };
 
-        function showMenu() {
-            document.getElementById('loginCard').style.display = 'none';
-            document.getElementById('mainMenu').style.display = 'flex';
-            updateScore();
-        }
-
-        function start(mode) {
+        function go(mode) {
             localStorage.setItem('quizMode', mode);
-            // انتقال به صفحه آزمون با سرعت بیشتر
-            window.location.href = 'quiz.html';
+            location.href = 'quiz.html';
         }
 
         function logout() {
-            if(confirm("آیا مطمئن هستید؟")) {
-                localStorage.removeItem('fredName');
-                location.reload();
-            }
+            localStorage.removeItem('fredName');
+            location.reload();
         }
 
         function clearAll() {
-            if (confirm("تمام امتیازات و لغات ذخیره شده پاک شود؟")) {
-                localStorage.clear();
-                location.reload();
-            }
+            if (confirm("همه اطلاعات پاک شود؟")) localStorage.clear(), location.reload();
         }
 
-        // اجرای کدها بلافاصله پس از لود شدن برای سرعت بیشتر
-        window.addEventListener('DOMContentLoaded', () => {
+        window.onload = () => {
             updateScore();
-
-            if (localStorage.getItem('fredTheme') === 'light') {
-                document.body.classList.add('light-mode');
-                document.getElementById('themeIcon').className = 'fas fa-moon';
-            }
-
-            if (localStorage.getItem('fredMute') === 'true') {
-                document.getElementById('muteIcon').classList.replace('fa-volume-up', 'fa-volume-mute');
-            }
-
-            if (localStorage.getItem('fredName')) {
-                showMenu();
-            }
-        });
+            if (localStorage.getItem('fredTheme') === 'light') document.body.classList.add('light-mode'), document.getElementById('theme').className = 'fas fa-moon';
+            if (localStorage.getItem('fredMute') === 'true') document.getElementById('mute').className = 'fas fa-volume-mute';
+            if (localStorage.getItem('fredName')) document.getElementById('loginBox').style.display = 'none', document.getElementById('menu').style.display = 'flex';
+        };
     </script>
 </body>
 </html>
