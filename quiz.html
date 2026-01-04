@@ -32,7 +32,6 @@
 
   <div class="progress"><div id="prog"></div></div>
 
-  <!-- کارت مطالعه -->
   <div class="card" id="studyCard" style="display:none;">
     <div class="word" id="englishWord"></div>
     <div class="hint" id="persianText"></div>
@@ -40,14 +39,12 @@
     <button class="next" onclick="nextStudy()">بعدی</button>
   </div>
 
-  <!-- کارت سوال -->
   <div class="card" id="questionCard" style="display:none;">
     <div class="word" id="q-text"></div>
     <div class="hint" id="q-hint"></div>
   </div>
   <div class="options" id="options" style="display:none;"></div>
 
-  <!-- گزارش -->
   <div class="report" id="report">
     <div class="report-title">گزارش پیشرفت شما</div>
     <div class="report-score" id="r-best">0%</div>
@@ -55,197 +52,124 @@
     <div class="report-msg" id="r-msg">شروع کن! اولین قدم مهمه 💪</div>
   </div>
 
-  <!-- باید window.words را تعریف کند -->
   <script src="a1-words.js"></script>
 
   <script>
     let currentQ = 0, score = 0, wordsList = [];
     const mode = localStorage.getItem('quizMode') || 'fa-en';
-    let userInteracted = false;
+    let userInteracted = true;
+
+    speechSynthesis.getVoices();
 
     const data = Array.isArray(window.words) ? window.words : [];
 
     function showOnly(which) {
-      document.getElementById('studyCard').style.display = (which === 'study') ? 'block' : 'none';
-      document.getElementById('questionCard').style.display = (which === 'q') ? 'block' : 'none';
-      document.getElementById('options').style.display = (which === 'q') ? 'flex' : 'none';
-      document.getElementById('report').style.display = (which === 'r') ? 'block' : 'none';
+      studyCard.style.display = which === 'study' ? 'block' : 'none';
+      questionCard.style.display = which === 'q' ? 'block' : 'none';
+      options.style.display = which === 'q' ? 'flex' : 'none';
+      report.style.display = which === 'r' ? 'block' : 'none';
     }
 
-    // ---------- REVIEW ----------
     if (mode === 'review') {
       showOnly('r');
-
       const best = parseInt(localStorage.getItem('fredBest') || '0', 10);
-      document.getElementById('r-best').innerText = best + "%";
+      r-best.innerText = best + "%";
       const filled = Math.floor(best / 20);
-      document.getElementById('r-stars').innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
-
-      const msg =
+      r-stars.innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
+      r-msg.innerText =
         best >= 90 ? "عالی! حرفه‌ای شدی 🚀" :
         best >= 70 ? "خیلی خوب! نزدیک قله‌ای 📈" :
         best >= 50 ? "خوبه! ادامه بده ⭐" :
         best > 0  ? "شروع عالی! پیشرفتت مشخصه 💪" :
                     "شروع کن! اولین قدم مهمه 😊";
-
-      document.getElementById('r-msg').innerText = msg;
-
     } else {
-      // ---------- DATA CHECK ----------
-      if (data.length < 10) {
-        alert("لغات کافی نیست");
-        window.location.href = 'index.html';
-      }
-
+      if (data.length < 10) { alert("لغات کافی نیست"); location.href='index.html'; }
       wordsList = [...data].sort(() => Math.random() - 0.5);
-
-      // ---------- STUDY MODE فقط برای study ----------
-      if (mode === 'study') {
-        currentQ = -1;
-        nextStudy();
-      } else {
-        // ---------- QUIZ MODES: fa-en, en-fa, word-def, def-word ----------
-        currentQ = 0;
-        score = 0;
-        nextQuestion();
-      }
+      if (mode === 'study') { currentQ = -1; nextStudy(); }
+      else { currentQ = 0; score = 0; nextQuestion(); }
     }
 
-    // --------- STUDY ----------
     function nextStudy() {
-      currentQ++;
-      if (currentQ >= wordsList.length) currentQ = 0;
-
-      const item = wordsList[currentQ];
+      currentQ = (currentQ + 1) % wordsList.length;
+      const w = wordsList[currentQ];
       showOnly('study');
-
-      document.getElementById('prog').style.width =
-        ((currentQ + 1) / wordsList.length * 100) + "%";
-
-      document.getElementById('englishWord').innerText = item.word || "";
-      document.getElementById('persianText').innerText = item.translation || "";
-      document.getElementById('defText').innerText = item.definition || item.ex_en || "";
-
-      if (userInteracted && localStorage.getItem('fredMute') !== 'true') speak(item.word);
+      prog.style.width = ((currentQ + 1) / wordsList.length * 100) + "%";
+      englishWord.innerText = w.word;
+      persianText.innerText = w.translation;
+      defText.innerText = w.definition || "";
+      speak(w.word);
     }
 
-    // --------- QUIZ ----------
     function nextQuestion() {
       if (currentQ >= 10) { endQuiz(); return; }
-
-      const item = wordsList[currentQ];
+      const w = wordsList[currentQ];
       showOnly('q');
+      prog.style.width = ((currentQ + 1) / 10 * 100) + "%";
 
-      document.getElementById('prog').style.width =
-        ((currentQ + 1) / 10 * 100) + "%";
+      let qText, correct, getChoice, hint;
 
-      let qText = "", correct = "", hint = "", choiceGetter = null;
-
-      // 1) Persian → English  (سوال فارسی، جواب انگلیسی)
       if (mode === 'fa-en') {
-        qText = item.translation || "";
-        correct = item.word || "";
-        hint = "کلمه انگلیسی درست را انتخاب کنید";
-        choiceGetter = (w) => w.word || "";
-
-      // 2) English → Persian  (سوال انگلیسی، جواب فارسی)
+        qText = w.translation; correct = w.word;
+        getChoice = x => x.word; hint = "کلمه انگلیسی درست را انتخاب کنید";
       } else if (mode === 'en-fa') {
-        qText = item.word || "";
-        correct = item.translation || "";
-        hint = "معادل فارسی را انتخاب کنید";
-        choiceGetter = (w) => w.translation || "";
-
-      // 4) Word → Definition  (سوال کلمه، جواب تعریف)
+        qText = w.word; correct = w.translation;
+        getChoice = x => x.translation; hint = "معادل فارسی را انتخاب کنید";
       } else if (mode === 'word-def') {
-        qText = item.word || "";
-        correct = (item.definition || item.ex_en || "");
-        hint = "تعریف درست را انتخاب کنید";
-        choiceGetter = (w) => (w.definition || w.ex_en || "");
-
-      // 5) Definition → Word (سوال تعریف، جواب کلمه)
+        qText = w.word; correct = w.definition;
+        getChoice = x => x.definition; hint = "تعریف درست را انتخاب کنید";
       } else if (mode === 'def-word') {
-        qText = (item.definition || item.ex_en || "تعریف موجود نیست");
-        correct = item.word || "";
-        hint = "این تعریف مربوط به کدام کلمه است؟";
-        choiceGetter = (w) => w.word || "";
-
-      } else {
-        window.location.href = 'index.html';
-        return;
+        qText = w.definition; correct = w.word;
+        getChoice = x => x.word; hint = "این تعریف مربوط به کدام کلمه است؟";
       }
 
-      document.getElementById('q-text').innerText = qText;
-      document.getElementById('q-hint').innerText = hint;
+      q-text.innerText = qText;
+      q-hint.innerText = hint;
+      speak(w.word);
 
-      // صدا همیشه کلمه انگلیسی را بخواند (اگر موجود بود)
-      if (userInteracted && localStorage.getItem('fredMute') !== 'true') speak(item.word);
-
-      // ساخت گزینه‌ها
-      const choices = [];
-      if (correct) choices.push(correct);
-
-      let guard = 0;
-      while (choices.length < 4 && guard < 500) {
-        guard++;
-        const rand = wordsList[Math.floor(Math.random() * wordsList.length)];
-        const val = choiceGetter(rand);
-        if (val && !choices.includes(val)) choices.push(val);
+      const choices = [correct];
+      while (choices.length < 4) {
+        const v = getChoice(wordsList[Math.floor(Math.random() * wordsList.length)]);
+        if (v && !choices.includes(v)) choices.push(v);
       }
-
-      // اگر تعاریف کم بود، پر کردن با گزینه‌های تکراری ممنوع؛ ولی جلوگیری از کرش
-      while (choices.length < 4) choices.push("—");
-
       choices.sort(() => Math.random() - 0.5);
 
-      const container = document.getElementById('options');
-      container.innerHTML = '';
-
+      options.innerHTML = '';
       choices.forEach(c => {
-        const btn = document.createElement('div');
-        btn.className = 'opt';
-        btn.innerText = c;
-
-        btn.onclick = () => {
-          userInteracted = true;
-          document.querySelectorAll('.opt').forEach(b => b.onclick = null);
-
-          if (c === correct) {
-            btn.classList.add('correct');
-            score++;
-          } else {
-            btn.classList.add('wrong');
-            document.querySelectorAll('.opt').forEach(b => {
-              if (b.innerText === correct) b.classList.add('correct');
+        const d = document.createElement('div');
+        d.className = 'opt';
+        d.innerText = c;
+        d.onclick = () => {
+          document.querySelectorAll('.opt').forEach(x => x.onclick = null);
+          if (c === correct) { d.classList.add('correct'); score++; }
+          else {
+            d.classList.add('wrong');
+            document.querySelectorAll('.opt').forEach(x => {
+              if (x.innerText === correct) x.classList.add('correct');
             });
           }
-
-          setTimeout(() => {
-            currentQ++;
-            nextQuestion();
-          }, 1200);
+          setTimeout(() => { currentQ++; nextQuestion(); }, 300);
         };
-
-        container.appendChild(btn);
+        options.appendChild(d);
       });
     }
 
     function speak(word) {
       if (!word) return;
-      const utter = new SpeechSynthesisUtterance(word);
-      utter.lang = 'en-US';
-      utter.rate = 0.5;
       speechSynthesis.cancel();
-      speechSynthesis.speak(utter);
+      const u = new SpeechSynthesisUtterance(word);
+      u.lang = 'en-US';
+      u.rate = 0.5;
+      const v = speechSynthesis.getVoices();
+      if (v.length) u.voice = v.find(x => x.lang === 'en-US') || v[0];
+      speechSynthesis.speak(u);
     }
 
     function endQuiz() {
       const p = Math.round((score / 10) * 100);
       const best = parseInt(localStorage.getItem('fredBest') || '0', 10);
-
-      if (p > best) localStorage.setItem('fredBest', String(p));
-
+      if (p > best) localStorage.setItem('fredBest', p);
       alert(`تمام!\nامتیاز: ${p}%\n${p > best ? "رکورد جدید!" : "بهترین: " + best + "%"}`);
-      window.location.href = 'index.html';
+      location.href = 'index.html';
     }
   </script>
 </body>
