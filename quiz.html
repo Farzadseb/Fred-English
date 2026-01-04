@@ -1,176 +1,320 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Quiz - English with Fred</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body { font-family: Tahoma, sans-serif; background: #0b1426; color: white; margin: 0; padding: 20px; min-height: 100vh; }
-    .back { position: fixed; top: 20px; left: 20px; width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; z-index: 10; }
-    .card { background: rgba(255,255,255,0.1); border-radius: 25px; padding: 30px; margin: 80px auto 20px; max-width: 400px; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center; }
-    .word { font-size: 36px; font-weight: bold; color: #00a8ff; margin: 20px 0; direction: ltr; }
-    .hint { font-size: 16px; opacity: 0.85; margin-bottom: 18px; line-height: 1.7; }
-    .next { width: 80%; padding: 16px; background: #00a8ff; color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-    .options { display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto; }
-    .opt { padding: 16px; background: rgba(255,255,255,0.1); border-radius: 18px; font-size: 16px; cursor: pointer; }
-    .correct { background: #34c759 !important; color: white; }
-    .wrong { background: #ff3b30 !important; color: white; }
-    .progress { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin: 20px 0; max-width: 400px; width: 100%; }
-    #prog { width: 0%; height: 100%; background: #00a8ff; transition: 0.3s; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>English with Fred</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --green: #00b894; --purple: #8e44ad; --orange: #e67e22; --red: #d63031; }
+        body.light-mode { --bg: #f1f5f9; --text: #1e293b; --card: rgba(0,0,0,0.05); }
+        body { font-family: Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: 0.3s; }
+        
+        .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .top h1 { font-size: 20px; margin: 0; color: var(--blue); }
+        .icon-btn { width: 45px; height: 45px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; backdrop-filter: blur(10px); }
 
-    .report { display: none; text-align: center; margin-top: 100px; }
-    .report-title { font-size: 24px; color: #00a8ff; margin-bottom: 20px; }
-    .report-score { font-size: 48px; color: #00ff88; margin: 20px 0; }
-    .report-stars { font-size: 50px; letter-spacing: 15px; margin: 30px 0; }
-    .report-msg { font-size: 18px; line-height: 1.6; opacity: 0.9; }
-  </style>
+        .header-card { width: 100%; max-width: 400px; background: var(--card); padding: 20px; border-radius: 25px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 20px; }
+        .stars { font-size: 32px; letter-spacing: 10px; margin-bottom: 10px; }
+        .best { font-size: 16px; font-weight: bold; color: var(--blue); margin: 10px 0; }
+        input#name { width: 80%; padding: 10px; border-radius: 12px; border: none; font-size: 14px; text-align: center; margin: 10px 0; background: rgba(255,255,255,0.2); color: var(--text); }
+        button#login { width: 80%; padding: 10px; background: var(--blue); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+
+        .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 10px; }
+        .menu-btn { padding: 16px; border-radius: 18px; color: white; font-weight: bold; font-size: 15px; text-align: center; cursor: pointer; box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+
+        .page { display: none; width: 100%; max-width: 400px; margin-top: 20px; }
+        .active { display: block; }
+
+        .question-card { background: var(--card); border-radius: 25px; padding: 30px 20px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 350px; margin: 30px auto; }
+        #q-text { font-size: 24px; color: var(--blue); margin: 15px 0; line-height: 1.5; }
+        #q-hint { font-size: 15px; opacity: 0.8; margin-bottom: 25px; }
+
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .opt { padding: 16px; background: var(--card); border-radius: 18px; font-size: 16px; cursor: pointer; }
+        .correct { background: #34c759 !important; color: white; }
+        .wrong { background: #ff3b30 !important; color: white; }
+
+        .progress { height: 8px; background: var(--card); border-radius: 4px; overflow: hidden; margin: 20px 0; width: 100%; max-width: 350px; }
+        #prog { width: 0%; height: 100%; background: var(--blue); transition: 0.3s; }
+
+        .study-card { background: var(--card); border-radius: 25px; padding: 40px 20px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 350px; margin: 30px auto; }
+        .english-word { font-size: 32px; font-weight: bold; color: var(--blue); margin: 20px 0; direction: ltr; }
+        .persian { font-size: 18px; margin: 20px 0; opacity: 0.9; }
+        .definition { font-size: 16px; line-height: 1.5; direction: ltr; text-align: left; padding: 0 20px; opacity: 0.9; }
+        .next-btn { width: 80%; padding: 16px; background: var(--blue); color: white; border: none; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 40px; }
+
+        .report-card { background: var(--card); border-radius: 25px; padding: 30px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 350px; margin: 30px auto; }
+        .report-title { font-size: 22px; color: var(--blue); margin-bottom: 20px; }
+        .report-score { font-size: 40px; color: #00ff88; margin: 20px 0; }
+        .report-stars { font-size: 48px; letter-spacing: 12px; margin: 30px 0; }
+        .report-msg { font-size: 17px; line-height: 1.6; opacity: 0.9; }
+    </style>
 </head>
 <body>
 
-  <div class="back" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></div>
+    <div class="top">
+        <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></div>
+        <h1>English with Fred</h1>
+        <div class="icon-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></div>
+    </div>
 
-  <div class="progress"><div id="prog"></div></div>
+    <div class="header-card" id="loginCard">
+        <div class="stars" id="stars">☆☆☆☆☆</div>
+        <div class="best" id="bestScore">Best Score: 0%</div>
+        <input type="text" id="name" placeholder="نام خود را وارد کنید">
+        <button id="login">ورود</button>
+    </div>
 
-  <div class="card" id="studyCard" style="display:none;">
-    <div class="word" id="englishWord"></div>
-    <div class="hint" id="persianText"></div>
-    <div class="hint" id="defText"></div>
-    <button class="next" onclick="nextStudy()">بعدی</button>
-  </div>
+    <div class="menu" id="mainMenu">
+        <div class="menu-btn" style="background:#8e44ad" onclick="startMode('study')">آموزش لغات (Study Mode)</div>
+        <div class="menu-btn" style="background:#00a8ff" onclick="startMode('fa-en')">Persian → English</div>
+        <div class="menu-btn" style="background:#0984e3" onclick="startMode('en-fa')">English → Persian</div>
+        <div class="menu-btn" style="background:#00b894" onclick="startMode('word-def')">Word → Definition</div>
+        <div class="menu-btn" style="background:#006400" onclick="startMode('def-word')">Definition → Word</div>
+        <div class="menu-btn" style="background:#25d366" onclick="window.open('https://wa.me/989017708544','_blank')">ثبت‌نام در واتس‌اپ</div>
+        <div class="menu-btn" style="background:#e67e22" onclick="startMode('review')">گزارش پیشرفت و مرور</div>
+        <div class="menu-btn" style="background:#d63031" onclick="logout()">خروج</div>
+        <div class="menu-btn" style="background:#334155" onclick="clearAll()">پاک کردن کش و اطلاعات</div>
+    </div>
 
-  <div class="card" id="questionCard" style="display:none;">
-    <div class="word" id="q-text"></div>
-    <div class="hint" id="q-hint"></div>
-  </div>
-  <div class="options" id="options" style="display:none;"></div>
+    <!-- صفحه آزمون -->
+    <div class="page" id="quizPage">
+        <div class="progress"><div id="prog"></div></div>
+        <div class="study-card" id="studyCard">
+            <div class="english-word" id="englishWord"></div>
+            <div class="persian" id="persianText"></div>
+            <div class="definition" id="defText"></div>
+            <button class="next-btn" id="nextBtn" onclick="nextStudy()">بعدی</button>
+        </div>
 
-  <div class="report" id="report">
-    <div class="report-title">گزارش پیشرفت شما</div>
-    <div class="report-score" id="r-best">0%</div>
-    <div class="report-stars" id="r-stars">☆☆☆☆☆</div>
-    <div class="report-msg" id="r-msg">شروع کن! اولین قدم مهمه 💪</div>
-  </div>
+        <div class="question-card" id="questionCard">
+            <div id="q-text"></div>
+            <p id="q-hint"></p>
+        </div>
+        <div class="options" id="options"></div>
+    </div>
 
-  <script src="a1-words.js"></script>
+    <!-- صفحه گزارش پیشرفت -->
+    <div class="page" id="reviewPage">
+        <div class="report-card">
+            <div class="report-title">گزارش پیشرفت شما</div>
+            <div class="report-score" id="r-best">0%</div>
+            <div class="report-stars" id="r-stars">☆☆☆☆☆</div>
+            <div class="report-msg" id="r-msg">شروع کن! اولین قدم مهمه 💪</div>
+        </div>
+    </div>
 
-  <script>
-    let currentQ = 0, score = 0, wordsList = [];
-    const mode = localStorage.getItem('quizMode') || 'fa-en';
-    let userInteracted = true;
+    <script src="a1-words.js"></script>
+    <script>
+        let currentQ = 0, score = 0, wordsList = [], currentMode = '';
+        let userInteracted = false; // برای فعال کردن صدای اتوماتیک
 
-    speechSynthesis.getVoices();
+        function updateMainScore() {
+            let best = parseInt(localStorage.getItem('fredBest') || '0');
+            document.getElementById('bestScore').innerText = `Best Score: ${best}%`;
+            let filled = Math.floor(best / 20);
+            document.getElementById('stars').innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
+        }
 
-    const data = Array.isArray(window.words) ? window.words : [];
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('themeIcon');
+            icon.className = document.body.classList.contains('light-mode') ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('fredTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
 
-    function showOnly(which) {
-      studyCard.style.display = which === 'study' ? 'block' : 'none';
-      questionCard.style.display = which === 'q' ? 'block' : 'none';
-      options.style.display = which === 'q' ? 'flex' : 'none';
-      report.style.display = which === 'r' ? 'block' : 'none';
-    }
+        function toggleMute() {
+            const icon = document.getElementById('muteIcon');
+            if (icon.classList.contains('fa-volume-up')) {
+                icon.classList.replace('fa-volume-up', 'fa-volume-mute');
+                localStorage.setItem('fredMute', 'true');
+            } else {
+                icon.classList.replace('fa-volume-mute', 'fa-volume-up');
+                localStorage.setItem('fredMute', 'false');
+            }
+        }
 
-    if (mode === 'review') {
-      showOnly('r');
-      const best = parseInt(localStorage.getItem('fredBest') || '0', 10);
-      r-best.innerText = best + "%";
-      const filled = Math.floor(best / 20);
-      r-stars.innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
-      r-msg.innerText =
-        best >= 90 ? "عالی! حرفه‌ای شدی 🚀" :
-        best >= 70 ? "خیلی خوب! نزدیک قله‌ای 📈" :
-        best >= 50 ? "خوبه! ادامه بده ⭐" :
-        best > 0  ? "شروع عالی! پیشرفتت مشخصه 💪" :
-                    "شروع کن! اولین قدم مهمه 😊";
-    } else {
-      if (data.length < 10) { alert("لغات کافی نیست"); location.href='index.html'; }
-      wordsList = [...data].sort(() => Math.random() - 0.5);
-      if (mode === 'study') { currentQ = -1; nextStudy(); }
-      else { currentQ = 0; score = 0; nextQuestion(); }
-    }
-
-    function nextStudy() {
-      currentQ = (currentQ + 1) % wordsList.length;
-      const w = wordsList[currentQ];
-      showOnly('study');
-      prog.style.width = ((currentQ + 1) / wordsList.length * 100) + "%";
-      englishWord.innerText = w.word;
-      persianText.innerText = w.translation;
-      defText.innerText = w.definition || "";
-      speak(w.word);
-    }
-
-    function nextQuestion() {
-      if (currentQ >= 10) { endQuiz(); return; }
-      const w = wordsList[currentQ];
-      showOnly('q');
-      prog.style.width = ((currentQ + 1) / 10 * 100) + "%";
-
-      let qText, correct, getChoice, hint;
-
-      if (mode === 'fa-en') {
-        qText = w.translation; correct = w.word;
-        getChoice = x => x.word; hint = "کلمه انگلیسی درست را انتخاب کنید";
-      } else if (mode === 'en-fa') {
-        qText = w.word; correct = w.translation;
-        getChoice = x => x.translation; hint = "معادل فارسی را انتخاب کنید";
-      } else if (mode === 'word-def') {
-        qText = w.word; correct = w.definition;
-        getChoice = x => x.definition; hint = "تعریف درست را انتخاب کنید";
-      } else if (mode === 'def-word') {
-        qText = w.definition; correct = w.word;
-        getChoice = x => x.word; hint = "این تعریف مربوط به کدام کلمه است؟";
-      }
-
-      q-text.innerText = qText;
-      q-hint.innerText = hint;
-      speak(w.word);
-
-      const choices = [correct];
-      while (choices.length < 4) {
-        const v = getChoice(wordsList[Math.floor(Math.random() * wordsList.length)]);
-        if (v && !choices.includes(v)) choices.push(v);
-      }
-      choices.sort(() => Math.random() - 0.5);
-
-      options.innerHTML = '';
-      choices.forEach(c => {
-        const d = document.createElement('div');
-        d.className = 'opt';
-        d.innerText = c;
-        d.onclick = () => {
-          document.querySelectorAll('.opt').forEach(x => x.onclick = null);
-          if (c === correct) { d.classList.add('correct'); score++; }
-          else {
-            d.classList.add('wrong');
-            document.querySelectorAll('.opt').forEach(x => {
-              if (x.innerText === correct) x.classList.add('correct');
-            });
-          }
-          setTimeout(() => { currentQ++; nextQuestion(); }, 300);
+        document.getElementById('login').onclick = () => {
+            let name = document.getElementById('name').value.trim();
+            if (!name) return alert("نام را وارد کنید!");
+            localStorage.setItem('fredName', name);
+            document.getElementById('loginCard').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'flex';
+            updateMainScore();
         };
-        options.appendChild(d);
-      });
-    }
 
-    function speak(word) {
-      if (!word) return;
-      speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(word);
-      u.lang = 'en-US';
-      u.rate = 0.5;
-      const v = speechSynthesis.getVoices();
-      if (v.length) u.voice = v.find(x => x.lang === 'en-US') || v[0];
-      speechSynthesis.speak(u);
-    }
+        function startMode(mode) {
+            currentMode = mode;
+            document.getElementById('mainMenu').style.display = 'none';
+            if (mode === 'review') {
+                showReview();
+            } else {
+                startApp(mode);
+            }
+        }
 
-    function endQuiz() {
-      const p = Math.round((score / 10) * 100);
-      const best = parseInt(localStorage.getItem('fredBest') || '0', 10);
-      if (p > best) localStorage.setItem('fredBest', p);
-      alert(`تمام!\nامتیاز: ${p}%\n${p > best ? "رکورد جدید!" : "بهترین: " + best + "%"}`);
-      location.href = 'index.html';
-    }
-  </script>
+        function showReview() {
+            document.getElementById('reviewPage').classList.add('active');
+            let best = parseInt(localStorage.getItem('fredBest') || '0');
+            document.getElementById('r-best').innerText = best + "%";
+            let filled = Math.floor(best / 20);
+            document.getElementById('r-stars').innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
+            let msg = best >= 90 ? "عالی! حرفه‌ای شدی 🚀" :
+                      best >= 70 ? "خیلی خوب! نزدیک قله‌ای 📈" :
+                      best >= 50 ? "خوبه! ادامه بده ⭐" :
+                      best > 0 ? "شروع عالی! پیشرفتت مشخصه 💪" :
+                      "شروع کن! اولین قدم مهمه 😊";
+            document.getElementById('r-msg').innerText = msg;
+        }
+
+        function startApp(mode) {
+            document.getElementById('quizPage').classList.add('active');
+            currentQ = 0; score = 0;
+            const data = window.wordsA1 || window.words || [];
+            if (data.length < 10) {
+                alert("لغات کافی نیست");
+                return;
+            }
+            wordsList = [...data].sort(() => 0.5 - Math.random());
+            if (mode === 'study' || mode === 'fa-en' || mode === 'word-def') {
+                currentQ = -1;
+                nextStudy();
+            } else {
+                nextQuestion();
+            }
+        }
+
+        function nextStudy() {
+            currentQ++;
+            if (currentQ >= wordsList.length) currentQ = 0;
+            const item = wordsList[currentQ];
+
+            document.getElementById('studyCard').style.display = 'block';
+            document.getElementById('questionCard').style.display = 'none';
+            document.getElementById('options').style.display = 'none';
+            document.getElementById('prog').style.width = ((currentQ + 1) / wordsList.length * 100) + "%";
+
+            document.getElementById('englishWord').innerText = item.word;
+            if (currentMode === 'study' || currentMode === 'fa-en') {
+                document.getElementById('persianText').innerText = item.translation;
+                document.getElementById('defText').innerText = item.definition || item.ex_en || "";
+            } else if (currentMode === 'word-def') {
+                document.getElementById('persianText').innerText = "";
+                document.getElementById('defText').innerText = item.definition || item.ex_en || "تعریف موجود نیست";
+            }
+
+            if (userInteracted && localStorage.getItem('fredMute') !== 'true') {
+                speak(item.word);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQ >= 10) {
+                endQuiz();
+                return;
+            }
+
+            const item = wordsList[currentQ];
+            document.getElementById('studyCard').style.display = 'none';
+            document.getElementById('questionCard').style.display = 'block';
+            document.getElementById('options').style.display = 'flex';
+            document.getElementById('prog').style.width = ((currentQ + 1) / 10 * 100) + "%";
+
+            let qText, correct, hint;
+
+            if (currentMode === 'en-fa') {
+                qText = item.word;
+                correct = item.translation;
+                hint = "معادل فارسی را انتخاب کنید";
+            } else if (currentMode === 'def-word') {
+                qText = item.definition || item.ex_en || "تعریف موجود نیست";
+                correct = item.word;
+                hint = "این تعریف مربوط به کدام کلمه است؟";
+            }
+
+            document.getElementById('q-text').innerText = qText;
+            document.getElementById('q-hint').innerText = hint;
+
+            if (userInteracted && localStorage.getItem('fredMute') !== 'true') {
+                speak(item.word);
+            }
+
+            let choices = [correct];
+            while (choices.length < 4) {
+                const rand = wordsList[Math.floor(Math.random() * wordsList.length)];
+                const val = (currentMode === 'en-fa') ? rand.translation : rand.word;
+                if (val && !choices.includes(val)) choices.push(val);
+            }
+            choices.sort(() => 0.5 - Math.random());
+
+            const container = document.getElementById('options');
+            container.innerHTML = '';
+            choices.forEach(c => {
+                const btn = document.createElement('div');
+                btn.className = 'opt';
+                btn.innerText = c;
+                btn.onclick = () => {
+                    userInteracted = true;
+                    document.querySelectorAll('.opt').forEach(b => b.onclick = null);
+                    if (c === correct) { btn.classList.add('correct'); score++; }
+                    else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if (b.innerText === correct) b.classList.add('correct'); }); }
+                    setTimeout(() => { currentQ++; nextQuestion(); }, 1300);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function speak(word) {
+            if (localStorage.getItem('fredMute') === 'true') return;
+            const utter = new SpeechSynthesisUtterance(word);
+            utter.lang = 'en-US';
+            utter.rate = 0.5;
+            speechSynthesis.speak(utter);
+        }
+
+        function endQuiz() {
+            const p = Math.round((score / 10) * 100);
+            const best = parseInt(localStorage.getItem('fredBest') || '0');
+            if (p > best) localStorage.setItem('fredBest', p);
+
+            alert(`تمام!\nامتیاز: \( {p}%\n \){p > best ? "رکورد جدید!" : "بهترین: " + best + "%"}`);
+
+            document.getElementById('quizPage').classList.remove('active');
+            document.getElementById('loginCard').style.display = 'block';
+            document.getElementById('mainMenu').style.display = 'flex';
+            updateMainScore();
+        }
+
+        function clearAll() {
+            if (confirm("همه اطلاعات پاک شود؟")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('fredName');
+            location.reload();
+        }
+
+        window.onload = () => {
+            updateMainScore();
+
+            if (localStorage.getItem('fredTheme') === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeIcon').className = 'fas fa-moon';
+            }
+
+            if (localStorage.getItem('fredMute') === 'true') {
+                document.getElementById('muteIcon').classList.replace('fa-volume-up', 'fa-volume-mute');
+            }
+
+            if (localStorage.getItem('fredName')) {
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('mainMenu').style.display = 'flex';
+            }
+        };
+    </script>
 </body>
 </html>
