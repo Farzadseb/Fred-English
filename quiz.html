@@ -3,105 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Learning Center</title>
+    <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --text: #fff; --blue: #007aff; --glass: rgba(255,255,255,0.1); --gold: #f1c40f; --green: #34c759; }
-        body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --glass: rgba(0,0,0,0.05); }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 15px 100px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
-        .head { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 15px 0; position: sticky; top: 0; background: var(--bg); z-index: 10; }
-        .study-card { width: 100%; max-width: 400px; background: var(--glass); border-radius: 25px; padding: 25px 20px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; box-sizing: border-box; }
-        .section-title { font-size: 12px; font-weight: bold; color: var(--blue); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,122,255,0.2); padding-bottom: 4px; }
-        .en-text { font-size: 19px; font-weight: 700; color: #fff; display: block; margin-bottom: 2px; }
-        .fa-text { font-size: 14px; color: var(--gold); display: block; text-align: right; margin-bottom: 10px; }
-        .ex-text { font-size: 13px; color: #bdc3c7; display: block; padding-left: 10px; border-left: 2px solid var(--green); margin-bottom: 2px; }
-        .ex-fa { font-size: 12px; color: #95a5a6; display: block; text-align: right; margin-bottom: 12px; }
-        .footer-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(11, 20, 38, 0.9); display: flex; justify-content: center; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
-        .next-btn { width: 90%; max-width: 350px; padding: 16px; border-radius: 18px; background: var(--blue); color: #fff; border: none; font-size: 18px; font-weight: bold; }
-        .main-word { font-size: 40px; font-weight: 800; color: var(--blue); margin: 0; text-align: center; }
-        #prog { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); transition: 0.4s; z-index: 1001; }
-        /* استایل آزمون */
-        .opt { width: 100%; max-width: 360px; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--text); margin-bottom: 10px; cursor: pointer; font-size: 16px; }
-        .correct { background: #34c759 !important; border: none; }
-        .wrong { background: #ff3b30 !important; border: none; }
+        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --wrong: #ff3b30; --gold: #f1c40f; }
+        body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --card: rgba(0,0,0,0.05); }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px 40px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
+        .container { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
+        .top { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .icon-btn { width: 44px; height: 44px; background: var(--card); border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .main-card { width: 100%; background: var(--card); padding: 25px 0; border-radius: 30px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .menu { width: 100%; display: none; flex-direction: column; gap: 10px; align-items: center; }
+        .menu-item { width: 100%; padding: 16px 0; border-radius: 20px; color: white; font-weight: 600; text-align: center; cursor: pointer; border: none; font-size: 15px; }
+        .mistakes-box { width: 100%; background: rgba(255, 59, 48, 0.08); padding: 15px; border-radius: 25px; border: 1px dashed var(--wrong); margin: 10px 0; box-sizing: border-box; }
+        .mistake-row { background: var(--card); padding: 10px; border-radius: 15px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid var(--wrong); }
+        .logout-btn { color: var(--wrong); font-weight: bold; margin-top: 20px; cursor: pointer; padding: 10px 20px; border-radius: 12px; background: rgba(255, 59, 48, 0.1); border: none; font-size: 12px; }
     </style>
 </head>
 <body>
-    <div id="prog"></div>
-    <div class="head">
-        <div onclick="location.replace('index.html')"><i class="fas fa-times"></i></div>
-        <div id="cnt" style="direction: ltr; font-weight: bold;">1 / 10</div>
-        <div onclick="spk(data[cur].word)"><i class="fas fa-volume-up"></i></div>
-    </div>
-    <div id="content" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
-    <div class="footer-nav" id="f-nav" style="display:none">
-        <button class="next-btn" onclick="cur++;render()">کلمه بعدی</button>
+    <div class="container">
+        <div class="top">
+            <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></div>
+            <h2 style="font-size: 18px; color: var(--blue); margin:0;">English with Fred</h2>
+            <div class="icon-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></div>
+        </div>
+
+        <div id="setup-page" class="main-card">
+            <div style="font-size: 40px; color: var(--gold); margin-bottom: 10px;" onclick="secret()">⭐</div>
+            <h3>خوش آمدی!</h3>
+            <input type="text" id="nameInp" placeholder="نام شما" style="width: 80%; padding: 15px; border-radius: 15px; border: none; background: rgba(0,0,0,0.2); color: white; text-align: center; margin-bottom: 15px;">
+            <button onclick="saveUser()" class="menu-item" style="background: var(--blue); width: 85%; margin: 0 auto;">ثبت و ورود</button>
+        </div>
+
+        <div id="main-page" class="menu">
+            <div class="main-card" style="width:100%">
+                <div id="display-stars" style="font-size:25px; color:#f1c40f"></div>
+                <div id="hi-user" style="font-size:18px; font-weight:bold; margin: 5px 0;"></div>
+                <div id="best-score" style="direction:ltr; font-size:13px; color:var(--blue)">Best: 0%</div>
+            </div>
+            
+            <div class="menu-item" style="background:#8e44ad" onclick="go('study')">📚 آموزش لغات جدید</div>
+            <div class="menu-item" style="background:#00a8ff" onclick="go('fa-en')">فارسی به انگلیسی</div>
+            <div class="menu-item" style="background:#0984e3" onclick="go('en-fa')">انگلیسی به فارسی</div>
+            <div class="menu-item" style="background:#00b894" onclick="go('word-def')">Word to Definition</div>
+            <div class="menu-item" style="background:#1289A7" onclick="go('def-word')">Definition to Word</div>
+
+            <div class="mistakes-box">
+                <span style="font-weight:bold; color:var(--wrong); font-size:13px;">🧠 مرور اشتباهات</span>
+                <div id="m-list"><p style="font-size:11px; opacity:0.6; margin:10px 0 0;">اشتباهی نداری.</p></div>
+            </div>
+            
+            <button class="logout-btn" onclick="logout()">خروج از حساب</button>
+        </div>
     </div>
 
-    <script src="a1-words.js"></script>
     <script>
-        let cur=0,sc=0,mis=[],data=[];
-        const mode=localStorage.getItem('quizMode')||'study';
-        const _sT="ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==", _sC="OTY5OTE4NTk=";
-
-        function spk(t){if(localStorage.getItem('mute')==='true')return; const m=new SpeechSynthesisUtterance(t);m.lang='en-US';m.rate=0.55;speechSynthesis.cancel();speechSynthesis.speak(m)}
-
-        function init(){
-            if(localStorage.getItem('th')==='l')document.body.classList.add('light-mode');
-            data=[...wordsA1].sort(()=>0.5-Math.random()).slice(0,10);
-            render();
-        }
-
-        function render(){
-            if(cur>=10) return end();
-            document.getElementById('cnt').innerText=`${cur+1} / 10`;
-            document.getElementById('prog').style.width=(cur+1)*10+"%";
-            const w=data[cur]; const con=document.getElementById('content');
-            window.scrollTo(0,0);
-
-            if(mode==='study'){
-                document.getElementById('f-nav').style.display='flex';
-                con.innerHTML=`<h1 class="main-word">${w.word}</h1><div style="text-align:center;font-size:20px;margin-bottom:20px">${w.translation}</div>
-                <div class="study-card">
-                    <div class="section-title"><i class="fas fa-quote-left"></i> EXAMPLE</div>
-                    <span class="en-text" onclick="spk('${w.example}')">${w.example}</span><span class="fa-text">${w.ex_trans}</span>
-                    <div class="section-title"><i class="fas fa-link"></i> COLLOCATION</div>
-                    <span class="en-text" onclick="spk('${w.collocation}')">${w.collocation}</span><span class="fa-text">${w.coll_trans}</span>
-                    <span class="ex-text">${w.coll_ex}</span><span class="ex-fa">${w.coll_ex_trans}</span>
-                    <div class="section-title"><i class="fas fa-bolt"></i> PHRASAL VERBS</div>
-                    <span class="en-text" onclick="spk('${w.phrasal_1}')">${w.phrasal_1}</span><span class="fa-text">${w.ph1_trans}</span>
-                    <span class="ex-text">${w.ph1_ex}</span><span class="ex-fa">${w.ph1_ex_trans}</span>
-                    <span class="en-text" onclick="spk('${w.phrasal_2}')" style="margin-top:10px">${w.phrasal_2}</span><span class="fa-text">${w.ph2_trans}</span>
-                    <span class="ex-text">${w.ph2_ex}</span><span class="ex-fa">${w.ph2_ex_trans}</span>
-                </div>`;
-                spk(w.word);
-            } else {
-                document.getElementById('f-nav').style.display='none';
-                let ques=mode==='en-fa'?w.word:w.translation, ans=mode==='en-fa'?w.translation:w.word;
-                con.innerHTML=`<div class="main-word" style="margin:40px 0">${ques}</div><div id="opts" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>`;
-                if(mode==='en-fa') spk(ques);
-                let ch=[ans]; while(ch.length<4){let r=wordsA1[Math.floor(Math.random()*wordsA1.length)].word; if(!ch.includes(r))ch.push(r)}
-                ch.sort(()=>0.5-Math.random()).forEach(c=>{
-                    const b=document.createElement('button'); b.className='opt'; b.innerText=c;
-                    b.onclick=()=>{if(c===ans){b.classList.add('correct');sc++}else{b.classList.add('wrong');mis.push({q:w.word,a:ans})} setTimeout(()=>{cur++;render()},1000)};
-                    document.getElementById('opts').appendChild(b);
-                });
+        function id(i){return document.getElementById(i)}
+        function toggleTheme(){const l=document.body.classList.toggle('light-mode');localStorage.setItem('th',l?'l':'d');id('themeIcon').className=l?'fas fa-moon':'fas fa-sun'}
+        function saveUser(){const n=id('nameInp').value.trim();if(n){localStorage.setItem('fredName',n);checkUser()}}
+        function logout(){if(confirm("اطلاعات پاک شود؟")){localStorage.clear();location.reload()}}
+        function checkUser(){
+            const u=localStorage.getItem('fredName');
+            if(u){
+                id('setup-page').style.display='none';id('main-page').style.display='flex';
+                id('hi-user').innerText=`سلام ${u} عزیز`;
+                const b=localStorage.getItem('fredBest')||'0';
+                id('best-score').innerText=`Best: ${b}%`;
+                id('display-stars').innerText='⭐'.repeat(Math.floor(b/20))+'☆'.repeat(5-Math.floor(b/20));
+                renderM();
             }
         }
-
-        async function end(){
-            const p=(sc/10)*100; const name=localStorage.getItem('fredName')||'User';
-            if(mode!=='study'){
-                let saved=JSON.parse(localStorage.getItem('fredM')||'[]');
-                mis.forEach(m=>{if(!saved.find(s=>s.q===m.q))saved.push(m)});
-                localStorage.setItem('fredM',JSON.stringify(saved.slice(-15)));
-                if(p>parseInt(localStorage.getItem('fredBest')||0))localStorage.setItem('fredBest',p);
-                const t=atob(_sT), c=atob(_sC);
-                fetch(`https://api.telegram.org/bot${t}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:c,text:`📊 گزارش ${name}\n🏆 امتیاز: ${p}%`})});
-            }
-            document.body.innerHTML=`<div style="text-align:center;padding-top:100px"><h1>${p>=70?'🥇':'📖'}</h1><h2>نتیجه: ${p}%</h2><button class="next-btn" onclick="location.replace('index.html')">بازگشت</button></div>`;
+        function renderM(){
+            const list=JSON.parse(localStorage.getItem('fredM')||'[]');
+            if(list.length){id('m-list').innerHTML=list.slice(-3).map(m=>`<div class="mistake-row"><div style="text-align:right"><b style="color:var(--blue);direction:ltr;display:block">${m.q}</b><small>✅ ${m.a}</small></div><i class="fas fa-volume-up" onclick="spk('${m.q}')" style="color:var(--blue)"></i></div>`).join('')}
         }
-        window.onload=init;
+        function spk(t){const m=new SpeechSynthesisUtterance(t);m.lang='en-US';m.rate=0.5;speechSynthesis.speak(m)}
+        function go(m){localStorage.setItem('quizMode',m);location.href='quiz.html'}
+        window.onload=()=>{if(localStorage.getItem('th')==='l')toggleTheme();checkUser()}
     </script>
 </body>
 </html>
