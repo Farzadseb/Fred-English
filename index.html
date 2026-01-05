@@ -15,7 +15,6 @@
         .ibtn { width:40px; height:40px; background:var(--crd); border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid rgba(0,0,0,0.05); }
         .card { background:var(--crd); padding:12px 15px; border-radius:22px; text-align:center; border:1px solid rgba(0,0,0,0.05); margin-bottom:8px; box-shadow:0 3px 10px rgba(0,0,0,0.03); }
         .star { width:52px; height:52px; background:rgba(255,204,0,0.12); border:2px solid var(--gld); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; transform:rotate(8deg); }
-        /* اصلاح رنگ دکمه‌ها و متن */
         .btn { width:100%; padding:15px; border-radius:18px; color:#fff !important; font-weight:700; border:none; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-bottom:8px; position:relative; text-decoration:none; transition: transform 0.1s; }
         .btn:active { transform:scale(0.97); }
         .btn i { position:absolute; left:15px; font-size:17px; }
@@ -86,11 +85,7 @@
         async function tg(m){ 
             try {
                 const t = atob(_eT), i = atob(_eI);
-                await fetch(`https://api.telegram.org/bot${t}/sendMessage`,{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({chat_id:i, text:m})
-                });
+                await fetch(`https://api.telegram.org/bot${t}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:i, text:m})});
             } catch(e){}
         }
 
@@ -101,18 +96,15 @@
         }
 
         function mu(){ 
-            const m = ls.getItem('m')==='y'; 
-            ls.setItem('m', m?'n':'y'); 
-            document.getElementById('mi').className = m?'fas fa-volume-mute':'fas fa-volume-up'; 
+            const isMuted = ls.getItem('m')==='y'; 
+            const newState = isMuted ? 'n' : 'y';
+            ls.setItem('m', newState); 
+            document.getElementById('mi').className = newState === 'y' ? 'fas fa-volume-mute' : 'fas fa-volume-up'; 
         }
         
         function sv(){ 
             const n = document.getElementById('ni').value.trim(); 
-            if(n){ 
-                ls.setItem('fn', n); 
-                tg(`✅ ورود کاربر: ${n}`); 
-                ck(); 
-            }
+            if(n){ ls.setItem('fn', n); tg(`✅ ورود کاربر: ${n}`); ck(); }
         }
 
         function ck(){
@@ -133,20 +125,12 @@
         function op(){
             document.getElementById('prog').style.display = 'block'; 
             const h = JSON.parse(ls.getItem('fh')||'[]'); 
-            const l = document.getElementById('hl'); 
-            l.innerHTML = ''; 
-            let total = 0;
-            if(!h.length){ 
-                l.innerHTML = '<div class="card" style="opacity:0.6;">هنوز تمرینی ثبت نشده است.</div>'; 
-                return; 
-            }
+            const l = document.getElementById('hl'); l.innerHTML = ''; let total = 0;
+            if(!h.length){ l.innerHTML = '<div class="card">خالی</div>'; return; }
             const lastTen = h.slice(-10).reverse();
             lastTen.forEach((s, i) => { 
                 total += s; 
-                l.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px 18px;">
-                    <span style="font-weight:600; font-size:14px;">تمرین ${lastTen.length - i}</span>
-                    <b style="color:var(--blu); font-size:16px;">${s}%</b>
-                </div>`; 
+                l.innerHTML += `<div class="card" style="display:flex; justify-content:space-between"><span>تمرین ${lastTen.length - i}</span><b>${s}%</b></div>`; 
             });
             const avg = Math.round(total / lastTen.length); 
             document.getElementById('ap').innerText = avg + '%'; 
@@ -154,11 +138,12 @@
         }
 
         function cp(){ document.getElementById('prog').style.display = 'none'; }
-        function lo(){ if(confirm('آیا از حساب خود خارج می‌شوید؟')){ ls.clear(); location.reload(); }}
+        function lo(){ if(confirm('خروج؟')){ ls.clear(); location.reload(); }}
         function go(m){ ls.setItem('qm', m); window.location.href = 'quiz.html'; }
 
         window.onload = () => { 
-            if(ls.getItem('t') === 'd') th();
+            if(ls.getItem('t') === 'd') { document.body.classList.add('dark-mode'); document.getElementById('ti').className='fas fa-sun'; }
+            if(ls.getItem('m') === 'y') document.getElementById('mi').className='fas fa-volume-mute';
             ck(); 
         };
     </script>
