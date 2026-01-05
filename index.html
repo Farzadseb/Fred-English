@@ -3,175 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --wrong: #ff3b30; --gold: #f1c40f; }
         body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --card: rgba(0,0,0,0.05); }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px 40px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; -webkit-tap-highlight-color: transparent; }
-        
-        .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
-        .icon-btn { width: 42px; height: 42px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); }
-
-        .main-card { width: 100%; max-width: 380px; background: var(--card); padding: 30px 20px; border-radius: 30px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
-        
-        /* استایل جدید و خوش‌رنگ تنظیمات تلگرام */
-        #tg-setup { 
-            display: none; margin-top: 20px; padding: 20px; 
-            background: linear-gradient(135deg, rgba(142, 68, 173, 0.2), rgba(41, 128, 185, 0.2)); 
-            border-radius: 20px; border: 1px solid var(--gold); 
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.2);
-            animation: slideUp 0.4s ease;
-        }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        input { width: 90%; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #fff; font-size: 14px; text-align: center; margin-bottom: 10px; outline: none; }
-        input:focus { border-color: var(--gold); }
-
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 15px; font-size: 15px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-gold { background: var(--gold); color: #000; margin-top: 10px; }
-        .btn-blue { background: var(--blue); color: white; margin-top: 10px; }
-
-        .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 12px; }
-        .menu-item { padding: 18px; border-radius: 20px; color: white; font-weight: 600; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; }
-
-        .mistakes-box { width: 100%; max-width: 380px; background: rgba(255, 59, 48, 0.08); padding: 20px; border-radius: 25px; border: 1px dashed var(--wrong); margin-top: 20px; }
-        .mistake-row { background: var(--card); padding: 12px; border-radius: 15px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid var(--wrong); }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px 40px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; overflow-x: hidden; }
+        .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .icon-btn { width: 44px; height: 44px; background: var(--card); border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .main-card { width: 100%; max-width: 380px; background: var(--card); padding: 25px 0; border-radius: 30px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 12px; align-items: center; }
+        .menu-item { width: 100%; padding: 18px 0; border-radius: 22px; color: white; font-weight: 600; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; border: none; }
+        .mistakes-box { width: 100%; background: rgba(255, 59, 48, 0.08); padding: 15px; border-radius: 25px; border: 1px dashed var(--wrong); margin: 15px 0; box-sizing: border-box; }
+        .mistake-row { background: var(--card); padding: 10px; border-radius: 15px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid var(--wrong); }
+        .logout-btn { color: var(--wrong); font-weight: bold; margin-top: 20px; cursor: pointer; padding: 10px 20px; border-radius: 12px; background: rgba(255, 59, 48, 0.1); border: none; font-size: 12px; }
     </style>
 </head>
 <body>
-
     <div class="top">
         <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></div>
         <h2 style="font-size: 18px; color: var(--blue); margin:0;">English with Fred</h2>
         <div class="icon-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></div>
     </div>
 
-    <div id="setup-page" class="main-card" style="display:none">
+    <div id="setup-page" class="main-card">
         <div style="font-size: 40px; color: var(--gold); margin-bottom: 10px;" onclick="secret()">⭐</div>
-        <h3 style="margin:0">خوش آمدی قهرمان!</h3>
-        <p style="opacity:0.7; font-size: 14px;">نامت را وارد کن تا ماجراجویی را شروع کنیم</p>
-        
-        <input type="text" id="nameInp" placeholder="نام و نام خانوادگی">
-        <button onclick="saveUser()" class="btn btn-blue">ثبت و شروع</button>
-
-        <div id="tg-setup">
-            <i class="fab fa-telegram" style="font-size: 30px; color: #2fb4e9; margin-bottom: 10px;"></i>
-            <p style="font-size: 12px; color: var(--gold); margin: 0 0 10px 0;">تنظیمات اختصاصی مدرس (گزارش‌دهی)</p>
-            <input type="text" id="token" placeholder="Bot Token">
-            <input type="text" id="chatId" placeholder="Chat ID">
-            <button onclick="saveTg()" class="btn btn-gold">ذخیره و فعال‌سازی</button>
-        </div>
+        <h3>خوش آمدی!</h3>
+        <input type="text" id="nameInp" placeholder="نام شما" style="width: 80%; padding: 15px; border-radius: 15px; border: none; background: rgba(0,0,0,0.2); color: white; text-align: center; margin-bottom: 15px;">
+        <button onclick="saveUser()" class="menu-item" style="background: var(--blue); width: 85%; margin: 0 auto;">ثبت و ورود</button>
     </div>
 
     <div id="main-page" class="menu">
-        <div class="main-card" style="margin-bottom:10px; padding:20px;">
+        <div class="main-card" style="width:100%">
             <div id="display-stars" style="font-size:25px; color:#f1c40f"></div>
-            <div style="font-size:18px; font-weight:bold;" id="hi-user"></div>
-            <div id="best-score" style="direction:ltr; font-size:13px; color:var(--blue); margin-top:5px;">Best: 0%</div>
+            <div id="hi-user" style="font-size:18px; font-weight:bold; margin: 5px 0;"></div>
+            <div id="best-score" style="direction:ltr; font-size:13px; color:var(--blue)">Best: 0%</div>
         </div>
-
         <div class="menu-item" style="background:#8e44ad" onclick="go('study')">📚 آموزش لغات جدید</div>
         <div class="menu-item" style="background:#00a8ff" onclick="go('fa-en')">فارسی به انگلیسی</div>
         <div class="menu-item" style="background:#0984e3" onclick="go('en-fa')">انگلیسی به فارسی</div>
-        <div class="menu-item" style="background:#00b894" onclick="go('word-def')">لغت به معنی (English)</div>
-        
         <div class="mistakes-box">
-            <span style="font-weight:bold; color:var(--wrong); font-size:14px;">🧠 کلمات چالش‌برانگیز شما</span>
-            <div id="m-list">
-                <p style="font-size:12px; margin-top:10px; opacity:0.6">هنوز اشتباهی نداشته‌ای. عالیه!</p>
-            </div>
+            <span style="font-weight:bold; color:var(--wrong); font-size:13px;">🧠 مرور اشتباهات آزمون</span>
+            <div id="m-list"><p style="font-size:11px; opacity:0.6; margin:10px 0 0;">اشتباهی نداری. آفرین!</p></div>
         </div>
-
-        <div class="menu-item" style="background:#25d366; margin-top:10px;" onclick="location.href='https://wa.me/989017708545'">
-            <i class="fab fa-whatsapp"></i> واتس‌اپ مدرس
-        </div>
-        <button onclick="logout()" style="background:none; border:none; color:var(--wrong); font-size:11px; margin-top:15px; cursor:pointer; opacity: 0.5;">خروج از حساب کاربری</button>
+        <div class="menu-item" style="background:#25d366" onclick="location.href='https://wa.me/989017708545'"><i class="fab fa-whatsapp"></i> واتس‌اپ مدرس</div>
+        <button class="logout-btn" onclick="logout()">خروج از حساب</button>
     </div>
 
     <script>
-        let taps = 0;
-        function id(i) { return document.getElementById(i); }
-        
-        // با ۳ بار کلیک روی ستاره بزرگ، پنل طلایی باز می‌شود
-        function secret() { 
-            if (++taps === 3) {
-                id('tg-setup').style.display = 'block';
-                taps = 0;
-            }
-        }
-
-        function saveTg() {
-            localStorage.setItem('tgT', id('token').value);
-            localStorage.setItem('tgC', id('chatId').value);
-            alert("تنظیمات با موفقیت ذخیره شد! ✨");
-            id('tg-setup').style.display = 'none';
-        }
-        
-        function toggleTheme() {
-            const isL = document.body.classList.toggle('light-mode');
-            localStorage.setItem('theme', isL ? 'light' : 'dark');
-            id('themeIcon').className = isL ? 'fas fa-moon' : 'fas fa-sun';
-        }
-
-        function saveUser() {
-            const n = id('nameInp').value.trim();
-            if(n) { 
-                localStorage.setItem('fredName', n); 
-                checkUser(); 
-            } else {
-                alert("لطفاً نامت را وارد کن قهرمان!");
-            }
-        }
-
-        function logout() { if(confirm("آیا می‌خواهی از حساب خارج شوی؟")) { localStorage.clear(); location.reload(); } }
-
-        function checkUser() {
-            const user = localStorage.getItem('fredName');
-            if(user) {
-                id('setup-page').style.display = 'none';
-                id('main-page').style.display = 'flex';
-                id('hi-user').innerText = `سلام ${user} عزیز`;
-                const best = localStorage.getItem('fredBest') || '0';
-                id('best-score').innerText = `Best Score: ${best}%`;
-                id('display-stars').innerText = '⭐'.repeat(Math.floor(best/20)) + '☆'.repeat(5-Math.floor(best/20));
+        function id(i){return document.getElementById(i)}
+        function toggleTheme(){const l=document.body.classList.toggle('light-mode');localStorage.setItem('th',l?'l':'d');id('themeIcon').className=l?'fas fa-moon':'fas fa-sun'}
+        function saveUser(){const n=id('nameInp').value.trim();if(n){localStorage.setItem('fredName',n);checkUser()}}
+        function logout(){if(confirm("اطلاعات پاک شود؟")){localStorage.clear();location.reload()}}
+        function checkUser(){
+            const u=localStorage.getItem('fredName');
+            if(u){
+                id('setup-page').style.display='none';id('main-page').style.display='flex';
+                id('hi-user').innerText=`سلام ${u} عزیز`;
+                const b=localStorage.getItem('fredBest')||'0';
+                id('best-score').innerText=`Best: ${b}%`;
+                id('display-stars').innerText='⭐'.repeat(Math.floor(b/20))+'☆'.repeat(5-Math.floor(b/20));
                 renderM();
-            } else {
-                id('setup-page').style.display = 'block';
             }
         }
-
-        function renderM() {
-            const list = JSON.parse(localStorage.getItem('fredM') || '[]');
-            if(list.length > 0) {
-                id('m-list').innerHTML = list.slice(-3).map(m => `
-                    <div class="mistake-row">
-                        <div style="text-align:right">
-                            <b style="color:var(--blue);direction:ltr;display:block">${m.q}</b>
-                            <small>✅ پاسخ درست: ${m.a}</small>
-                        </div>
-                        <i class="fas fa-volume-up" onclick="spk('${m.q}')" style="color:var(--blue); cursor:pointer"></i>
-                    </div>
-                `).join('');
-            }
+        function renderM(){
+            const list=JSON.parse(localStorage.getItem('fredM')||'[]');
+            if(list.length){id('m-list').innerHTML=list.slice(-3).map(m=>`<div class="mistake-row"><div style="text-align:right"><b style="color:var(--blue);direction:ltr;display:block">${m.q}</b><small>✅ ${m.a}</small></div><i class="fas fa-volume-up" onclick="spk('${m.q}')" style="color:var(--blue)"></i></div>`).join('')}
         }
-
-        function spk(t) { 
-            const m = new SpeechSynthesisUtterance(t); 
-            m.lang='en-US'; m.rate=0.5; 
-            speechSynthesis.speak(m); 
-        }
-
-        function go(m) { 
-            localStorage.setItem('quizMode', m); 
-            location.href = 'quiz.html'; 
-        }
-
-        window.onload = () => {
-            if(localStorage.getItem('theme')==='light') toggleTheme();
-            checkUser();
-        };
+        function spk(t){const m=new SpeechSynthesisUtterance(t);m.lang='en-US';m.rate=0.5;speechSynthesis.speak(m)}
+        function go(m){localStorage.setItem('quizMode',m);location.href='quiz.html'}
+        window.onload=()=>{if(localStorage.getItem('th')==='l')toggleTheme();checkUser()}
     </script>
 </body>
 </html>
