@@ -3,106 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Quiz Engine</title>
+    <title>English Quiz</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg:#f2f2f7; --txt:#1c1c1e; --crd:#fff; --blu:#007aff; --grn:#34c759; --red:#ff3b30; --st:env(safe-area-inset-top); }
+        :root { --bg:#f2f2f7; --txt:#1c1c1e; --crd:#fff; --blu:#007aff; --grn:#28a745; --red:#ff3b30; --st:env(safe-area-inset-top); }
         body.dark-mode { --bg:#0b1426; --txt:#fff; --crd:rgba(255,255,255,0.12); }
-        body { font-family:-apple-system,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 15px) 20px; transition:0.2s; display:flex; flex-direction:column; align-items:center; min-height:100dvh; }
+        body { font-family:-apple-system,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 15px) 20px; display:flex; flex-direction:column; align-items:center; min-height:100dvh; }
         .app { width:100%; max-width:400px; }
-        .card { background:var(--crd); padding:25px; border-radius:25px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:20px; position:relative; }
-        .q-text { font-size:24px; font-weight:800; margin-bottom:10px; color:var(--blu); }
-        .btn { width:100%; padding:16px; border-radius:18px; border:none; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; transition:0.1s; background:var(--crd); color:var(--txt); border:1px solid rgba(0,0,0,0.05); }
-        .btn:active { transform:scale(0.97); }
+        .card { background:var(--crd); padding:25px; border-radius:25px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:15px; }
+        .btn { width:100%; padding:16px; border-radius:18px; border:none; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; background:var(--crd); color:var(--txt); border:1px solid rgba(0,0,0,0.05); }
         .opt.correct { background:var(--grn) !important; color:#fff; }
         .opt.wrong { background:var(--red) !important; color:#fff; }
-        .prog-track { width:100%; height:6px; background:rgba(0,0,0,0.1); border-radius:3px; margin-bottom:20px; overflow:hidden; }
+        .prog-track { width:100%; height:8px; background:rgba(0,0,0,0.1); border-radius:4px; margin-bottom:15px; overflow:hidden; }
         .prog-fill { height:100%; background:var(--blu); width:0%; transition:0.3s; }
-        .speaker { font-size:22px; color:var(--blu); cursor:pointer; margin-bottom:15px; display:inline-block; }
+        .speaker { font-size:30px; color:var(--blu); cursor:pointer; margin-bottom:15px; }
     </style>
 </head>
 <body>
     <div class="app">
-        <div id="quiz-ui">
-            <div class="prog-track"><div id="p-fill" class="prog-fill"></div></div>
-            <div id="q-card" class="card">
-                <div id="spk" class="speaker" onclick="speak()"><i class="fas fa-volume-up"></i></div>
-                <div id="q-main" class="q-text">Word</div>
-                <div id="q-sub" style="opacity:0.6; font-size:14px;">Definition goes here...</div>
-            </div>
-            <div id="options"></div>
-            <button id="next-btn" class="btn" style="background:var(--blu); color:#fff; display:none;" onclick="nextQ()">بعدی</button>
+        <div class="prog-track"><div id="p-fill" class="prog-fill"></div></div>
+        <div class="card">
+            <div class="speaker" onclick="speak()"><i class="fas fa-volume-up"></i></div>
+            <div id="q-main" style="font-size:26px; font-weight:800; color:var(--blu);">Loading...</div>
+            <div id="q-sub" style="opacity:0.6; margin-top:10px;"></div>
         </div>
+        <div id="options"></div>
+        <button id="next-btn" class="btn" style="background:var(--blu); color:#fff; display:none;" onclick="nextQ()">بعدی</button>
     </div>
 
     <script>
         const ls = localStorage;
         const mode = ls.getItem('qm') || 'en-fa';
-        // دیتابیس لغات (قابل گسترش)
         const vocab = [
-            {en:"Success", fa:"موفقیت", def:"The accomplishment of an aim or purpose"},
-            {en:"Creative", fa:"خلاق", def:"Relating to or involving the imagination"},
-            {en:"Challenge", fa:"چالش", def:"A task or situation that tests someone's abilities"},
-            {en:"Improve", fa:"بهبود بخشیدن", def:"Make or become better"},
-            {en:"Ancient", fa:"باستانی", def:"Belonging to the very distant past"},
-            {en:"Artificial", fa:"مصنوعی", def:"Made or produced by human beings"},
-            {en:"Brave", fa:"شجاع", def:"Ready to face and endure danger"},
+            {en:"Success", fa:"موفقیت", def:"The accomplishment of an aim"},
+            {en:"Creative", fa:"خلاق", def:"Using imagination to create"},
+            {en:"Challenge", fa:"چالش", def:"A difficult task"},
+            {en:"Improve", fa:"پیشرفت کردن", def:"To make something better"},
+            {en:"Brave", fa:"شجاع", def:"Ready to face danger"},
             {en:"Doubt", fa:"شک", def:"A feeling of uncertainty"},
-            {en:"Essential", fa:"ضروری", def:"Absolutely necessary; extremely important"},
-            {en:"Frequent", fa:"مکرر", def:"Occurring or done on many occasions"}
+            {en:"Essential", fa:"ضروری", def:"Extremely important"},
+            {en:"Frequent", fa:"مکرر", def:"Happening often"},
+            {en:"Ancient", fa:"باستانی", def:"Very old"},
+            {en:"Artificial", fa:"مصنوعی", def:"Not natural"}
         ];
 
         let current = 0, score = 0, canClick = true;
 
-        function init() {
-            if(ls.getItem('t')==='d') document.body.classList.add('dark-mode');
-            if(mode === 'study') startStudy(); else startQuiz();
+        // تابع اصلی پخش صدا
+        function speak() {
+            if(ls.getItem('m') === 'y') return; // اگر بی‌صدا بود پخش نکن
+            
+            // لغو صداهای قبلی که در صف هستند
+            window.speechSynthesis.cancel();
+            
+            const msg = new SpeechSynthesisUtterance(vocab[current].en);
+            msg.lang = 'en-US';
+            msg.rate = 0.8; // سرعت پخش (کمی آرام‌تر برای یادگیری)
+            window.speechSynthesis.speak(msg);
         }
 
-        // --- حالت آموزشی ---
-        function startStudy() {
-            document.getElementById('options').innerHTML = `<button class="btn" style="background:var(--blu);color:#fff" onclick="nextStudy()">لغت بعدی</button>
-            <button class="btn" onclick="location.href='index.html'">بازگشت به منو</button>`;
-            renderStudy();
-        }
-        function renderStudy() {
-            const w = vocab[current];
-            document.getElementById('q-main').innerText = w.en;
-            document.getElementById('q-sub').innerText = `${w.fa}\n\n${w.def}`;
-            document.getElementById('p-fill').style.width = ((current+1)/vocab.length)*100 + '%';
-        }
-        function nextStudy() {
-            if(current < vocab.length-1) { current++; renderStudy(); }
-            else { alert("دوره لغات تمام شد!"); location.href='index.html'; }
-        }
-
-        // --- حالت آزمون ---
-        function startQuiz() {
-            renderQuiz();
-        }
-
-        function renderQuiz() {
+        function render() {
             canClick = true;
             document.getElementById('next-btn').style.display = 'none';
             const w = vocab[current];
-            let qField = '', aField = '';
+            let q = '', a = '';
 
-            if(mode==='en-fa') { qField = w.en; aField = w.fa; }
-            else if(mode==='fa-en') { qField = w.fa; aField = w.en; }
-            else if(mode==='word-def') { qField = w.en; aField = w.def; }
-            else if(mode==='def-word') { qField = w.def; aField = w.en; }
+            if(mode==='en-fa') { q=w.en; a=w.fa; }
+            else if(mode==='fa-en') { q=w.fa; a=w.en; }
+            else if(mode==='word-def') { q=w.en; a=w.def; }
+            else { q=w.def; a=w.en; }
 
-            document.getElementById('q-main').innerText = qField;
-            document.getElementById('q-sub').innerText = "گزینه درست را انتخاب کنید";
-            document.getElementById('p-fill').style.width = (current/vocab.length)*100 + '%';
+            document.getElementById('q-main').innerText = q;
+            document.getElementById('p-fill').style.width = ((current)/vocab.length)*100 + '%';
 
-            const opts = [aField];
+            let opts = [a];
             while(opts.length < 4) {
                 let r = vocab[Math.floor(Math.random()*vocab.length)];
-                let val = (mode==='en-fa' || mode==='def-word') ? r.fa : (mode==='fa-en' || mode==='word-def' ? r.en : r.def);
+                let val = (mode==='en-fa'||mode==='def-word')?r.fa:(mode==='fa-en'||mode==='word-def'?r.en:r.def);
                 if(!opts.includes(val)) opts.push(val);
             }
-            opts.sort(() => Math.random() - 0.5);
+            opts.sort(()=>Math.random()-0.5);
 
             const optDiv = document.getElementById('options');
             optDiv.innerHTML = '';
@@ -110,73 +90,39 @@
                 const b = document.createElement('button');
                 b.className = 'btn opt';
                 b.innerText = o;
-                b.onclick = () => checkAns(o, aField, b);
+                b.onclick = () => {
+                    if(!canClick) return;
+                    canClick = false;
+                    if(o === a) { score++; b.classList.add('correct'); }
+                    else { b.classList.add('wrong'); Array.from(document.getElementsByClassName('opt')).forEach(x=>{if(x.innerText===a)x.classList.add('correct')}); }
+                    document.getElementById('next-btn').style.display = 'block';
+                };
                 optDiv.appendChild(b);
             });
-        }
 
-        function checkAns(selected, correct, btn) {
-            if(!canClick) return;
-            canClick = false;
-            if(selected === correct) {
-                score++;
-                btn.classList.add('correct');
-            } else {
-                btn.classList.add('wrong');
-                // نمایش گزینه صحیح
-                Array.from(document.getElementsByClassName('opt')).forEach(b => {
-                    if(b.innerText === correct) b.classList.add('correct');
-                });
+            // پخش خودکار صدا وقتی سوال انگلیسی است
+            if(mode !== 'fa-en' && mode !== 'def-word') {
+                setTimeout(speak, 500);
             }
-            document.getElementById('next-btn').style.display = 'block';
         }
 
         function nextQ() {
-            if(current < vocab.length - 1) {
-                current++;
-                renderQuiz();
-            } else {
-                finish();
-            }
+            if(current < vocab.length - 1) { current++; render(); }
+            else { finish(); }
         }
 
         async function finish() {
-            const finalScore = Math.round((score/vocab.length)*100);
-            
-            // ذخیره در سوابق
-            let h = JSON.parse(ls.getItem('fh') || '[]');
-            h.push(finalScore);
-            ls.setItem('fh', JSON.stringify(h));
-            
-            // بروزرسانی بالاترین نمره
-            let b = parseInt(ls.getItem('fb') || '0');
-            if(finalScore > b) ls.setItem('fb', finalScore);
-
-            // ارسال به تلگرام
-            const name = ls.getItem('fn') || 'ناشناس';
-            const _eT = "ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==";
-            const _eI = "OTY5OTE4NTk=";
-            const t = atob(_eT), i = atob(_eI);
-            const msg = `📊 نتیجه آزمون\n👤 کاربر: ${name}\n📝 نوع: ${mode}\n🎯 نمره: ${finalScore}%`;
-            
-            await fetch(`https://api.telegram.org/bot${t}/sendMessage`,{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({chat_id:i, text:msg})
-            });
-
-            alert(`پایان آزمون! نمره شما: ${finalScore}%`);
+            const final = Math.round((score/vocab.length)*100);
+            let h = JSON.parse(ls.getItem('fh')||'[]'); h.push(final); ls.setItem('fh', JSON.stringify(h));
+            let b = parseInt(ls.getItem('fb')||'0'); if(final > b) ls.setItem('fb', final);
+            alert(`نمره شما: ${final}%`);
             location.href = 'index.html';
         }
 
-        function speak() {
-            if(ls.getItem('m') === 'y') return;
-            const msg = new SpeechSynthesisUtterance(vocab[current].en);
-            msg.lang = 'en-US';
-            window.speechSynthesis.speak(msg);
-        }
-
-        init();
+        window.onload = () => {
+            if(ls.getItem('t')==='d') document.body.classList.add('dark-mode');
+            render();
+        };
     </script>
 </body>
 </html>
