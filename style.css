@@ -1,51 +1,81 @@
 :root {
-    --ios-blue: #007AFF; --ios-green: #34C759; --ios-orange: #FF9500;
-    --glass: rgba(255, 255, 255, 0.1);
+    --primary-blue: #007bff;
+    --bg-light: #f8f9fa;
+    --text-dark: #333;
+    --star-gray: #ccc;
+    --star-gold: #ffcc00;
 }
 
 body {
-    background: #000; color: #fff; font-family: -apple-system, sans-serif;
-    margin: 0; direction: rtl; overflow-x: hidden;
+    font-family: 'Tahoma', sans-serif;
+    background-color: var(--bg-light);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
-/* انیمیشن ورود ۳ ثانیه‌ای از راست */
-@keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+/* هدر */
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: white;
 }
 
-#welcome-screen {
-    position: fixed; inset: 0; background: #000; z-index: 10000;
-    display: flex; justify-content: center; align-items: center;
+.back-link {
+    background: none; border: none; color: var(--primary-blue); font-size: 1rem; cursor: pointer;
 }
 
-.welcome-card {
-    width: 85%; padding: 40px; background: var(--glass);
-    border: 1.5px solid rgba(255,255,255,0.2); border-radius: 25px;
-    text-align: center; backdrop-filter: blur(25px);
-    animation: slideInRight 3s ease-out;
+.stars-container { font-size: 1.4rem; color: var(--star-gray); letter-spacing: 2px; }
+.star.gold { color: var(--star-gold); text-shadow: 0 0 5px rgba(255,204,0,0.4); }
+
+.progress-sub { font-size: 0.8rem; color: #888; text-align: center; }
+.score-badge { font-weight: bold; color: var(--text-dark); }
+
+.divider { border: 0; border-top: 1px solid #eee; margin: 0; }
+
+/* جستجو */
+.search-container { padding: 15px; }
+#search-input {
+    width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;
+    box-sizing: border-box; outline: none; transition: 0.3s;
+}
+#search-input:focus { border-color: var(--primary-blue); }
+
+/* کارت لغت */
+.word-card {
+    background: white; margin: 15px; padding: 25px; border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center;
 }
 
-.iphone-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 16px; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
-    position: sticky; top: 0; border-bottom: 0.5px solid #333; z-index: 1000;
+.main-word { color: var(--primary-blue); font-size: 2.5rem; margin-bottom: 5px; }
+.translation { font-size: 1.3rem; color: #666; margin-bottom: 25px; }
+
+.section { text-align: right; margin-top: 20px; }
+.section h3 { font-size: 0.9rem; color: #999; margin-bottom: 10px; }
+.row { display: flex; justify-content: space-between; align-items: center; background: #fcfcfc; padding: 10px; border-radius: 10px; }
+.eng-text { font-size: 1.1rem; color: #444; margin: 0; flex: 1; text-align: left; }
+.speaker-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding-left: 10px; }
+
+/* دکمه پایین */
+.next-btn {
+    position: fixed; bottom: 20px; left: 5%; width: 90%;
+    background: var(--primary-blue); color: white; border: none;
+    padding: 18px; border-radius: 15px; font-size: 1.2rem; font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,123,255,0.3); z-index: 10;
 }
 
-.user-center { font-weight: 700; color: #FFD700; flex-grow: 1; text-align: center; }
+/* پاپ‌آپ */
+.popup-hidden { display: none; }
+#custom-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: flex; align-items: center; justify-content: center; }
+.popup-overlay { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+.popup-content { position: relative; background: white; padding: 30px; border-radius: 25px; width: 80%; max-width: 320px; text-align: center; }
+.popup-close-btn { background: var(--primary-blue); color: white; border: none; padding: 10px 20px; border-radius: 10px; margin-top: 15px; }
 
-.apple-btn {
-    width: 100%; padding: 18px; margin-bottom: 10px; border-radius: 20px;
-    border: 2px solid rgba(255,255,255,0.4); color: #fff; font-weight: 600;
-    background: linear-gradient(180deg, rgba(255,255,255,0.15), transparent);
-    position: relative; overflow: hidden; cursor: pointer;
-}
+/* انیمیشن */
+.fade-in-effect { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.btn-blue { background-color: var(--ios-blue); }
-.btn-green { background-color: var(--ios-green); }
-.btn-orange { background-color: var(--ios-orange); }
-.btn-red { background-color: #FF3B30; }
-
-.ltr-content { direction: ltr; text-align: left; }
-.progress-bar { width: 100%; height: 5px; background: #222; border-radius: 10px; margin: 15px 0; }
-.fill { height: 100%; background: var(--ios-blue); border-radius: 10px; transition: 0.4s; }
+/* دکمه یاد گرفتم مخصوص حالت تمرین */
+.learned-btn { background: #28a745; color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; margin-top: 15px; font-weight: bold; }
