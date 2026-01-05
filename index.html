@@ -3,117 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Quiz Center</title>
+    <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --text: #fff; --blue: #007aff; --glass: rgba(255,255,255,0.1); --light-blue: #add8e6; }
-        body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --glass: rgba(0,0,0,0.05); --light-blue: #4682b4; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 15px 100px; display: flex; flex-direction: column; align-items: center; }
-        .head { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
-        .card { width: 100%; max-width: 380px; background: var(--glass); border-radius: 25px; padding: 20px; box-sizing: border-box; }
-        .main-word { font-size: 32px; font-weight: 800; color: var(--blue); margin: 15px 0; direction: ltr; text-align: center; }
-        .study-label { font-size: 11px; color: var(--blue); font-weight: bold; text-align: left; width: 100%; border-bottom: 1px solid rgba(0,122,255,0.2); margin: 12px 0 6px; letter-spacing: 1px; }
-        .en-row { direction: ltr; text-align: left; display: flex; align-items: flex-start; gap: 10px; font-size: 17px; font-weight: 500; margin-top: 4px; }
-        .fa-row { direction: rtl; text-align: right; font-size: 14px; color: var(--light-blue); margin-top: 2px; font-weight: normal; }
-        .spk-icon { color: var(--blue); cursor: pointer; font-size: 14px; margin-top: 4px; }
-        .opt { width: 100%; max-width: 380px; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--text); margin-bottom: 10px; cursor: pointer; direction: ltr; }
-        .next-btn { position: fixed; bottom: 30px; width: 90%; max-width: 350px; padding: 18px; border-radius: 20px; background: var(--blue); color: #fff; border: none; font-size: 18px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,122,255,0.3); }
-        #prog { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); z-index: 1000; transition: 0.3s; }
+        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --wrong: #ff3b30; --gold: #f1c40f; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .main-card { width: 100%; max-width: 380px; background: var(--card); padding: 20px; border-radius: 25px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; box-sizing: border-box; }
+        .menu-item { width: 100%; max-width: 380px; padding: 18px 0; border-radius: 20px; color: white; font-weight: 600; text-align: center; cursor: pointer; border: none; font-size: 16px; margin-bottom: 10px; display: block; text-decoration: none; }
+        .mistakes-box { width: 100%; max-width: 380px; background: rgba(255, 59, 48, 0.08); padding: 15px; border-radius: 20px; border: 1px dashed var(--wrong); margin-bottom: 15px; box-sizing: border-box; }
+        input { width: 85%; padding: 15px; border-radius: 15px; border: none; background: rgba(255,255,255,0.1); color: white; text-align: center; margin-bottom: 15px; font-size: 16px; }
     </style>
 </head>
 <body>
-    <div id="prog"></div>
-    <div class="head">
-        <div onclick="location.replace('index.html')"><i class="fas fa-times"></i></div>
-        <div id="cnt" style="direction: ltr; font-weight: bold;">1 / 10</div>
-        <div onclick="spkMain()"><i class="fas fa-volume-up"></i></div>
+    <div id="setup-page" class="main-card" style="margin-top: 50px;">
+        <div style="font-size: 40px; color: var(--gold); margin-bottom: 10px;">⭐</div>
+        <h3>خوش آمدی!</h3>
+        <input type="text" id="nameInp" placeholder="نام شما">
+        <button onclick="saveUser()" class="menu-item" style="background: var(--blue);">ثبت و ورود</button>
     </div>
-    <div id="content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
-    <div id="footer"></div>
 
-    <script src="a1-words.js"></script>
+    <div id="main-page" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+        <div class="main-card">
+            <div id="display-stars" style="font-size:25px; color:#f1c40f; margin-bottom:5px;"></div>
+            <div id="hi-user" style="font-size:18px; font-weight:bold;"></div>
+            <div id="best-score" style="color:var(--blue); font-size:14px; margin-top:5px;">Best Score: 0%</div>
+        </div>
+        
+        <div class="menu-item" style="background:#8e44ad" onclick="go('study')">📚 آموزش لغات جدید</div>
+        <div class="menu-item" style="background:#00a8ff" onclick="go('fa-en')">فارسی به انگلیسی</div>
+        <div class="menu-item" style="background:#0984e3" onclick="go('en-fa')">انگلیسی به فارسی</div>
+        <div class="menu-item" style="background:#00b894" onclick="go('word-def')">لغت به معنی (English)</div>
+
+        <div class="mistakes-box">
+            <div style="font-weight:bold; color:var(--wrong); font-size:14px; margin-bottom:5px;">🧠 کلمات چالش‌برانگیز شما</div>
+            <div id="m-list" style="font-size:12px; opacity:0.8;">هنوز اشتباهی نداشته‌ای. عالیه!</div>
+        </div>
+
+        <div class="menu-item" style="background:#2ecc71" onclick="window.open('https://wa.me/989017708545')">💬 واتس‌اپ مدرس</div>
+    </div>
+
     <script>
-        let cur=0, sc=0, mis=[], data=[];
-        const mode = localStorage.getItem('quizMode') || 'study';
-
-        function spk(t){ if(!t || localStorage.getItem('mute')==='true')return; const m=new SpeechSynthesisUtterance(t); m.lang='en-US'; m.rate=0.55; speechSynthesis.cancel(); speechSynthesis.speak(m); }
-        function spkMain(){ if(data[cur]) spk(data[cur].word); }
-
-        function init(){
-            if(localStorage.getItem('th')==='l') document.body.classList.add('light-mode');
-            if(window.wordsA1){
-                data = [...wordsA1].sort(()=>0.5-Math.random()).slice(0,10);
-                render();
+        function saveUser(){
+            const n=document.getElementById('nameInp').value.trim();
+            if(n){ localStorage.setItem('fredName',n); checkUser(); }
+        }
+        function checkUser(){
+            const u=localStorage.getItem('fredName');
+            if(u){
+                document.getElementById('setup-page').style.display='none';
+                document.getElementById('main-page').style.display='flex';
+                document.getElementById('hi-user').innerText=`سلام ${u} عزیز`;
+                const b=localStorage.getItem('fredBest')||'0';
+                document.getElementById('best-score').innerText=`Best Score: ${b}%`;
+                document.getElementById('display-stars').innerText='⭐'.repeat(Math.floor(b/20))+'☆'.repeat(5-Math.floor(b/20));
             }
         }
-
-        function render(){
-            if(cur >= 10) return end();
-            document.getElementById('prog').style.width = (cur+1)*10 + "%";
-            document.getElementById('cnt').innerText = `${cur+1} / 10`;
-            const w = data[cur];
-            const con = document.getElementById('content');
-            const foot = document.getElementById('footer');
-            window.scrollTo(0,0);
-
-            if(mode === 'study'){
-                con.innerHTML = `
-                    <h1 class="main-word">${w.word}</h1>
-                    <div style="font-size:18px; margin-bottom:15px; text-align:center;">${w.translation}</div>
-                    <div class="card">
-                        <div class="study-label">EXAMPLE</div>
-                        <div class="en-row"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.example.replace(/'/g, "\\'")}')"></i> <span>${w.example}</span></div>
-                        <div class="fa-row">${w.ex_trans}</div>
-
-                        <div class="study-label">COLLOCATION</div>
-                        <div class="en-row"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.collocation.replace(/'/g, "\\'")}')"></i> <span>${w.collocation}</span></div>
-                        <div class="fa-row">${w.coll_trans}</div>
-
-                        <div class="study-label">PHRASAL VERBS</div>
-                        <div class="en-row"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.phrasal_1.replace(/'/g, "\\'")}')"></i> <span><b>${w.phrasal_1}</b></span></div>
-                        <div class="fa-row">${w.ph1_trans}</div>
-                        <div class="en-row" style="margin-top:8px;"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.phrasal_2.replace(/'/g, "\\'")}')"></i> <span><b>${w.phrasal_2}</b></span></div>
-                        <div class="fa-row">${w.ph2_trans}</div>
-                    </div>`;
-                foot.innerHTML = `<button class="next-btn" onclick="cur++;render()">کلمه بعدی</button>`;
-                spk(w.word);
-            } else {
-                // منطق آزمون (همان قبلی با اصلاح جهت متن گزینه‌ها)
-                foot.innerHTML = "";
-                let ques, ans, isEnQ = false;
-                if(mode==='en-fa'){ ques=w.word; ans=w.translation; isEnQ=true; }
-                else if(mode==='fa-en'){ ques=w.translation; ans=w.word; }
-                else if(mode==='word-def'){ ques=w.word; ans=w.definition; isEnQ=true; }
-                else if(mode==='def-word'){ ques=w.definition; ans=w.word; isEnQ=true; }
-
-                con.innerHTML = `<div class="main-word" style="${!isEnQ ? 'direction:rtl' : ''}">${ques}</div><div id="opts" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>`;
-                
-                let ch=[ans];
-                while(ch.length < 4){
-                    let r = wordsA1[Math.floor(Math.random()*wordsA1.length)];
-                    let v = (mode==='en-fa' || mode==='def-word') ? r.translation : (mode==='word-def' ? r.definition : r.word);
-                    if(v && !ch.includes(v)) ch.push(v);
-                }
-                ch.sort(()=>0.5-Math.random()).forEach(c => {
-                    const b = document.createElement('button');
-                    b.className = 'opt'; b.innerText = c;
-                    b.style.direction = (mode==='fa-en' || mode==='def-word') ? 'ltr' : 'rtl';
-                    b.onclick = () => {
-                        if(c === ans){ b.style.background='#34c759'; sc++; }
-                        else { b.style.background='#ff3b30'; }
-                        setTimeout(()=>{ cur++; render(); }, 800);
-                    };
-                    document.getElementById('opts').appendChild(b);
-                });
-            }
-        }
-
-        function end(){
-            const p = (sc/10)*100;
-            if(mode!=='study' && p > parseInt(localStorage.getItem('fredBest')||0)) localStorage.setItem('fredBest', p);
-            document.body.innerHTML = `<div style="text-align:center; padding-top:100px;"><h2>نتیجه: ${p}%</h2><button class="next-btn" onclick="location.replace('index.html')">برگشت به خانه</button></div>`;
-        }
-        window.onload = init;
+        function go(m){ localStorage.setItem('quizMode',m); location.href='quiz.html'; }
+        window.onload=checkUser;
     </script>
 </body>
 </html>
