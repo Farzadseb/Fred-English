@@ -3,105 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Quiz Center</title>
+    <title>Learning</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --text: #fff; --blue: #007aff; --glass: rgba(255,255,255,0.1); --light-blue: #add8e6; }
+        :root { --bg: #f2f2f7; --text: #1c1c1e; --blue: #007aff; --card: #fff; --light-blue: #5856d6; }
+        body.dark-mode { --bg: #0b1426; --text: #fff; --card: rgba(255,255,255,0.1); }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px 15px 100px; display: flex; flex-direction: column; align-items: center; }
-        .head { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
-        .card { width: 100%; max-width: 400px; background: var(--glass); border-radius: 25px; padding: 20px; box-sizing: border-box; }
-        .main-word { font-size: 34px; font-weight: 800; color: var(--blue); margin: 10px 0; text-align: center; direction: ltr; }
-        .study-label { font-size: 11px; color: var(--blue); font-weight: bold; text-align: left; border-bottom: 1px solid rgba(0,122,255,0.2); margin: 15px 0 8px; }
+        .card { width: 100%; max-width: 400px; background: var(--card); border-radius: 25px; padding: 20px; box-sizing: border-box; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .main-word { font-size: 32px; font-weight: 800; color: var(--blue); margin: 10px 0; direction: ltr; }
+        .study-label { font-size: 11px; color: var(--blue); font-weight: bold; border-bottom: 1px solid rgba(0,122,255,0.2); margin: 15px 0 10px; text-align: left; }
         
-        /* تغییر جهت برای آوردن اسپیکر به سمت راست متن انگلیسی */
-        .en-row { direction: rtl; text-align: left; display: flex; justify-content: flex-end; align-items: flex-start; gap: 10px; font-size: 17px; margin-top: 5px; color: #fff; }
-        .en-text-part { direction: ltr; text-align: left; flex: 1; font-weight: 600; }
+        /* اصلاح چیدمان برای بردن اسپیکر به سمت راست */
+        .en-container { display: flex; flex-direction: row-reverse; align-items: flex-start; justify-content: flex-end; gap: 12px; margin-bottom: 5px; }
+        .en-text { direction: ltr; text-align: left; font-size: 17px; font-weight: 600; flex: 1; }
+        .spk-icon { color: var(--blue); cursor: pointer; font-size: 18px; padding-top: 2px; }
         
-        .fa-row { text-align: right; font-size: 14px; color: var(--light-blue); margin-top: 2px; }
-        .ex-en { direction: ltr; text-align: left; font-size: 14px; color: #ccc; padding-left: 10px; border-left: 2px solid var(--blue); margin: 5px 0; }
-        .spk-icon { color: var(--blue); cursor: pointer; font-size: 16px; margin-top: 4px; }
-        
-        /* استایل دکمه بعدی - فیکس شده در پایین */
-        .next-btn-container { position: fixed; bottom: 0; left: 0; width: 100%; padding: 20px 0; background: linear-gradient(transparent, var(--bg) 40%); display: flex; justify-content: center; z-index: 9999; }
-        .next-btn { width: 90%; max-width: 380px; padding: 18px; border-radius: 20px; background: var(--blue); color: #fff; border: none; font-size: 18px; font-weight: bold; cursor: pointer; }
-        #prog { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); z-index: 1000; }
+        .fa-text { text-align: right; font-size: 14px; color: var(--light-blue); margin-bottom: 12px; }
+        .next-btn { position: fixed; bottom: 30px; width: 90%; max-width: 380px; padding: 20px; border-radius: 20px; background: var(--blue); color: #fff; border: none; font-size: 18px; font-weight: bold; z-index: 1000; }
     </style>
 </head>
 <body>
-    <div id="prog"></div>
-    <div class="head">
-        <div onclick="location.replace('index.html')"><i class="fas fa-times"></i></div>
-        <div id="cnt" style="direction: ltr; font-weight: bold;">1 / 10</div>
-        <div onclick="spkMain()"><i class="fas fa-volume-up"></i></div>
-    </div>
     <div id="content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
-    <div class="next-btn-container" id="footer" style="display:none;">
-        <button class="next-btn" onclick="cur++;render()">کلمه بعدی</button>
-    </div>
+    <button class="next-btn" onclick="nextWord()">کلمه بعدی</button>
 
     <script src="a1-words.js"></script>
     <script>
         let cur=0, data=[];
-        const mode = localStorage.getItem('quizMode') || 'study';
+        if(localStorage.getItem('theme')==='dark') document.body.classList.add('dark-mode');
 
-        function spk(t){ 
-            if(!t || localStorage.getItem('mute')==='true') return; 
-            const m = new SpeechSynthesisUtterance(t); 
-            m.lang='en-US'; m.rate=0.55; 
-            speechSynthesis.cancel(); 
-            speechSynthesis.speak(m); 
-        }
-        function spkMain(){ if(data[cur]) spk(data[cur].word); }
-
-        function init(){
-            if(window.wordsA1){
-                data = [...wordsA1].sort(()=>0.5-Math.random()).slice(0,10);
-                render();
-            }
+        function spk(t){
+            if(!t || localStorage.getItem('mute')==='true') return;
+            const m = new SpeechSynthesisUtterance(t);
+            m.lang='en-US'; m.rate=0.6;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(m);
         }
 
         function render(){
-            if(cur >= 10) return location.replace('index.html');
-            document.getElementById('prog').style.width = (cur+1)*10 + "%";
-            document.getElementById('cnt').innerText = `${cur+1} / 10`;
             const w = data[cur];
             const con = document.getElementById('content');
-            
-            if(mode === 'study'){
-                document.getElementById('footer').style.display = 'flex';
-                con.innerHTML = `
-                    <h1 class="main-word">${w.word}</h1>
-                    <div style="text-align:center; margin-bottom:15px;">${w.translation}</div>
-                    <div class="card">
-                        <div class="study-label">EXAMPLE</div>
-                        <div class="en-row">
-                            <div class="en-text-part">${w.example}</div>
-                            <i class="fas fa-volume-down spk-icon" onclick="spk('${w.example.replace(/'/g, "\\'")}')"></i>
-                        </div>
-                        <div class="fa-row">${w.ex_trans}</div>
+            con.innerHTML = `
+                <h1 class="main-word">${w.word}</h1>
+                <div style="margin-bottom:20px;">${w.translation}</div>
+                <div class="card">
+                    <div class="study-label">EXAMPLE</div>
+                    <div class="en-container">
+                        <i class="fas fa-volume-up spk-icon" onclick="spk('${w.example.replace(/'/g, "\\'")}')"></i>
+                        <div class="en-text">${w.example}</div>
+                    </div>
+                    <div class="fa-text">${w.ex_trans}</div>
 
-                        <div class="study-label">COLLOCATION</div>
-                        <div class="en-row">
-                            <div class="en-text-part">${w.collocation}</div>
-                            <i class="fas fa-volume-down spk-icon" onclick="spk('${w.collocation.replace(/'/g, "\\'")}')"></i>
-                        </div>
-                        <div class="fa-row">${w.coll_trans}</div>
-                        <div class="ex-en">${w.coll_ex}</div>
-                        <div class="fa-row" style="font-size:12px; opacity:0.8;">${w.coll_ex_trans}</div>
+                    <div class="study-label">COLLOCATION</div>
+                    <div class="en-container">
+                        <i class="fas fa-volume-up spk-icon" onclick="spk('${w.collocation.replace(/'/g, "\\'")}')"></i>
+                        <div class="en-text">${w.collocation}</div>
+                    </div>
+                    <div class="fa-text">${w.coll_trans}</div>
 
-                        <div class="study-label">PHRASAL VERBS</div>
-                        <div class="en-row">
-                            <div class="en-text-part">${w.phrasal_1}</div>
-                            <i class="fas fa-volume-down spk-icon" onclick="spk('${w.phrasal_1.replace(/'/g, "\\'")}')"></i>
-                        </div>
-                        <div class="fa-row">${w.ph1_trans}</div>
-                        <div class="ex-en">${w.ph1_ex}</div>
-                        <div class="fa-row" style="font-size:12px; opacity:0.8;">${w.ph1_ex_trans}</div>
-                    </div>`;
-                spk(w.word);
-            }
+                    <div class="study-label">PHRASAL VERBS</div>
+                    <div class="en-container">
+                        <i class="fas fa-volume-up spk-icon" onclick="spk('${w.phrasal_1.replace(/'/g, "\\'")}')"></i>
+                        <div class="en-text">${w.phrasal_1}</div>
+                    </div>
+                    <div class="fa-text">${w.ph1_trans}</div>
+                </div>`;
+            spk(w.word);
         }
-        window.onload = init;
+
+        function nextWord(){
+            cur++;
+            if(cur < data.length) render();
+            else location.replace('index.html');
+        }
+
+        window.onload = () => {
+            data = wordsA1.slice(0, 10);
+            render();
+        };
     </script>
 </body>
 </html>
