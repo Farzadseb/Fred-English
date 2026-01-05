@@ -22,6 +22,9 @@
         #prog { display:none; position:fixed; top:0; left:0; width:100%; height:100dvh; background:var(--bg); z-index:999; padding:calc(var(--st) + 10px) 15px; overflow-y:auto; }
         .p-bar { width:100%; height:10px; background:rgba(0,0,0,0.1); border-radius:5px; margin:12px 0; overflow:hidden; }
         .p-fill { height:100%; background:var(--blu); width:0%; transition:1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        
+        /* استایل اختصاصی دکمه نوسازی لغات */
+        .refresh-btn { background:rgba(255,149,0,0.15); color:#ff9500 !important; border:1px solid #ff9500; margin-top:15px; font-size:13px; padding:12px; }
     </style>
 </head>
 <body>
@@ -58,7 +61,12 @@
             
             <button class="btn" style="background:#2ecc71" onclick="window.open('https://wa.me/989017708544')">ارتباط در واتس‌اپ <i class="fab fa-whatsapp"></i></button>
             <button class="btn" style="background:#f39c12" onclick="op()">گزارش پیشرفت <i class="fas fa-chart-line"></i></button>
-            <button class="btn" style="background:#e74c3c" onclick="lo()">خروج از حساب <i class="fas fa-sign-out-alt"></i></button>
+            
+            <button class="btn refresh-btn" onclick="hardRefresh()">
+                <i class="fas fa-sync-alt"></i> دریافت لغات جدید از گیت‌هاب
+            </button>
+
+            <button class="btn" style="background:#e74c3c; margin-top:20px;" onclick="lo()">خروج از حساب <i class="fas fa-sign-out-alt"></i></button>
         </div>
     </div>
 
@@ -87,6 +95,15 @@
                 const t = atob(_eT), i = atob(_eI);
                 await fetch(`https://api.telegram.org/bot${t}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:i, text:m})});
             } catch(e){}
+        }
+
+        // تابع جدید برای پاکسازی کش و آپدیت لغات
+        function hardRefresh() {
+            if (confirm("آیا می‌خواهید لغات را از سرور به‌روزرسانی کنید؟ (این کار باعث پاکسازی حافظه موقت می‌شود)")) {
+                // اضافه کردن ورژن زمانی برای دور زدن کش مرورگر
+                const cleanUrl = window.location.origin + window.location.pathname + '?v=' + new Date().getTime();
+                window.location.replace(cleanUrl);
+            }
         }
 
         function th(){ 
