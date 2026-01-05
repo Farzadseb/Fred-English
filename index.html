@@ -2,22 +2,14 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --bg: #f2f2f7; --text: #1c1c1e; --card: #ffffff; --blue: #007aff; 
-            --gold: #ffcc00; --wrong: #ff3b30; --green: #00b894;
-        }
-        body.dark-mode { 
-            --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); 
-        }
-        body { 
-            font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); 
-            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; 
-            transition: 0.3s; min-height: 100vh;
-        }
+        :root { --bg: #f2f2f7; --text: #1c1c1e; --card: #ffffff; --blue: #007aff; --gold: #ffcc00; --wrong: #ff3b30; --green: #00b894; }
+        body.dark-mode { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: 0.3s; }
+        
         .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .icon-btn { width: 42px; height: 42px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
 
@@ -25,21 +17,14 @@
         .star-box { width: 60px; height: 60px; background: rgba(255, 204, 0, 0.1); border: 2px solid var(--gold); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; transform: rotate(10deg); }
         .star-box i { font-size: 28px; color: var(--gold); transform: rotate(-10deg); }
 
-        .btn { 
-            width: 100%; max-width: 380px; padding: 18px; border-radius: 20px; 
-            color: white; font-weight: bold; border: none; font-size: 16px; 
-            cursor: pointer; display: flex; align-items: center; 
-            justify-content: center; margin-bottom: 12px; position: relative;
-            text-decoration: none; box-sizing: border-box;
-        }
+        .btn { width: 100%; max-width: 380px; padding: 18px; border-radius: 20px; color: white; font-weight: bold; border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; text-decoration: none; box-sizing: border-box; }
         .btn i { position: absolute; left: 20px; font-size: 18px; opacity: 0.9; }
 
-        #progress-page {
-            display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
-            background:var(--bg); z-index:10000; overflow-y:auto; padding:20px; box-sizing:border-box;
-        }
-        .progress-bar-container { width: 100%; height: 12px; background: #ddd; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--blue); width: 0%; transition: 1s ease-out; }
+        #progress-page { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:10000; overflow-y:auto; padding:20px; box-sizing:border-box; }
+        .progress-bar { width: 100%; height: 12px; background: #ddd; border-radius: 10px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--blue); width: 0%; transition: 1s; }
+        
+        input { width: 90%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; margin: 15px 0; text-align: center; font-size: 16px; background: var(--bg); color: var(--text); }
     </style>
 </head>
 <body>
@@ -54,28 +39,26 @@
         <div class="star-box"><i class="fas fa-star"></i></div>
         <h3>خوش آمدی!</h3>
         <p style="opacity:0.6; font-size:14px;">نام خود را وارد کنید</p>
-        <input type="text" id="nameInp" placeholder="نام شما" style="width:90%; padding:15px; border-radius:12px; border:1px solid #ddd; margin: 15px 0; text-align:center; font-size: 16px;">
+        <input type="text" id="nameInp" placeholder="نام شما">
         <button onclick="saveUser()" class="btn" style="background:var(--blue)">ورود</button>
     </div>
 
     <div id="main-page" style="display:none; width:100%; flex-direction:column; align-items:center;">
         <div class="main-card">
-            <div id="star-display" style="font-size:22px; color:var(--gold); margin-bottom:5px; letter-spacing: 3px;">
-                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-            </div>
+            <div id="star-display" style="font-size:22px; color:var(--gold); margin-bottom:5px; letter-spacing: 3px;"></div>
             <div id="hi-user" style="font-size:18px; font-weight:bold;"></div>
             <div id="best-score-text" style="color:var(--blue); font-size:14px; margin-top:5px;">Best Score: 0%</div>
         </div>
 
         <button class="btn" style="background:#9b59b6" onclick="go('study')">آموزش لغات جدید 📚</button>
-        <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Persian → English</button>
-        <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Persian</button>
+        <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Farsi → English</button>
+        <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Farsi</button>
         <button class="btn" style="background:var(--green)" onclick="go('word-def')">Word → Definition</button>
         <button class="btn" style="background:var(--green)" onclick="go('def-word')">Definition → Word</button>
 
-        <div class="main-card" style="background: rgba(255, 59, 48, 0.05); border: 1px dashed var(--wrong);">
-            <div style="font-weight:bold; color:var(--wrong); font-size:14px; margin-bottom:5px;">🧠 کلمات چالش‌برانگیز شما</div>
-            <div id="mistakes-count" style="font-size:12px; opacity:0.6;">هنوز اشتباهی نداشته‌ای. عالیه!</div>
+        <div class="main-card" style="background: rgba(255, 59, 48, 0.05); border: 1px dashed var(--wrong); padding: 15px;">
+            <div style="font-weight:bold; color:var(--wrong); font-size:14px; margin-bottom:5px;">🧠 کلمات چالش‌برانگیز</div>
+            <div style="font-size:12px; opacity:0.6;">هنوز اشتباهی نداشته‌ای.</div>
         </div>
 
         <button class="btn" style="background:#2ecc71" onclick="window.open('https://wa.me/989017708544')">ثبت‌نام واتس‌اپ <i class="fab fa-whatsapp"></i></button>
@@ -86,103 +69,71 @@
     <div id="progress-page">
         <div class="top-bar">
             <div class="icon-btn" onclick="closeProgress()"><i class="fas fa-arrow-right"></i></div>
-            <div style="font-weight: 900; color: var(--blue);">گزارش ۱۰ تمرین اخیر</div>
+            <div style="font-weight: 900; color: var(--blue);">۱۰ تمرین آخر</div>
             <div style="width:42px;"></div>
         </div>
         <div class="main-card">
             <div style="font-size:14px; opacity:0.7;">میانگین نمرات</div>
             <div id="avg-percent" style="font-size:38px; font-weight:900; color:var(--blue); margin:10px 0;">0%</div>
-            <div class="progress-bar-container"><div id="progress-fill" class="progress-fill"></div></div>
+            <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
         </div>
         <div id="history-list" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
     </div>
 
     <script>
-        // توکن تلگرام کدگذاری شده (Base64)
-        // لطفاً توکن خود را در متغیر پایین قرار دهید
-        const _tk = "YOUR_BASE64_TOKEN_HERE"; 
-        const _id = "YOUR_CHAT_ID_HERE";
-
         function toggleTheme(){ 
             const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             document.getElementById('th-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         }
-
+        function toggleMute(){
+            const m = localStorage.getItem('mute') === 'true';
+            localStorage.setItem('mute', !m);
+            document.getElementById('m-icon').className = !m ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+        }
         function saveUser(){
             const n = document.getElementById('nameInp').value.trim();
-            if(n){ 
-                localStorage.setItem('fredName', n); 
-                check(); 
-                // ارسال پیام خوش‌آمدگویی به تلگرام شما
-                sendToTelegram(`کاربر جدید ثبت‌نام کرد: ${n}`);
-            }
+            if(n){ localStorage.setItem('fredName', n); check(); }
         }
-
-        async function sendToTelegram(msg) {
-            try {
-                const token = atob(_tk); // دکد کردن توکن
-                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({chat_id: _id, text: msg})
-                });
-            } catch(e) { console.error("Telegram Error"); }
-        }
-
         function check(){
             const u = localStorage.getItem('fredName');
-            const s = document.getElementById('setup-page');
-            const m = document.getElementById('main-page');
+            document.getElementById('setup-page').style.display = u ? 'none' : 'block';
+            document.getElementById('main-page').style.display = u ? 'flex' : 'none';
             if(u){
-                s.style.display = 'none'; m.style.display = 'flex';
                 document.getElementById('hi-user').innerText = `سلام ${u} عزیز`;
                 const best = parseInt(localStorage.getItem('fredBest') || '0');
                 document.getElementById('best-score-text').innerText = `Best Score: ${best}%`;
                 updateStars(best);
-            } else {
-                s.style.display = 'block'; m.style.display = 'none';
             }
         }
-
         function updateStars(score) {
             const count = Math.floor(score / 20);
             let h = '';
             for(let i=0; i<5; i++) h += i < count ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
             document.getElementById('star-display').innerHTML = h;
         }
-
         function openProgress(){
             document.getElementById('progress-page').style.display = 'block';
             const history = JSON.parse(localStorage.getItem('fredHistory') || '[]');
             const listCont = document.getElementById('history-list');
-            const avgText = document.getElementById('avg-percent');
-            const fill = document.getElementById('progress-fill');
             listCont.innerHTML = '';
             let total = 0;
-            if(history.length === 0){
-                listCont.innerHTML = '<div class="main-card">هنوز تمرینی ثبت نشده است.</div>';
-                return;
-            }
+            if(history.length === 0){ listCont.innerHTML = '<div class="main-card">تمرینی ثبت نشده.</div>'; return; }
             const lastTen = history.slice(-10).reverse();
-            lastTen.forEach((score, i) => {
-                total += score;
+            lastTen.forEach((s, i) => {
+                total += s;
                 const card = document.createElement('div');
-                card.className = 'main-card';
-                card.style.padding = '15px';
-                card.style.marginBottom = '10px';
-                card.style.display = 'flex';
-                card.style.justifyContent = 'space-between';
-                card.innerHTML = `<span>تمرین ${lastTen.length - i}</span> <span style="font-weight:900; color:var(--blue)">${score}%</span>`;
+                card.className = 'main-card'; card.style.padding = '15px'; card.style.marginBottom = '10px';
+                card.style.display = 'flex'; card.style.justifyContent = 'space-between';
+                card.innerHTML = `<span>تمرین ${lastTen.length - i}</span> <span style="font-weight:900; color:var(--blue)">${s}%</span>`;
                 listCont.appendChild(card);
             });
             const avg = Math.round(total / lastTen.length);
-            avgText.innerText = avg + '%';
-            setTimeout(() => fill.style.width = avg + '%', 100);
+            document.getElementById('avg-percent').innerText = avg + '%';
+            setTimeout(() => document.getElementById('progress-fill').style.width = avg + '%', 100);
         }
-
         function closeProgress(){ document.getElementById('progress-page').style.display = 'none'; }
-        function logout(){ if(confirm('خارج می‌شوید؟')){ localStorage.removeItem('fredName'); location.reload(); } }
+        function logout(){ if(confirm('خروج؟')){ localStorage.removeItem('fredName'); location.reload(); } }
         function go(m){ localStorage.setItem('quizMode', m); location.href = 'quiz.html'; }
 
         window.onload = () => {
