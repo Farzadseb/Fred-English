@@ -9,53 +9,53 @@
         :root { --bg:#f2f2f7; --txt:#1c1c1e; --crd:#fff; --blu:#007aff; --gld:#ffcc00; --red:#ff3b30; --grn:#00b894; --st:env(safe-area-inset-top); --sb:env(safe-area-inset-bottom); }
         body.dark-mode { --bg:#0b1426; --txt:#fff; --crd:rgba(255,255,255,0.12); }
         * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; outline: none; }
-        body { font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 12px) 18px calc(var(--sb) + 12px); display:flex; flex-direction:column; align-items:center; min-height:100dvh; transition:0.2s; overflow-x:hidden; }
+        body { font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 8px) 15px calc(var(--sb) + 10px); display:flex; flex-direction:column; align-items:center; min-height:100dvh; transition:0.2s; overflow-x:hidden; }
         .app { width:100%; max-width:400px; display: flex; flex-direction: column; }
-        .bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; width:100%; }
-        .ibtn { width:44px; height:44px; background:var(--crd); border-radius:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .card { background:var(--crd); padding:15px 18px; border-radius:24px; text-align:center; border:1px solid rgba(0,0,0,0.05); margin-bottom:12px; box-shadow:0 3px 12px rgba(0,0,0,0.03); }
-        .star { width:56px; height:56px; background:rgba(255,204,0,0.15); border:2px solid var(--gld); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; transform:rotate(8deg); }
-        .btn { width:100%; padding:17px; border-radius:20px; color:#fff; font-weight:700; border:none; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-bottom:10px; position:relative; text-decoration:none; transition: transform 0.1s; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .btn:active { transform:scale(0.96); }
-        .btn i { position:absolute; left:18px; font-size:18px; }
-        input { width:100%; padding:15px; border-radius:16px; border:1.5px solid rgba(0,0,0,0.08); margin:12px 0; text-align:center; font-size:17px; background:var(--bg); color:var(--txt); }
-        #prog { display:none; position:fixed; top:0; left:0; width:100%; height:100dvh; background:var(--bg); z-index:999; padding:calc(var(--st) + 15px) 20px; overflow-y:auto; }
-        .p-bar { width:100%; height:12px; background:rgba(0,0,0,0.1); border-radius:6px; margin:15px 0; overflow:hidden; }
+        .bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; width:100%; }
+        .ibtn { width:40px; height:40px; background:var(--crd); border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .card { background:var(--crd); padding:12px 15px; border-radius:22px; text-align:center; border:1px solid rgba(0,0,0,0.05); margin-bottom:8px; box-shadow:0 3px 10px rgba(0,0,0,0.03); }
+        .star { width:52px; height:52px; background:rgba(255,204,0,0.12); border:2px solid var(--gld); border-radius:16px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; transform:rotate(8deg); }
+        .btn { width:100%; padding:15px; border-radius:18px; color:#fff; font-weight:700; border:none; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-bottom:8px; position:relative; text-decoration:none; transition: transform 0.1s; }
+        .btn:active { transform:scale(0.97); }
+        .btn i { position:absolute; left:15px; font-size:17px; }
+        input { width:100%; padding:14px; border-radius:14px; border:1.5px solid rgba(0,0,0,0.08); margin:10px 0; text-align:center; font-size:16px; background:var(--bg); color:var(--txt); }
+        #prog { display:none; position:fixed; top:0; left:0; width:100%; height:100dvh; background:var(--bg); z-index:999; padding:calc(var(--st) + 10px) 15px; overflow-y:auto; }
+        .p-bar { width:100%; height:10px; background:rgba(0,0,0,0.1); border-radius:5px; margin:12px 0; overflow:hidden; }
         .p-fill { height:100%; background:var(--blu); width:0%; transition:1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        h4, h3 { margin: 8px 0; }
+        h4, h3 { margin: 5px 0; }
     </style>
 </head>
 <body>
     <div class="app">
         <div class="bar">
             <div class="ibtn" onclick="th()"><i id="ti" class="fas fa-moon"></i></div>
-            <b style="color:var(--blu); font-size:20px; letter-spacing:-0.5px;">English with Fred</b>
+            <b style="color:var(--blu); font-size:19px; letter-spacing:-0.5px;">English with Fred</b>
             <div class="ibtn" onclick="mu()"><i id="mi" class="fas fa-volume-up"></i></div>
         </div>
 
-        <div id="s-pg" class="card" style="padding:30px 20px;">
-            <div class="star"><i class="fas fa-star" style="color:var(--gld); font-size:26px;"></i></div>
+        <div id="s-pg" class="card" style="padding:25px 20px;">
+            <div class="star"><i class="fas fa-star" style="color:var(--gld); font-size:24px;"></i></div>
             <h3>خوش آمدی!</h3>
-            <p style="font-size:14px; opacity:0.6; margin-bottom:12px;">برای شروع یادگیری نامت را بنویس</p>
+            <p style="font-size:13px; opacity:0.6; margin-bottom:10px;">برای شروع یادگیری نامت را بنویس</p>
             <input type="text" id="ni" placeholder="نام شما..." autocomplete="off">
             <button onclick="sv()" class="btn" style="background:var(--blu)">ورود به کلاس</button>
         </div>
 
         <div id="m-pg" style="display:none">
-            <div class="card" style="padding:15px;">
-                <div id="sd" style="color:var(--gld); margin-bottom:6px; font-size:18px; letter-spacing:4px;"></div>
-                <div id="hu" style="font-weight:800; font-size:19px;"></div>
-                <div style="margin-top:8px;"><small id="bs" style="color:var(--blu); background:rgba(0,122,255,0.12); padding:5px 15px; border-radius:18px; font-weight:bold; font-size:13px;"></small></div>
+            <div class="card" style="padding:12px;">
+                <div id="sd" style="color:var(--gld); margin-bottom:5px; font-size:16px; letter-spacing:3px;"></div>
+                <div id="hu" style="font-weight:800; font-size:18px;"></div>
+                <div style="margin-top:6px;"><small id="bs" style="color:var(--blu); background:rgba(0,122,255,0.1); padding:3px 12px; border-radius:15px; font-weight:bold; font-size:12px;"></small></div>
             </div>
             
             <button class="btn" style="background:#9b59b6" onclick="go('study')">آموزش لغات جدید 📚</button>
             <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Persian → English</button>
             <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Persian</button>
-            <button class="btn" style="background:var(--grn)" onclick="go('word-def')">Word → Definition</button>
-            <button class="btn" style="background:var(--grn)" onclick="go('def-word')">Definition → Word</button>
+            <button class="btn" style="background:var(--green)" onclick="go('word-def')">Word → Definition</button>
+            <button class="btn" style="background:var(--green)" onclick="go('def-word')">Definition → Word</button>
             
-            <div class="card" style="background:rgba(255,59,48,0.06); padding:12px; border:1px dashed var(--red); margin-bottom:12px;">
-                <small style="color:var(--red); font-weight:800; font-size:14px;">🧠 کلمات چالش‌برانگیز</small>
+            <div class="card" style="background:rgba(255,59,48,0.05); padding:10px; border:1px dashed var(--red); margin-bottom:10px;">
+                <small style="color:var(--red); font-weight:800; font-size:13px;">🧠 کلمات چالش‌برانگیز</small>
             </div>
             
             <button class="btn" style="background:#2ecc71" onclick="window.open('https://wa.me/989017708544')">ارتباط در واتس‌اپ <i class="fab fa-whatsapp"></i></button>
@@ -72,8 +72,8 @@
                 <div style="width:40px;"></div>
             </div>
             <div class="card">
-                <p style="font-size:15px; opacity:0.7; margin-bottom:8px;">میانگین نمرات ۱۰ تمرین آخر</p>
-                <h2 id="ap" style="font-size:45px; margin:8px 0; color:var(--blu);">0%</h2>
+                <p style="font-size:14px; opacity:0.7; margin-bottom:5px;">میانگین نمرات ۱۰ تمرین آخر</p>
+                <h2 id="ap" style="font-size:40px; margin:5px 0; color:var(--blu);">0%</h2>
                 <div class="p-bar"><div id="pf" class="p-fill"></div></div>
             </div>
             <div id="hl"></div>
@@ -81,6 +81,7 @@
     </div>
 
     <script>
+        // اطلاعات امنیتی کدگذاری شده
         const _eT = "ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==";
         const _eI = "OTY5OTE4NTk=";
         const ls = localStorage;
@@ -145,9 +146,9 @@
             const lastTen = h.slice(-10).reverse();
             lastTen.forEach((s, i) => { 
                 total += s; 
-                l.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:12px 20px;">
-                    <span style="font-weight:600; font-size:15px;">تمرین ${lastTen.length - i}</span>
-                    <b style="color:var(--blu); font-size:18px;">${s}%</b>
+                l.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px 18px;">
+                    <span style="font-weight:600; font-size:14px;">تمرین ${lastTen.length - i}</span>
+                    <b style="color:var(--blu); font-size:16px;">${s}%</b>
                 </div>`; 
             });
             const avg = Math.round(total / lastTen.length); 
