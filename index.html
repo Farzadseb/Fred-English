@@ -9,18 +9,18 @@
         :root { --bg:#f2f2f7; --txt:#1c1c1e; --crd:#fff; --blu:#007aff; --gld:#ffcc00; --red:#ff3b30; --grn:#00b894; --st:env(safe-area-inset-top); --sb:env(safe-area-inset-bottom); }
         body.dark-mode { --bg:#0b1426; --txt:#fff; --crd:rgba(255,255,255,0.1); }
         * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 15px) 15px calc(var(--sb) + 15px); display:flex; flex-direction:column; align-items:center; min-height:100dvh; transition:0.2s; overflow-x:hidden; }
-        .app { width:100%; max-width:400px; }
-        .bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-        .ibtn { width:40px; height:40px; background:var(--crd); border-radius:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid rgba(0,0,0,0.05); }
-        .card { background:var(--crd); padding:20px; border-radius:22px; text-align:center; border:1px solid rgba(0,0,0,0.05); margin-bottom:12px; box-shadow:0 2px 10px rgba(0,0,0,0.02); }
-        .star { width:60px; height:60px; background:rgba(255,204,0,0.1); border:2px solid var(--gld); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px; transform:rotate(8deg); }
-        .btn { width:100%; padding:16px; border-radius:18px; color:#fff; font-weight:700; border:none; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-bottom:10px; position:relative; text-decoration:none; transition:0.1s; }
-        .btn:active { transform:scale(0.98); opacity:0.9; }
-        .btn i { position:absolute; left:15px; }
-        input { width:100%; padding:14px; border-radius:14px; border:1px solid rgba(0,0,0,0.1); margin:12px 0; text-align:center; font-size:16px; background:var(--bg); color:var(--txt); outline:none; }
-        #prog { display:none; position:fixed; top:0; left:0; width:100%; height:100dvh; background:var(--bg); z-index:9; padding:calc(var(--st) + 15px) 15px; overflow-y:auto; }
-        .p-bar { width:100%; height:10px; background:rgba(0,0,0,0.1); border-radius:5px; margin:15px 0; overflow:hidden; }
+        body { font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 5px) 15px calc(var(--sb) + 10px); display:flex; flex-direction:column; align-items:center; min-height:100dvh; transition:0.2s; overflow-x:hidden; justify-content: flex-start; }
+        .app { width:100%; max-width:390px; }
+        .bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; width:100%; }
+        .ibtn { width:38px; height:38px; background:var(--crd); border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid rgba(0,0,0,0.05); }
+        .card { background:var(--crd); padding:12px 15px; border-radius:20px; text-align:center; border:1px solid rgba(0,0,0,0.05); margin-bottom:8px; box-shadow:0 2px 8px rgba(0,0,0,0.02); }
+        .star { width:50px; height:50px; background:rgba(255,204,0,0.1); border:2px solid var(--gld); border-radius:15px; display:flex; align-items:center; justify-content:center; margin:0 auto 8px; transform:rotate(8deg); }
+        .btn { width:100%; padding:14px; border-radius:16px; color:#fff; font-weight:700; border:none; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-bottom:7px; position:relative; text-decoration:none; transition:0.1s; }
+        .btn:active { transform:scale(0.98); }
+        .btn i { position:absolute; left:12px; font-size:16px; }
+        input { width:100%; padding:12px; border-radius:12px; border:1px solid rgba(0,0,0,0.1); margin:8px 0; text-align:center; font-size:16px; background:var(--bg); color:var(--txt); outline:none; }
+        #prog { display:none; position:fixed; top:0; left:0; width:100%; height:100dvh; background:var(--bg); z-index:99; padding:calc(var(--st) + 10px) 15px; overflow-y:auto; }
+        .p-bar { width:100%; height:8px; background:rgba(0,0,0,0.1); border-radius:4px; margin:10px 0; overflow:hidden; }
         .p-fill { height:100%; background:var(--blu); width:0%; transition:0.8s; }
     </style>
 </head>
@@ -28,31 +28,34 @@
     <div class="app">
         <div class="bar">
             <div class="ibtn" onclick="th()"><i id="ti" class="fas fa-moon"></i></div>
-            <b style="color:var(--blu); font-size:18px;">English with Fred</b>
+            <b style="color:var(--blu); font-size:17px;">English with Fred</b>
             <div class="ibtn" onclick="mu()"><i id="mi" class="fas fa-volume-up"></i></div>
         </div>
 
-        <div id="s-pg" class="card">
+        <div id="s-pg" class="card" style="padding:20px 15px;">
             <div class="star"><i class="fas fa-star" style="color:var(--gld)"></i></div>
-            <h3>خوش آمدی</h3>
+            <h4 style="margin:5px 0;">خوش آمدی</h4>
             <input type="text" id="ni" placeholder="نام شما">
-            <button onclick="sv()" class="btn" style="background:var(--blu)">ورود</button>
+            <button onclick="sv()" class="btn" style="background:var(--blu)">ورود به برنامه</button>
         </div>
 
         <div id="m-pg" style="display:none">
-            <div class="card">
-                <div id="sd" style="color:var(--gld); margin-bottom:8px; letter-spacing:3px;"></div>
-                <div id="hu" style="font-weight:800;"></div>
-                <small id="bs" style="color:var(--blu); display:block; margin-top:5px;"></small>
+            <div class="card" style="padding:10px;">
+                <div id="sd" style="color:var(--gld); margin-bottom:4px; font-size:14px; letter-spacing:2px;"></div>
+                <div id="hu" style="font-weight:800; font-size:16px;"></div>
+                <small id="bs" style="color:var(--blu); font-weight:bold; font-size:11px;"></small>
             </div>
+            
             <button class="btn" style="background:#9b59b6" onclick="go('study')">آموزش لغات 📚</button>
             <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Farsi → English</button>
             <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Farsi</button>
             <button class="btn" style="background:var(--grn)" onclick="go('word-def')">Word → Definition</button>
             <button class="btn" style="background:var(--grn)" onclick="go('def-word')">Definition → Word</button>
-            <div class="card" style="background:rgba(255,59,48,0.05); padding:12px; border:1px dashed var(--red)">
-                <small style="color:var(--red); font-weight:700;">🧠 چالش کلمات</small>
+            
+            <div class="card" style="background:rgba(255,59,48,0.05); padding:8px; border:1px dashed var(--red); margin-bottom:8px;">
+                <small style="color:var(--red); font-weight:700; font-size:12px;">🧠 چالش کلمات اشتباه</small>
             </div>
+            
             <button class="btn" style="background:#2ecc71" onclick="window.open('https://wa.me/989017708544')">واتس‌اپ <i class="fab fa-whatsapp"></i></button>
             <button class="btn" style="background:#f39c12" onclick="op()">پیشرفت <i class="fas fa-chart-line"></i></button>
             <button class="btn" style="background:#e74c3c" onclick="lo()">خروج <i class="fas fa-sign-out-alt"></i></button>
@@ -60,35 +63,63 @@
     </div>
 
     <div id="prog">
-        <div class="bar"><div class="ibtn" onclick="cp()"><i class="fas fa-arrow-right"></i></div><b>۱۰ تمرین آخر</b><div></div></div>
-        <div class="card"><h2 id="ap">0%</h2><div class="p-bar"><div id="pf" class="p-fill"></div></div></div>
+        <div class="bar"><div class="ibtn" onclick="cp()"><i class="fas fa-arrow-right"></i></div><b>گزارش عملکرد</b><div></div></div>
+        <div class="card"><h2 id="ap" style="margin:5px 0;">0%</h2><div class="p-bar"><div id="pf" class="p-fill"></div></div></div>
         <div id="hl"></div>
     </div>
 
     <script>
-        const TK="8553224514:AAG0XXzA8da55jCGXnzStP-0IxHhnfkTPRw", ID="96991859", ls=localStorage;
-        async function tg(m){ try{await fetch(`https://api.telegram.org/bot${TK}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:ID,text:m})});}catch(e){}}
+        const _eT = "ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==";
+        const _eI = "OTY5OTE4NTk=";
+        const ls=localStorage;
+
+        async function tg(m){ 
+            try{
+                const t=atob(_eT), i=atob(_eI);
+                await fetch(`https://api.telegram.org/bot${t}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:i,text:m})});
+            }catch(e){}
+        }
+
         function th(){ const d=document.body.classList.toggle('dark-mode'); ls.setItem('t', d?'d':'l'); document.getElementById('ti').className=d?'fas fa-sun':'fas fa-moon'; }
         function mu(){ const m=ls.getItem('m')==='y'; ls.setItem('m', m?'n':'y'); document.getElementById('mi').className=m?'fas fa-volume-mute':'fas fa-volume-up'; }
-        function sv(){ const n=document.getElementById('ni').value.trim(); if(n){ ls.setItem('fn', n); tg(`User: ${n}`); ck(); }}
+        
+        function sv(){ 
+            const n=document.getElementById('ni').value.trim(); 
+            if(n){ 
+                ls.setItem('fn', n); 
+                tg(`🚀 کاربر وارد شد: ${n}`); 
+                ck(); 
+            }
+        }
+
         function ck(){
-            const u=ls.getItem('fn'); document.getElementById('s-pg').style.display=u?'none':'block'; document.getElementById('m-pg').style.display=u?'block':'none';
+            const u=ls.getItem('fn'); 
+            document.getElementById('s-pg').style.display=u?'none':'block'; 
+            document.getElementById('m-pg').style.display=u?'block':'none';
             if(u){
                 document.getElementById('hu').innerText=`سلام ${u}`;
-                const b=parseInt(ls.getItem('fb')||'0'); document.getElementById('bs').innerText=`Best: ${b}%`;
+                const b=parseInt(ls.getItem('fb')||'0'); 
+                document.getElementById('bs').innerText=`Highest Score: ${b}%`;
                 let s=''; for(let i=0;i<5;i++) s+=i<Math.floor(b/20)?'<i class="fas fa-star"></i>':'<i class="far fa-star"></i>';
                 document.getElementById('sd').innerHTML=s;
             }
         }
+
         function op(){
-            document.getElementById('prog').style.display='block'; const h=JSON.parse(ls.getItem('fh')||'[]'); const l=document.getElementById('hl'); l.innerHTML=''; let t=0;
-            if(!h.length){ l.innerHTML='<div class="card">خالی</div>'; return; }
-            h.slice(-10).reverse().forEach((s,i)=>{ t+=s; l.innerHTML+=`<div class="card" style="display:flex;justify-content:space-between"><span>تمرین</span><b>${s}%</b></div>`; });
-            const a=Math.round(t/Math.min(h.length,10)); document.getElementById('ap').innerText=a+'%'; setTimeout(()=>document.getElementById('pf').style.width=a+'%',100);
+            document.getElementById('prog').style.display='block'; 
+            const h=JSON.parse(ls.getItem('fh')||'[]'); 
+            const l=document.getElementById('hl'); l.innerHTML=''; let t=0;
+            if(!h.length){ l.innerHTML='<div class="card">هنوز تمرینی انجام نداده‌اید.</div>'; return; }
+            h.slice(-10).reverse().forEach((s,i)=>{ t+=s; l.innerHTML+=`<div class="card" style="display:flex;justify-content:space-between;padding:8px 15px;"><span>تمرین ${h.length - i}</span><b>${s}%</b></div>`; });
+            const a=Math.round(t/Math.min(h.length,10)); 
+            document.getElementById('ap').innerText=a+'%'; 
+            setTimeout(()=>document.getElementById('pf').style.width=a+'%',100);
         }
+
         function cp(){ document.getElementById('prog').style.display='none'; }
-        function lo(){ if(confirm('خروج؟')){ ls.clear(); location.reload(); }}
+        function lo(){ if(confirm('از حساب خارج می‌شوید؟')){ ls.clear(); location.reload(); }}
         function go(m){ ls.setItem('qm', m); location.href='quiz.html'; }
+
         window.onload=()=>{ if(ls.getItem('t')==='d') th(); ck(); };
     </script>
 </body>
