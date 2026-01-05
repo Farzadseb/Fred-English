@@ -6,21 +6,19 @@
     <title>Quiz Center</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --text: #fff; --blue: #007aff; --glass: rgba(255,255,255,0.1); --gold: #f1c40f; --green: #34c759; }
-        body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --glass: rgba(0,0,0,0.05); }
+        :root { --bg: #0b1426; --text: #fff; --blue: #007aff; --glass: rgba(255,255,255,0.1); --light-blue: #add8e6; }
+        body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --glass: rgba(0,0,0,0.05); --light-blue: #4682b4; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 15px 100px; display: flex; flex-direction: column; align-items: center; }
-        .head { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 15px 0; }
-        .study-card { width: 100%; max-width: 400px; background: var(--glass); border-radius: 25px; padding: 20px; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
-        .section-title { font-size: 11px; font-weight: bold; color: var(--blue); margin-bottom: 5px; border-bottom: 1px solid rgba(0,122,255,0.2); }
-        .en-text { font-size: 18px; font-weight: 700; color: #fff; display: block; }
-        .fa-text { font-size: 14px; color: var(--gold); display: block; text-align: right; margin-bottom: 10px; }
-        .footer-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(11, 20, 38, 0.9); display: flex; justify-content: center; align-items: center; }
-        .next-btn { width: 90%; max-width: 350px; padding: 16px; border-radius: 18px; background: var(--blue); color: #fff; border: none; font-size: 18px; font-weight: bold; }
-        .main-word { font-size: 28px; font-weight: 800; color: var(--blue); margin: 20px 0; text-align: center; width: 90%; line-height: 1.4; }
-        .opt { width: 100%; max-width: 360px; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--text); margin-bottom: 10px; cursor: pointer; }
-        .correct { background: #34c759 !important; }
-        .wrong { background: #ff3b30 !important; }
-        #prog { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); z-index: 1001; }
+        .head { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; }
+        .card { width: 100%; max-width: 380px; background: var(--glass); border-radius: 25px; padding: 20px; box-sizing: border-box; }
+        .main-word { font-size: 32px; font-weight: 800; color: var(--blue); margin: 15px 0; direction: ltr; text-align: center; }
+        .study-label { font-size: 11px; color: var(--blue); font-weight: bold; text-align: left; width: 100%; border-bottom: 1px solid rgba(0,122,255,0.2); margin: 12px 0 6px; letter-spacing: 1px; }
+        .en-row { direction: ltr; text-align: left; display: flex; align-items: flex-start; gap: 10px; font-size: 17px; font-weight: 500; margin-top: 4px; }
+        .fa-row { direction: rtl; text-align: right; font-size: 14px; color: var(--light-blue); margin-top: 2px; font-weight: normal; }
+        .spk-icon { color: var(--blue); cursor: pointer; font-size: 14px; margin-top: 4px; }
+        .opt { width: 100%; max-width: 380px; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--text); margin-bottom: 10px; cursor: pointer; direction: ltr; }
+        .next-btn { position: fixed; bottom: 30px; width: 90%; max-width: 350px; padding: 18px; border-radius: 20px; background: var(--blue); color: #fff; border: none; font-size: 18px; font-weight: bold; box-shadow: 0 10px 20px rgba(0,122,255,0.3); }
+        #prog { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); z-index: 1000; transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -30,68 +28,80 @@
         <div id="cnt" style="direction: ltr; font-weight: bold;">1 / 10</div>
         <div onclick="spkMain()"><i class="fas fa-volume-up"></i></div>
     </div>
-    <div id="content" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
-    <div class="footer-nav" id="f-nav" style="display:none">
-        <button class="next-btn" onclick="cur++;render()">کلمه بعدی</button>
-    </div>
+    <div id="content" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+    <div id="footer"></div>
 
     <script src="a1-words.js"></script>
     <script>
-        let cur=0,sc=0,mis=[],data=[];
-        const mode=localStorage.getItem('quizMode')||'study';
-        const _sT="ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==", _sC="OTY5OTE4NTk=";
+        let cur=0, sc=0, mis=[], data=[];
+        const mode = localStorage.getItem('quizMode') || 'study';
 
-        function spk(t){if(!t)return; const m=new SpeechSynthesisUtterance(t);m.lang='en-US';m.rate=0.55;speechSynthesis.cancel();speechSynthesis.speak(m)}
+        function spk(t){ if(!t || localStorage.getItem('mute')==='true')return; const m=new SpeechSynthesisUtterance(t); m.lang='en-US'; m.rate=0.55; speechSynthesis.cancel(); speechSynthesis.speak(m); }
         function spkMain(){ if(data[cur]) spk(data[cur].word); }
 
         function init(){
-            if(localStorage.getItem('th')==='l')document.body.classList.add('light-mode');
-            if(window.wordsA1 && window.wordsA1.length > 0){
-                data=[...wordsA1].sort(()=>0.5-Math.random()).slice(0,10);
+            if(localStorage.getItem('th')==='l') document.body.classList.add('light-mode');
+            if(window.wordsA1){
+                data = [...wordsA1].sort(()=>0.5-Math.random()).slice(0,10);
                 render();
-            } else {
-                document.getElementById('content').innerHTML = "خطا در بارگذاری لغات! مطمئن شوید فایل a1-words.js درست است.";
             }
         }
 
         function render(){
-            if(cur>=10) return end();
-            document.getElementById('prog').style.width=(cur+1)*10+"%";
-            document.getElementById('cnt').innerText=`${cur+1} / 10`;
-            const w=data[cur]; const con=document.getElementById('content');
-            
-            if(mode==='study'){
-                document.getElementById('f-nav').style.display='flex';
-                con.innerHTML=`<h1 class="main-word">${w.word}</h1><div style="text-align:center;font-size:18px;margin-bottom:15px">${w.translation}</div>
-                <div class="study-card">
-                    <div class="section-title">EXAMPLE</div><span class="en-text" onclick="spk('${w.example}')">${w.example}</span><span class="fa-text">${w.ex_trans}</span>
-                    <div class="section-title">COLLOCATION</div><span class="en-text" onclick="spk('${w.collocation}')">${w.collocation}</span><span class="fa-text">${w.coll_trans}</span>
-                    <div class="section-title">PHRASAL VERBS</div><span class="en-text" onclick="spk('${w.phrasal_1}')">${w.phrasal_1}</span><span class="fa-text">${w.ph1_trans}</span>
-                    <span class="en-text" onclick="spk('${w.phrasal_2}')">${w.phrasal_2}</span><span class="fa-text">${w.ph2_trans}</span>
-                </div>`;
+            if(cur >= 10) return end();
+            document.getElementById('prog').style.width = (cur+1)*10 + "%";
+            document.getElementById('cnt').innerText = `${cur+1} / 10`;
+            const w = data[cur];
+            const con = document.getElementById('content');
+            const foot = document.getElementById('footer');
+            window.scrollTo(0,0);
+
+            if(mode === 'study'){
+                con.innerHTML = `
+                    <h1 class="main-word">${w.word}</h1>
+                    <div style="font-size:18px; margin-bottom:15px; text-align:center;">${w.translation}</div>
+                    <div class="card">
+                        <div class="study-label">EXAMPLE</div>
+                        <div class="en-row"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.example.replace(/'/g, "\\'")}')"></i> <span>${w.example}</span></div>
+                        <div class="fa-row">${w.ex_trans}</div>
+
+                        <div class="study-label">COLLOCATION</div>
+                        <div class="en-row"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.collocation.replace(/'/g, "\\'")}')"></i> <span>${w.collocation}</span></div>
+                        <div class="fa-row">${w.coll_trans}</div>
+
+                        <div class="study-label">PHRASAL VERBS</div>
+                        <div class="en-row"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.phrasal_1.replace(/'/g, "\\'")}')"></i> <span><b>${w.phrasal_1}</b></span></div>
+                        <div class="fa-row">${w.ph1_trans}</div>
+                        <div class="en-row" style="margin-top:8px;"><i class="fas fa-volume-down spk-icon" onclick="spk('${w.phrasal_2.replace(/'/g, "\\'")}')"></i> <span><b>${w.phrasal_2}</b></span></div>
+                        <div class="fa-row">${w.ph2_trans}</div>
+                    </div>`;
+                foot.innerHTML = `<button class="next-btn" onclick="cur++;render()">کلمه بعدی</button>`;
                 spk(w.word);
             } else {
-                document.getElementById('f-nav').style.display='none';
-                let ques, ans;
-                if(mode==='en-fa'){ ques=w.word; ans=w.translation; }
+                // منطق آزمون (همان قبلی با اصلاح جهت متن گزینه‌ها)
+                foot.innerHTML = "";
+                let ques, ans, isEnQ = false;
+                if(mode==='en-fa'){ ques=w.word; ans=w.translation; isEnQ=true; }
                 else if(mode==='fa-en'){ ques=w.translation; ans=w.word; }
-                else if(mode==='word-def'){ ques=w.word; ans=w.definition; }
-                else if(mode==='def-word'){ ques=w.definition; ans=w.word; }
+                else if(mode==='word-def'){ ques=w.word; ans=w.definition; isEnQ=true; }
+                else if(mode==='def-word'){ ques=w.definition; ans=w.word; isEnQ=true; }
 
-                con.innerHTML=`<div class="main-word">${ques}</div><div id="opts" style="width:100%;display:flex;flex-direction:column;align-items:center"></div>`;
+                con.innerHTML = `<div class="main-word" style="${!isEnQ ? 'direction:rtl' : ''}">${ques}</div><div id="opts" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>`;
                 
-                let ch=[ans]; 
-                while(ch.length<4){
-                    let r=wordsA1[Math.floor(Math.random()*wordsA1.length)];
-                    let val = (mode==='en-fa' || mode==='def-word') ? r.translation : (mode==='word-def' ? r.definition : r.word);
-                    if(!ch.includes(val)) ch.push(val);
+                let ch=[ans];
+                while(ch.length < 4){
+                    let r = wordsA1[Math.floor(Math.random()*wordsA1.length)];
+                    let v = (mode==='en-fa' || mode==='def-word') ? r.translation : (mode==='word-def' ? r.definition : r.word);
+                    if(v && !ch.includes(v)) ch.push(v);
                 }
-                ch.sort(()=>0.5-Math.random()).forEach(c=>{
-                    const b=document.createElement('button'); b.className='opt'; b.innerText=c;
-                    b.onclick=()=>{
-                        if(c===ans){b.classList.add('correct');sc++}
-                        else{b.classList.add('wrong'); mis.push({q:w.word,a:ans})}
-                        setTimeout(()=>{cur++;render()},800)
+                ch.sort(()=>0.5-Math.random()).forEach(c => {
+                    const b = document.createElement('button');
+                    b.className = 'opt'; b.innerText = c;
+                    b.style.direction = (mode==='fa-en' || mode==='def-word') ? 'ltr' : 'rtl';
+                    b.onclick = () => {
+                        if(c === ans){ b.style.background='#34c759'; sc++; }
+                        else { b.style.background='#ff3b30'; }
+                        setTimeout(()=>{ cur++; render(); }, 800);
                     };
                     document.getElementById('opts').appendChild(b);
                 });
@@ -99,15 +109,11 @@
         }
 
         function end(){
-            const p=(sc/10)*100;
-            if(mode!=='study'){
-                if(p > parseInt(localStorage.getItem('fredBest')||0)) localStorage.setItem('fredBest', p);
-                const t=atob(_sT), c=atob(_sC);
-                fetch(`https://api.telegram.org/bot${t}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:c,text:`گزارش: ${localStorage.getItem('fredName')}\nامتیاز: ${p}%`})});
-            }
-            document.body.innerHTML=`<div style="text-align:center;padding-top:100px"><h2>نتیجه: ${p}%</h2><button class="next-btn" onclick="location.replace('index.html')">بازگشت</button></div>`;
+            const p = (sc/10)*100;
+            if(mode!=='study' && p > parseInt(localStorage.getItem('fredBest')||0)) localStorage.setItem('fredBest', p);
+            document.body.innerHTML = `<div style="text-align:center; padding-top:100px;"><h2>نتیجه: ${p}%</h2><button class="next-btn" onclick="location.replace('index.html')">برگشت به خانه</button></div>`;
         }
-        window.onload=init;
+        window.onload = init;
     </script>
 </body>
 </html>
