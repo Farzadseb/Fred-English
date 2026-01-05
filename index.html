@@ -7,7 +7,6 @@
     <style>
         :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; }
         body.light-mode { --bg: #f1f5f9; --text: #1e293b; --card: rgba(0,0,0,0.05); }
-        
         body { font-family: Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: 0.3s; }
         
         .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -19,10 +18,15 @@
         .best { font-size: 14px; font-weight: bold; color: var(--blue); margin-bottom: 10px; direction: ltr !important; }
         
         input#name { width: 80%; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); font-size: 14px; text-align: center; margin-bottom: 10px; background: rgba(255,255,255,0.1); color: var(--text); outline: none; }
-        button#login { width: 85%; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        button#login { width: 85%; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
 
+        .whatsapp-btn { width: 85%; padding: 12px; background: #25d366; color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
         .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 10px; }
         .menu-btn { padding: 16px; border-radius: 18px; color: white; font-weight: bold; font-size: 14px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+
+        #tg-settings { display: none; background: var(--card); padding: 15px; border-radius: 20px; margin-top: 10px; width: 85%; }
+        .tg-input { width: 90%; padding: 8px; margin: 5px 0; border-radius: 10px; border: none; background: rgba(255,255,255,0.2); color: var(--text); font-size: 12px; }
     </style>
 </head>
 <body>
@@ -38,6 +42,9 @@
         <div class="best" id="bestScore">Best Score: 0%</div>
         <input type="text" id="name" placeholder="نام خود را وارد کنید">
         <button id="login">ورود</button>
+        <button class="whatsapp-btn" onclick="window.open('https://wa.me/989017708545?text=سلام، درخواست ثبت‌نام در کلاس‌های فرد را دارم.')">
+            <i class="fab fa-whatsapp"></i> ثبت‌نام در واتس‌اپ
+        </button>
     </div>
 
     <div class="menu" id="mainMenu">
@@ -46,12 +53,34 @@
         <div class="menu-btn" style="background:#0984e3" onclick="start('en-fa')">English → Persian</div>
         <div class="menu-btn" style="background:#00b894" onclick="start('word-def')">Word → Definition</div>
         <div class="menu-btn" style="background:#006400" onclick="start('def-word')">Definition → Word</div>
+        
+        <div id="tg-settings">
+            <input type="text" id="tgToken" class="tg-input" placeholder="Telegram Bot Token">
+            <input type="text" id="tgChatId" class="tg-input" placeholder="Telegram Chat ID">
+            <button onclick="saveTelegram()" style="width:100%; background:var(--blue); border:none; border-radius:10px; color:white; padding:8px; cursor:pointer;">ذخیره تنظیمات تلگرام</button>
+        </div>
+        <div class="menu-btn" style="background:#2980b9" id="tg-trigger">تنظیمات گزارش‌دهی (۳ بار کلیک)</div>
+        
         <div class="menu-btn" style="background:#d63031" onclick="logout()">خروج</div>
     </div>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
+        let clickCount = 0;
+        document.getElementById('tg-trigger').onclick = () => {
+            clickCount++;
+            if (clickCount === 3) document.getElementById('tg-settings').style.display = 'block';
+        };
+
+        function saveTelegram() {
+            localStorage.setItem('tgToken', document.getElementById('tgToken').value);
+            localStorage.setItem('tgChatId', document.getElementById('tgChatId').value);
+            alert("تنظیمات تلگرام ذخیره شد.");
+            document.getElementById('tg-settings').style.display = 'none';
+            clickCount = 0;
+        }
+
         function updateScore() {
             const best = parseInt(localStorage.getItem('fredBest') || '0');
             document.getElementById('bestScore').innerText = `Best Score: ${best}%`;
