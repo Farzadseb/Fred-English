@@ -1,85 +1,21 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English with Fred</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --wrong: #ff3b30; --gold: #f1c40f; }
-        body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --card: rgba(0,0,0,0.05); }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px 40px; display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
-        .container { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; }
-        .top { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .icon-btn { width: 44px; height: 44px; background: var(--card); border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .main-card { width: 100%; background: var(--card); padding: 25px 0; border-radius: 30px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .menu { width: 100%; display: none; flex-direction: column; gap: 10px; align-items: center; }
-        .menu-item { width: 100%; padding: 16px 0; border-radius: 20px; color: white; font-weight: 600; text-align: center; cursor: pointer; border: none; font-size: 15px; }
-        .mistakes-box { width: 100%; background: rgba(255, 59, 48, 0.08); padding: 15px; border-radius: 25px; border: 1px dashed var(--wrong); margin: 10px 0; box-sizing: border-box; }
-        .mistake-row { background: var(--card); padding: 10px; border-radius: 15px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border-right: 4px solid var(--wrong); }
-        .logout-btn { color: var(--wrong); font-weight: bold; margin-top: 20px; cursor: pointer; padding: 10px 20px; border-radius: 12px; background: rgba(255, 59, 48, 0.1); border: none; font-size: 12px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="top">
-            <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></div>
-            <h2 style="font-size: 18px; color: var(--blue); margin:0;">English with Fred</h2>
-            <div class="icon-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></div>
-        </div>
-
-        <div id="setup-page" class="main-card">
-            <div style="font-size: 40px; color: var(--gold); margin-bottom: 10px;" onclick="secret()">⭐</div>
-            <h3>خوش آمدی!</h3>
-            <input type="text" id="nameInp" placeholder="نام شما" style="width: 80%; padding: 15px; border-radius: 15px; border: none; background: rgba(0,0,0,0.2); color: white; text-align: center; margin-bottom: 15px;">
-            <button onclick="saveUser()" class="menu-item" style="background: var(--blue); width: 85%; margin: 0 auto;">ثبت و ورود</button>
-        </div>
-
-        <div id="main-page" class="menu">
-            <div class="main-card" style="width:100%">
-                <div id="display-stars" style="font-size:25px; color:#f1c40f"></div>
-                <div id="hi-user" style="font-size:18px; font-weight:bold; margin: 5px 0;"></div>
-                <div id="best-score" style="direction:ltr; font-size:13px; color:var(--blue)">Best: 0%</div>
-            </div>
-            
-            <div class="menu-item" style="background:#8e44ad" onclick="go('study')">📚 آموزش لغات جدید</div>
-            <div class="menu-item" style="background:#00a8ff" onclick="go('fa-en')">فارسی به انگلیسی</div>
-            <div class="menu-item" style="background:#0984e3" onclick="go('en-fa')">انگلیسی به فارسی</div>
-            <div class="menu-item" style="background:#00b894" onclick="go('word-def')">Word to Definition</div>
-            <div class="menu-item" style="background:#1289A7" onclick="go('def-word')">Definition to Word</div>
-
-            <div class="mistakes-box">
-                <span style="font-weight:bold; color:var(--wrong); font-size:13px;">🧠 مرور اشتباهات</span>
-                <div id="m-list"><p style="font-size:11px; opacity:0.6; margin:10px 0 0;">اشتباهی نداری.</p></div>
-            </div>
-            
-            <button class="logout-btn" onclick="logout()">خروج از حساب</button>
-        </div>
-    </div>
-
-    <script>
-        function id(i){return document.getElementById(i)}
-        function toggleTheme(){const l=document.body.classList.toggle('light-mode');localStorage.setItem('th',l?'l':'d');id('themeIcon').className=l?'fas fa-moon':'fas fa-sun'}
-        function saveUser(){const n=id('nameInp').value.trim();if(n){localStorage.setItem('fredName',n);checkUser()}}
-        function logout(){if(confirm("اطلاعات پاک شود؟")){localStorage.clear();location.reload()}}
-        function checkUser(){
-            const u=localStorage.getItem('fredName');
-            if(u){
-                id('setup-page').style.display='none';id('main-page').style.display='flex';
-                id('hi-user').innerText=`سلام ${u} عزیز`;
-                const b=localStorage.getItem('fredBest')||'0';
-                id('best-score').innerText=`Best: ${b}%`;
-                id('display-stars').innerText='⭐'.repeat(Math.floor(b/20))+'☆'.repeat(5-Math.floor(b/20));
-                renderM();
-            }
-        }
-        function renderM(){
-            const list=JSON.parse(localStorage.getItem('fredM')||'[]');
-            if(list.length){id('m-list').innerHTML=list.slice(-3).map(m=>`<div class="mistake-row"><div style="text-align:right"><b style="color:var(--blue);direction:ltr;display:block">${m.q}</b><small>✅ ${m.a}</small></div><i class="fas fa-volume-up" onclick="spk('${m.q}')" style="color:var(--blue)"></i></div>`).join('')}
-        }
-        function spk(t){const m=new SpeechSynthesisUtterance(t);m.lang='en-US';m.rate=0.5;speechSynthesis.speak(m)}
-        function go(m){localStorage.setItem('quizMode',m);location.href='quiz.html'}
-        window.onload=()=>{if(localStorage.getItem('th')==='l')toggleTheme();checkUser()}
-    </script>
-</body>
-</html>
+window.wordsA1 = [
+  {
+    word: "Experience",
+    translation: "تجربه",
+    definition: "Knowledge or skill that comes from having done certain things.",
+    example: "She has years of experience in teaching.",
+    ex_trans: "او سال‌ها تجربه در تدریس دارد.",
+    collocation: "Work experience",
+    coll_trans: "تجربه کاری",
+    coll_ex: "I need to gain more experience.",
+    coll_ex_trans: "من باید تجربه بیشتری کسب کنم.",
+    phrasal_1: "Go through",
+    ph1_trans: "تجربه کردن (سختی)",
+    ph1_ex: "He is going through a lot.",
+    ph1_ex_trans: "او دوران سختی را می‌گذراند.",
+    phrasal_2: "Build up",
+    ph2_trans: "تقویت کردن",
+    ph2_ex: "Build up your skills.",
+    ph2_ex_trans: "مهارت‌هایت را تقویت کن."
+  }
+];
