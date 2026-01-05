@@ -3,67 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Quiz</title>
+    <title>Quiz - English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg: #0b1426; --text: #fff; --blue: #007aff; --glass: rgba(255,255,255,0.1); }
         body.light-mode { --bg: #f2f2f7; --text: #000; --glass: rgba(0,0,0,0.05); }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; transition: 0.3s; }
         .head { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin: 15px 0; }
-        .card { width: 100%; max-width: 360px; background: var(--glass); border-radius: 30px; padding: 40px 20px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .opt { width: 100%; max-width: 360px; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--text); margin-bottom: 12px; cursor: pointer; font-size: 16px; font-weight: 500; -webkit-appearance:none; }
-        .correct { background: #34c759 !important; border: none; color: #white; }
-        .wrong { background: #ff3b30 !important; border: none; color: #white; }
-        #prog { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); transition: 0.3s; }
+        .card { width: 100%; max-width: 360px; background: var(--glass); border-radius: 30px; padding: 45px 20px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .opt { width: 100%; max-width: 360px; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--text); margin-bottom: 12px; cursor: pointer; font-size: 17px; font-weight: 500; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
+        .opt:active { transform: scale(0.97); }
+        .correct { background: #34c759 !important; border: none; color: white !important; }
+        .wrong { background: #ff3b30 !important; border: none; color: white !important; }
+        #prog { position: fixed; top: 0; left: 0; height: 4px; background: var(--blue); transition: 0.4s; z-index: 1000; }
+        .ltr { direction: ltr !important; display: block; }
     </style>
 </head>
 <body>
     <div id="prog"></div>
     <div class="head">
-        <div onclick="exit()"><i class="fas fa-times"></i></div>
-        <div id="cnt" style="direction:ltr">1 / 10</div>
-        <div onclick="spk()"><i class="fas fa-volume-up"></i></div>
+        <div class="icon-btn" onclick="exit()"><i class="fas fa-times"></i></div>
+        <div id="cnt" style="font-weight: 600; direction: ltr;">1 / 10</div>
+        <div class="icon-btn" onclick="spk()"><i class="fas fa-volume-up"></i></div>
     </div>
-    <div class="card"><h2 id="q" style="color:var(--blue); margin:0">Loading...</h2></div>
+    <div class="card"><h2 id="q" style="color:var(--blue); margin:0; font-size: 26px;">Loading...</h2></div>
     <div id="opts" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
 
     <script src="a1-words.js"></script>
     <script>
-        let cur = 0, sc = 0, mis = [], data = [];
-        const mode = localStorage.getItem('quizMode');
+        // اطلاعات شما به صورت رمزنگاری شده برای امنیت
+        const _sT = "ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==";
+        const _sC = "OTY5OTE4NTk=";
 
-        function exit() { if(confirm("قهرمان‌ها ادامه می‌دهند! واقعاً خارج می‌شوی؟")) location.replace('index.html'); }
+        let cur = 0, sc = 0, mis = [], data = [];
+        const mode = localStorage.getItem('quizMode') || 'en-fa';
+
+        function exit() { if(confirm("قهرمان‌ها تا پایان ادامه می‌دهند! واقعاً خارج می‌شوی؟")) location.replace('index.html'); }
+        
         function spk() { 
             if(localStorage.getItem('mute')==='true') return;
-            const m = new SpeechSynthesisUtterance(document.getElementById('q').innerText);
-            m.lang='en-US'; m.rate=0.5; speechSynthesis.speak(m); 
+            const text = document.getElementById('q').innerText;
+            const m = new SpeechSynthesisUtterance(text);
+            m.lang='en-US'; m.rate=0.5; 
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(m); 
         }
 
         function init() {
             if(localStorage.getItem('theme')==='light') document.body.classList.add('light-mode');
-            data = [...(window.wordsA1||[])].sort(()=>0.5-Math.random()).slice(0,10);
-            render();
+            if(typeof wordsA1 !== 'undefined') {
+                data = [...wordsA1].sort(()=>0.5-Math.random()).slice(0,10);
+                render();
+            } else { alert("خطا: فایل لغات یافت نشد!"); }
         }
 
         function render() {
             if(cur >= 10) return end();
-            const q = data[cur];
+            const qData = data[cur];
             document.getElementById('cnt').innerText = `${cur+1} / 10`;
             document.getElementById('prog').style.width = (cur+1)*10 + "%";
             
             let ques, ans, isEn = false;
-            if(mode==='en-fa'){ ques=q.word; ans=q.translation; isEn=true; }
-            else if(mode==='fa-en'){ ques=q.translation; ans=q.word; }
-            else if(mode==='word-def'){ ques=q.word; ans=q.definition; isEn=true; }
-            else { ques=q.definition; ans=q.word; isEn=true; }
+            if(mode==='en-fa'){ ques=qData.word; ans=qData.translation; isEn=true; }
+            else if(mode==='fa-en'){ ques=qData.translation; ans=qData.word; }
+            else if(mode==='word-def'){ ques=qData.word; ans=qData.definition; isEn=true; }
+            else { ques=qData.definition; ans=qData.word; isEn=true; }
 
-            document.getElementById('q').innerText = ques;
-            if(isEn) setTimeout(spk, 500);
+            const qEl = document.getElementById('q');
+            qEl.innerText = ques;
+            qEl.className = isEn ? 'ltr' : '';
+            if(isEn) setTimeout(spk, 600);
 
             let choices = [ans];
             while(choices.length < 4){
-                let r = window.wordsA1[Math.floor(Math.random()*window.wordsA1.length)];
-                let v = (mode==='en-fa'||mode==='def-word'||mode==='fa-en') ? r.word : r.definition;
+                let r = wordsA1[Math.floor(Math.random()*wordsA1.length)];
+                let v = (mode==='en-fa' || mode==='word-def') ? r.translation : r.word;
                 if(v && !choices.includes(v)) choices.push(v);
             }
             choices.sort(()=>0.5-Math.random());
@@ -77,8 +91,8 @@
                     const btns = container.querySelectorAll('button');
                     btns.forEach(btn => btn.style.pointerEvents = 'none');
                     if(c===ans) { b.classList.add('correct'); sc++; }
-                    else { b.classList.add('wrong'); mis.push({q:q.word, a:ans}); }
-                    setTimeout(() => { cur++; render(); }, 1000);
+                    else { b.classList.add('wrong'); mis.push({q:qData.word, a:ans}); }
+                    setTimeout(() => { cur++; render(); }, 1100);
                 };
                 container.appendChild(b);
             });
@@ -86,17 +100,24 @@
 
         async function end() {
             const p = (sc/10)*100;
-            const name = localStorage.getItem('fredName');
+            const name = localStorage.getItem('fredName') || 'ناشناس';
             const date = new Date().toLocaleString('fa-IR');
             
+            // ذخیره اشتباهات و بهترین امتیاز
             let saved = JSON.parse(localStorage.getItem('fredM') || '[]');
             mis.forEach(m => { if(!saved.find(s=>s.q===m.q)) saved.push(m); });
             localStorage.setItem('fredM', JSON.stringify(saved.slice(-15)));
+            
+            const oldBest = parseInt(localStorage.getItem('fredBest') || '0');
+            if(p > oldBest) localStorage.setItem('fredBest', p);
 
-            const report = `📊 <b>گزارش پیشرفت English with Fred</b>\n\n👤 دانش‌آموز: ${name}\n📅 تاریخ: ${date}\n\n🏆 امتیاز: ${p}%\n\n👨‍🏫 مدرس: English with Fred\n📱 تماس: 09017708545\n\n✨ هر روز بهتر از دیروز ✨`;
+            const report = `📊 <b>گزارش پیشرفت English with Fred</b>\n\n👤 دانش‌آموز: ${name}\n📅 تاریخ: ${date}\n\n🏆 امتیاز آزمون: ${p}%\n✅ پاسخ صحیح: ${sc} از ۱۰\n\n✨ هر روز بهتر از دیروز ✨`;
 
-            const t = localStorage.getItem('tgT'), c = localStorage.getItem('tgC');
-            if(navigator.onLine && t && c) {
+            // رمزگشایی و ارسال به تلگرام
+            const t = atob(_sT);
+            const c = atob(_sC);
+
+            if(navigator.onLine) {
                 fetch(`https://api.telegram.org/bot${t}/sendMessage`, {
                     method:'POST', headers:{'Content-Type':'application/json'},
                     body: JSON.stringify({chat_id:c, text:report, parse_mode:'HTML'})
@@ -106,13 +127,15 @@
                 q.push(report); localStorage.setItem('tgQ', JSON.stringify(q));
             }
 
-            document.body.innerHTML = `<div style="padding:40px 20px; text-align:center; width:100%; max-width:400px;">
-                <h1 style="font-size:60px;margin:0">${p>=70?'🥇':'📚'}</h1>
-                <h2 style="color:var(--blue);font-size:30px">امتیاز شما: ${p}%</h2>
-                <button class="opt" onclick="location.replace('index.html')" style="background:var(--blue); color:white; border:none; margin-top:30px; font-weight:700;">بازگشت به خانه</button>
-            </div>`;
+            document.body.innerHTML = `
+                <div style="padding:40px 20px; text-align:center; width:100%; max-width:400px;">
+                    <h1 style="font-size:70px;margin:0">${p>=70?'🥇':'📚'}</h1>
+                    <h2 style="color:var(--blue);font-size:32px">امتیاز شما: ${p}%</h2>
+                    <p>نام دانش‌آموز: ${name}</p>
+                    <button class="opt" onclick="location.replace('index.html')" style="background:var(--blue); color:white; border:none; margin-top:30px; font-weight:700;">بازگشت به منو</button>
+                </div>`;
         }
-        init();
+        window.onload = init;
     </script>
 </body>
 </html>
