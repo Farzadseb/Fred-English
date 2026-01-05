@@ -10,37 +10,23 @@
         body { font-family: Tahoma, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; color: var(--title); transition: 0.3s; }
         
         .quiz-header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        #q-counter { direction: ltr !important; font-weight: bold; font-size: 14px; opacity: 0.8; }
+        #q-counter { direction: ltr !important; font-weight: bold; font-size: 14px; }
         .icon-btn { width: 35px; height: 35px; border-radius: 50%; background: var(--glass); display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* کاهش ابعاد کادر سوال */
-        .question-card { 
-            width: 100%; 
-            max-width: 420px; 
-            background: var(--glass); 
-            border-radius: 25px; 
-            padding: 25px 15px; 
-            text-align: center; 
-            backdrop-filter: blur(20px); 
-            border: 1px solid rgba(255,255,255,0.2); 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
-            margin-bottom: 20px; 
-            position: relative; 
-        }
-        #question-text { font-size: 20px; font-weight: 800; color: #5856d6; line-height: 1.4; margin: 10px 0; }
+        .question-card { width: 100%; max-width: 360px; background: var(--glass); border-radius: 25px; padding: 25px 15px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); margin-bottom: 20px; position: relative; }
+        #question-text { font-size: 19px; font-weight: 800; color: #5856d6; line-height: 1.4; margin: 15px 0 5px 0; }
         .ltr-mode { direction: ltr !important; text-align: center !important; }
-
-        /* انتقال بلندگو به بالا سمت چپ کادر */
-        #speak-btn { position: absolute; top: 15px; left: 15px; color: var(--blue); font-size: 16px; cursor: pointer; display: none; padding: 5px; }
-
-        #q-subtext { font-size: 13px; opacity: 0.6; margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; }
+        #speak-btn { position: absolute; top: 12px; left: 12px; color: var(--blue); font-size: 18px; cursor: pointer; display: none; }
+        #q-subtext { font-size: 13px; opacity: 0.6; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; }
         
-        .options-grid { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 8px; }
-        .option-btn { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--title); font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; line-height: 1.3; }
+        .options-grid { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 8px; }
+        .option-btn { width: 100%; padding: 14px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: var(--glass); color: var(--title); font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         
-        .correct { background: #34c759 !important; color: white !important; border: none; }
-        .wrong { background: #ff3b30 !important; color: white !important; border: none; }
-        #progress-fill { width: 0%; height: 5px; background: var(--blue); position: fixed; top: 0; left: 0; transition: 0.3s; z-index: 1000; }
+        .correct { background: #34c759 !important; color: white !important; }
+        .wrong { background: #ff3b30 !important; color: white !important; }
+        #progress-fill { width: 0%; height: 5px; background: var(--blue); position: fixed; top: 0; left: 0; z-index: 1000; transition: 0.3s; }
+        
+        .mistake-card { background: rgba(255, 59, 48, 0.1); border-right: 5px solid #ff3b30; padding: 12px; border-radius: 12px; margin-bottom: 10px; text-align: right; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -51,7 +37,7 @@
         <div style="width:35px"></div>
     </div>
 
-    <div class="question-card">
+    <div class="question-card" id="q-card">
         <div id="speak-btn" onclick="speakText()"><i class="fas fa-volume-up"></i></div>
         <h2 id="question-text">...</h2>
         <p id="q-subtext">لطفاً صبر کنید</p>
@@ -63,18 +49,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
-        let currentQ = 0, score = 0, quizWords = [];
+        let currentQ = 0, score = 0, quizWords = [], mistakes = [];
         const mode = localStorage.getItem('quizMode') || 'fa-en';
-
-        // چک کردن تنظیمات از LocalStorage
         const isMuted = () => localStorage.getItem('fredMute') === 'true';
-        const applyTheme = () => {
-            if (localStorage.getItem('fredTheme') === 'light') document.body.classList.add('light-mode');
-            else document.body.classList.remove('light-mode');
-        };
 
         function init() {
-            applyTheme();
+            if (localStorage.getItem('fredTheme') === 'light') document.body.classList.add('light-mode');
             const data = window.wordsA1 || window.words; 
             if (!data) { setTimeout(init, 100); return; }
             quizWords = [...data].sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -85,10 +65,10 @@
             if (isMuted()) return;
             const text = document.getElementById('question-text').innerText;
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // لغو صداهای قبلی
+                window.speechSynthesis.cancel();
                 const msg = new SpeechSynthesisUtterance(text);
                 msg.lang = 'en-US';
-                msg.rate = 0.9;
+                msg.rate = 0.5; // سرعت خواندن ۰.۵
                 window.speechSynthesis.speak(msg);
             }
         }
@@ -105,36 +85,25 @@
             const subText = document.getElementById('q-subtext');
             const speakBtn = document.getElementById('speak-btn');
             
-            let question, answer, optionKey, isEnQuestion = false, isEnOptions = false;
+            let question, answer, optionKey, isEnQ = false, isEnOpt = false;
 
             if (mode === 'fa-en') {
                 question = q.translation; answer = q.word; 
-                subText.innerText = "معادل انگلیسی کلمه بالا چیست؟"; 
-                optionKey = 'word'; isEnQuestion = false; isEnOptions = true;
+                subText.innerText = "معادل انگلیسی چیست؟"; optionKey = 'word'; isEnOpt = true;
             } else if (mode === 'en-fa') {
                 question = q.word; answer = q.translation; 
-                subText.innerText = "معادل فارسی کلمه بالا چیست؟"; 
-                optionKey = 'translation'; isEnQuestion = true; isEnOptions = false;
+                subText.innerText = "معادل فارسی چیست؟"; optionKey = 'translation'; isEnQ = true;
             } else if (mode === 'word-def') {
                 question = q.word; answer = q.definition || q.ex_en; 
-                subText.innerText = "تعریف صحیح برای کلمه بالا کدام است؟"; 
-                optionKey = 'definition'; isEnQuestion = true; isEnOptions = true;
+                subText.innerText = "تعریف صحیح کلمه کدام است؟"; optionKey = 'definition'; isEnQ = true; isEnOpt = true;
             } else {
                 question = q.definition || q.ex_en; answer = q.word; 
-                subText.innerText = "این تعریف مربوط به کدام لغت است؟"; 
-                optionKey = 'word'; isEnQuestion = true; isEnOptions = true;
+                subText.innerText = "این تعریف مربوط به کدام لغت است؟"; optionKey = 'word'; isEnQ = true; isEnOpt = true;
             }
 
             qText.innerText = question;
-            
-            if(isEnQuestion) {
-                qText.classList.add('ltr-mode');
-                speakBtn.style.display = 'block';
-                if(!isMuted()) setTimeout(speakText, 600);
-            } else {
-                qText.classList.remove('ltr-mode');
-                speakBtn.style.display = 'none';
-            }
+            if(isEnQ) { qText.classList.add('ltr-mode'); speakBtn.style.display = 'block'; if(!isMuted()) setTimeout(speakText, 600); }
+            else { qText.classList.remove('ltr-mode'); speakBtn.style.display = 'none'; }
 
             let choices = [answer];
             while (choices.length < 4) {
@@ -149,13 +118,14 @@
             choices.forEach(c => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                if(isEnOptions) btn.classList.add('ltr-mode');
+                if(isEnOpt) btn.classList.add('ltr-mode');
                 btn.innerText = c;
                 btn.onclick = () => {
                     document.querySelectorAll('.option-btn').forEach(b => b.style.pointerEvents = 'none');
                     if (c === answer) { btn.classList.add('correct'); score++; }
                     else { 
                         btn.classList.add('wrong'); 
+                        mistakes.push({ q: question, a: answer, u: c });
                         document.querySelectorAll('.option-btn').forEach(b => { if(b.innerText === answer) b.classList.add('correct'); });
                     }
                     setTimeout(() => { currentQ++; render(); }, 1000);
@@ -164,14 +134,50 @@
             });
         }
 
+        async function sendToTelegram(msg) {
+            const token = localStorage.getItem('tgToken');
+            const chatId = localStorage.getItem('tgChatId');
+            if (!token || !chatId) return;
+            try {
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'HTML' })
+                });
+            } catch (e) { console.error(e); }
+        }
+
         function end() {
             let p = (score / 10) * 100;
             localStorage.setItem('fredBest', p);
-            alert(`آزمون تمام شد!\nامتیاز: ${p}%`);
-            window.location.replace('index.html');
+            const name = localStorage.getItem('fredName') || 'کاربر';
+            
+            let tgMsg = `📊 <b>گزارش عملکرد: ${name}</b>\n📈 امتیاز: ${p}%\n✅ درست: ${score} | ❌ غلط: ${10 - score}`;
+            if (mistakes.length > 0) {
+                tgMsg += `\n\n🔴 <b>اشتباهات:</b>`;
+                mistakes.forEach((m, i) => tgMsg += `\n${i+1}. ${m.q} -> ${m.a}`);
+            }
+            sendToTelegram(tgMsg);
+
+            document.body.innerHTML = `
+                <div style="padding:20px; text-align:center; max-width:400px; margin:auto;">
+                    <h2 style="color:var(--blue)">نتیجه نهایی</h2>
+                    <div class="question-card"><h3>امتیاز شما: ${p}%</h3></div>
+                    <div style="margin-top:20px;">
+                        ${mistakes.map(m => `
+                            <div class="mistake-card">
+                                <b>سوال:</b> ${m.q}<br>
+                                <span style="color:#34c759"><b>درست:</b> ${m.a}</span><br>
+                                <span style="color:#ff3b30"><b>شما:</b> ${m.u}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="option-btn" onclick="location.replace('index.html')" style="background:var(--blue); color:white; border:none; margin-top:20px;">بازگشت به منو</button>
+                </div>
+            `;
         }
 
-        window.addEventListener('load', init);
+        window.onload = init;
     </script>
 </body>
 </html>
