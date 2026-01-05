@@ -6,114 +6,45 @@
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* تنظیمات رنگی تم روشن (پیش‌فرض) */
         :root { 
-            --bg: #f2f2f7; 
-            --text: #1c1c1e; 
-            --card: #ffffff; 
-            --blue: #007aff; 
-            --gold: #ffcc00; 
+            --bg: #f2f2f7; --text: #1c1c1e; --card: #ffffff; --blue: #007aff; 
+            --gold: #ffcc00; --wrong: #ff3b30;
         }
-        /* تنظیمات رنگی تم تاریک */
         body.dark-mode { 
-            --bg: #0b1426; 
-            --text: #ffffff; 
-            --card: rgba(255,255,255,0.1); 
+            --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); 
         }
         body { 
-            font-family: -apple-system, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            transition: 0.3s; 
-            min-height: 100vh;
+            font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); 
+            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; 
+            transition: 0.3s; min-height: 100vh;
         }
-        .top-bar { 
-            width: 100%; 
-            max-width: 400px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px; 
-        }
-        .icon-btn { 
-            width: 42px; 
-            height: 42px; 
-            background: var(--card); 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            border: 1px solid rgba(0,0,0,0.05); 
-        }
-        .main-card { 
-            width: 100%; 
-            max-width: 360px; 
-            background: var(--card); 
-            padding: 30px 20px; 
-            border-radius: 25px; 
-            text-align: center; 
-            border: 1px solid rgba(0,0,0,0.05); 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-        }
-        
-        /* اصلاح بخش ستاره بالای صفحه */
-        .star-box {
-            width: 65px;
-            height: 65px;
-            background: rgba(255, 204, 0, 0.1);
-            border: 2px solid var(--gold);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            transform: rotate(15deg); /* کمی زاویه برای جذابیت */
-        }
-        .star-box i {
-            font-size: 30px;
-            color: var(--gold);
-            transform: rotate(-15deg); /* خنثی کردن زاویه برای خود ستاره */
-        }
+        .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .icon-btn { width: 42px; height: 42px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
 
-        h3 { margin: 0 0 8px; font-size: 22px; }
-        p { font-size: 14px; opacity: 0.6; margin-bottom: 25px; }
-        
-        input { 
-            width: 90%; 
-            padding: 16px; 
-            border-radius: 15px; 
-            border: 1px solid #ddd; 
-            margin-bottom: 20px; 
-            text-align: center; 
-            font-size: 16px; 
-            outline: none;
-            background: var(--bg);
-            color: var(--text);
-        }
-        
+        /* بخش ثبت نام (بدون تغییر) */
+        .main-card { width: 100%; max-width: 380px; background: var(--card); padding: 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 15px; box-sizing: border-box; }
+        .star-box { width: 60px; height: 60px; background: rgba(255, 204, 0, 0.1); border: 2px solid var(--gold); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; transform: rotate(10deg); }
+        .star-box i { font-size: 28px; color: var(--gold); transform: rotate(-10deg); }
+
+        /* استایل دکمه‌های منو (مطابق عکس) */
         .btn { 
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 18px; 
-            background: var(--blue); 
-            color: white; 
-            font-weight: bold; 
-            border: none; 
-            font-size: 17px; 
-            cursor: pointer; 
-            display: block;
-            margin-bottom: 10px;
-            text-decoration: none;
+            width: 100%; max-width: 380px; padding: 18px; border-radius: 20px; 
+            color: white; font-weight: bold; border: none; font-size: 16px; 
+            cursor: pointer; display: flex; align-items: center; 
+            justify-content: center; /* نوشته در وسط */
+            margin-bottom: 12px; position: relative;
+        }
+        .btn i { position: absolute; left: 20px; font-size: 18px; opacity: 0.8; } /* آیکون در سمت چپ */
+
+        .mistakes-box {
+            width: 100%; max-width: 380px; background: rgba(255, 59, 48, 0.05);
+            padding: 15px; border-radius: 20px; border: 1px dashed var(--wrong);
+            margin-bottom: 15px; text-align: center;
         }
     </style>
 </head>
 <body>
+
     <div class="top-bar">
         <div class="icon-btn" onclick="toggleTheme()"><i id="th-icon" class="fas fa-moon"></i></div>
         <div style="font-weight: 900; color: var(--blue); font-size: 19px;">English with Fred</div>
@@ -121,70 +52,81 @@
     </div>
 
     <div id="setup-page" class="main-card">
-        <div class="star-box">
-            <i class="fas fa-star"></i>
-        </div>
-        
+        <div class="star-box"><i class="fas fa-star"></i></div>
         <h3>خوش آمدی!</h3>
-        <p>برای شروع، نام خود را وارد کنید</p>
-        
-        <input type="text" id="nameInp" placeholder="نام شما">
-        
-        <button onclick="saveUser()" class="btn">ورود به برنامه</button>
+        <p style="opacity:0.6; font-size:14px;">نام خود را وارد کنید</p>
+        <input type="text" id="nameInp" placeholder="نام شما" style="width:90%; padding:15px; border-radius:12px; border:1px solid #ddd; margin: 15px 0; text-align:center;">
+        <button onclick="saveUser()" class="btn" style="background:var(--blue)">ورود</button>
     </div>
 
-    <div id="main-page" style="display:none; width: 100%; max-width: 380px;">
-        <div class="main-card" style="margin-bottom: 15px;">
+    <div id="main-page" style="display:none; width:100%; flex-direction:column; align-items:center;">
+        <div class="main-card">
+            <div style="font-size:22px; color:var(--gold); margin-bottom:5px;">⭐⭐⭐⭐⭐</div>
             <div id="hi-user" style="font-size:18px; font-weight:bold;"></div>
             <div style="color:var(--blue); font-size:14px; margin-top:5px;">Best Score: 0%</div>
         </div>
 
-        <button class="btn" style="background:#8e44ad" onclick="go('study')">آموزش لغات جدید</button>
-        <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Farsi to English</button>
-        <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English to Farsi</button>
-        <button class="btn" style="background:#00b894" onclick="go('word-def')">Word to Definition</button>
+        <button class="btn" style="background:#9b59b6" onclick="go('study')">
+            آموزش لغات جدید 📚
+        </button>
+        
+        <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">
+            فارسی به انگلیسی
+        </button>
+
+        <button class="btn" style="background:#0984e3" onclick="go('en-fa')">
+            انگلیسی به فارسی
+        </button>
+
+        <button class="btn" style="background:#00b894" onclick="go('word-def')">
+            (English) لغت به معنی
+        </button>
+
+        <div class="mistakes-box">
+            <div style="font-weight:bold; color:var(--wrong); font-size:14px; margin-bottom:5px;">🧠 کلمات چالش‌برانگیز شما</div>
+            <div style="font-size:12px; opacity:0.6;">هنوز اشتباهی نداشته‌ای. عالیه!</div>
+        </div>
+
+        <button class="btn" style="background:#2ecc71" onclick="window.open('https://wa.me/989017708545')">
+            واتس‌اپ مدرس <i class="fab fa-whatsapp"></i>
+        </button>
+
+        <button class="btn" style="background:#e74c3c" onclick="localStorage.removeItem('fredName'); location.reload();">
+            خروج <i class="fas fa-sign-out-alt"></i>
+        </button>
     </div>
 
     <script>
         function toggleTheme(){ 
-            const b = document.body;
-            b.classList.toggle('dark-mode');
-            const isDark = b.classList.contains('dark-mode');
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             document.getElementById('th-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         }
-
         function toggleMute(){
             const m = localStorage.getItem('mute') === 'true';
             localStorage.setItem('mute', !m);
             document.getElementById('m-icon').className = !m ? 'fas fa-volume-mute' : 'fas fa-volume-up';
         }
-
         function saveUser(){
             const n = document.getElementById('nameInp').value.trim();
-            if(n){
-                localStorage.setItem('fredName', n);
-                checkUser();
-            }
+            if(n){ localStorage.setItem('fredName', n); check(); }
         }
-
-        function checkUser(){
+        function check(){
             const u = localStorage.getItem('fredName');
+            const s = document.getElementById('setup-page');
+            const m = document.getElementById('main-page');
             if(u){
-                document.getElementById('setup-page').style.display = 'none';
-                document.getElementById('main-page').style.display = 'block';
+                s.style.display = 'none'; m.style.display = 'flex';
                 document.getElementById('hi-user').innerText = `سلام ${u} عزیز`;
+            } else {
+                s.style.display = 'block'; m.style.display = 'none';
             }
         }
-
-        function go(m){
-            localStorage.setItem('quizMode', m);
-            location.href = 'quiz.html';
-        }
-
+        function go(m){ localStorage.setItem('quizMode', m); location.href = 'quiz.html'; }
         window.onload = () => {
             if(localStorage.getItem('theme') === 'dark') toggleTheme();
-            checkUser();
+            check();
         };
     </script>
 </body>
