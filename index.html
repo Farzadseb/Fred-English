@@ -14,17 +14,17 @@
         .icon-btn { width: 42px; height: 42px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(0,0,0,0.05); }
 
         .main-card { width: 100%; max-width: 380px; background: var(--card); padding: 25px; border-radius: 25px; text-align: center; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 15px; box-sizing: border-box; }
+        
+        /* استایل ستاره ثبت نام که دوست داشتید */
         .star-box { width: 60px; height: 60px; background: rgba(255, 204, 0, 0.1); border: 2px solid var(--gold); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; transform: rotate(10deg); }
         .star-box i { font-size: 28px; color: var(--gold); transform: rotate(-10deg); }
 
         .btn { width: 100%; max-width: 380px; padding: 18px; border-radius: 20px; color: white; font-weight: bold; border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; position: relative; text-decoration: none; box-sizing: border-box; }
         .btn i { position: absolute; left: 20px; font-size: 18px; opacity: 0.9; }
 
-        #progress-page { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:10000; overflow-y:auto; padding:20px; box-sizing:border-box; }
-        .progress-bar { width: 100%; height: 12px; background: #ddd; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--blue); width: 0%; transition: 1s; }
+        input { width: 90%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; margin: 15px 0; text-align: center; font-size: 16px; background: var(--bg); color: var(--text); outline: none; }
         
-        input { width: 90%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; margin: 15px 0; text-align: center; font-size: 16px; background: var(--bg); color: var(--text); }
+        #setup-page, #main-page { display: none; width: 100%; flex-direction: column; align-items: center; }
     </style>
 </head>
 <body>
@@ -43,16 +43,18 @@
         <button onclick="saveUser()" class="btn" style="background:var(--blue)">ورود</button>
     </div>
 
-    <div id="main-page" style="display:none; width:100%; flex-direction:column; align-items:center;">
+    <div id="main-page">
         <div class="main-card">
-            <div id="star-display" style="font-size:22px; color:var(--gold); margin-bottom:5px; letter-spacing: 3px;"></div>
+            <div id="star-display" style="font-size:22px; color:var(--gold); margin-bottom:5px; letter-spacing: 3px;">
+                <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+            </div>
             <div id="hi-user" style="font-size:18px; font-weight:bold;"></div>
             <div id="best-score-text" style="color:var(--blue); font-size:14px; margin-top:5px;">Best Score: 0%</div>
         </div>
 
         <button class="btn" style="background:#9b59b6" onclick="go('study')">آموزش لغات جدید 📚</button>
-        <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Farsi → English</button>
-        <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Farsi</button>
+        <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Persian → English</button>
+        <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Persian</button>
         <button class="btn" style="background:var(--green)" onclick="go('word-def')">Word → Definition</button>
         <button class="btn" style="background:var(--green)" onclick="go('def-word')">Definition → Word</button>
 
@@ -62,22 +64,8 @@
         </div>
 
         <button class="btn" style="background:#2ecc71" onclick="window.open('https://wa.me/989017708544')">ثبت‌نام واتس‌اپ <i class="fab fa-whatsapp"></i></button>
-        <button class="btn" style="background:#f39c12" onclick="openProgress()">گزارش پیشرفت <i class="fas fa-chart-line"></i></button>
+        <button class="btn" style="background:#f39c12" onclick="alert('به زودی...')">گزارش پیشرفت <i class="fas fa-chart-line"></i></button>
         <button class="btn" style="background:#e74c3c" onclick="logout()">خروج <i class="fas fa-sign-out-alt"></i></button>
-    </div>
-
-    <div id="progress-page">
-        <div class="top-bar">
-            <div class="icon-btn" onclick="closeProgress()"><i class="fas fa-arrow-right"></i></div>
-            <div style="font-weight: 900; color: var(--blue);">۱۰ تمرین آخر</div>
-            <div style="width:42px;"></div>
-        </div>
-        <div class="main-card">
-            <div style="font-size:14px; opacity:0.7;">میانگین نمرات</div>
-            <div id="avg-percent" style="font-size:38px; font-weight:900; color:var(--blue); margin:10px 0;">0%</div>
-            <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
-        </div>
-        <div id="history-list" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
     </div>
 
     <script>
@@ -86,58 +74,55 @@
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             document.getElementById('th-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         }
+
         function toggleMute(){
             const m = localStorage.getItem('mute') === 'true';
             localStorage.setItem('mute', !m);
             document.getElementById('m-icon').className = !m ? 'fas fa-volume-mute' : 'fas fa-volume-up';
         }
+
         function saveUser(){
             const n = document.getElementById('nameInp').value.trim();
-            if(n){ localStorage.setItem('fredName', n); check(); }
+            if(n){ 
+                localStorage.setItem('fredName', n); 
+                check(); 
+            }
         }
+
         function check(){
             const u = localStorage.getItem('fredName');
-            document.getElementById('setup-page').style.display = u ? 'none' : 'block';
-            document.getElementById('main-page').style.display = u ? 'flex' : 'none';
+            const setupPage = document.getElementById('setup-page');
+            const mainPage = document.getElementById('main-page');
+            
             if(u){
+                setupPage.style.display = 'none';
+                mainPage.style.display = 'flex';
                 document.getElementById('hi-user').innerText = `سلام ${u} عزیز`;
                 const best = parseInt(localStorage.getItem('fredBest') || '0');
                 document.getElementById('best-score-text').innerText = `Best Score: ${best}%`;
-                updateStars(best);
+            } else {
+                setupPage.style.display = 'flex';
+                mainPage.style.display = 'none';
             }
         }
-        function updateStars(score) {
-            const count = Math.floor(score / 20);
-            let h = '';
-            for(let i=0; i<5; i++) h += i < count ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-            document.getElementById('star-display').innerHTML = h;
+
+        function logout(){
+            if(confirm('آیا می‌خواهید خارج شوید؟')){
+                localStorage.removeItem('fredName');
+                location.reload();
+            }
         }
-        function openProgress(){
-            document.getElementById('progress-page').style.display = 'block';
-            const history = JSON.parse(localStorage.getItem('fredHistory') || '[]');
-            const listCont = document.getElementById('history-list');
-            listCont.innerHTML = '';
-            let total = 0;
-            if(history.length === 0){ listCont.innerHTML = '<div class="main-card">تمرینی ثبت نشده.</div>'; return; }
-            const lastTen = history.slice(-10).reverse();
-            lastTen.forEach((s, i) => {
-                total += s;
-                const card = document.createElement('div');
-                card.className = 'main-card'; card.style.padding = '15px'; card.style.marginBottom = '10px';
-                card.style.display = 'flex'; card.style.justifyContent = 'space-between';
-                card.innerHTML = `<span>تمرین ${lastTen.length - i}</span> <span style="font-weight:900; color:var(--blue)">${s}%</span>`;
-                listCont.appendChild(card);
-            });
-            const avg = Math.round(total / lastTen.length);
-            document.getElementById('avg-percent').innerText = avg + '%';
-            setTimeout(() => document.getElementById('progress-fill').style.width = avg + '%', 100);
+
+        function go(m){ 
+            localStorage.setItem('quizMode', m); 
+            window.location.href = 'quiz.html'; 
         }
-        function closeProgress(){ document.getElementById('progress-page').style.display = 'none'; }
-        function logout(){ if(confirm('خروج؟')){ localStorage.removeItem('fredName'); location.reload(); } }
-        function go(m){ localStorage.setItem('quizMode', m); location.href = 'quiz.html'; }
 
         window.onload = () => {
-            if(localStorage.getItem('theme') === 'dark') toggleTheme();
+            if(localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('th-icon').className = 'fas fa-sun';
+            }
             check();
         };
     </script>
