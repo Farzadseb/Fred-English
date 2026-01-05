@@ -25,13 +25,13 @@
 
     <div id="main-menu" class="screen" style="display: none;">
         <div class="header">
-            <button class="icon-btn" onclick="toggleSound()">🔊</button>
+            <button class="icon-btn" id="menu-sound-btn" onclick="toggleSound()">🔊</button>
             <h1 class="title-top">English with Fred</h1>
-            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
+            <button class="icon-btn" id="menu-dark-btn" onclick="toggleDarkMode()">🌙</button>
         </div>
         <div class="card status-card">
             <div class="stars-row">⭐⭐⭐⭐⭐</div>
-            <h2 id="welcome-text">سلام عزیز</h2>
+            <h2 id="welcome-text">سلام</h2>
             <div class="best-score">Best Score: <span id="high-score-val">0%</span></div>
         </div>
         <div class="menu-grid">
@@ -49,42 +49,42 @@
 
     <div id="learning-screen" class="screen" style="display: none;">
         <div class="header">
-            <button class="icon-btn" onclick="showMenu()">🏠</button>
+            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
             <div class="mini-progress">
                 <div class="stars-mini">⭐⭐⭐⭐⭐</div>
-                <div id="counter">1 / 200</div>
+                <div id="counter">1 / 180</div>
             </div>
-            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
+            <button class="icon-btn" onclick="showMenu()">🏠</button>
         </div>
 
         <div class="word-card-pro">
-            <h1 id="word-eng" class="blue-text-large">Experience</h1>
-            <p id="word-fa" class="fa-text-sub">تجربه</p>
+            <h1 id="word-eng" class="blue-text-large"></h1>
+            <p id="word-fa" class="fa-text-sub"></p>
             
             <div class="content-box">
                 <div class="section-block">
                     <span class="label">EXAMPLE</span>
-                    <div class="row-item">
-                        <button class="spk-right" onclick="speakField('word-ex')">🔊</button>
+                    <div class="row-item-reversed">
                         <p id="word-ex" class="eng-p"></p>
+                        <button class="spk-btn" onclick="speakField('word-ex')">🔊</button>
                     </div>
                     <p id="word-ex-fa" class="fa-p"></p>
                 </div>
 
                 <div class="section-block">
                     <span class="label">COLLOCATION</span>
-                    <div class="row-item">
-                        <button class="spk-right" onclick="speakField('word-coll')">🔊</button>
+                    <div class="row-item-reversed">
                         <p id="word-coll" class="eng-p"></p>
+                        <button class="spk-btn" onclick="speakField('word-coll')">🔊</button>
                     </div>
                     <p id="word-coll-fa" class="fa-p"></p>
                 </div>
 
                 <div class="section-block">
                     <span class="label">PHRASAL VERBS</span>
-                    <div class="row-item">
-                        <button class="spk-right" onclick="speakField('word-pv')">🔊</button>
+                    <div class="row-item-reversed">
                         <p id="word-pv" class="eng-p"></p>
+                        <button class="spk-btn" onclick="speakField('word-pv')">🔊</button>
                     </div>
                     <p id="word-pv-fa" class="fa-p"></p>
                 </div>
