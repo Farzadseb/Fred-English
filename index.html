@@ -3,50 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Learning App</title>
+    <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="header-nav">
-        <div class="nav-right">
-            <button class="back-link" onclick="goBack()">بازگشت ></button>
+    <div id="registration-screen" class="full-screen-center">
+        <div class="reg-card fade-in-effect">
+            <h2>خوش آمدید</h2>
+            <p>لطفاً نام خود را وارد کنید تا شروع کنیم</p>
+            <input type="text" id="user-name-input" placeholder="نام و نام خانوادگی...">
+            <button class="btn blue-dark" onclick="registerUser()" style="margin-top: 20px;">ورود به برنامه</button>
         </div>
-        <div class="nav-center">
-            <div class="stars-container" id="stars-box">
+    </div>
+
+    <div id="main-menu" style="display:none;">
+        <div class="menu-header">
+            <button class="icon-btn">🔊</button>
+            <h2 class="app-title">English with Fred</h2>
+            <button class="icon-btn">🌙</button>
+        </div>
+
+        <div class="user-status-card">
+            <div class="stars-display" id="menu-stars">
                 <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
             </div>
-            <div id="progress-text" class="progress-sub">1 / 200</div>
+            <h3 id="welcome-message">سلام کاربر عزیز</h3>
+            <div class="best-score-badge">Best Score: <span id="high-score">0%</span></div>
         </div>
-        <div class="nav-left">
-            <div class="score-badge">امتیاز: <span id="score-value">0</span></div>
+
+        <div class="menu-buttons">
+            <button class="btn purple" onclick="startLearning()">📚 آموزش لغات جدید</button>
+            <button class="btn blue-light" onclick="startQuiz('p-e')">Persian → English</button>
+            <button class="btn blue-dark" onclick="startQuiz('e-p')">English → Persian</button>
+            <button class="btn green-dark">Word → Definition</button>
+            <button class="btn green-dark">Definition → Word</button>
+            
+            <button class="btn outline-red" id="mistake-btn" onclick="startMistakePractice()">
+                🧠 کلمات چالش‌برانگیز (<span id="mistake-count">0</span>)
+            </button>
+            
+            <button class="btn green-whatsapp">🟢 ارتباط در واتس‌اپ</button>
+            <button class="btn orange">📊 گزارش پیشرفت</button>
+            <button class="btn red" onclick="logout()">↪ خروج از حساب</button>
         </div>
     </div>
 
-    <hr class="divider">
-
-    <div class="search-container">
-        <input type="text" id="search-input" placeholder="جستجوی لغت..." oninput="searchWord()">
-    </div>
-
-    <div id="mistake-banner" class="mistake-area" style="display:none;">
-        <button onclick="startMistakePractice()" class="mistake-btn">
-            تمرین لغات دشوار (<span id="mistake-count">0</span>)
-        </button>
-    </div>
-
-    <div id="card-container"></div>
-
-    <div class="footer-spacer"></div>
-    <button id="main-action-btn" class="next-btn" onclick="nextWord()">کلمه بعدی</button>
-
-    <div id="custom-popup" class="popup-hidden">
-        <div class="popup-overlay"></div>
-        <div class="popup-content">
-            <h2 id="popup-title"></h2>
-            <p id="popup-text"></p>
-            <button class="popup-close-btn" onclick="closePopup()">بزن بریم!</button>
-        </div>
+    <div id="app-container" style="display:none;">
+        <div id="card-display"></div>
     </div>
 
     <script src="a1-words.js"></script>
