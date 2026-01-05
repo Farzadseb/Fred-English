@@ -4,159 +4,97 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <title>Fred English – Pro</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{
---bg:#f2f2f7;--txt:#1c1c1e;--crd:#fff;--blu:#007aff;
---gld:#ffcc00;--red:#ff3b30;--grn:#00b894;
---st:env(safe-area-inset-top);--sb:env(safe-area-inset-bottom)
-}
+:root{--bg:#f2f2f7;--txt:#1c1c1e;--crd:#fff;--blu:#007aff;--gld:#ffcc00;--red:#ff3b30;--grn:#00b894;--st:env(safe-area-inset-top);--sb:env(safe-area-inset-bottom)}
 body.dark{--bg:#0b1426;--txt:#fff;--crd:rgba(255,255,255,.12)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;outline:none}
-body{
-margin:0;padding:calc(var(--st)+14px) 18px calc(var(--sb)+14px);
-font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-background:var(--bg);color:var(--txt);display:flex;justify-content:center;min-height:100dvh
-}
+body{margin:0;padding:calc(var(--st) + 14px) 18px calc(var(--sb) + 14px);font-family:-apple-system,sans-serif;background:var(--bg);color:var(--txt);display:flex;justify-content:center;min-height:100dvh}
 .app{width:100%;max-width:400px}
 .bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.ibtn{
-width:44px;height:44px;border-radius:14px;background:var(--crd);
-display:flex;align-items:center;justify-content:center;cursor:pointer;
-border:1px solid rgba(0,0,0,.05);box-shadow:0 2px 5px rgba(0,0,0,.02)
-}
-.card{
-background:var(--crd);border-radius:24px;padding:18px;margin-bottom:12px;
-border:1px solid rgba(0,0,0,.05);text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.03)
-}
-.star{
-width:56px;height:56px;border-radius:18px;margin:0 auto 10px;
-background:rgba(255,204,0,.15);border:2px solid var(--gld);
-display:flex;align-items:center;justify-content:center;transform:rotate(8deg)
-}
-.btn{
-width:100%;padding:17px;border-radius:20px;border:none;
-font-weight:700;font-size:16px;color:#fff;cursor:pointer;
-display:flex;align-items:center;justify-content:center;margin-bottom:10px;
-position:relative;transition:transform .1s;box-shadow:0 4px 10px rgba(0,0,0,.05)
-}
+.ibtn{width:44px;height:44px;border-radius:14px;background:var(--crd);display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid rgba(0,0,0,.05);box-shadow:0 2px 5px rgba(0,0,0,.02)}
+.card{background:var(--crd);border-radius:24px;padding:18px;margin-bottom:12px;border:1px solid rgba(0,0,0,.05);text-align:center;box-shadow:0 3px 12px rgba(0,0,0,.03)}
+.star{width:56px;height:56px;border-radius:18px;margin:0 auto 10px;background:rgba(255,204,0,.15);border:2px solid var(--gld);display:flex;align-items:center;justify-content:center;transform:rotate(8deg)}
+.btn{width:100%;padding:17px;border-radius:20px;border:none;font-weight:700;font-size:16px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative;transition:transform .1s;box-shadow:0 4px 10px rgba(0,0,0,.05)}
 .btn i{position:absolute;left:18px;font-size:18px}
 .btn:active{transform:scale(.96)}
-input{
-width:100%;padding:15px;border-radius:16px;
-border:1.5px solid rgba(0,0,0,.08);
-background:var(--bg);color:var(--txt);
-font-size:17px;text-align:center;margin:12px 0
-}
-#prog{
-display:none;position:fixed;inset:0;z-index:99;
-background:var(--bg);padding:calc(var(--st)+16px) 20px;overflow:auto
-}
+input{width:100%;padding:15px;border-radius:16px;border:1.5px solid rgba(0,0,0,.08);background:var(--bg);color:var(--txt);font-size:17px;text-align:center;margin:12px 0}
+#prog{display:none;position:fixed;inset:0;z-index:999;background:var(--bg);padding:calc(var(--st) + 16px) 20px;overflow:auto}
 .p-bar{height:12px;border-radius:6px;background:rgba(0,0,0,.1);overflow:hidden;margin:15px 0}
 .p-fill{height:100%;width:0;background:var(--blu);transition:1s cubic-bezier(.2,.8,.2,1)}
-.smallpill{
-color:var(--blu);background:rgba(0,122,255,.12);
-padding:5px 15px;border-radius:18px;font-weight:700;font-size:13px;display:inline-block
-}
+.smallpill{color:var(--blu);background:rgba(0,122,255,.12);padding:5px 15px;border-radius:18px;font-weight:700;font-size:13px;display:inline-block}
 </style>
 </head>
-
 <body>
 <div class="app">
-
   <div class="bar">
     <div class="ibtn" onclick="toggleTheme()"><i id="ti" class="fas fa-moon"></i></div>
-    <b style="color:var(--blu);font-size:20px;letter-spacing:-.5px">English with Fred</b>
+    <b style="color:var(--blu);font-size:20px">English with Fred</b>
     <div class="ibtn" onclick="toggleMute()"><i id="mi" class="fas fa-volume-up"></i></div>
   </div>
 
-  <div id="login" class="card" style="padding:30px 20px">
+  <div id="login" class="card">
     <div class="star"><i class="fas fa-star" style="color:var(--gld);font-size:26px"></i></div>
-    <h3 style="margin:8px 0">خوش آمدی!</h3>
-    <p style="opacity:.6;font-size:14px;margin:0 0 12px">برای شروع نامت را بنویس</p>
-    <input id="name" placeholder="نام شما..." autocomplete="off" />
+    <h3>خوش آمدی!</h3>
+    <input id="userName" placeholder="نام شما..." autocomplete="off" />
     <button class="btn" style="background:var(--blu)" onclick="loginUser()">ورود به کلاس</button>
   </div>
 
   <div id="menu" style="display:none">
-    <div class="card" style="padding:15px">
+    <div class="card">
       <div id="stars" style="color:var(--gld);margin-bottom:6px;font-size:18px;letter-spacing:4px"></div>
       <div id="hello" style="font-weight:800;font-size:19px"></div>
       <div style="margin-top:8px"><small id="best" class="smallpill"></small></div>
     </div>
-
-    <button class="btn" style="background:#9b59b6" onclick="go('study')">آموزش لغات جدید 📚</button>
+    <button class="btn" style="background:#9b59b6" onclick="go('study')">آموزش لغات 📚</button>
     <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Persian → English</button>
     <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English → Persian</button>
     <button class="btn" style="background:var(--grn)" onclick="go('word-def')">Word → Definition</button>
     <button class="btn" style="background:var(--grn)" onclick="go('def-word')">Definition → Word</button>
-
-    <div class="card" style="background:rgba(255,59,48,.06);padding:12px;border:1px dashed var(--red);margin-bottom:12px">
-      <small style="color:var(--red);font-weight:800;font-size:14px">🧠 کلمات چالش‌برانگیز</small>
-    </div>
-
-    <button class="btn" style="background:#2ecc71" onclick="openWA()">ارتباط در واتس‌اپ <i class="fab fa-whatsapp"></i></button>
+    <button class="btn" style="background:#2ecc71" onclick="openWA()">واتس‌اپ <i class="fab fa-whatsapp"></i></button>
     <button class="btn" style="background:#f39c12" onclick="openProg()">گزارش پیشرفت <i class="fas fa-chart-line"></i></button>
-    <button class="btn" style="background:#e74c3c" onclick="logout()">خروج از حساب <i class="fas fa-sign-out-alt"></i></button>
+    <button class="btn" style="background:#e74c3c" onclick="logout()">خروج <i class="fas fa-sign-out-alt"></i></button>
   </div>
-
 </div>
 
 <div id="prog">
-  <div class="app" style="margin:0 auto;max-width:400px">
+  <div class="app" style="margin:0 auto">
     <div class="bar">
       <div class="ibtn" onclick="closeProg()"><i class="fas fa-arrow-right"></i></div>
       <b>وضعیت تحصیلی</b>
       <div style="width:44px"></div>
     </div>
-
     <div class="card">
-      <p style="opacity:.7;margin:0 0 8px">میانگین نمرات ۱۰ تمرین آخر</p>
       <h2 id="avg" style="color:var(--blu);font-size:45px;margin:8px 0">0%</h2>
       <div class="p-bar"><div id="fill" class="p-fill"></div></div>
     </div>
-
     <div id="history"></div>
   </div>
 </div>
 
 <script>
 const ls = localStorage;
-
-// اطلاعات امنیتی کدگذاری شده
 const TOKEN = atob("ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==");
-const CHAT  = atob("OTY5OTE4NTk=");
+const CHAT = atob("OTY5OTE4NTk=");
 
 async function tg(text){
-  try{
-    await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({chat_id:CHAT,text})
-    });
-  }catch(e){}
-}
-
-function setMuteUI(isMuted){
-  mi.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+  try{ await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text})});}catch(e){}
 }
 
 function toggleTheme(){
-  document.body.classList.toggle('dark');
-  const isDark = document.body.classList.contains('dark');
-  ls.setItem('t', isDark ? 'd' : 'l');
-  ti.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+  const d = document.body.classList.toggle('dark');
+  ls.setItem('t', d ? 'd' : 'l');
+  ti.className = d ? 'fas fa-sun' : 'fas fa-moon';
 }
 
 function toggleMute(){
-  const isMuted = (ls.getItem('m') === 'y');
-  const nextMuted = !isMuted;
-  ls.setItem('m', nextMuted ? 'y' : 'n');
-  setMuteUI(nextMuted);
+  const m = ls.getItem('m') === 'y';
+  ls.setItem('m', m ? 'n' : 'y');
+  mi.className = m ? 'fas fa-volume-up' : 'fas fa-volume-mute';
 }
 
 function loginUser(){
-  const n = name.value.trim();
+  const n = document.getElementById('userName').value.trim();
   if(!n) return;
   ls.setItem('fn', n);
   tg(`✅ ورود: ${n}`);
@@ -165,75 +103,39 @@ function loginUser(){
 
 function init(){
   const u = ls.getItem('fn');
-  login.style.display = u ? 'none' : 'block';
-  menu.style.display  = u ? 'block' : 'none';
+  document.getElementById('login').style.display = u ? 'none' : 'block';
+  document.getElementById('menu').style.display = u ? 'block' : 'none';
   if(!u) return;
-
-  hello.innerText = `سلام ${u} عزیز`;
-
-  const b = parseInt(ls.getItem('fb') || '0', 10);
-  best.innerText = `Best Score: ${b}%`;
-
-  const starCount = Math.floor(b / 20);
-  stars.innerHTML = Array.from({length:5}, (_,i)=>
-    i < starCount ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>'
-  ).join('');
+  document.getElementById('hello').innerText = `سلام ${u}`;
+  const b = parseInt(ls.getItem('fb') || '0');
+  document.getElementById('best').innerText = `Best: ${b}%`;
+  const sc = Math.floor(b/20);
+  document.getElementById('stars').innerHTML = Array.from({length:5},(_,i)=>i<sc?'<i class="fas fa-star"></i>':'<i class="far fa-star"></i>').join('');
 }
 
 function openProg(){
-  prog.style.display = 'block';
-
+  document.getElementById('prog').style.display = 'block';
   const h = JSON.parse(ls.getItem('fh') || '[]');
-  history.innerHTML = '';
-
-  if(!h.length){
-    history.innerHTML = '<div class="card" style="opacity:.7">هنوز تمرینی ثبت نشده است.</div>';
-    fill.style.width = '0%';
-    avg.innerText = '0%';
-    return;
-  }
-
-  const lastTen = h.slice(-10).reverse();
-  let total = 0;
-
-  lastTen.forEach((s, i) => {
-    total += s;
-    history.innerHTML += `
-      <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;text-align:right">
-        <span style="font-weight:600;font-size:15px">تمرین ${lastTen.length - i}</span>
-        <b style="color:var(--blu);font-size:18px">${s}%</b>
-      </div>`;
+  const his = document.getElementById('history'); his.innerHTML = '';
+  if(!h.length){ his.innerHTML = '<div class="card">خالی</div>'; return; }
+  let t = 0;
+  h.slice(-10).reverse().forEach((s,i)=>{
+    t += s;
+    his.innerHTML += `<div class="card" style="display:flex;justify-content:space-between"><span>تمرین ${h.length-i}</span><b>${s}%</b></div>`;
   });
-
-  const a = Math.round(total / lastTen.length);
-  avg.innerText = a + '%';
-  setTimeout(()=> fill.style.width = a + '%', 100);
+  const a = Math.round(t/Math.min(h.length,10));
+  document.getElementById('avg').innerText = a + '%';
+  setTimeout(()=>document.getElementById('fill').style.width=a+'%',100);
 }
 
-function closeProg(){ prog.style.display = 'none'; }
-
-function logout(){
-  if(confirm('آیا از حساب خود خارج می‌شوید؟ تمام نمرات پاک خواهد شد.')){
-    ls.clear();
-    location.reload();
-  }
-}
-
-function go(m){
-  ls.setItem('qm', m);
-  location.href = 'quiz.html';
-}
-
-function openWA(){
-  window.open('https://wa.me/989017708544');
-}
+function closeProg(){ document.getElementById('prog').style.display = 'none'; }
+function logout(){ if(confirm('خروج؟')){ ls.clear(); location.reload(); }}
+function go(m){ ls.setItem('qm', m); location.href='quiz.html'; }
+function openWA(){ window.open('https://wa.me/989017708544'); }
 
 window.onload = () => {
-  if(ls.getItem('t') === 'd'){
-    document.body.classList.add('dark');
-    ti.className = 'fas fa-sun';
-  }
-  setMuteUI(ls.getItem('m') === 'y');
+  if(ls.getItem('t') === 'd') { document.body.classList.add('dark'); ti.className='fas fa-sun'; }
+  if(ls.getItem('m') === 'y') mi.className='fas fa-volume-mute';
   init();
 };
 </script>
