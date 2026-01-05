@@ -2,10 +2,11 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>English with Fred</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* تنظیمات رنگی تم روشن (پیش‌فرض) */
         :root { 
             --bg: #f2f2f7; 
             --text: #1c1c1e; 
@@ -13,6 +14,7 @@
             --blue: #007aff; 
             --gold: #ffcc00; 
         }
+        /* تنظیمات رنگی تم تاریک */
         body.dark-mode { 
             --bg: #0b1426; 
             --text: #ffffff; 
@@ -28,6 +30,7 @@
             flex-direction: column; 
             align-items: center; 
             transition: 0.3s; 
+            min-height: 100vh;
         }
         .top-bar { 
             width: 100%; 
@@ -38,10 +41,10 @@
             margin-bottom: 30px; 
         }
         .icon-btn { 
-            width: 40px; 
-            height: 40px; 
+            width: 42px; 
+            height: 42px; 
             background: var(--card); 
-            border-radius: 10px; 
+            border-radius: 12px; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -58,24 +61,28 @@
             border: 1px solid rgba(0,0,0,0.05); 
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
         }
-        /* استایل جدید ستاره */
-        .star-header {
-            width: 70px;
-            height: 70px;
-            background: rgba(255, 204, 0, 0.15);
-            border-radius: 50%;
+        
+        /* اصلاح بخش ستاره بالای صفحه */
+        .star-box {
+            width: 65px;
+            height: 65px;
+            background: rgba(255, 204, 0, 0.1);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
+            transform: rotate(15deg); /* کمی زاویه برای جذابیت */
         }
-        .star-header i {
-            font-size: 35px;
+        .star-box i {
+            font-size: 30px;
             color: var(--gold);
-            filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.5));
+            transform: rotate(-15deg); /* خنثی کردن زاویه برای خود ستاره */
         }
-        h3 { margin: 0 0 10px; font-size: 22px; }
-        p { font-size: 14px; opacity: 0.7; margin-bottom: 25px; }
+
+        h3 { margin: 0 0 8px; font-size: 22px; }
+        p { font-size: 14px; opacity: 0.6; margin-bottom: 25px; }
         
         input { 
             width: 90%; 
@@ -86,44 +93,59 @@
             text-align: center; 
             font-size: 16px; 
             outline: none;
+            background: var(--bg);
+            color: var(--text);
         }
-        input:focus { border-color: var(--blue); }
         
-        .submit-btn { 
+        .btn { 
             width: 100%; 
             padding: 18px; 
-            border-radius: 15px; 
+            border-radius: 18px; 
             background: var(--blue); 
             color: white; 
             font-weight: bold; 
             border: none; 
             font-size: 17px; 
             cursor: pointer; 
+            display: block;
+            margin-bottom: 10px;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <div class="top-bar">
         <div class="icon-btn" onclick="toggleTheme()"><i id="th-icon" class="fas fa-moon"></i></div>
-        <div style="font-weight: bold; color: var(--blue);">English with Fred</div>
+        <div style="font-weight: 900; color: var(--blue); font-size: 19px;">English with Fred</div>
         <div class="icon-btn" onclick="toggleMute()"><i id="m-icon" class="fas fa-volume-up"></i></div>
     </div>
 
     <div id="setup-page" class="main-card">
-        <div class="star-header">
+        <div class="star-box">
             <i class="fas fa-star"></i>
         </div>
         
         <h3>خوش آمدی!</h3>
-        <p>برای شروع یادگیری، نام خود را وارد کنید</p>
+        <p>برای شروع، نام خود را وارد کنید</p>
         
         <input type="text" id="nameInp" placeholder="نام شما">
         
-        <button onclick="saveUser()" class="submit-btn">ورود به برنامه</button>
+        <button onclick="saveUser()" class="btn">ورود به برنامه</button>
+    </div>
+
+    <div id="main-page" style="display:none; width: 100%; max-width: 380px;">
+        <div class="main-card" style="margin-bottom: 15px;">
+            <div id="hi-user" style="font-size:18px; font-weight:bold;"></div>
+            <div style="color:var(--blue); font-size:14px; margin-top:5px;">Best Score: 0%</div>
+        </div>
+
+        <button class="btn" style="background:#8e44ad" onclick="go('study')">آموزش لغات جدید</button>
+        <button class="btn" style="background:#00a8ff" onclick="go('fa-en')">Farsi to English</button>
+        <button class="btn" style="background:#0984e3" onclick="go('en-fa')">English to Farsi</button>
+        <button class="btn" style="background:#00b894" onclick="go('word-def')">Word to Definition</button>
     </div>
 
     <script>
-        // تنظیمات تم
         function toggleTheme(){ 
             const b = document.body;
             b.classList.toggle('dark-mode');
@@ -132,26 +154,37 @@
             document.getElementById('th-icon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
         }
 
-        // تنظیمات صدا
         function toggleMute(){
             const m = localStorage.getItem('mute') === 'true';
             localStorage.setItem('mute', !m);
             document.getElementById('m-icon').className = !m ? 'fas fa-volume-mute' : 'fas fa-volume-up';
         }
 
-        // ذخیره نام کاربر
         function saveUser(){
-            const name = document.getElementById('nameInp').value.trim();
-            if(name){
-                localStorage.setItem('fredName', name);
-                // هدایت به صفحه اصلی (کد صفحه اصلی را بعداً اینجا هندل می‌کنید)
-                alert("خوش آمدی " + name);
+            const n = document.getElementById('nameInp').value.trim();
+            if(n){
+                localStorage.setItem('fredName', n);
+                checkUser();
             }
         }
 
+        function checkUser(){
+            const u = localStorage.getItem('fredName');
+            if(u){
+                document.getElementById('setup-page').style.display = 'none';
+                document.getElementById('main-page').style.display = 'block';
+                document.getElementById('hi-user').innerText = `سلام ${u} عزیز`;
+            }
+        }
+
+        function go(m){
+            localStorage.setItem('quizMode', m);
+            location.href = 'quiz.html';
+        }
+
         window.onload = () => {
-            // تم پیش‌فرض روشن است، مگر اینکه قبلاً تاریک انتخاب شده باشد
             if(localStorage.getItem('theme') === 'dark') toggleTheme();
+            checkUser();
         };
     </script>
 </body>
