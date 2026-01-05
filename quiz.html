@@ -3,131 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English Quiz - Slow Voice</title>
+    <title>Quiz - Fred English</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg:#f2f2f7; --txt:#1c1c1e; --crd:#fff; --blu:#007aff; --grn:#28a745; --red:#ff3b30; --st:env(safe-area-inset-top); }
+        :root { --bg:#f2f2f7; --txt:#1c1c1e; --crd:#fff; --blu:#007aff; --grn:#34c759; --red:#ff3b30; --st:env(safe-area-inset-top); }
         body.dark-mode { --bg:#0b1426; --txt:#fff; --crd:rgba(255,255,255,0.12); }
-        body { font-family:-apple-system,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 15px) 20px; display:flex; flex-direction:column; align-items:center; min-height:100dvh; }
+        body { font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 10px) 15px 20px; display:flex; flex-direction:column; align-items:center; min-height:100dvh; transition:0.2s; }
         .app { width:100%; max-width:400px; }
-        .card { background:var(--crd); padding:25px; border-radius:25px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:15px; }
-        .btn { width:100%; padding:16px; border-radius:18px; border:none; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; background:var(--crd); color:var(--txt); border:1px solid rgba(0,0,0,0.05); }
-        .opt.correct { background:var(--grn) !important; color:#fff; }
-        .opt.wrong { background:var(--red) !important; color:#fff; }
-        .prog-track { width:100%; height:8px; background:rgba(0,0,0,0.1); border-radius:4px; margin-bottom:15px; overflow:hidden; }
-        .prog-fill { height:100%; background:var(--blu); width:0%; transition:0.3s; }
-        .speaker { width:60px; height:60px; background:rgba(0,122,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; color:var(--blu); cursor:pointer; margin:0 auto 15px; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+        .card { background:var(--crd); padding:20px; border-radius:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); text-align:center; margin-bottom:15px; border:1px solid rgba(0,0,0,0.05); }
+        .q-word { font-size:32px; font-weight:800; color:var(--blu); margin-bottom:5px; }
+        .q-def { font-size:15px; color:#666; margin-bottom:20px; line-height:1.4; }
+        .opt { width:100%; padding:16px; margin-bottom:10px; border-radius:16px; border:2px solid rgba(0,0,0,0.05); background:var(--crd); color:var(--txt); font-size:16px; font-weight:600; cursor:pointer; transition:0.1s; text-align:right; display:flex; justify-content:space-between; align-items:center; }
+        .opt:active { transform:scale(0.98); }
+        .opt.correct { border-color:var(--grn); background:rgba(52,199,89,0.1); }
+        .opt.wrong { border-color:var(--red); background:rgba(255,59,48,0.1); }
+        .details { display:none; text-align:right; margin-top:15px; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .info-box { background:rgba(0,122,255,0.05); padding:15px; border-radius:15px; margin-top:10px; border-right:4px solid var(--blu); }
+        .btn-next { width:100%; padding:16px; border-radius:18px; background:var(--blu); color:#fff; border:none; font-size:17px; font-weight:bold; cursor:pointer; margin-top:10px; display:none; }
+        .prog-container { width:100%; height:6px; background:rgba(0,0,0,0.05); border-radius:3px; margin-bottom:20px; overflow:hidden; }
+        .prog-bar { height:100%; background:var(--blu); width:0%; transition:0.3s; }
     </style>
 </head>
 <body>
     <div class="app">
-        <div class="prog-track"><div id="p-fill" class="prog-fill"></div></div>
-        <div class="card">
-            <div class="speaker" onclick="speak()"><i class="fas fa-volume-up"></i></div>
-            <div id="q-main" style="font-size:22px; font-weight:800; color:var(--blu); line-height:1.4;">...</div>
-            <div id="q-sub" style="opacity:0.6; margin-top:10px; font-size:14px;"></div>
+        <div class="header">
+            <div onclick="location.href='index.html'" style="cursor:pointer; font-size:18px;"><i class="fas fa-chevron-right"></i> بازگشت</div>
+            <div id="q-counter" style="font-weight:bold;">1 / 10</div>
+            <div id="score-live">امتیاز: 0</div>
         </div>
-        <div id="options"></div>
-        <button id="next-btn" class="btn" style="background:var(--blu); color:#fff; display:none;" onclick="nextQ()">بعدی</button>
+
+        <div class="prog-container"><div id="p-bar" class="prog-bar"></div></div>
+
+        <div class="card">
+            <div id="q-word" class="q-word">Word</div>
+            <div id="q-def" class="q-def">Definition of the word goes here...</div>
+            <div id="options-container"></div>
+            
+            <div id="details" class="details">
+                <div class="info-box">
+                    <b style="color:var(--blu)"><i class="fas fa-quote-left"></i> مثال اصلی:</b>
+                    <div id="d-ex" style="margin:5px 0">Example sentence...</div>
+                    <small id="d-ex-fa" style="color:#666">ترجمه مثال...</small>
+                </div>
+                
+                <div class="info-box" style="border-color:var(--grn); background:rgba(52,199,89,0.05)">
+                    <b style="color:var(--grn)"><i class="fas fa-link"></i> کالوکیشن:</b>
+                    <div id="d-coll">Collocation</div>
+                    <small id="d-coll-ex" style="color:#666">Example: ...</small>
+                </div>
+
+                <div class="info-box" style="border-color:#ff9500; background:rgba(255,149,0,0.05)">
+                    <b style="color:#ff9500"><i class="fas fa-rocket"></i> فعل عبارتی (Phrasal):</b>
+                    <div id="d-ph">Phrasal Verb</div>
+                    <small id="d-ph-ex" style="color:#666">Example: ...</small>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-next" class="btn-next" onclick="nextQuestion()">سوال بعدی <i class="fas fa-arrow-left"></i></button>
     </div>
 
+    <audio id="snd-correct" src="https://www.soundjay.com/buttons/sounds/button-37.mp3"></audio>
+    <audio id="snd-wrong" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+    <script src="a1-words.js"></script>
     <script>
-        const ls = localStorage;
-        const mode = ls.getItem('qm') || 'en-fa';
-        const vocab = [
-            {en:"Success", fa:"موفقیت", def:"The accomplishment of an aim or purpose"},
-            {en:"Creative", fa:"خلاق", def:"Relating to or involving the use of the imagination"},
-            {en:"Challenge", fa:"چالش", def:"A task or situation that tests someone's abilities"},
-            {en:"Improve", fa:"پیشرفت کردن", def:"To make or become better in quality"},
-            {en:"Brave", fa:"شجاع", def:"Ready to face and endure danger or pain"},
-            {en:"Doubt", fa:"شک", def:"A feeling of uncertainty or lack of conviction"},
-            {en:"Essential", fa:"ضروری", def:"Absolutely necessary or extremely important"},
-            {en:"Frequent", fa:"مکرر", def:"Occurring or done on many occasions"},
-            {en:"Ancient", fa:"باستانی", def:"Belonging to the very distant past"},
-            {en:"Artificial", fa:"مصنوعی", def:"Made or produced by human beings"}
-        ];
+        let currentIdx = 0;
+        let score = 0;
+        let quizWords = [];
+        const totalQ = 10;
+        const mode = localStorage.getItem('qm') || 'en-fa';
 
-        let current = 0, score = 0, canClick = true;
-
-        function speak() {
-            if(ls.getItem('m') === 'y') return;
-            window.speechSynthesis.cancel();
-            
-            let textToRead = "";
-            const w = vocab[current];
-            
-            if(mode === 'word-def' || mode === 'en-fa') {
-                textToRead = w.en + (mode === 'word-def' ? ". . . " + w.def : "");
-            } else if(mode === 'def-word') {
-                textToRead = w.def;
-            } else {
-                textToRead = w.en;
-            }
-
-            const msg = new SpeechSynthesisUtterance(textToRead);
-            msg.lang = 'en-US';
-            msg.rate = 0.5; // سرعت صوت روی ۰.۵ تنظیم شد
-            msg.pitch = 1;
-            window.speechSynthesis.speak(msg);
+        function init() {
+            if(localStorage.getItem('t') === 'd') document.body.classList.add('dark-mode');
+            // انتخاب ۱۰ کلمه تصادفی
+            quizWords = [...window.wordsA1].sort(() => 0.5 - Math.random()).slice(0, totalQ);
+            render();
         }
 
         function render() {
-            canClick = true;
-            document.getElementById('next-btn').style.display = 'none';
-            const w = vocab[current];
-            let q = '', a = '';
+            const w = quizWords[currentIdx];
+            const cont = document.getElementById('options-container');
+            const isMuted = localStorage.getItem('m') === 'y';
 
-            if(mode==='en-fa') { q=w.en; a=w.fa; }
-            else if(mode==='fa-en') { q=w.fa; a=w.en; }
-            else if(mode==='word-def') { q=w.en; a=w.def; }
-            else if(mode==='def-word') { q=w.def; a=w.en; }
+            document.getElementById('q-word').innerText = (mode === 'fa-en' || mode === 'def-word') ? 'کلمه مورد نظر چیست؟' : w.word.split(' ')[0];
+            document.getElementById('q-def').innerText = (mode === 'word-def') ? 'تعریف انگلیسی صحیح را انتخاب کنید:' : w.definition;
+            document.getElementById('q-counter').innerText = `${currentIdx + 1} / ${totalQ}`;
+            document.getElementById('p-bar').style.width = `${((currentIdx + 1) / totalQ) * 100}%`;
+            document.getElementById('details').style.display = 'none';
+            document.getElementById('btn-next').style.display = 'none';
+            cont.innerHTML = '';
 
-            document.getElementById('q-main').innerText = q;
-            document.getElementById('p-fill').style.width = ((current)/vocab.length)*100 + '%';
-
-            let opts = [a];
+            // ایجاد گزینه‌ها
+            let opts = [w];
             while(opts.length < 4) {
-                let r = vocab[Math.floor(Math.random()*vocab.length)];
-                let val = (mode==='en-fa' || mode==='def-word') ? r.fa : (mode==='fa-en' || mode==='word-def' ? r.en : r.def);
-                if(mode === 'word-def') val = r.def;
-                if(mode === 'def-word') val = r.en;
-                if(!opts.includes(val)) opts.push(val);
+                let r = window.wordsA1[Math.floor(Math.random() * window.wordsA1.length)];
+                if(!opts.includes(r)) opts.push(r);
             }
-            opts.sort(()=>Math.random()-0.5);
+            opts.sort(() => 0.5 - Math.random());
 
-            const optDiv = document.getElementById('options');
-            optDiv.innerHTML = '';
             opts.forEach(o => {
-                const b = document.createElement('button');
-                b.className = 'btn opt';
-                b.innerText = o;
-                b.onclick = () => {
-                    if(!canClick) return;
-                    canClick = false;
-                    if(o === a) { score++; b.classList.add('correct'); }
-                    else { b.classList.add('wrong'); Array.from(document.getElementsByClassName('opt')).forEach(x=>{if(x.innerText===a)x.classList.add('correct')}); }
-                    document.getElementById('next-btn').style.display = 'block';
-                };
-                optDiv.appendChild(b);
+                const btn = document.createElement('button');
+                btn.className = 'opt';
+                
+                // تعیین متن گزینه بر اساس حالت بازی
+                if(mode === 'fa-en' || mode === 'def-word') btn.innerText = o.word.split(' ')[0];
+                else if(mode === 'word-def') btn.innerText = o.definition;
+                else btn.innerText = o.translation;
+
+                btn.onclick = () => check(btn, o === w);
+                cont.appendChild(btn);
             });
 
-            if(mode !== 'fa-en') setTimeout(speak, 600);
+            // تلفظ خودکار اگر بیصدا نباشد
+            if(!isMuted && (mode !== 'fa-en')) speak(w.word);
         }
 
-        function nextQ() {
-            if(current < vocab.length - 1) { current++; render(); }
-            else { finish(); }
+        function check(el, isCorrect) {
+            if(document.getElementById('btn-next').style.display === 'block') return;
+            const w = quizWords[currentIdx];
+            const isMuted = localStorage.getItem('m') === 'y';
+
+            if(isCorrect) {
+                el.classList.add('correct');
+                el.innerHTML += ' <i class="fas fa-check-circle"></i>';
+                score += 10;
+                if(!isMuted) document.getElementById('snd-correct').play();
+            } else {
+                el.classList.add('wrong');
+                el.innerHTML += ' <i class="fas fa-times-circle"></i>';
+                if(!isMuted) document.getElementById('snd-wrong').play();
+            }
+
+            document.getElementById('score-live').innerText = `امتیاز: ${score}`;
+            showDetails(w);
         }
 
-        async function finish() {
-            const final = Math.round((score/vocab.length)*100);
-            let h = JSON.parse(ls.getItem('fh')||'[]'); h.push(final); ls.setItem('fh', JSON.stringify(h));
-            let b = parseInt(ls.getItem('fb')||'0'); if(final > b) ls.setItem('fb', final);
-            alert(`نمره شما: ${final}%`);
+        function showDetails(w) {
+            document.getElementById('d-ex').innerText = w.example;
+            document.getElementById('d-ex-fa').innerText = w.ex_trans;
+            document.getElementById('d-coll').innerText = `${w.collocation} (${w.coll_trans})`;
+            document.getElementById('d-coll-ex').innerText = `${w.coll_ex} ➔ ${w.coll_ex_fa}`;
+            document.getElementById('d-ph').innerText = `${w.phrasal_1} (${w.ph1_trans})`;
+            document.getElementById('d-ph-ex').innerText = `${w.ph1_ex} ➔ ${w.ph1_ex_fa}`;
+            
+            document.getElementById('details').style.display = 'block';
+            document.getElementById('btn-next').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if(currentIdx < totalQ) render();
+            else finish();
+        }
+
+        function finish() {
+            let history = JSON.parse(localStorage.getItem('fh') || '[]');
+            history.push(score);
+            localStorage.setItem('fh', JSON.stringify(history));
+            
+            let best = parseInt(localStorage.getItem('fb') || '0');
+            if(score > best) localStorage.setItem('fb', score);
+
+            alert(`آفرین! امتیاز شما: ${score}`);
             location.href = 'index.html';
         }
 
-        window.onload = render;
+        function speak(txt) {
+            const s = new SpeechSynthesisUtterance(txt);
+            s.lang = 'en-US';
+            window.speechSynthesis.speak(s);
+        }
+
+        init();
     </script>
 </body>
 </html>
