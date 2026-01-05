@@ -2,137 +2,148 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>English with Fred</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; }
-        body.light-mode { --bg: #f1f5f9; --text: #1e293b; --card: rgba(0,0,0,0.05); }
-        body { font-family: Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: 0.3s; }
+        :root { --bg: #0b1426; --text: #ffffff; --card: rgba(255,255,255,0.1); --blue: #00a8ff; --wrong: #ff3b30; --green: #34c759; }
+        body.light-mode { --bg: #f2f2f7; --text: #1c1c1e; --card: rgba(0,0,0,0.05); }
+        body { font-family: -apple-system, system-ui, Tahoma; background: var(--bg); color: var(--text); margin: 0; padding: env(safe-area-inset-top) 20px 40px; display: flex; flex-direction: column; align-items: center; transition: background 0.3s; -webkit-tap-highlight-color: transparent; }
         
-        .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .top h1 { font-size: 18px; margin: 0; color: var(--blue); }
-        .icon-btn { width: 40px; height: 40px; background: var(--card); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; backdrop-filter: blur(10px); }
+        .top { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .icon-btn { width: 42px; height: 42px; background: var(--card); border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(10px); }
 
-        .header-card { width: 100%; max-width: 380px; background: var(--card); padding: 20px; border-radius: 25px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); margin-bottom: 20px; }
-        .stars { font-size: 28px; letter-spacing: 5px; margin-bottom: 5px; color: #f1c40f; direction: ltr !important; }
-        .best { font-size: 14px; font-weight: bold; color: var(--blue); margin-bottom: 10px; direction: ltr !important; }
+        .header-card { width: 100%; max-width: 380px; background: var(--card); padding: 25px 20px; border-radius: 28px; text-align: center; backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .stars { font-size: 32px; color: #f1c40f; cursor: pointer; user-select: none; }
+        .best { font-size: 14px; font-weight: bold; color: var(--blue); margin: 10px 0; direction: ltr; }
         
-        input#name { width: 80%; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); font-size: 14px; text-align: center; margin-bottom: 10px; background: rgba(255,255,255,0.1); color: var(--text); outline: none; }
-        button#login { width: 85%; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        input { width: 85%; padding: 14px; border-radius: 15px; border: none; background: rgba(0,0,0,0.2); color: #fff; font-size: 16px; text-align: center; margin-bottom: 15px; outline: none; }
+        .btn { width: 92%; padding: 15px; border: none; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.96); }
+        .btn-blue { background: var(--blue); color: white; }
 
-        .whatsapp-btn { width: 85%; padding: 12px; background: #25d366; color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
         .menu { width: 100%; max-width: 400px; display: none; flex-direction: column; gap: 10px; }
-        .menu-btn { padding: 16px; border-radius: 18px; color: white; font-weight: bold; font-size: 14px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+        .menu-item { padding: 16px; border-radius: 18px; color: white; font-weight: 600; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05); }
 
-        #tg-settings { display: none; background: var(--card); padding: 15px; border-radius: 20px; margin-top: 10px; width: 85%; }
-        .tg-input { width: 90%; padding: 8px; margin: 5px 0; border-radius: 10px; border: none; background: rgba(255,255,255,0.2); color: var(--text); font-size: 12px; }
+        #mistakes-box { width: 100%; max-width: 380px; margin-top: 20px; display: none; background: var(--card); padding: 15px; border-radius: 20px; border-right: 5px solid var(--wrong); }
+        .mistake-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        #tg-config { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
     <div class="top">
         <div class="icon-btn" onclick="toggleTheme()"><i id="themeIcon" class="fas fa-sun"></i></div>
-        <h1>English with Fred</h1>
+        <h1 style="font-size: 18px; color: var(--blue); margin:0;">English with Fred</h1>
         <div class="icon-btn" onclick="toggleMute()"><i id="muteIcon" class="fas fa-volume-up"></i></div>
     </div>
 
     <div class="header-card" id="loginCard">
-        <div class="stars" id="stars">☆☆☆☆☆</div>
-        <div class="best" id="bestScore">Best Score: 0%</div>
-        <input type="text" id="name" placeholder="نام خود را وارد کنید">
-        <button id="login">ورود</button>
-        <button class="whatsapp-btn" onclick="window.open('https://wa.me/989017708545?text=سلام، درخواست ثبت‌نام در کلاس‌های فرد را دارم.')">
-            <i class="fab fa-whatsapp"></i> ثبت‌نام در واتس‌اپ
-        </button>
+        <div class="stars" id="stars" onclick="handleSecret()">☆☆☆☆☆</div>
+        <div class="best" id="bestScore">Best: 0%</div>
+        <input type="text" id="userName" placeholder="نام شما">
+        <button onclick="login()" class="btn btn-blue">ورود به کلاس</button>
+        
+        <div id="tg-config">
+            <input type="text" id="token" placeholder="Bot Token" style="font-size:12px">
+            <input type="text" id="chatId" placeholder="Chat ID" style="font-size:12px">
+            <button onclick="saveTg()" class="btn btn-blue" style="padding:8px; font-size:12px">ذخیره توکن</button>
+        </div>
     </div>
 
     <div class="menu" id="mainMenu">
-        <div class="menu-btn" style="background:#8e44ad" onclick="start('study')">آموزش لغات</div>
-        <div class="menu-btn" style="background:#00a8ff" onclick="start('fa-en')">Persian → English</div>
-        <div class="menu-btn" style="background:#0984e3" onclick="start('en-fa')">English → Persian</div>
-        <div class="menu-btn" style="background:#00b894" onclick="start('word-def')">Word → Definition</div>
-        <div class="menu-btn" style="background:#006400" onclick="start('def-word')">Definition → Word</div>
-        
-        <div id="tg-settings">
-            <input type="text" id="tgToken" class="tg-input" placeholder="Telegram Bot Token">
-            <input type="text" id="tgChatId" class="tg-input" placeholder="Telegram Chat ID">
-            <button onclick="saveTelegram()" style="width:100%; background:var(--blue); border:none; border-radius:10px; color:white; padding:8px; cursor:pointer;">ذخیره تنظیمات تلگرام</button>
+        <div class="menu-item" style="background:#8e44ad" onclick="go('study')">📚 آموزش لغات</div>
+        <div class="menu-item" style="background:#00a8ff" onclick="go('fa-en')">Persian → English</div>
+        <div class="menu-item" style="background:#0984e3" onclick="go('en-fa')">English → Persian</div>
+        <div class="menu-item" style="background:#00b894" onclick="go('word-def')">Word → Definition</div>
+        <div class="menu-item" style="background:#006400" onclick="go('def-word')">Definition → Word</div>
+        <div class="menu-item" style="background:#25d366" onclick="location.href='https://wa.me/989017708545'">
+            <i class="fab fa-whatsapp"></i> تماس در واتس‌اپ
         </div>
-        <div class="menu-btn" style="background:#2980b9" id="tg-trigger">تنظیمات گزارش‌دهی (۳ بار کلیک)</div>
-        
-        <div class="menu-btn" style="background:#d63031" onclick="logout()">خروج</div>
+        <div class="menu-item" style="background:#d63031; margin-top:10px;" onclick="logout()">خروج</div>
+
+        <div id="mistakes-box">
+            <p style="font-size: 13px; color: var(--wrong); font-weight: bold; margin:0 0 10px;">⚠️ کلمات چالش‌برانگیز شما:</p>
+            <div id="m-list"></div>
+        </div>
     </div>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <script>
-        let clickCount = 0;
-        document.getElementById('tg-trigger').onclick = () => {
-            clickCount++;
-            if (clickCount === 3) document.getElementById('tg-settings').style.display = 'block';
-        };
+        let clicks = 0;
+        const s = (k, v) => localStorage.setItem(k, v);
+        const g = (k) => localStorage.getItem(k);
 
-        function saveTelegram() {
-            localStorage.setItem('tgToken', document.getElementById('tgToken').value);
-            localStorage.setItem('tgChatId', document.getElementById('tgChatId').value);
-            alert("تنظیمات تلگرام ذخیره شد.");
-            document.getElementById('tg-settings').style.display = 'none';
-            clickCount = 0;
-        }
-
-        function updateScore() {
-            const best = parseInt(localStorage.getItem('fredBest') || '0');
-            document.getElementById('bestScore').innerText = `Best Score: ${best}%`;
-            let filled = Math.floor(best / 20);
-            document.getElementById('stars').innerText = '⭐'.repeat(filled) + '☆'.repeat(5 - filled);
-        }
+        function handleSecret() { if (++clicks === 3) document.getElementById('tg-config').style.display='block'; }
+        function saveTg() { s('tgT', id('token').value); s('tgC', id('chatId').value); location.reload(); }
+        function id(i) { return document.getElementById(i); }
 
         function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-mode');
-            document.getElementById('themeIcon').className = isLight ? 'fas fa-moon' : 'fas fa-sun';
-            localStorage.setItem('fredTheme', isLight ? 'light' : 'dark');
+            const l = document.body.classList.toggle('light-mode');
+            s('theme', l ? 'light' : 'dark');
+            id('themeIcon').className = l ? 'fas fa-moon' : 'fas fa-sun';
         }
 
         function toggleMute() {
-            const icon = document.getElementById('muteIcon');
-            const isMuted = icon.classList.contains('fa-volume-up');
-            icon.classList.replace(isMuted ? 'fa-volume-up' : 'fa-volume-mute', isMuted ? 'fa-volume-mute' : 'fa-volume-up');
-            localStorage.setItem('fredMute', isMuted ? 'true' : 'false');
+            const m = g('mute') === 'true';
+            s('mute', !m);
+            id('muteIcon').className = !m ? 'fas fa-volume-mute' : 'fas fa-volume-up';
         }
 
-        document.getElementById('login').onclick = () => {
-            const name = document.getElementById('name').value.trim();
-            if (!name) return alert("نام را وارد کنید");
-            localStorage.setItem('fredName', name);
-            showMenu();
-        };
-
-        function showMenu() {
-            document.getElementById('loginCard').style.display = 'none';
-            document.getElementById('mainMenu').style.display = 'flex';
-            updateScore();
-        }
-
-        function start(mode) {
-            localStorage.setItem('quizMode', mode);
-            location.href = 'quiz.html';
+        function login() {
+            const n = id('userName').value.trim();
+            if(n) { s('fredName', n); showMenu(); }
         }
 
         function logout() {
-            localStorage.removeItem('fredName');
-            location.reload();
+            if(confirm("آیا قصد خروج دارید؟")) { localStorage.removeItem('fredName'); location.reload(); }
         }
 
+        function showMenu() {
+            id('loginCard').style.display='none'; id('mainMenu').style.display='flex';
+            const b = g('fredBest') || '0';
+            id('bestScore').innerText = `Best: ${b}%`;
+            id('stars').innerText = '⭐'.repeat(Math.floor(b/20)) + '☆'.repeat(5-Math.floor(b/20));
+            loadMistakes();
+        }
+
+        function loadMistakes() {
+            const list = JSON.parse(g('fredM') || '[]');
+            if (list.length > 0) {
+                id('mistakes-box').style.display = 'block';
+                id('m-list').innerHTML = list.slice(-3).map(m => `
+                    <div class="mistake-row">
+                        <div style="text-align:right"><b style="color:var(--blue);direction:ltr;display:block">${m.q}</b><small>✅ ${m.a}</small></div>
+                        <i class="fas fa-volume-up" onclick="spk('${m.q}')" style="color:var(--blue)"></i>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function spk(t) { const m = new SpeechSynthesisUtterance(t); m.lang='en-US'; m.rate=0.5; speechSynthesis.speak(m); }
+        function go(m) { s('quizMode', m); location.href='quiz.html'; }
+
+        // ارسال آفلاین
+        window.addEventListener('online', async () => {
+            let q = JSON.parse(g('tgQ') || '[]');
+            let t = g('tgT'), c = g('tgC');
+            if(q.length && t && c) {
+                for(let m of q) {
+                    await fetch(`https://api.telegram.org/bot${t}/sendMessage`, {
+                        method:'POST', headers:{'Content-Type':'application/json'},
+                        body: JSON.stringify({chat_id:c, text:m, parse_mode:'HTML'})
+                    });
+                }
+                s('tgQ', '[]');
+            }
+        });
+
         window.onload = () => {
-            if (localStorage.getItem('fredTheme') === 'light') {
-                document.body.classList.add('light-mode');
-                document.getElementById('themeIcon').className = 'fas fa-moon';
-            }
-            if (localStorage.getItem('fredMute') === 'true') {
-                document.getElementById('muteIcon').classList.replace('fa-volume-up', 'fa-volume-mute');
-            }
-            if (localStorage.getItem('fredName')) showMenu();
+            if(g('theme')==='light') toggleTheme();
+            if(g('mute')==='true') id('muteIcon').className='fas fa-volume-mute';
+            if(g('fredName')) showMenu();
         };
     </script>
 </body>
