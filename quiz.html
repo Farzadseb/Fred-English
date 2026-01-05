@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>English Quiz - Voice Pro</title>
+    <title>English Quiz - Slow Voice</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --bg:#f2f2f7; --txt:#1c1c1e; --crd:#fff; --blu:#007aff; --grn:#28a745; --red:#ff3b30; --st:env(safe-area-inset-top); }
@@ -11,13 +11,12 @@
         body { font-family:-apple-system,sans-serif; background:var(--bg); color:var(--txt); margin:0; padding:calc(var(--st) + 15px) 20px; display:flex; flex-direction:column; align-items:center; min-height:100dvh; }
         .app { width:100%; max-width:400px; }
         .card { background:var(--crd); padding:25px; border-radius:25px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05); margin-bottom:15px; }
-        .btn { width:100%; padding:16px; border-radius:18px; border:none; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; background:var(--crd); color:var(--txt); border:1px solid rgba(0,0,0,0.05); transition: 0.2s; }
-        .opt.correct { background:var(--grn) !important; color:#fff; border-color: transparent; }
-        .opt.wrong { background:var(--red) !important; color:#fff; border-color: transparent; }
+        .btn { width:100%; padding:16px; border-radius:18px; border:none; font-size:16px; font-weight:600; cursor:pointer; margin-bottom:10px; background:var(--crd); color:var(--txt); border:1px solid rgba(0,0,0,0.05); }
+        .opt.correct { background:var(--grn) !important; color:#fff; }
+        .opt.wrong { background:var(--red) !important; color:#fff; }
         .prog-track { width:100%; height:8px; background:rgba(0,0,0,0.1); border-radius:4px; margin-bottom:15px; overflow:hidden; }
         .prog-fill { height:100%; background:var(--blu); width:0%; transition:0.3s; }
-        .speaker { width:60px; height:60px; background:rgba(0,122,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; color:var(--blu); cursor:pointer; margin:0 auto 15px; transition: 0.2s; }
-        .speaker:active { transform: scale(0.9); background:rgba(0,122,255,0.2); }
+        .speaker { width:60px; height:60px; background:rgba(0,122,255,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; color:var(--blu); cursor:pointer; margin:0 auto 15px; }
     </style>
 </head>
 <body>
@@ -25,11 +24,11 @@
         <div class="prog-track"><div id="p-fill" class="prog-fill"></div></div>
         <div class="card">
             <div class="speaker" onclick="speak()"><i class="fas fa-volume-up"></i></div>
-            <div id="q-main" style="font-size:22px; font-weight:800; color:var(--blu); line-height:1.4;">Loading...</div>
+            <div id="q-main" style="font-size:22px; font-weight:800; color:var(--blu); line-height:1.4;">...</div>
             <div id="q-sub" style="opacity:0.6; margin-top:10px; font-size:14px;"></div>
         </div>
         <div id="options"></div>
-        <button id="next-btn" class="btn" style="background:var(--blu); color:#fff; display:none; margin-top:10px;" onclick="nextQ()">بعدی</button>
+        <button id="next-btn" class="btn" style="background:var(--blu); color:#fff; display:none;" onclick="nextQ()">بعدی</button>
     </div>
 
     <script>
@@ -52,17 +51,13 @@
 
         function speak() {
             if(ls.getItem('m') === 'y') return;
-            
             window.speechSynthesis.cancel();
             
-            // تشخیص اینکه چه متنی باید خوانده شود
             let textToRead = "";
             const w = vocab[current];
             
-            if(mode === 'word-def' || mode === 'en-fa' || mode === 'study') {
-                textToRead = w.en;
-                // اگر در حالت تعریف هستیم، تعریف را هم بعد از کمی مکث بخواند
-                if(mode === 'word-def') textToRead += ". . . " + w.def;
+            if(mode === 'word-def' || mode === 'en-fa') {
+                textToRead = w.en + (mode === 'word-def' ? ". . . " + w.def : "");
             } else if(mode === 'def-word') {
                 textToRead = w.def;
             } else {
@@ -71,7 +66,8 @@
 
             const msg = new SpeechSynthesisUtterance(textToRead);
             msg.lang = 'en-US';
-            msg.rate = 0.85; 
+            msg.rate = 0.5; // سرعت صوت روی ۰.۵ تنظیم شد
+            msg.pitch = 1;
             window.speechSynthesis.speak(msg);
         }
 
@@ -81,25 +77,20 @@
             const w = vocab[current];
             let q = '', a = '';
 
-            // منطق نمایش سوال و جواب بر اساس مود انتخاب شده
             if(mode==='en-fa') { q=w.en; a=w.fa; }
             else if(mode==='fa-en') { q=w.fa; a=w.en; }
             else if(mode==='word-def') { q=w.en; a=w.def; }
             else if(mode==='def-word') { q=w.def; a=w.en; }
-            else { q=w.en; a=w.fa; } // پیش‌فرض
 
             document.getElementById('q-main').innerText = q;
-            document.getElementById('q-sub').innerText = (mode==='def-word') ? "کلمه درست را انتخاب کنید" : "گزینه صحیح را بزنید";
             document.getElementById('p-fill').style.width = ((current)/vocab.length)*100 + '%';
 
             let opts = [a];
             while(opts.length < 4) {
                 let r = vocab[Math.floor(Math.random()*vocab.length)];
                 let val = (mode==='en-fa' || mode==='def-word') ? r.fa : (mode==='fa-en' || mode==='word-def' ? r.en : r.def);
-                // اصلاح کوچک برای گرفتن فیلد صحیح در مود تعریف
                 if(mode === 'word-def') val = r.def;
                 if(mode === 'def-word') val = r.en;
-
                 if(!opts.includes(val)) opts.push(val);
             }
             opts.sort(()=>Math.random()-0.5);
@@ -120,10 +111,7 @@
                 optDiv.appendChild(b);
             });
 
-            // پخش خودکار صدا در مودهایی که سوال انگلیسی است
-            if(mode !== 'fa-en') {
-                setTimeout(speak, 600);
-            }
+            if(mode !== 'fa-en') setTimeout(speak, 600);
         }
 
         function nextQ() {
@@ -135,22 +123,11 @@
             const final = Math.round((score/vocab.length)*100);
             let h = JSON.parse(ls.getItem('fh')||'[]'); h.push(final); ls.setItem('fh', JSON.stringify(h));
             let b = parseInt(ls.getItem('fb')||'0'); if(final > b) ls.setItem('fb', final);
-            
-            // ارسال نمره به تلگرام
-            const name = ls.getItem('fn') || 'Student';
-            const _eT = "ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHWG56U3RQLTBJeEhobmZrVFBSdw==";
-            const _eI = "OTY5OTE4NTk=";
-            const msg = `🎓 آزمون تمام شد!\n👤 کاربر: ${name}\n📊 نمره: ${final}%\n📝 نوع: ${mode}`;
-            fetch(`https://api.telegram.org/bot${atob(_eT)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:atob(_eI), text:msg})});
-
-            alert(`خسته نباشید! نمره شما: ${final}%`);
+            alert(`نمره شما: ${final}%`);
             location.href = 'index.html';
         }
 
-        window.onload = () => {
-            if(ls.getItem('t')==='d') document.body.classList.add('dark-mode');
-            render();
-        };
+        window.onload = render;
     </script>
 </body>
 </html>
