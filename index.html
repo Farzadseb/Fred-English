@@ -18,16 +18,16 @@
             <div class="star-badge">⭐</div>
             <h2>خوش آمدی!</h2>
             <p>نام خود را وارد کنید</p>
-            <input type="text" id="username-input" placeholder="Fred" class="input-field">
-            <button onclick="loginUser()" class="btn-blue-main">ورود</button>
+            <input type="text" id="username-input" placeholder="نام شما..." class="input-field">
+            <button onclick="loginUser()" class="btn-blue-main">ورود به دنیای لغات</button>
         </div>
     </div>
 
     <div id="main-menu" class="screen" style="display: none;">
         <div class="header">
-            <button class="icon-btn" id="menu-sound-btn" onclick="toggleSound()">🔊</button>
+            <button class="icon-btn" onclick="toggleSound()">🔊</button>
             <h1 class="title-top">English with Fred</h1>
-            <button class="icon-btn" id="menu-dark-btn" onclick="toggleDarkMode()">🌙</button>
+            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
         </div>
         <div class="card status-card">
             <div class="stars-row">⭐⭐⭐⭐⭐</div>
@@ -42,7 +42,7 @@
             <button class="m-btn green">Definition → Word</button>
             <button class="m-btn challenge">🧠 کلمات چالش‌برانگیز</button>
             <button class="m-btn whatsapp">🟢 ارتباط در واتس‌اپ</button>
-            <button class="m-btn orange">📊 گزارش پیشرفت</button>
+            <button class="m-btn orange" onclick="showReport()">📊 گزارش پیشرفت</button>
             <button class="m-btn red" onclick="logout()">↪ خروج از حساب</button>
         </div>
     </div>
@@ -52,7 +52,7 @@
             <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
             <div class="mini-progress">
                 <div class="stars-mini">⭐⭐⭐⭐⭐</div>
-                <div id="counter">1 / 180</div>
+                <div id="counter">0 / 0</div>
             </div>
             <button class="icon-btn" onclick="showMenu()">🏠</button>
         </div>
