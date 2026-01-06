@@ -7,53 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="login-screen" class="screen">
+    <div id="learning-screen" class="screen">
         <div class="header">
-            <button class="icon-btn" onclick="toggleSound()">🔊</button>
-            <h1 class="title-top">English with Fred</h1>
-            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
-        </div>
-        <div class="card login-card">
-            <div class="star-badge">⭐</div>
-            <h2>خوش آمدی!</h2>
-            <p>نام خود را وارد کنید</p>
-            <input type="text" id="username-input" placeholder="نام شما..." class="input-field">
-            <button onclick="loginUser()" class="btn-blue-main">ورود به دنیای لغات</button>
-        </div>
-    </div>
-
-    <div id="main-menu" class="screen" style="display: none;">
-        <div class="header">
-            <button class="icon-btn" onclick="toggleSound()">🔊</button>
-            <h1 class="title-top">English with Fred</h1>
-            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
-        </div>
-        <div class="card status-card">
-            <div class="stars-row">⭐⭐⭐⭐⭐</div>
-            <h2 id="welcome-text">سلام</h2>
-            <div class="best-score">Best Score: <span id="high-score-val">0%</span></div>
-        </div>
-        <div class="menu-grid">
-            <button class="m-btn purple" onclick="startLearning()">📚 آموزش لغات جدید</button>
-            <button class="m-btn light-blue">Persian → English</button>
-            <button class="m-btn dark-blue">English → Persian</button>
-            <button class="m-btn green">Word → Definition</button>
-            <button class="m-btn green">Definition → Word</button>
-            <button class="m-btn challenge">🧠 کلمات چالش‌برانگیز</button>
-            <button class="m-btn whatsapp">🟢 ارتباط در واتس‌اپ</button>
-            <button class="m-btn orange" onclick="showReport()">📊 گزارش پیشرفت</button>
-            <button class="m-btn red" onclick="logout()">↪ خروج از حساب</button>
-        </div>
-    </div>
-
-    <div id="learning-screen" class="screen" style="display: none;">
-        <div class="header">
-            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
-            <div class="mini-progress">
-                <div class="stars-mini">⭐⭐⭐⭐⭐</div>
-                <div id="counter">0 / 0</div>
-            </div>
+            <button class="icon-btn">🌙</button>
+            <div id="counter" style="color: #888;">1 / 180</div>
             <button class="icon-btn" onclick="showMenu()">🏠</button>
         </div>
 
@@ -63,17 +20,16 @@
             
             <div class="content-box">
                 <div class="section-block">
-                    <span class="label">EXAMPLE</span>
-                    <div class="row-item-reversed">
-                        <p id="word-ex" class="eng-p"></p>
-                        <button class="spk-btn" onclick="speakField('word-ex')">🔊</button>
+                    <span class="label">DEFINITION (A1)</span>
+                    <div class="row-item">
+                        <p id="word-def" class="eng-p"></p>
+                        <button class="spk-btn" onclick="speakField('word-def')">🔊</button>
                     </div>
-                    <p id="word-ex-fa" class="fa-p"></p>
                 </div>
 
                 <div class="section-block">
                     <span class="label">COLLOCATION</span>
-                    <div class="row-item-reversed">
+                    <div class="row-item">
                         <p id="word-coll" class="eng-p"></p>
                         <button class="spk-btn" onclick="speakField('word-coll')">🔊</button>
                     </div>
@@ -81,18 +37,45 @@
                 </div>
 
                 <div class="section-block">
-                    <span class="label">PHRASAL VERBS</span>
-                    <div class="row-item-reversed">
-                        <p id="word-pv" class="eng-p"></p>
-                        <button class="spk-btn" onclick="speakField('word-pv')">🔊</button>
+                    <span class="label">COLLOCATION EXAMPLE</span>
+                    <div class="row-item">
+                        <p id="word-coll-ex" class="eng-p"></p>
+                        <button class="spk-btn" onclick="speakField('word-coll-ex')">🔊</button>
                     </div>
-                    <p id="word-pv-fa" class="fa-p"></p>
+                    <p id="word-coll-ex-fa" class="fa-p"></p>
+                </div>
+
+                <div class="section-block">
+                    <span class="label">PHRASAL VERB 1</span>
+                    <div class="row-item">
+                        <p id="word-pv1" class="eng-p"></p>
+                        <button class="spk-btn" onclick="speakField('word-pv1')">🔊</button>
+                    </div>
+                    <p id="word-pv1-fa" class="fa-p"></p>
+                    <div class="row-item mini-ex">
+                        <p id="word-pv1-ex" class="eng-p-small"></p>
+                        <button class="spk-btn-small" onclick="speakField('word-pv1-ex')">🔊</button>
+                    </div>
+                    <p id="word-pv1-ex-fa" class="fa-p-small"></p>
+                </div>
+
+                <div class="section-block">
+                    <span class="label">PHRASAL VERB 2</span>
+                    <div class="row-item">
+                        <p id="word-pv2" class="eng-p"></p>
+                        <button class="spk-btn" onclick="speakField('word-pv2')">🔊</button>
+                    </div>
+                    <p id="word-pv2-fa" class="fa-p"></p>
+                    <div class="row-item mini-ex">
+                        <p id="word-pv2-ex" class="eng-p-small"></p>
+                        <button class="spk-btn-small" onclick="speakField('word-pv2-ex')">🔊</button>
+                    </div>
+                    <p id="word-pv2-ex-fa" class="fa-p-small"></p>
                 </div>
             </div>
         </div>
         <button class="btn-next-fixed" onclick="nextWord()">کلمه بعدی</button>
     </div>
-
     <script src="a1-words.js"></script>
     <script src="script.js"></script>
 </body>
