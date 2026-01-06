@@ -2,84 +2,109 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English with Fred</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="learning-screen" class="screen">
-        <div class="header">
-            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
-            <div id="counter" style="color: #888; font-weight: bold; font-family: sans-serif;">1 / 180</div>
-            <button class="icon-btn" onclick="showMenu()">🏠</button>
-        </div>
 
-        <div class="word-card-pro">
-            <h1 id="word-eng" class="blue-text-large"></h1>
-            <p id="word-fa" class="fa-text-sub"></p>
-            
-            <div class="content-box">
-                <div class="section-block">
-                    <span class="label">DEFINITION (A1)</span>
-                    <div class="row-item">
-                        <p id="word-def" class="eng-p"></p>
+    <div id="login-screen" class="app">
+        <div class="top">
+            <div class="icon" onclick="toggleSound()">🔊</div>
+            <div class="title">English with Fred</div>
+            <div class="icon" onclick="toggleDarkMode()">🌙</div>
+        </div>
+        <div class="card-login">
+            <div class="star-icon">⭐</div>
+            <h2>خوش آمدی!</h2>
+            <p>نام خود را وارد کنید</p>
+            <input type="text" id="username-input" placeholder="نام شما...">
+            <button class="btn-login" onclick="loginUser()">ورود</button>
+        </div>
+    </div>
+
+    <div id="main-menu" class="app" style="display: none;">
+        <div class="header-box">
+            <h1>English with Fred</h1>
+        </div>
+        <div class="card-status">
+            <div class="stars-row">★★★★★</div>
+            <p id="welcome-text"></p>
+            <div class="score-text">Best Score: <span id="high-score-val">0%</span></div>
+        </div>
+        <div class="menu-buttons">
+            <button class="btn purple" onclick="startLearning()">📚 آموزش لغات جدید</button>
+            <button class="btn blue">Persian → English</button>
+            <button class="btn blue2">English → Persian</button>
+            <button class="btn green">Word → Definition</button>
+            <button class="btn green2">Definition → Word</button>
+            <button class="btn outline">🧠 کلمات چالش‌برانگیز</button>
+            <button class="btn green" onclick="window.open('https://wa.me/989120000000')">ارتباط در واتساپ</button>
+            <button class="btn orange" onclick="showReport()">گزارش پیشرفت</button>
+            <button class="btn red" onclick="logout()">خروج از حساب</button>
+        </div>
+    </div>
+
+    <div id="learning-screen" style="display: none;">
+        <div class="nav-bar">
+            <div id="counter">1 / 180</div>
+            <button class="home-btn" onclick="showMenu()">🏠</button>
+        </div>
+        <div class="container-study">
+            <h1 id="word-eng"></h1>
+            <div id="word-fa" class="subtitle-fa"></div>
+
+            <div class="content-area">
+                <div class="section-item">
+                    <div class="section-title">DEFINITION (A1)</div>
+                    <div class="row-eng">
+                        <div id="word-def" class="english-txt"></div>
                         <button class="spk-btn" onclick="speakField('word-def')">🔊</button>
                     </div>
                 </div>
 
-                <div class="section-block">
-                    <span class="label">COLLOCATION</span>
-                    <div class="row-item">
-                        <p id="word-coll" class="eng-p"></p>
+                <div class="section-item">
+                    <div class="section-title">COLLOCATION</div>
+                    <div class="row-eng">
+                        <div id="word-coll" class="english-txt"></div>
                         <button class="spk-btn" onclick="speakField('word-coll')">🔊</button>
                     </div>
-                    <p id="word-coll-fa" class="fa-p"></p>
+                    <div id="word-coll-fa" class="persian-txt"></div>
                 </div>
 
-                <div class="section-block">
-                    <span class="label">COLLOCATION EXAMPLE</span>
-                    <div class="row-item">
-                        <p id="word-coll-ex" class="eng-p"></p>
-                        <button class="spk-btn" onclick="speakField('word-coll-ex')">🔊</button>
+                <div class="section-item">
+                    <div class="section-title">EXAMPLE</div>
+                    <div class="row-eng">
+                        <div id="word-ex" class="english-txt"></div>
+                        <button class="spk-btn" onclick="speakField('word-ex')">🔊</button>
                     </div>
-                    <p id="word-coll-ex-fa" class="fa-p"></p>
+                    <div id="word-ex-fa" class="persian-txt"></div>
                 </div>
 
-                <div class="section-block">
-                    <span class="label">PHRASAL VERB 1</span>
-                    <div class="row-item">
-                        <p id="word-pv1" class="eng-p-bold"></p>
-                        <button class="spk-btn" onclick="speakField('word-pv1')">🔊</button>
-                    </div>
-                    <p id="word-pv1-fa" class="fa-p"></p>
-                    <div class="mini-ex-box">
-                        <div class="row-item">
-                            <p id="word-pv1-ex" class="eng-p-small"></p>
-                            <button class="spk-btn-small" onclick="speakField('word-pv1-ex')">🔊</button>
+                <div class="section-item">
+                    <div class="section-title">PHRASAL VERBS</div>
+                    <div id="pv-container">
+                        <div class="pv-block">
+                            <div class="row-eng">
+                                <div id="word-pv1" class="english-txt-pv"></div>
+                                <button class="spk-btn" onclick="speakField('word-pv1')">🔊</button>
+                            </div>
+                            <div id="word-pv1-fa" class="persian-txt"></div>
                         </div>
-                        <p id="word-pv1-ex-fa" class="fa-p-small"></p>
-                    </div>
-                </div>
-
-                <div class="section-block">
-                    <span class="label">PHRASAL VERB 2</span>
-                    <div class="row-item">
-                        <p id="word-pv2" class="eng-p-bold"></p>
-                        <button class="spk-btn" onclick="speakField('word-pv2')">🔊</button>
-                    </div>
-                    <p id="word-pv2-fa" class="fa-p"></p>
-                    <div class="mini-ex-box">
-                        <div class="row-item">
-                            <p id="word-pv2-ex" class="eng-p-small"></p>
-                            <button class="spk-btn-small" onclick="speakField('word-pv2-ex')">🔊</button>
+                        <div class="pv-block">
+                            <div class="row-eng">
+                                <div id="word-pv2" class="english-txt-pv"></div>
+                                <button class="spk-btn" onclick="speakField('word-pv2')">🔊</button>
+                            </div>
+                            <div id="word-pv2-fa" class="persian-txt"></div>
                         </div>
-                        <p id="word-pv2-ex-fa" class="fa-p-small"></p>
                     </div>
                 </div>
             </div>
         </div>
-        <button class="btn-next-fixed" onclick="nextWord()">کلمه بعدی</button>
+        <button class="next-word-btn" onclick="nextWord()">کلمه بعدی</button>
     </div>
+
     <script src="a1-words.js"></script>
     <script src="script.js"></script>
 </body>
