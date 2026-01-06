@@ -9,8 +9,8 @@
 <body>
     <div id="learning-screen" class="screen">
         <div class="header">
-            <button class="icon-btn">🌙</button>
-            <div id="counter" style="color: #888;">1 / 180</div>
+            <button class="icon-btn" onclick="toggleDarkMode()">🌙</button>
+            <div id="counter" style="color: #888; font-weight: bold; font-family: sans-serif;">1 / 180</div>
             <button class="icon-btn" onclick="showMenu()">🏠</button>
         </div>
 
@@ -48,29 +48,33 @@
                 <div class="section-block">
                     <span class="label">PHRASAL VERB 1</span>
                     <div class="row-item">
-                        <p id="word-pv1" class="eng-p"></p>
+                        <p id="word-pv1" class="eng-p-bold"></p>
                         <button class="spk-btn" onclick="speakField('word-pv1')">🔊</button>
                     </div>
                     <p id="word-pv1-fa" class="fa-p"></p>
-                    <div class="row-item mini-ex">
-                        <p id="word-pv1-ex" class="eng-p-small"></p>
-                        <button class="spk-btn-small" onclick="speakField('word-pv1-ex')">🔊</button>
+                    <div class="mini-ex-box">
+                        <div class="row-item">
+                            <p id="word-pv1-ex" class="eng-p-small"></p>
+                            <button class="spk-btn-small" onclick="speakField('word-pv1-ex')">🔊</button>
+                        </div>
+                        <p id="word-pv1-ex-fa" class="fa-p-small"></p>
                     </div>
-                    <p id="word-pv1-ex-fa" class="fa-p-small"></p>
                 </div>
 
                 <div class="section-block">
                     <span class="label">PHRASAL VERB 2</span>
                     <div class="row-item">
-                        <p id="word-pv2" class="eng-p"></p>
+                        <p id="word-pv2" class="eng-p-bold"></p>
                         <button class="spk-btn" onclick="speakField('word-pv2')">🔊</button>
                     </div>
                     <p id="word-pv2-fa" class="fa-p"></p>
-                    <div class="row-item mini-ex">
-                        <p id="word-pv2-ex" class="eng-p-small"></p>
-                        <button class="spk-btn-small" onclick="speakField('word-pv2-ex')">🔊</button>
+                    <div class="mini-ex-box">
+                        <div class="row-item">
+                            <p id="word-pv2-ex" class="eng-p-small"></p>
+                            <button class="spk-btn-small" onclick="speakField('word-pv2-ex')">🔊</button>
+                        </div>
+                        <p id="word-pv2-ex-fa" class="fa-p-small"></p>
                     </div>
-                    <p id="word-pv2-ex-fa" class="fa-p-small"></p>
                 </div>
             </div>
         </div>
