@@ -1,26 +1,27 @@
-:root { --primary: #0056b3; --text-eng: #000; --text-fa: #6c757d; }
-body { font-family: sans-serif; background-color: #f8f9fa; direction: rtl; margin: 0; }
+:root { --blue: #007bff; --grey: #6c757d; }
+body { font-family: sans-serif; background-color: #f4f7f6; direction: rtl; margin: 0; padding-bottom: 100px; }
 
-.word-card-pro { background: #fff; border-radius: 30px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin: 10px; }
-.blue-text-large { color: #007bff; font-size: 2.5rem; text-align: center; margin: 0; }
-.fa-text-sub { color: #444; text-align: center; font-size: 1.2rem; margin-top: 5px; margin-bottom: 25px; }
+.screen { max-width: 500px; margin: auto; padding: 15px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.icon-btn { background: #fff; border: none; padding: 10px; border-radius: 12px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-.section-block { border-bottom: 1px solid #eee; padding: 15px 0; }
-.section-block:last-child { border-bottom: none; }
+.word-card-pro { background: #fff; border-radius: 35px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.blue-text-large { color: var(--blue); font-size: 2.8rem; text-align: center; margin: 0; }
+.fa-text-sub { color: #444; text-align: center; font-size: 1.3rem; margin: 10px 0 30px 0; }
 
-.label { color: #007bff; font-size: 0.75rem; font-weight: bold; display: block; margin-bottom: 10px; text-align: left; letter-spacing: 0.5px; }
+.section-block { border-top: 1px solid #eee; padding: 20px 0; }
+.label { color: var(--blue); font-size: 0.75rem; font-weight: bold; display: block; margin-bottom: 15px; text-align: left; }
 
-/* متن انگلیسی سمت چپ، اسپیکر سمت راست آن */
-.row-item { display: flex; flex-direction: row; justify-content: flex-start; align-items: center; direction: ltr; gap: 10px; }
-.eng-p { font-size: 1.15rem; color: var(--text-eng); font-weight: 600; margin: 0; text-align: left; flex: 1; }
-.spk-btn { background: none; border: none; font-size: 1.3rem; color: #007bff; cursor: pointer; padding: 0; }
+.row-item { display: flex; align-items: center; justify-content: flex-start; direction: ltr; gap: 10px; }
+.eng-p { font-size: 1.25rem; font-weight: 600; color: #000; margin: 0; flex: 1; text-align: left; }
+.eng-p-bold { font-size: 1.2rem; font-weight: 700; color: #000; margin: 0; flex: 1; text-align: left; }
+.spk-btn { background: none; border: none; font-size: 1.4rem; color: var(--blue); cursor: pointer; }
 
-.fa-p { color: var(--text-fa); font-size: 1rem; margin: 5px 0 0 0; text-align: right; }
+.fa-p { color: var(--grey); font-size: 1.1rem; text-align: right; margin-top: 8px; }
 
-/* استایل مثال‌های Phrasal Verbs */
-.mini-ex { margin-top: 8px; border-top: 1px dashed #f0f0f0; padding-top: 5px; }
-.eng-p-small { font-size: 0.95rem; color: #333; font-style: italic; flex: 1; text-align: left; }
-.fa-p-small { font-size: 0.85rem; color: #888; text-align: right; }
-.spk-btn-small { font-size: 1rem; color: #007bff; background: none; border: none; }
+.mini-ex-box { margin-top: 10px; padding-right: 15px; }
+.eng-p-small { font-size: 1.05rem; color: #333; flex: 1; text-align: left; }
+.fa-p-small { font-size: 0.95rem; color: #888; text-align: right; margin-top: 4px; }
+.spk-btn-small { background: none; border: none; color: var(--blue); font-size: 1.1rem; }
 
-.btn-next-fixed { position: fixed; bottom: 20px; width: 90%; left: 5%; padding: 18px; background: #007bff; color: #fff; border: none; border-radius: 15px; font-weight: bold; font-size: 1.1rem; }
+.btn-next-fixed { position: fixed; bottom: 20px; left: 5%; width: 90%; padding: 20px; background: var(--blue); color: #fff; border: none; border-radius: 20px; font-weight: bold; font-size: 1.2rem; cursor: pointer; }
