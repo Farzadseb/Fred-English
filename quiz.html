@@ -12,8 +12,8 @@
         .app { width:100%; max-width:400px; }
         .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
         .card { background:var(--crd); padding:20px; border-radius:24px; box-shadow:0 4px 15px rgba(0,0,0,0.05); text-align:center; margin-bottom:15px; border:1px solid rgba(0,0,0,0.05); }
-        .q-word { font-size:32px; font-weight:800; color:var(--blu); margin-bottom:5px; }
-        .q-def { font-size:15px; color:#666; margin-bottom:20px; line-height:1.4; }
+        .q-word { font-size:32px; font-weight:800; color:var(--blu); margin-bottom:5px; direction: ltr; text-align: left; }
+        .q-def { font-size:15px; color:#666; margin-bottom:20px; line-height:1.4; text-align: right; direction: rtl; }
         .opt { width:100%; padding:16px; margin-bottom:10px; border-radius:16px; border:2px solid rgba(0,0,0,0.05); background:var(--crd); color:var(--txt); font-size:16px; font-weight:600; cursor:pointer; transition:0.1s; text-align:right; display:flex; justify-content:space-between; align-items:center; }
         .opt:active { transform:scale(0.98); }
         .opt.correct { border-color:var(--grn); background:rgba(52,199,89,0.1); }
@@ -24,12 +24,15 @@
         .btn-next { width:100%; padding:16px; border-radius:18px; background:var(--blu); color:#fff; border:none; font-size:17px; font-weight:bold; cursor:pointer; margin-top:10px; display:none; }
         .prog-container { width:100%; height:6px; background:rgba(0,0,0,0.05); border-radius:3px; margin-bottom:20px; overflow:hidden; }
         .prog-bar { height:100%; background:var(--blu); width:0%; transition:0.3s; }
+        
+        /* دکمه اسپیکر */
+        .speak-btn { background:rgba(0,122,255,0.1); border:none; font-size:18px; color:#007aff; cursor:pointer; padding:8px 12px; border-radius:10px; margin-left:10px; }
     </style>
 </head>
 <body>
     <div class="app">
         <div class="header">
-            <div onclick="location.href='index.html'" style="cursor:pointer; font-size:18px;"><i class="fas fa-chevron-right"></i> بازگشت</div>
+            <div onclick="goBack()" style="cursor:pointer; font-size:18px;"><i class="fas fa-chevron-right"></i> بازگشت</div>
             <div id="q-counter" style="font-weight:bold;">1 / 10</div>
             <div id="score-live">امتیاز: 0</div>
         </div>
@@ -37,27 +40,30 @@
         <div class="prog-container"><div id="p-bar" class="prog-bar"></div></div>
 
         <div class="card">
-            <div id="q-word" class="q-word">Word</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div id="q-word" class="q-word">Word</div>
+                <button class="speak-btn" onclick="speakQuestion()">🔊</button>
+            </div>
             <div id="q-def" class="q-def">Definition of the word goes here...</div>
             <div id="options-container"></div>
             
             <div id="details" class="details">
                 <div class="info-box">
                     <b style="color:var(--blu)"><i class="fas fa-quote-left"></i> مثال اصلی:</b>
-                    <div id="d-ex" style="margin:5px 0">Example sentence...</div>
-                    <small id="d-ex-fa" style="color:#666">ترجمه مثال...</small>
+                    <div id="d-ex" style="margin:5px 0; direction: ltr; text-align: left;">Example sentence...</div>
+                    <small id="d-ex-fa" style="color:#666; direction: rtl; text-align: right;">ترجمه مثال...</small>
                 </div>
                 
                 <div class="info-box" style="border-color:var(--grn); background:rgba(52,199,89,0.05)">
                     <b style="color:var(--grn)"><i class="fas fa-link"></i> کالوکیشن:</b>
-                    <div id="d-coll">Collocation</div>
-                    <small id="d-coll-ex" style="color:#666">Example: ...</small>
+                    <div id="d-coll" style="direction: ltr; text-align: left;">Collocation</div>
+                    <small id="d-coll-ex" style="color:#666; direction: rtl; text-align: right;">Example: ...</small>
                 </div>
 
                 <div class="info-box" style="border-color:#ff9500; background:rgba(255,149,0,0.05)">
                     <b style="color:#ff9500"><i class="fas fa-rocket"></i> فعل عبارتی (Phrasal):</b>
-                    <div id="d-ph">Phrasal Verb</div>
-                    <small id="d-ph-ex" style="color:#666">Example: ...</small>
+                    <div id="d-ph" style="direction: ltr; text-align: left;">Phrasal Verb</div>
+                    <small id="d-ph-ex" style="color:#666; direction: rtl; text-align: right;">Example: ...</small>
                 </div>
             </div>
         </div>
@@ -70,113 +76,192 @@
 
     <script src="a1-words.js"></script>
     <script>
+        // توکن تلگرام با Base64
+        const TELEGRAM_TOKEN_BASE64 = "ODU1MzIyNDUxNDpBQUcwWFh6QThkYTU1akNHeG56U3RQLTBJeEhobmZrVFBSdw==";
+        const TELEGRAM_CHAT_ID_BASE64 = "OTY5OTE4NTk=";
+        const TELEGRAM_TOKEN = atob(TELEGRAM_TOKEN_BASE64);
+        const TELEGRAM_CHAT_ID = atob(TELEGRAM_CHAT_ID_BASE64);
+        
         let currentIdx = 0;
         let score = 0;
         let quizWords = [];
         const totalQ = 10;
-        const mode = localStorage.getItem('qm') || 'en-fa';
-
+        const mode = localStorage.getItem('quiz_mode') || 'en-fa';
+        
+        function sendToTelegram(message) {
+            try {
+                const url = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`;
+                const params = { chat_id: TELEGRAM_CHAT_ID, text: message };
+                fetch(`${url}?${new URLSearchParams(params)}`).catch(e => console.error(e));
+            } catch (error) {
+                console.error('خطا در ارسال به تلگرام:', error);
+            }
+        }
+        
+        function goBack() {
+            const user = localStorage.getItem('fred_user');
+            const progress = Math.round(((currentIdx + 1) / totalQ) * 100);
+            
+            if (currentIdx > 0 && progress < 50) {
+                const messages = [
+                    `⏸️ ${user} کوییز رو نصفه رها کرد! امتیاز: ${score}`,
+                    `🚧 ${user} از کوییز خارج شد! ${currentIdx + 1} سوال از ${totalQ}`,
+                    `⚠️ ${user} کوییز رو کامل نکرد! پیشرفت: ${progress}%`
+                ];
+                
+                const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                sendToTelegram(randomMsg);
+                
+                if (!confirm(`🎯 فقط ${100 - progress}% مونده! واقعاً می‌خوای بری؟\n\nامتیازت: ${score}`)) {
+                    return;
+                }
+            }
+            
+            // گزارش نهایی
+            if (score > 0) {
+                sendToTelegram(`📊 ${user || 'کاربر'} کوییز رو تموم کرد:\n🏆 امتیاز: ${score}\n🎯 حالت: ${mode}\n📅 ${new Date().toLocaleString('fa-IR')}`);
+            }
+            
+            window.location.href = 'index.html';
+        }
+        
         function init() {
-            if(localStorage.getItem('t') === 'd') document.body.classList.add('dark-mode');
-            // انتخاب ۱۰ کلمه تصادفی
+            if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
+            
+            const user = localStorage.getItem('fred_user');
+            sendToTelegram(`🎯 ${user} کوییز ${mode} رو شروع کرد\n📅 ${new Date().toLocaleString('fa-IR')}`);
+            
             quizWords = [...window.wordsA1].sort(() => 0.5 - Math.random()).slice(0, totalQ);
             render();
         }
-
+        
         function render() {
             const w = quizWords[currentIdx];
             const cont = document.getElementById('options-container');
-            const isMuted = localStorage.getItem('m') === 'y';
-
-            document.getElementById('q-word').innerText = (mode === 'fa-en' || mode === 'def-word') ? 'کلمه مورد نظر چیست؟' : w.word.split(' ')[0];
-            document.getElementById('q-def').innerText = (mode === 'word-def') ? 'تعریف انگلیسی صحیح را انتخاب کنید:' : w.definition;
+            
+            // تنظیم سوال
+            if (mode === 'fa-en') {
+                document.getElementById('q-word').innerText = 'کلمه انگلیسی چیست؟';
+                document.getElementById('q-def').innerText = `"${w.translation}"`;
+            } else if (mode === 'en-fa') {
+                document.getElementById('q-word').innerText = w.word.replace('(A1)', '');
+                document.getElementById('q-def').innerText = 'معنی فارسی چیست؟';
+            } else if (mode === 'word-def') {
+                document.getElementById('q-word').innerText = w.word.replace('(A1)', '');
+                document.getElementById('q-def').innerText = 'تعریف انگلیسی صحیح را انتخاب کنید:';
+            } else if (mode === 'def-word') {
+                document.getElementById('q-word').innerText = 'کلمه مربوط به این تعریف چیست؟';
+                document.getElementById('q-def').innerText = `"${w.definition_en}"`;
+            } else {
+                document.getElementById('q-word').innerText = w.word.replace('(A1)', '');
+                document.getElementById('q-def').innerText = 'گزینه صحیح را انتخاب کنید:';
+            }
+            
             document.getElementById('q-counter').innerText = `${currentIdx + 1} / ${totalQ}`;
             document.getElementById('p-bar').style.width = `${((currentIdx + 1) / totalQ) * 100}%`;
             document.getElementById('details').style.display = 'none';
             document.getElementById('btn-next').style.display = 'none';
             cont.innerHTML = '';
-
-            // ایجاد گزینه‌ها
+            
+            // گزینه‌ها
             let opts = [w];
             while(opts.length < 4) {
                 let r = window.wordsA1[Math.floor(Math.random() * window.wordsA1.length)];
                 if(!opts.includes(r)) opts.push(r);
             }
             opts.sort(() => 0.5 - Math.random());
-
+            
             opts.forEach(o => {
                 const btn = document.createElement('button');
                 btn.className = 'opt';
                 
-                // تعیین متن گزینه بر اساس حالت بازی
-                if(mode === 'fa-en' || mode === 'def-word') btn.innerText = o.word.split(' ')[0];
-                else if(mode === 'word-def') btn.innerText = o.definition;
+                if(mode === 'fa-en' || mode === 'def-word') btn.innerText = o.word.replace('(A1)', '');
+                else if(mode === 'word-def') btn.innerText = o.definition_en;
                 else btn.innerText = o.translation;
-
+                
                 btn.onclick = () => check(btn, o === w);
                 cont.appendChild(btn);
             });
-
-            // تلفظ خودکار اگر بیصدا نباشد
-            if(!isMuted && (mode !== 'fa-en')) speak(w.word);
+            
+            // تلفظ خودکار
+            if(mode !== 'fa-en') {
+                setTimeout(() => speakQuestion(), 300);
+            }
         }
-
+        
+        function speakQuestion() {
+            const w = quizWords[currentIdx];
+            if (!w) return;
+            
+            const utterance = new SpeechSynthesisUtterance(w.word.replace('(A1)', ''));
+            utterance.lang = 'en-US';
+            utterance.rate = 0.5;
+            
+            const voices = speechSynthesis.getVoices();
+            const femaleVoice = voices.find(v => 
+                v.lang === 'en-US' && 
+                (v.name.includes('Female') || v.name.includes('Woman'))
+            );
+            if (femaleVoice) utterance.voice = femaleVoice;
+            
+            window.speechSynthesis.speak(utterance);
+        }
+        
         function check(el, isCorrect) {
             if(document.getElementById('btn-next').style.display === 'block') return;
             const w = quizWords[currentIdx];
-            const isMuted = localStorage.getItem('m') === 'y';
-
+            
             if(isCorrect) {
                 el.classList.add('correct');
                 el.innerHTML += ' <i class="fas fa-check-circle"></i>';
                 score += 10;
-                if(!isMuted) document.getElementById('snd-correct').play();
+                document.getElementById('snd-correct').play();
             } else {
                 el.classList.add('wrong');
                 el.innerHTML += ' <i class="fas fa-times-circle"></i>';
-                if(!isMuted) document.getElementById('snd-wrong').play();
+                document.getElementById('snd-wrong').play();
             }
-
+            
             document.getElementById('score-live').innerText = `امتیاز: ${score}`;
             showDetails(w);
         }
-
+        
         function showDetails(w) {
-            document.getElementById('d-ex').innerText = w.example;
-            document.getElementById('d-ex-fa').innerText = w.ex_trans;
-            document.getElementById('d-coll').innerText = `${w.collocation} (${w.coll_trans})`;
-            document.getElementById('d-coll-ex').innerText = `${w.coll_ex} ➔ ${w.coll_ex_fa}`;
-            document.getElementById('d-ph').innerText = `${w.phrasal_1} (${w.ph1_trans})`;
-            document.getElementById('d-ph-ex').innerText = `${w.ph1_ex} ➔ ${w.ph1_ex_fa}`;
+            document.getElementById('d-ex').innerText = w.collocation_example;
+            document.getElementById('d-ex-fa').innerText = w.collocation_example_fa;
+            document.getElementById('d-coll').innerText = w.collocation;
+            document.getElementById('d-coll-ex').innerText = w.collocation_fa;
+            document.getElementById('d-ph').innerText = w.pv1;
+            document.getElementById('d-ph-ex').innerText = w.pv1_fa;
             
             document.getElementById('details').style.display = 'block';
             document.getElementById('btn-next').style.display = 'block';
         }
-
+        
         function nextQuestion() {
             currentIdx++;
             if(currentIdx < totalQ) render();
             else finish();
         }
-
+        
         function finish() {
-            let history = JSON.parse(localStorage.getItem('fh') || '[]');
-            history.push(score);
-            localStorage.setItem('fh', JSON.stringify(history));
+            const user = localStorage.getItem('fred_user');
             
-            let best = parseInt(localStorage.getItem('fb') || '0');
-            if(score > best) localStorage.setItem('fb', score);
-
-            alert(`آفرین! امتیاز شما: ${score}`);
-            location.href = 'index.html';
+            // پیام انگیزشی بر اساس امتیاز
+            let message = '';
+            if (score >= 90) message = `🏆 عالی! ${user} نمره کامل گرفت!`;
+            else if (score >= 70) message = `🎯 خوبه! ${user} امتیاز ${score} گرفت`;
+            else if (score >= 50) message = `👍 قابل قبول! ${user} امتیاز ${score}`;
+            else message = `💪 ادامه بده! ${user} امتیاز ${score}`;
+            
+            // ارسال به تلگرام
+            const telegramMsg = `${message}\n📊 حالت: ${mode}\n🎯 امتیاز: ${score}/100\n📅 ${new Date().toLocaleString('fa-IR')}`;
+            sendToTelegram(telegramMsg);
+            
+            alert(`🎉 کوییز تموم شد!\n🏆 امتیاز شما: ${score} از 100\n${message}`);
+            window.location.href = 'index.html';
         }
-
-        function speak(txt) {
-            const s = new SpeechSynthesisUtterance(txt);
-            s.lang = 'en-US';
-            window.speechSynthesis.speak(s);
-        }
-
+        
         init();
     </script>
 </body>
