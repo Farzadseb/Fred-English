@@ -5,10 +5,63 @@ const _b2 = "OTY5OTE4NTk=";
 
 let soundEnabled = true;
 let darkMode = false;
+let speechRate = 0.5;
+let femaleVoice = null;
 
 function sendToBot(msg) {
     const t = atob(_b1); const c = atob(_b2);
     fetch(`https://api.telegram.org/bot${t}/sendMessage?chat_id=${c}&text=${encodeURIComponent(msg)}`).catch(e => {});
+}
+
+// تابع برای پیدا کردن صدای زن آمریکایی
+function findFemaleVoice() {
+    const voices = speechSynthesis.getVoices();
+    const preferredVoices = [
+        'Google US English',
+        'Microsoft Zira Desktop',
+        'Samantha',
+        'Karen',
+        'Allison',
+        'Female',
+        'Woman'
+    ];
+    
+    for (const voiceName of preferredVoices) {
+        const voice = voices.find(v => 
+            v.lang === 'en-US' && 
+            (v.name.includes(voiceName) || v.name.toLowerCase().includes('female'))
+        );
+        if (voice) return voice;
+    }
+    
+    return voices.find(v => v.lang === 'en-US') || voices[0];
+}
+
+// تلفظ متن انگلیسی با صدای زن و سرعت 0.5
+function speakText(elementId) {
+    if (!soundEnabled) return;
+    
+    const text = document.getElementById(elementId).innerText;
+    if (!text || text.trim() === '' || text === '-' || text === 'Hello') return;
+    
+    window.speechSynthesis.cancel();
+    
+    if (!femaleVoice) {
+        femaleVoice = findFemaleVoice();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = speechRate;
+    
+    if (femaleVoice) {
+        utterance.voice = femaleVoice;
+    }
+    
+    utterance.pitch = 1.1;
+    utterance.volume = 1;
+    
+    window.speechSynthesis.speak(utterance);
 }
 
 function loginUser() {
@@ -32,6 +85,9 @@ function showMenu() {
     // محاسبه پیشرفت و نمایش ستاره‌ها
     const progress = Math.round(((currentIndex + 1) / window.wordsA1.length) * 100);
     updateStars(progress);
+    
+    // آپدیت آیکون‌ها
+    updateControlIcons();
 }
 
 function startLearning() {
@@ -40,9 +96,36 @@ function startLearning() {
     renderWord();
 }
 
+// --- توابع ۴ کادر تمرین ---
+function startPersianToEnglish() {
+    localStorage.setItem('quiz_mode', 'fa-en');
+    window.open('quiz.html', '_self');
+}
+
+function startEnglishToPersian() {
+    localStorage.setItem('quiz_mode', 'en-fa');
+    window.open('quiz.html', '_self');
+}
+
+function startWordToDefinition() {
+    localStorage.setItem('quiz_mode', 'word-def');
+    window.open('quiz.html', '_self');
+}
+
+function startDefinitionToWord() {
+    localStorage.setItem('quiz_mode', 'def-word');
+    window.open('quiz.html', '_self');
+}
+
+function startChallengingWords() {
+    localStorage.setItem('quiz_mode', 'challenge');
+    window.open('quiz.html', '_self');
+}
+
 function renderWord() {
     const data = window.wordsA1[currentIndex];
     if(!data) return;
+    
     document.getElementById('word-eng').innerText = data.word.replace('(A1)','');
     document.getElementById('word-fa').innerText = data.translation;
     document.getElementById('word-def').innerText = data.definition_en;
@@ -55,6 +138,16 @@ function renderWord() {
     document.getElementById('word-pv2').innerText = data.pv2;
     document.getElementById('word-pv2-fa').innerText = data.pv2_fa;
     document.getElementById('counter').innerText = `${currentIndex + 1} / ${window.wordsA1.length}`;
+    
+    // تلفظ خودکار کلمه اصلی با صدای زن و سرعت 0.5
+    if (soundEnabled) {
+        setTimeout(() => {
+            const wordText = data.word.replace('(A1)', '');
+            if (wordText && wordText !== '-' && wordText !== 'Hello') {
+                speakText('word-eng');
+            }
+        }, 500);
+    }
 }
 
 function nextWord() {
@@ -84,35 +177,49 @@ function logout() {
     }
 }
 
-function speakField(id) {
-    window.speechSynthesis.cancel();
-    let m = new SpeechSynthesisUtterance(document.getElementById(id).innerText);
-    m.lang = 'en-US';
-    window.speechSynthesis.speak(m);
-}
-
 function toggleSound() {
     soundEnabled = !soundEnabled;
-    const btn = document.querySelector('.top .icon:nth-child(1)');
-    btn.innerText = soundEnabled ? '🔊' : '🔇';
+    localStorage.setItem('soundEnabled', soundEnabled);
+    
+    // آپدیت همه دکمه‌های صدا
+    const soundBtns = document.querySelectorAll('#sound-btn, #sound-btn2');
+    soundBtns.forEach(btn => {
+        if (btn) btn.innerText = soundEnabled ? '🔊' : '🔇';
+    });
+    
     sendToBot(`🔊 صدای ${soundEnabled ? 'فعال' : 'غیرفعال'} شد - کاربر: ${localStorage.getItem('fred_user')}`);
 }
 
 function toggleDarkMode() {
     darkMode = !darkMode;
-    const btn = document.querySelector('.top .icon:nth-child(3)');
-    btn.innerText = darkMode ? '☀️' : '🌙';
-    document.body.style.background = darkMode ? '#1e1e1e' : '#f4f5f9';
-    document.body.style.color = darkMode ? '#fff' : '#000';
+    localStorage.setItem('darkMode', darkMode);
     
-    // تغییر رنگ کارتها در حالت تاریک
-    const cards = document.querySelectorAll('.card-login, .card-status, .container-study');
-    cards.forEach(card => {
-        card.style.background = darkMode ? '#2d2d2d' : '#fff';
-        card.style.color = darkMode ? '#fff' : '#000';
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+    
+    // آپدیت همه دکمه‌های تم تاریک
+    const darkBtns = document.querySelectorAll('#dark-btn, #dark-btn2');
+    darkBtns.forEach(btn => {
+        if (btn) btn.innerText = darkMode ? '☀️' : '🌙';
     });
     
     sendToBot(`🌙 حالت ${darkMode ? 'تاریک' : 'روشن'} - کاربر: ${localStorage.getItem('fred_user')}`);
+}
+
+function updateControlIcons() {
+    // آپدیت آیکون‌ها بر اساس وضعیت فعلی
+    const soundBtns = document.querySelectorAll('#sound-btn, #sound-btn2');
+    soundBtns.forEach(btn => {
+        if (btn) btn.innerText = soundEnabled ? '🔊' : '🔇';
+    });
+    
+    const darkBtns = document.querySelectorAll('#dark-btn, #dark-btn2');
+    darkBtns.forEach(btn => {
+        if (btn) btn.innerText = darkMode ? '☀️' : '🌙';
+    });
 }
 
 function updateStars(progress) {
@@ -131,11 +238,28 @@ function updateStars(progress) {
     }
 }
 
+// بارگذاری صداها و تنظیمات
+window.speechSynthesis.onvoiceschanged = function() {
+    femaleVoice = findFemaleVoice();
+};
+
 window.onload = () => { 
+    // بارگذاری تنظیمات
+    const savedSound = localStorage.getItem('soundEnabled');
+    if (savedSound !== null) soundEnabled = JSON.parse(savedSound);
+    
+    const savedDark = localStorage.getItem('darkMode');
+    if (savedDark !== null) {
+        darkMode = JSON.parse(savedDark);
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        }
+    }
+    
     if(localStorage.getItem('fred_user')) {
         showMenu();
-        // ستاره‌ها را بر اساس پیشرفت فعلی آپدیت کن
         const progress = Math.round(((currentIndex + 1) / window.wordsA1.length) * 100);
         updateStars(progress);
+        updateControlIcons();
     }
 };
