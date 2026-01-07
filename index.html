@@ -10,9 +10,7 @@
 
     <div id="login-screen" class="app">
         <div class="top">
-            <div class="icon" onclick="toggleSound()">🔊</div>
             <div class="title">English with Fred</div>
-            <div class="icon" onclick="toggleDarkMode()">🌙</div>
         </div>
         <div class="card-login">
             <div class="star-icon">⭐</div>
@@ -26,6 +24,10 @@
     <div id="main-menu" class="app" style="display: none;">
         <div class="header-box">
             <h1>English with Fred</h1>
+            <div class="control-icons">
+                <button class="icon-btn" onclick="toggleSound()" id="sound-btn">🔊</button>
+                <button class="icon-btn" onclick="toggleDarkMode()" id="dark-btn">🌙</button>
+            </div>
         </div>
         <div class="card-status">
             <div class="stars-row">★★★★★</div>
@@ -34,11 +36,11 @@
         </div>
         <div class="menu-buttons">
             <button class="btn purple" onclick="startLearning()">📚 آموزش لغات جدید</button>
-            <button class="btn blue">Persian → English</button>
-            <button class="btn blue2">English → Persian</button>
-            <button class="btn green">Word → Definition</button>
-            <button class="btn green2">Definition → Word</button>
-            <button class="btn outline">🧠 کلمات چالش‌برانگیز</button>
+            <button class="btn blue" onclick="startPersianToEnglish()">Persian → English</button>
+            <button class="btn blue2" onclick="startEnglishToPersian()">English → Persian</button>
+            <button class="btn green" onclick="startWordToDefinition()">Word → Definition</button>
+            <button class="btn green2" onclick="startDefinitionToWord()">Definition → Word</button>
+            <button class="btn outline" onclick="startChallengingWords()">🧠 کلمات چالش‌برانگیز</button>
             <button class="btn green" onclick="window.open('https://wa.me/989017708544')">ارتباط در واتساپ</button>
             <button class="btn orange" onclick="showReport()">گزارش پیشرفت</button>
             <button class="btn red" onclick="logout()">خروج از حساب</button>
@@ -48,10 +50,17 @@
     <div id="learning-screen" style="display: none;">
         <div class="nav-bar">
             <div id="counter">1 / 180</div>
+            <div class="control-icons">
+                <button class="icon-btn" onclick="toggleSound()" id="sound-btn2">🔊</button>
+                <button class="icon-btn" onclick="toggleDarkMode()" id="dark-btn2">🌙</button>
+            </div>
             <button class="home-btn" onclick="showMenu()">🏠</button>
         </div>
         <div class="container-study">
-            <h1 id="word-eng"></h1>
+            <div class="word-header">
+                <h1 id="word-eng"></h1>
+                <button class="spk-btn-main" onclick="speakText('word-eng')">🔊</button>
+            </div>
             <div id="word-fa" class="subtitle-fa"></div>
 
             <div class="content-area">
@@ -59,7 +68,7 @@
                     <div class="section-title">DEFINITION (A1)</div>
                     <div class="row-eng">
                         <div id="word-def" class="english-txt"></div>
-                        <button class="spk-btn" onclick="speakField('word-def')">🔊</button>
+                        <button class="spk-btn" onclick="speakText('word-def')">🔊</button>
                     </div>
                 </div>
 
@@ -67,7 +76,7 @@
                     <div class="section-title">COLLOCATION</div>
                     <div class="row-eng">
                         <div id="word-coll" class="english-txt"></div>
-                        <button class="spk-btn" onclick="speakField('word-coll')">🔊</button>
+                        <button class="spk-btn" onclick="speakText('word-coll')">🔊</button>
                     </div>
                     <div id="word-coll-fa" class="persian-txt"></div>
                 </div>
@@ -76,7 +85,7 @@
                     <div class="section-title">EXAMPLE</div>
                     <div class="row-eng">
                         <div id="word-ex" class="english-txt"></div>
-                        <button class="spk-btn" onclick="speakField('word-ex')">🔊</button>
+                        <button class="spk-btn" onclick="speakText('word-ex')">🔊</button>
                     </div>
                     <div id="word-ex-fa" class="persian-txt"></div>
                 </div>
@@ -87,14 +96,14 @@
                         <div class="pv-block">
                             <div class="row-eng">
                                 <div id="word-pv1" class="english-txt-pv"></div>
-                                <button class="spk-btn" onclick="speakField('word-pv1')">🔊</button>
+                                <button class="spk-btn" onclick="speakText('word-pv1')">🔊</button>
                             </div>
                             <div id="word-pv1-fa" class="persian-txt"></div>
                         </div>
                         <div class="pv-block">
                             <div class="row-eng">
                                 <div id="word-pv2" class="english-txt-pv"></div>
-                                <button class="spk-btn" onclick="speakField('word-pv2')">🔊</button>
+                                <button class="spk-btn" onclick="speakText('word-pv2')">🔊</button>
                             </div>
                             <div id="word-pv2-fa" class="persian-txt"></div>
                         </div>
@@ -108,4 +117,4 @@
     <script src="a1-words.js"></script>
     <script src="script.js"></script>
 </body>
-            </html>
+</html>
